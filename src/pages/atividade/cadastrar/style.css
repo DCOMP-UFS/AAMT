@@ -1,0 +1,72 @@
+.container-map > div {
+  flex: 1;
+}
+
+.map {
+  position: relative !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.container-equipe {
+  padding: 15px;
+  border: 1px solid #ebedf2;
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.container-equipe-footer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding-top: 15px;
+  border-top: 1px solid #ebedf2;
+}
+
+.list-to-do {
+  list-style: none;
+  padding-left: 0;
+}
+
+.list-to-do li {
+  background: #fff;
+  border: none;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list-to-do li:hover {
+  background: #198ae3;
+}
+
+.list-to-do li:hover > .title {
+  color: #fff;
+}
+
+.list-to-do li .title {
+  width: 100%;
+  padding: 15px;
+  cursor: pointer;
+  margin-bottom: 0;
+}
+
+.container-agentes {
+  flex: 1;
+}
+
+.container-nova-equipe {
+  flex: 1;
+}
+
+.list-person {
+  max-height: 60vh;
+  min-height: 60vh;
+  overflow-y: scroll;
+  border: 1px solid #ebedf2;
+  margin: 0 15px;
+}

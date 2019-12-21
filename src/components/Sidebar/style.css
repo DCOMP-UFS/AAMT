@@ -1,0 +1,118 @@
+.sidebar{
+  background: #181824;
+  font-family: "nunito-semibold", sans-serif;
+  padding: 0;
+  flex: 0.2;
+  z-index: 11;
+}
+
+.sidebar ul.nav-sidebar {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar ul.nav-sidebar .nav-item {
+  padding: 0 2.375rem;
+  transition-duration: 0.25s;
+  transition-property: background;
+  position: relative;
+}
+
+.sidebar ul.nav-sidebar .nav-item .sub-menu li{
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.sidebar ul.nav-sidebar .nav-item .sub-menu li .icon:first-child {
+  margin-right: 14px;
+}
+
+.sidebar ul.nav-sidebar .nav-item.nav-category {
+  font-size: 0.8125rem;
+  line-height: 16px;
+  margin: 25px 0px 10px 0px;
+  color: #8e94a9;
+  font-family: "nunito-bold", sans-serif;
+  text-transform: capitalize;
+}
+
+.sidebar ul.nav-sidebar .nav-item .nav-link {
+  display: flex;
+  align-items: center;
+  color: #8e94a9;
+  padding-left: 0;
+  padding-right: 0;
+
+  transition: color 0.2s linear;
+}
+
+.sidebar ul.nav-sidebar .nav-item button.nav-link {
+  display: flex;
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: #8e94a9;
+  padding-left: 0;
+  padding-right: 0;
+
+  transition: color 0.2s linear;
+}
+
+.sidebar ul.nav-sidebar .nav-item .nav-link .menu-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #1bcfb4;
+  padding: .25rem;
+  border-radius: .25rem;
+  height: 24px;
+  width: 24px;
+  margin-right: 0.875rem;
+  background: rgba(194, 244, 219, 0.12);
+}
+
+.sidebar ul.nav-sidebar .nav-item .nav-link .menu-text {
+  text-transform: capitalize;
+}
+
+.sidebar ul.nav-sidebar li.nav-category:hover {
+  background: transparent!important;
+  color: #8e94a9!important;
+}
+
+.sidebar ul.nav-sidebar li.nav-item:hover {
+  background: #1c1c25;
+  color: white;
+}
+
+.sidebar ul.nav-sidebar li.nav-item:hover > .nav-link {
+  color: white;
+}
+
+.sidebar ul.nav-sidebar li.active > .nav-link {
+  color: #1bcfb4!important;
+}
+
+.sidebar ul.nav-sidebar li.active {
+  background: #1c1c25;
+}
+
+.sidebar ul.nav-sidebar li:not(.nav-category) > .nav-link::before{
+  content: '';
+  position: absolute;
+  align-items: center;
+  height: 24px;
+  border: 0px solid #1bcfb4;
+  left: 0;
+
+  transition: border-width 0.2s linear;
+}
+
+.sidebar ul.nav-sidebar li.active > .nav-link::before {
+  border: 2px solid #1bcfb4;
+}
+
+.sidebar ul.nav-sidebar li:not(.nav-category):hover > .nav-link::before{
+  border: 2px solid #1bcfb4;
+}

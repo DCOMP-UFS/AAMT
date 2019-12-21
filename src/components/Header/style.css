@@ -1,0 +1,160 @@
+.header {
+  display: flex;
+  align-items: center;
+  background: #fff;
+}
+
+.header .header-logo{
+  display: flex;
+  align-items: center;
+  width: 20%;
+  height: 64px;
+  text-align: center;
+  color: #fff;
+}
+
+.header .header-logo .brand {
+  flex: 1;
+  font-size: 1.5rem;
+  line-height: 48px;
+  margin-right: 0;
+  padding: .25rem 0;
+  width: 100%;
+}
+
+.header .header-logo .brand img {
+  max-width: 25px;
+  margin: auto;
+  vertical-align: middle;
+}
+
+.header .header-logo .brand:hover {
+  text-decoration: none;
+}
+
+.header .header-body {
+  width: 80%;
+  display: flex;
+  padding: 0px 30px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header .header-body .toggler {
+  border: 0;
+  color: #9C9FA6;
+  background: #fff;
+  height: 64px;
+  border-radius: 0px;
+  padding-left: 5px;
+  padding-right: 20px;
+  border: none;
+  outline: none;
+  font-size: 1.5rem;
+}
+
+.header .header-body .toggler::-moz-focus-inner {
+  border: none;
+}
+
+.header .header-body .search-field {
+  display: flex;
+  align-items: center;
+}
+
+.header .header-body .search-field input {
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1;
+  color: #495057;
+  padding: .5rem;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  font-family: "ubuntu-regular", sans-serif;
+  box-shadow: none;
+  border: 0 !important;
+  background-color: transparent !important;
+}
+
+.search-field .content-prepend {
+  padding: 0.94rem 0.5rem 0.94rem 1rem;
+}
+
+.search-field .icon-search {
+  color: #9c9fa6;
+  font-size: 17px;
+  margin-right: 0;
+}
+
+/* Estilizando as listas do menu */
+.header .list-header {
+  list-style: none!important;
+  margin: 0;
+  padding: 0;
+}
+
+.header .list-header li {
+  position: relative;
+}
+
+.header .list-header .nav-link {
+  padding: 0.5rem 0 0.5rem 0;
+  color: inherit;
+  font-size: 0.875rem;
+  margin-left: .625rem;
+  margin-right: .625rem;
+  height: 64px;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  text-decoration: none;
+  background-color: transparent;
+}
+
+.header .list-header button.nav-link {
+  padding: 0;
+  border: none;
+  outline: none;
+}
+
+.header .list-header button.nav-link::-moz-focus-inner {
+  border: none;
+}
+
+.header .list-header .dropdown-toggle:after {
+  color: #aab2bd;
+  font-size: 1.25rem;
+}
+
+.header .list-header button.nav-link.dropdown-toggle:before{
+  width: 90%;
+}
+
+.header .list-header .nav-link:before{
+  content: '';
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: #198ae3;
+}
+
+.header .list-header .nav-link:before {
+  opacity: 0;
+  transform: translateY(15px);
+  transition: transform 0s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0s;
+}
+
+
+.header .list-header .nav-link:hover:before,
+.header .list-header .nav-link:focus:before {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.header .list-header .nav-link:hover:before,
+.header .list-header .nav-link:focus:before {
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s;
+}

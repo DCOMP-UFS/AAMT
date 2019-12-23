@@ -26,7 +26,7 @@ const INITIAL_STATE = {
         {
           active: false,
           description: "Realizar Vistoria",
-          url: location + "/trabalho_diario/vistoria"
+          url: location + "/trabalho_diario/vistoria/lista"
         },
       ]
     },

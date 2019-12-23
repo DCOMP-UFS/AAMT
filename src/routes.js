@@ -8,7 +8,6 @@ import ViewButton from './pages/elements/ViewButton';
 import Login from './pages/login';
 import CDT_Atividade from './pages/atividade/cadastrar';
 import CDT_Trabalho_diario from './pages/trabalho_diario/Iniciar';
-import Vistoria from './pages/trabalho_diario/Vistoria';
 import ListaVistoria from './pages/trabalho_diario/ListaVistoria';
 import FormVistoria from './pages/trabalho_diario/Form';
 // import Product from './pages/product';
@@ -24,7 +23,6 @@ const Routes = () => (
       <Route path="/elementos/botoes" component={ViewButton} />
       <Route path="/atividade/cadastrar" component={CDT_Atividade} />
       <Route path="/trabalho_diario/iniciar" component={CDT_Trabalho_diario} />
-      <Route exact path="/trabalho_diario/vistoria" component={Vistoria} />
       <Route path="/trabalho_diario/vistoria/lista" component={ListaVistoria} />
       <Route path="/trabalho_diario/vistoria/formulario" component={FormVistoria} />
       <Route exact path="*" component={() => <h1>Página não encontrada</h1>} />

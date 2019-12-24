@@ -137,7 +137,7 @@
   .sidebar.sidebar-collapse ul.nav-sidebar li:hover .container-sub-menu {
     display: block;
     position: absolute;
-    left: 70px;
+    left: 69px;
     width: 190px;
     background:#1c1c25;
   }
@@ -175,5 +175,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+}
+
+@media screen and (max-width: 990px) {
+  .sidebar {
+    position: fixed;
+    right: 0;
+    min-height: 100vh;
+
+    transition: all 0.5s ease-out;
+  }
+
+  .sidebar.sidebar-collapse {
+    right: -500px;
   }
 }

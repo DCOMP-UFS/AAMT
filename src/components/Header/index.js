@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { IoIosMenu, IoIosSearch } from 'react-icons/io';
+import { FaRegEnvelope, FaRegBell } from 'react-icons/fa';
 
 // REDUX
 import { connect } from 'react-redux';
@@ -21,8 +22,8 @@ class Header extends Component{
         </div>
 
         <div className="header-body">
-          <div className="d-flex align-items-center">
-            <button className="toggler" onClick={ this.props.navToggle } >
+          <div className="container-search">
+            <button className="toggler toggle-collapse" onClick={ this.props.navToggle } >
               <IoIosMenu />
             </button>
 
@@ -37,18 +38,16 @@ class Header extends Component{
           <div>
             <ul className="navbar list-header" ref={this.container}>
               <li>
-                <a className="nav-link" href="../">Link Menu</a>
+                <button className="nav-link"><FaRegEnvelope className="icon-sm"/></button>
               </li>
               <li className="navbar-item dropdown">
-                <button
-                  className="nav-link dropdown-toggle">Dropdown</button>
+                <button className="nav-link"><FaRegBell className="icon-sm"/></button>
+              </li>
 
-                <div className="dropdown-menu dropdown-menu-right">
-                  <a className="dropdown-item" href="/#">Ação</a>
-                  <a className="dropdown-item" href="/#">Outra ação</a>
-                  <div className="dropdown-divider"></div>
-                  <a className="dropdown-item" href="/#">Algo mais aqui</a>
-                </div>
+              <li className="navbar-item dropdown">
+                <button className="toggler toggle-sidebar-left" onClick={ this.props.navToggle } >
+                  <IoIosMenu />
+                </button>
               </li>
             </ul>
           </div>

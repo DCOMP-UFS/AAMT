@@ -21,12 +21,18 @@ export const ContainerBody = styled.div`
 `;
 
 export const BodyPanel = styled.div`
-  width: calc(100vw - 70px);
-  display: flex;
-  flex-direction: column;
+  @media (max-width: 990px) {
+    width: 100%;
+  }
 
-  &.body-collapse {
-    flex: 0.8;
+  @media (min-width: 991px) {
+    width: calc(100vw - 70px);
+    display: flex;
+    flex-direction: column;
+
+    &.body-collapse {
+      flex: 0.8;
+    }
   }
 `;
 

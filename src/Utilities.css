@@ -176,10 +176,10 @@
 }
 
 .card-list{
-  padding: 70px 40px;
+  padding: 70px 20px;
 }
 
-.card-list article{
+.card-list article {
   padding-right: 20px!important;
   padding-left: 20px!important;
   margin-bottom: 30px;

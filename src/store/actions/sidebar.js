@@ -1,5 +1,6 @@
 export const ActionTypes = {
-  CHANGE_SIDEBAR: "CHANGE_SIDEBAR"
+  CHANGE_SIDEBAR: "CHANGE_SIDEBAR",
+  NAV_TOGGLE: "NAV_TOGGLE",
 };
 
 export const changeSidebar = ( index, subIndex ) => {
@@ -9,5 +10,11 @@ export const changeSidebar = ( index, subIndex ) => {
       index,
       subIndex
     }
-  };
+  }
+}
+
+export const navToggle = () => {
+  return {
+    type: ActionTypes.NAV_TOGGLE,
+  }
 }

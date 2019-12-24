@@ -10,17 +10,20 @@ import Sidebar from './components/Sidebar';
 import './App.css';
 import './Utilities.css';
 
+// REDUX
+import { connect } from 'react-redux';
+
 // import Header from './components/Header';
 // import Main from './pages/main';
 
-const App = () => (
+const App = (props) => (
   <Fragment>
     <Header />
 
     <ContainerBody>
       <Sidebar />
 
-      <BodyPanel>
+      <BodyPanel className={ props.navToggle ? "body-collapse" : "" }>
         <Routes />
       </BodyPanel>
     </ContainerBody>
@@ -31,7 +34,15 @@ const LoadingContainer = (props) => (
   <div>Carregando...</div>
 )
 
+const mapStateToProps = state => ({
+  navToggle: state.sidebar.navToggle
+});
+
 export default GoogleApiWrapper({
   apiKey: ("AIzaSyCYow9L-l0V_XA6kzpt-62S4-VGKwLy65w"),
   LoadingContainer: LoadingContainer
-})(App)
+})(
+connect(
+  mapStateToProps
+)(App)
+)

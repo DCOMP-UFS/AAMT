@@ -1,9 +1,16 @@
 import React, { Component } from 'react';
 import { IoIosMenu, IoIosSearch } from 'react-icons/io';
 
+// REDUX
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+// ACTIONS
+import { navToggle } from '../../store/actions/sidebar';
+
 import './style.css';
 
-export default class Header extends Component{
+class Header extends Component{
   render () {
     return (
       <nav className="header fixed-top">
@@ -15,7 +22,7 @@ export default class Header extends Component{
 
         <div className="header-body">
           <div className="d-flex align-items-center">
-            <button className="toggler">
+            <button className="toggler" onClick={ this.props.navToggle } >
               <IoIosMenu />
             </button>
 
@@ -50,3 +57,13 @@ export default class Header extends Component{
     )
   }
 }
+
+const mapStateToProps = state => ({});
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ navToggle }, dispatch);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Header);

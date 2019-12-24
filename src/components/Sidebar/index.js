@@ -9,9 +9,10 @@ import './style.css';
 class Sidebar extends Component {
   render () {
     const menu = this.props.sidebar.menu;
+    const navToggle = this.props.sidebar.navToggle;
 
     return (
-      <nav className="sidebar">
+      <nav className={ navToggle ? "sidebar" : "sidebar sidebar-collapse"}>
         <ul className="nav-sidebar">
           {
             menu.map(( nav, index ) => {
@@ -37,11 +38,11 @@ class Sidebar extends Component {
 
                         <span className="menu-icon"><nav.icon className="icon-sm" /></span>
                         <span className="menu-text">{ nav.description }</span>
-                        <IoIosArrowDown className="ml-2" />
+                        <IoIosArrowDown className="menu-arrow ml-2" />
 
                       </button>
 
-                      <div id={ "sidebar-" + index } className={ nav.active ? "collapse show" : "collapse" }>
+                      <div id={ "sidebar-" + index } className={ nav.active ? "container-sub-menu collapse show" : "container-sub-menu collapse" }>
 
                         <ul className="nav flex-column sub-menu">
 

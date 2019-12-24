@@ -21,9 +21,13 @@ export const ContainerBody = styled.div`
 `;
 
 export const BodyPanel = styled.div`
-  flex: 0.82;
+  width: calc(100vw - 70px);
   display: flex;
   flex-direction: column;
+
+  &.body-collapse {
+    flex: 0.8;
+  }
 `;
 
 const basicButton = styled.button`

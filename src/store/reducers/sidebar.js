@@ -6,6 +6,13 @@ import { ActionTypes } from '../actions/sidebar';
 const location = window.location.origin.toString();
 
 const INITIAL_STATE = {
+  /*
+   * navToggle:
+   *   true -> sidebar expandido
+   *   false -> sidebar minimizado
+   */
+  navToggle: true,
+  // Menu ativo currenteNav: [ menu, submenu ]
   currentNav: [ 1, 0 ],
   menu: [
     {
@@ -82,7 +89,7 @@ const INITIAL_STATE = {
 
 export default function sidebar(state = INITIAL_STATE, action) {
   switch( action.type ) {
-    case ActionTypes.CHANGE_SIDEBAR:
+    case ActionTypes.CHANGE_SIDEBAR: {
       const { index, subIndex } = action.payload;
       let currentNav = state.currentNav;
       let menu = state.menu;
@@ -112,8 +119,18 @@ export default function sidebar(state = INITIAL_STATE, action) {
         currentNav,
         menu
       }
+    }
 
-    default:
+    case ActionTypes.NAV_TOGGLE: {
+
+      return {
+        ...state,
+        navToggle: !state.navToggle,
+      }
+    }
+
+    default: {
       return state;
+    }
   }
 }

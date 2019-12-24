@@ -87,6 +87,7 @@ class PNCD extends Component {
                   <label htmlFor="horaEntrada">Horário de entrada <code>*</code></label>
                   <TimePicker
                     id="horaEntrada"
+                    className="form-control"
                     value={ this.state.entrada }
                     onChange={ this.handleEntradaChange.bind(this) } />
                 </div>
@@ -95,6 +96,7 @@ class PNCD extends Component {
                   <label htmlFor="horaSaida">Horário de saída <code>*</code></label>
                   <TimePicker
                     id="horaSaida"
+                    className="form-control"
                     value={ this.state.entrada }
                     onChange={ this.handleSaidaChange.bind(this) } />
                 </div>

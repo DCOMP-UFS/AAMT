@@ -253,20 +253,44 @@ article .list-icon li{
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-input, .form-control:focus, input:focus, select:focus, textarea:focus, button:focus {
+.form-control .MuiInput-input {
+  border: 1px solid #ebedf2 !important;
+  font-family: "ubuntu-regular", sans-serif!important;
+  font-size: 0.8125rem!important;
+  box-shadow: none!important;
+  display: block!important;
+  width: 100%!important;
+  height: 2.875rem!important;
+  padding-left: 0.81rem!important;
+  font-weight: 400!important;
+  line-height: 1!important;
+  color: #495057!important;
+  background-color: #ffffff!important;
+  background-clip: padding-box!important;
+  border-radius: 2px!important;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out!important;
+  box-sizing: inherit!important;
+}
+
+.form-control .MuiInput-underline::before, .form-control .MuiInput-underline::after {
+  border: none!important;
+}
+
+input, .form-control:focus, input:focus, select:focus, textarea:focus, button:focus
+.form-control .MuiInput-input:focus {
   border: 1px solid #198ae3;
   box-shadow: 0 0 3px #719ECE;
   outline: none;
   outline-style: none;
 }
 
-.form-control-lg {
+.form-control-lg, .form-control-lg .MuiInput-input {
   height: 3.175rem;
   padding-left: 0.81rem;
   line-height: 1.5;
 }
 
-.form-control-sm {
+.form-control-sm, .form-control-sm .MuiInput-input {
   height: 2.575rem;
   padding-left: 0.81rem;
   line-height: 1.5;

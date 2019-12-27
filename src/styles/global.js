@@ -1,5 +1,25 @@
 import styled from 'styled-components';
 
+export const size = {
+  mobileS: '320px',
+  mobileM: '375px',
+  mobileL: '425px',
+  laptop: '1024px',
+  tablet: '990px',
+  laptopL: '1440px',
+  desktop: '2560px',
+}
+
+export const device = {
+  mobileS: `(max-width: ${size.mobileS})`,
+  mobileM: `(max-width: ${size.mobileM})`,
+  mobileL: `(max-width: ${size.mobileL})`,
+  tablet: `(max-width: ${size.tablet})`,
+  laptop: `(max-width: ${size.laptop})`,
+  laptopL: `(max-width: ${size.laptopL})`,
+  desktop: `(max-width: ${size.desktop})`,
+};
+
 export const Color = {
   primary: "#b66dff",
   warning: "#ffc542",
@@ -29,9 +49,10 @@ export const BodyPanel = styled.div`
     width: calc(100vw - 70px);
     display: flex;
     flex-direction: column;
+    transition: all 0.5s ease-out;
 
     &.body-collapse {
-      flex: 0.8;
+      width: calc(100vw - 260px);
     }
   }
 `;
@@ -233,7 +254,6 @@ export const selectDefault = {
     return {
       ...select,
       height: "2.875rem",
-      lineHeight: "1",
 
       ...focused,
     }

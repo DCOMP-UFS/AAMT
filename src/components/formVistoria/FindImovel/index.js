@@ -6,18 +6,27 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTION
-import { setVistoriaImovel, handleQuarteirao } from '../../../store/actions/supportInfo';
+import { setVistoriaImovel, setImovelSelect, handleQuarteirao } from '../../../store/actions/supportInfo';
 
 // COMPONENTS
-import { UlImovel, LiImovel, ContainerIcon, DivDescription, LiEmpty } from './styles';
+import { UlImovel, LiImovel, ContainerIcon, DivDescription, LiEmpty, Span } from './styles';
 import { selectDefault } from '../../../styles/global';
+import ButtonNewObject from '../../ButtonNewObject';
+import ModalRegistrarImovel from './ModalRegistrarImovel';
+
+// ENUMERATE
+import { tipoImovel } from '../../../config/enumerate';
 
 class FindImovel extends Component {
   state = {
     optionQuarteirao: this.props.quarteirao.map( (quarteirao, index) => {
       return { value: index, label: quarteirao.idQuarteirao };
     }),
-    numero: ""
+    numero: "",
+    sequencia: "",
+
+    optionTipoImovel: tipoImovel.map(tipo => ({ value: tipo, label: tipo })),
+    tipoImovel: { value: "", label: ""},
   }
 
   handleInputChange(event) {
@@ -28,6 +37,26 @@ class FindImovel extends Component {
     this.setState({
       [name]: value
     });
+  }
+
+  handleInputImovel(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    let imovel = this.props.imovelSelect;
+    imovel[name] = value;
+
+    this.props.setImovelSelect(imovel);
+  }
+
+  handleTipoImovel = event => {
+    const tipoImovel = event.value;
+
+    let imovel = this.props.imovelSelect;
+    imovel.tipoImovel = tipoImovel;
+
+    this.props.setImovelSelect(imovel);
   }
 
   handleList = (index) => {
@@ -53,9 +82,10 @@ class FindImovel extends Component {
       <div className="row">
         <div className="col-md-6">
           <div className="row">
-            <div className="col-md-6">
+            <div className="col-12">
+              <h4 className="title">Filtrar</h4>
               <div className="form-group">
-                <label>Nº do quarteirão?<code>*</code></label>
+                <label>Nº do quarteirão?</label>
                 <Select
                   styles={ selectDefault }
                   options={this.state.optionQuarteirao}
@@ -65,12 +95,26 @@ class FindImovel extends Component {
 
             <div className="col-md-6">
               <div className="form-group">
-                <label>Nº do imóvel?<code>*</code></label>
+                <label>Nº do imóvel?</label>
                 <input
                   name="numero"
                   type="number"
+                  min="0"
                   className="form-control"
                   value={ this.state.numero }
+                  onChange={ this.handleInputChange.bind(this) } />
+              </div>
+            </div>
+
+            <div className="col-md-6">
+              <div className="form-group">
+                <label>Sequência</label>
+                <input
+                  name="sequencia"
+                  type="number"
+                  min="0"
+                  className="form-control"
+                  value={ this.state.sequencia }
                   onChange={ this.handleInputChange.bind(this) } />
               </div>
             </div>
@@ -88,10 +132,12 @@ class FindImovel extends Component {
               <div className="form-group">
                 <label>Nº do imóvel<code>*</code></label>
                 <input
-                  type="text"
+                  name="numero"
                   className="form-control"
+                  type="number"
+                  min="0"
                   value={ imovelSelect.numero === -1 ? "" : imovelSelect.numero }
-                  onChange={ () => console.log("Bl") } />
+                  onChange={ this.handleInputImovel.bind(this) } />
               </div>
             </div>
 
@@ -99,10 +145,36 @@ class FindImovel extends Component {
               <div className="form-group">
                 <label>Sequência</label>
                 <input
-                  type="text"
+                  name="sequencia"
+                  type="number"
+                  min="0"
                   className="form-control"
                   value={ imovelSelect.sequencia === -1 ? "" : imovelSelect.sequencia }
-                  onChange={ () => console.log("Bl") } />
+                  onChange={ this.handleInputImovel.bind(this) } />
+              </div>
+            </div>
+
+            <div className="col-md-6">
+              <div className="form-group">
+                <label>Responsável<code>*</code></label>
+                <input
+                  name="responsavel"
+                  type="text"
+                  className="form-control"
+                  value={ imovelSelect.responsavel }
+                  onChange={ this.handleInputImovel.bind(this) } />
+              </div>
+            </div>
+
+            <div className="col-md-6">
+              <div className="form-group">
+                <label>Tipo do imóvel<code>*</code></label>
+                <Select
+                  name="tipoImovel"
+                  styles={ selectDefault }
+                  value={{ value: imovelSelect.tipoImovel, label: imovelSelect.tipoImovel }}
+                  options={ this.state.optionTipoImovel }
+                  onChange={ this.handleTipoImovel.bind(this) } />
               </div>
             </div>
 
@@ -110,28 +182,24 @@ class FindImovel extends Component {
               <div className="form-group">
                 <label>Complemento<code>*</code></label>
                 <input
+                  name="complemento"
                   type="text"
                   className="form-control"
                   value={ imovelSelect.complemento }
-                  onChange={ () => console.log("Bl") } />
+                  onChange={ this.handleInputImovel.bind(this) } />
               </div>
             </div>
-
-            <div className="col-md-12">
-            <div className="form-group">
-              <label>Responsável<code>*</code></label>
-              <input
-                type="text"
-                className="form-control"
-                value={ imovelSelect.responsavel }
-                onChange={ () => console.log("Bl") } />
-            </div>
-          </div>
           </div>
         </div>
 
         <div className="col-md-6">
-          <h4>Imóveis no quarteirão</h4>
+          <h4>
+            Imóveis
+            <ButtonNewObject
+              title="Cadastrar um novo imóvel"
+              data-toggle="modal"
+              data-target="#modalRegistrarImovel" />
+          </h4>
 
           <ListImovel
             imovelSelect={ imovelSelect.idImovel }
@@ -141,7 +209,10 @@ class FindImovel extends Component {
                 quarteirao[findImovel.indexQuarteirao].imovel
             }
             handleList={ this.handleList }
-            numero={ this.state.numero === "" ? "-1" : this.state.numero } />
+            numero={ this.state.numero === "" ? "-1" : this.state.numero }
+            sequencia={ this.state.sequencia === "" ? "-1" : this.state.sequencia } />
+
+            <ModalRegistrarImovel />
         </div>
       </div>
     );
@@ -153,10 +224,17 @@ function ListImovel( props ) {
   const handleList = props.handleList;
   const imovelSelect = props.imovelSelect;
   const numero = parseInt(props.numero);
+  const sequencia = parseInt(props.sequencia);
 
   const filterImovel = imovel.filter(
     imovel => {
-      return (numero === -1 || imovel.numero === numero);
+      return (
+        numero === -1 ||
+        (
+          imovel.numero === numero &&
+          ( sequencia === -1 || imovel.sequencia === sequencia )
+        )
+      );
     }
   );
 
@@ -165,14 +243,15 @@ function ListImovel( props ) {
       key={ imovel.idImovel }
       className={ imovelSelect === imovel.idImovel ? "active" : "" }
       onClick={ () => handleList( index ) }>
-    <ContainerIcon>
-      <IoIosHome className="icon-lg" />
+    <ContainerIcon className="ContainerIcon" >
+      <IoIosHome />
     </ContainerIcon>
     <DivDescription>
-      <h4 className="title">Nº { imovel.numero }</h4>
-      <p>
-        <strong>Responsável:</strong> { imovel.responsavel }
-      </p>
+      <div>
+        <span className="mr-2">Nº: { imovel.numero }</span>
+        <span>Seq.: { imovel.sequencia === -1 ? "" : imovel.sequencia }</span>
+      </div>
+      <Span>Responsável: { imovel.responsavel }</Span>
     </DivDescription>
   </LiImovel>
   );
@@ -199,6 +278,8 @@ const mapStateToProps = state => ({
     index: state.supportInfo.form_vistoria.imovel.index,
     idImovel: state.supportInfo.form_vistoria.imovel.idImovel,
     numero: state.supportInfo.form_vistoria.imovel.numero,
+    sequencia: state.supportInfo.form_vistoria.imovel.sequencia,
+    tipoImovel: state.supportInfo.form_vistoria.imovel.tipoImovel,
     complemento: state.supportInfo.form_vistoria.imovel.complemento,
     responsavel: state.supportInfo.form_vistoria.imovel.responsavel,
   },
@@ -206,7 +287,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ setVistoriaImovel, handleQuarteirao }, dispatch);
+  bindActionCreators({ setVistoriaImovel, setImovelSelect, handleQuarteirao }, dispatch);
 
 export default connect(
   mapStateToProps,

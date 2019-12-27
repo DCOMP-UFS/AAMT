@@ -471,3 +471,8 @@ select.form-control {
 .modal-header {
   align-items: center;
 }
+
+.form-group .form-control.invalid,
+.form-group .invalid .css-cenuji-Control {
+  border: 1px solid #fe7c96;
+}

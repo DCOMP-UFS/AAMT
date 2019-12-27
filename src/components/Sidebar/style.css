@@ -2,10 +2,10 @@
   background: #181824;
   font-family: "nunito-semibold", sans-serif;
   padding: 0;
-  flex: 0.2;
+  width: 260px;
   z-index: 11;
 
-  transition: flex 500ms ease-in-out;
+  transition: all 0.5s ease-out;
 }
 
 .sidebar ul.nav-sidebar {
@@ -183,8 +183,6 @@
     position: fixed;
     right: 0;
     min-height: 100vh;
-
-    transition: all 0.5s ease-out;
   }
 
   .sidebar.sidebar-collapse {

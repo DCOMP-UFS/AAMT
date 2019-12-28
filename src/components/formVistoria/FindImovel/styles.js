@@ -6,7 +6,7 @@ export const UlImovel = styled.ul`
   border: 1px solid ${ Color.border_light };
   list-style: none;
   padding: 0;
-  max-height: 510px;
+  max-height: 484px;
   overflow-y: auto;
 `;
 

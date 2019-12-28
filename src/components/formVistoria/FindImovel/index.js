@@ -180,7 +180,7 @@ class FindImovel extends Component {
 
             <div className="col-md-12">
               <div className="form-group">
-                <label>Complemento<code>*</code></label>
+                <label>Complemento</label>
                 <input
                   name="complemento"
                   type="text"

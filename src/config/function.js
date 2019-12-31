@@ -56,3 +56,13 @@ export const validInputIsEmpty = ( idElement, value ) => {
 
   return valid;
 }
+
+export const validInputIsNull = ( idElement, value ) => {
+  const valid = value !== null;
+
+  if ( !valid ) $(idElement).addClass("invalid");
+
+  setTimeout(function(){ $(idElement).removeClass("invalid"); }, 3000);
+
+  return valid;
+}

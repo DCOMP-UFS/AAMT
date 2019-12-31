@@ -136,6 +136,7 @@ class FindImovel extends Component {
                   className="form-control"
                   type="number"
                   min="0"
+                  disabled={ findImovel.selectImovel ? "" : "disabled" }
                   value={ imovelSelect.numero === -1 ? "" : imovelSelect.numero }
                   onChange={ this.handleInputImovel.bind(this) } />
               </div>
@@ -149,6 +150,7 @@ class FindImovel extends Component {
                   type="number"
                   min="0"
                   className="form-control"
+                  disabled={ findImovel.selectImovel ? "" : "disabled" }
                   value={ imovelSelect.sequencia === -1 ? "" : imovelSelect.sequencia }
                   onChange={ this.handleInputImovel.bind(this) } />
               </div>
@@ -161,6 +163,7 @@ class FindImovel extends Component {
                   name="responsavel"
                   type="text"
                   className="form-control"
+                  disabled={ findImovel.selectImovel ? "" : "disabled" }
                   value={ imovelSelect.responsavel }
                   onChange={ this.handleInputImovel.bind(this) } />
               </div>
@@ -172,6 +175,7 @@ class FindImovel extends Component {
                 <Select
                   name="tipoImovel"
                   styles={ selectDefault }
+                  isDisabled={ !findImovel.selectImovel }
                   value={{ value: imovelSelect.tipoImovel, label: imovelSelect.tipoImovel }}
                   options={ this.state.optionTipoImovel }
                   onChange={ this.handleTipoImovel.bind(this) } />
@@ -185,6 +189,7 @@ class FindImovel extends Component {
                   name="complemento"
                   type="text"
                   className="form-control"
+                  disabled={ findImovel.selectImovel ? "" : "disabled" }
                   value={ imovelSelect.complemento }
                   onChange={ this.handleInputImovel.bind(this) } />
               </div>
@@ -273,6 +278,7 @@ const mapStateToProps = state => ({
   findImovel: {
     idQuarteirao: state.supportInfo.form_vistoria.findImovel.idQuarteirao,
     indexQuarteirao: state.supportInfo.form_vistoria.findImovel.indexQuarteirao,
+    selectImovel: state.supportInfo.form_vistoria.findImovel.selectImovel,
   },
   imovelSelect: {
     index: state.supportInfo.form_vistoria.imovel.index,

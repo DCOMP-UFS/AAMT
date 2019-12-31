@@ -3,6 +3,9 @@ export const ActionTypes = {
   SET_IMOVEL_SELECT: "SET_IMOVEL_SELECT",
   HANDLE_QUARTEIRAO: "HANDLE_QUARTEIRAO",
   ADD_IMOVEL_QUARTEIRAO: "ADD_IMOVEL_QUARTEIRAO",
+  ADD_RECIPIENTE: "ADD_RECIPIENTE",
+  ADD_INSPECAO: "ADD_INSPECAO",
+  ADD_UNIDADE: "ADD_UNIDADE",
 }
 
 export const setVistoriaImovel = ( index, imovel ) => {
@@ -40,6 +43,31 @@ export const addImovelQuarteirao = ( indexQuarteirao, imovel ) => {
     payload: {
       indexQuarteirao,
       imovel,
+    }
+  }
+}
+
+export const addInspecao = ( idRecipiente, tipoRecipiente, fl_eliminado, fl_tratado, fl_foco, unidade ) => {
+  return {
+    type: ActionTypes.ADD_INSPECAO,
+    payload: {
+      idRecipiente,
+      tipoRecipiente,
+      fl_eliminado,
+      fl_tratado,
+      fl_foco,
+      unidade,
+    },
+  }
+}
+
+export const addUnidade = ( idUnidade, tipoColetor, situacao ) => {
+  return {
+    type: ActionTypes.ADD_UNIDADE,
+    payload: {
+      idUnidade,
+      tipoColetor,
+      situacao
     }
   }
 }

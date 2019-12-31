@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { setVistoriaImovel, setImovelSelect, addImovelQuarteirao } from '../../../store/actions/supportInfo';
+import { setImovelSelect, addImovelQuarteirao } from '../../../store/actions/supportInfo';
 
 // COMPONENTS
 // import { Container } from './styles';
@@ -238,7 +238,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ setVistoriaImovel, setImovelSelect, addImovelQuarteirao }, dispatch);
+  bindActionCreators({ setImovelSelect, addImovelQuarteirao }, dispatch);
 
 export default connect(
   mapStateToProps,

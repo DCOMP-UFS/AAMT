@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 
 // COMPONENTS
 import FindImovel from '../FindImovel';
-import Amostra from '../Amostra';
+import InspecaoRecipiente from '../InspecaoRecipiente';
 import { Separator, selectDefault } from '../../../styles/global';
 
 class PNCD extends Component {
@@ -136,7 +136,7 @@ class PNCD extends Component {
           </div>
 
           <div className="col-md-6">
-            <Amostra />
+            <InspecaoRecipiente />
           </div>
         </div>
 

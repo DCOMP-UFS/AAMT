@@ -1,6 +1,4 @@
 import { ActionTypes } from '../actions/supportInfo';
-import { tipoRecipiente, tipoColetor, situacaoUnidade } from '../../config/enumerate';
-
 
 // ENUMERATE
 import { tipoImovel } from '../../config/enumerate';
@@ -14,11 +12,20 @@ const createImovel = (idImovel, numero, sequencia, tipoImovel, complemento, resp
   return { idImovel, numero, sequencia, tipoImovel, complemento, responsavel, long, lat }
 }
 
+const createRecipiente = ( idRecipiente, tipoRecipiente, fl_eliminado, fl_tratado, fl_foco ) => {
+  return { idRecipiente, tipoRecipiente, fl_eliminado, fl_tratado, fl_foco, unidade: [] }
+}
+
+const createUnidade = ( idUnidade, tipoColetor, situacao ) => {
+  return { idUnidade, tipoColetor, situacao };
+}
+
 const INITIAL_STATE = {
   form_vistoria: {
     findImovel: {
       idQuarteirao: -1,
-      indexQuarteirao: -1
+      indexQuarteirao: -1,
+      selectImovel: false,
     },
 
     imovel: {
@@ -33,40 +40,8 @@ const INITIAL_STATE = {
       lat: null,
     },
 
-    amostra: [
-      {
-        idAmostra: "1.5.1",
-        tipoRecipiente: tipoRecipiente[0],
-        unidade: [
-          {
-            idUnidade: "1.5.1.1",
-            tipoColetor: tipoColetor[0],
-            situacao: situacaoUnidade[0]
-          },
-        ]
-      },
-      {
-        idAmostra: "1.5.2",
-        tipoRecipiente: tipoRecipiente[1],
-        unidade: [
-          {
-            idUnidade: "1.5.2.1",
-            tipoColetor: tipoColetor[0],
-            situacao: situacaoUnidade[0]
-          },
-          {
-            idUnidade: "1.5.2.2",
-            tipoColetor: tipoColetor[0],
-            situacao: situacaoUnidade[0]
-          },
-          {
-            idUnidade: "1.5.2.3",
-            tipoColetor: tipoColetor[0],
-            situacao: situacaoUnidade[0]
-          },
-        ]
-      }
-    ]
+    numRecipiente: 2,
+    recipienteInspecionado: [],
   },
   quarteirao: [
     createQuarteirao(
@@ -129,9 +104,11 @@ export default function supportInfo(state = INITIAL_STATE, action) {
       }
       form_vistoria.imovel = imovel;
 
+      form_vistoria.findImovel.selectImovel = true;
+
       return {
         ...state,
-        form_vistoria: form_vistoria
+        form_vistoria
       }
     }
 
@@ -155,9 +132,11 @@ export default function supportInfo(state = INITIAL_STATE, action) {
       }
       form_vistoria.imovel = imovel;
 
+      form_vistoria.findImovel.selectImovel = true;
+
       return {
         ...state,
-        form_vistoria: form_vistoria
+        form_vistoria
       }
     }
 
@@ -190,6 +169,47 @@ export default function supportInfo(state = INITIAL_STATE, action) {
         ...state,
         quarteirao,
         form_vistoria
+      }
+    }
+
+    case ActionTypes.ADD_INSPECAO: {
+      const idRecipiente = action.payload.idRecipiente;
+      const tipoRecipiente = action.payload.tipoRecipiente;
+      const fl_eliminado = action.payload.fl_eliminado;
+      const fl_tratado = action.payload.fl_tratado;
+      const fl_foco = action.payload.fl_foco;
+      const unidade = action.payload.unidade;
+
+      const recipiente = createRecipiente( idRecipiente, tipoRecipiente, fl_eliminado, fl_tratado, fl_foco, unidade );
+
+      let form_vistoria = state.form_vistoria;
+      form_vistoria.recipienteInspecionado.push( recipiente );
+      form_vistoria.numRecipiente++;
+
+      return {
+        ...state,
+        form_vistoria
+      }
+    }
+
+    case ActionTypes.ADD_UNIDADE: {
+      const idUnidade = action.payload.idUnidade;
+      const tipoColetor = action.payload.tipoColetor;
+      const situacao = action.payload.situacao;
+      let form_vistoria = state.form_vistoria;
+
+      const unidade = createUnidade( idUnidade, tipoColetor, situacao );
+
+      const lastRecipiente = form_vistoria.recipienteInspecionado.length - 1;
+
+      let listUnidade = form_vistoria.recipienteInspecionado[ lastRecipiente ].unidade;
+      listUnidade.push(unidade);
+
+      form_vistoria.recipienteInspecionado[ lastRecipiente ].unidade = listUnidade;
+
+      return {
+        ...state,
+        form_vistoria,
       }
     }
 

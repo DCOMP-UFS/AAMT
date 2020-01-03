@@ -362,3 +362,113 @@ export const LiEmpty = styled.li`
     color: ${ Color.muted };
   }
 `;
+
+export const CardDark = styled.div`
+  background: ${ Color.dark };
+  border-radius: 5px;
+  padding: 40px;
+  width: 100%;
+
+  .title{
+    color: ${ Color.light };
+    margin-bottom: 0.75rem;
+    text-transform: capitalize;
+    font-family: "ubuntu-medium", sans-serif;
+    font-size: 1.125rem;
+    border-top: 0;
+  }
+
+  .text-description{
+    color: #76838f;
+    margin-bottom: 1.5rem;
+    font-family: "ubuntu-regular", sans-serif;
+  }
+`;
+
+export const FormGroup = styled.div`
+  margin-bottom: 1.5rem;
+
+  &.form-dark label {
+    color: #fff;
+  }
+
+  &.form-dark .form-control {
+    background: #2e3844;
+    border: 2px solid #495057;
+    color: #fff;
+  }
+
+  &.form-dark .form-control:focus,
+  &.form-dark input:focus,
+  &.form-dark select:focus,
+  &.form-dark textarea:focus,
+  &.form-dark button:focus,
+  &.form-dark .form-control .MuiInput-input:focus {
+    border: 2px solid #198ae3;
+    box-shadow: 0 0 3px #719ECE;
+    outline: none;
+    outline-style: none;
+  }
+
+  .form-control:focus,
+  input:focus,
+  select:focus,
+  textarea:focus,
+  button:focus,
+  .form-control .MuiInput-input:focus {
+    border: 1px solid #198ae3;
+    box-shadow: 0 0 3px #719ECE;
+    outline: none;
+    outline-style: none;
+  }
+
+
+  label {
+    font-size: 0.875rem;
+    line-height: 1;
+    margin-bottom: .5rem;
+    display: block;
+  }
+
+  .form-control {
+    border: 1px solid #ebedf2;
+    font-family: "ubuntu-regular", sans-serif;
+    font-size: 0.8125rem;
+    box-shadow: none;
+    display: block;
+    width: 100%;
+    height: 2.875rem;
+    padding-left: 0.81rem;
+    font-weight: 400;
+    line-height: 1;
+    color: #495057;
+    background-color: #ffffff;
+    background-clip: padding-box;
+    border-radius: 2px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+
+  .form-control .MuiInput-input {
+    border: 1px solid #ebedf2 !important;
+    font-family: "ubuntu-regular", sans-serif!important;
+    font-size: 0.8125rem!important;
+    box-shadow: none!important;
+    display: block!important;
+    width: 100%!important;
+    height: 2.875rem!important;
+    padding-left: 0.81rem!important;
+    font-weight: 400!important;
+    line-height: 1!important;
+    color: #495057!important;
+    background-color: #ffffff!important;
+    background-clip: padding-box!important;
+    border-radius: 2px!important;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out!important;
+    box-sizing: inherit!important;
+  }
+
+  .MuiFormControlLabel-root {
+    display: flex;
+    align-items: center;
+  }
+`;

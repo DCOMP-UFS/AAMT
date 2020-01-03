@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { Fragment } from 'react';
+import isAuthenticated from './auth';
+import Header from './components/Header';
+import Sidebar from './components/Sidebar';
+import { BodyPanel, ContainerBody } from './styles/global';
 
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 
 import Typography from './pages/elements/typography';
 import Form from './pages/elements/Form';
@@ -12,19 +16,39 @@ import ListaVistoria from './pages/trabalho_diario/ListaVistoria';
 import FormVistoria from './pages/trabalho_diario/Form';
 // import Product from './pages/product';
 
+const PrivateRoute = ({ component: Component, ...rest }) => (
+  <Route { ...rest } render={ props => (
+    isAuthenticated() ? (
+      <Fragment>
+        <Header />
+
+        <ContainerBody>
+          <Sidebar />
+
+          <BodyPanel className={ props.navToggle ? "body-collapse" : "" }>
+            <Component { ...props } />
+          </BodyPanel>
+        </ContainerBody>
+      </Fragment>
+    ) : (
+      <Redirect to={{ pathname: '/', state: { from: props.location } }} />
+    )
+  )} />
+)
+
 const Routes = () => (
   <BrowserRouter>
     <Switch>
       {/* <Route exact path="/" component={Main} /> */}
       {/* <Route path="/products/:id" component={Product} /> */}
       <Route exact path="/" component={Login} />
-      <Route path="/elementos/tipografia" component={Typography} />
-      <Route path="/elementos/formulario" component={Form} />
-      <Route path="/elementos/botoes" component={ViewButton} />
-      <Route path="/atividade/cadastrar" component={CDT_Atividade} />
-      <Route path="/trabalho_diario/iniciar" component={CDT_Trabalho_diario} />
-      <Route path="/trabalho_diario/vistoria/lista" component={ListaVistoria} />
-      <Route path="/trabalho_diario/vistoria/formulario" component={FormVistoria} />
+      <PrivateRoute path="/elementos/tipografia" component={Typography} />
+      <PrivateRoute path="/elementos/formulario" component={Form} />
+      <PrivateRoute path="/elementos/botoes" component={ViewButton} />
+      <PrivateRoute path="/atividade/cadastrar" component={CDT_Atividade} />
+      <PrivateRoute path="/trabalho_diario/iniciar" component={CDT_Trabalho_diario} />
+      <PrivateRoute path="/trabalho_diario/vistoria/lista" component={ListaVistoria} />
+      <PrivateRoute path="/trabalho_diario/vistoria/formulario" component={FormVistoria} />
       <Route exact path="*" component={() => <h1>Página não encontrada</h1>} />
     </Switch>
   </BrowserRouter>

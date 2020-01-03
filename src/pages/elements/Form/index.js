@@ -17,7 +17,7 @@ import { changeSidebar } from '../../../store/actions/sidebar';
 //Importando CSS exclusivo para páginas do template
 import '../style.css';
 
-import { selectDefault, selectLg, selectSm } from '../../../styles/global';
+import { selectDefault, selectLg, selectSm, CardDark, FormGroup } from '../../../styles/global';
 
 class Form extends Component {
   state = {
@@ -143,6 +143,70 @@ class Form extends Component {
             </div>
           </article>
 
+          {/* DARK INPUT'S */}
+          <article className="col-md-6 stretch-card">
+            <CardDark>
+              <h4 className="title">Input Dark</h4>
+              <p className="text-description">Adicione as classes <code>.form-control-lg</code> ou <code>.form-control-sm</code></p>
+
+
+              <FormGroup className="form-dark">
+                <label>Input grande</label>
+                <input
+                  type="text"
+                  className="form-control form-control-lg"
+                  placeholder="Username"
+                  />
+              </FormGroup>
+
+              <FormGroup className="form-dark">
+                <label>Input padrão</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Username"
+                  />
+              </FormGroup>
+
+              <FormGroup className="form-dark">
+                <label>Input pequeno</label>
+                <input
+                  type="text"
+                  className="form-control form-control-sm"
+                  placeholder="Username"
+                  />
+              </FormGroup>
+            </CardDark>
+          </article>
+
+          {/* Tamanho dos select's */}
+          <article className="col-md-6 stretch-card">
+            <div className="card">
+              <h4 className="title">Select Dark</h4>
+              <p className="text-description">Adicione as classes <code>.form-control-lg</code> ou <code>.form-control-sm</code></p>
+
+              <div className="form-group">
+                <label htmlFor="ex_FormControlSelect1">Select grande</label>
+                <Select
+                  styles={ selectLg }
+                  options={this.state.optionSelect} />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="ex_FormControlSelect1">Select padrão</label>
+                <Select
+                  styles={ selectDefault }
+                  options={this.state.optionSelect} />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="ex_FormControlSelect1">Select padrão</label>
+                <Select
+                  styles={ selectSm }
+                  options={this.state.optionSelect} />
+              </div>
+            </div>
+          </article>
 
           {/* Input de tempo */}
           <article className="col-md-6 stretch-card">

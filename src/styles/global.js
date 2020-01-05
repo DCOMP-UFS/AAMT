@@ -217,7 +217,7 @@ export const Separator = styled.div`
   width: calc(100% - 40px);
   padding: 10px 10px;
   margin: auto;
-  border-top: 1px solid ${ Color.dark };
+  border-top: ${props => props.sizeBorder ? props.sizeBorder : "1px" } solid ${ Color.dark };
 `;
 
 const select = {
@@ -394,7 +394,7 @@ export const FormGroup = styled.div`
 
   &.form-dark .form-control {
     background: #2e3844;
-    border: 2px solid #495057;
+    border: 2px solid ${ Color.dark };
     color: #fff;
   }
 
@@ -470,5 +470,10 @@ export const FormGroup = styled.div`
   .MuiFormControlLabel-root {
     display: flex;
     align-items: center;
+  }
+
+  .form-control.invalid,
+  .invalid .css-cenuji-Control {
+    border: 1px solid #fe7c96;
   }
 `;

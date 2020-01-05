@@ -9,7 +9,7 @@ import './style.css';
 class Sidebar extends Component {
   render () {
     const menu = this.props.sidebar.menu;
-    const navToggle = this.props.sidebar.navToggle;
+    const navToggle = this.props.navToggle;
 
     return (
       <nav className={ navToggle ? "sidebar" : "sidebar sidebar-collapse"}>
@@ -85,7 +85,8 @@ class Sidebar extends Component {
 }
 
 const mapStateToProps = state => ({
-  sidebar: state.sidebar
+  sidebar: state.sidebar,
+  navToggle: state.appConfig.navToggle,
 });
 
 // const mapDispatchToProps = dispatch =>

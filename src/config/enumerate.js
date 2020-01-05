@@ -25,3 +25,10 @@ export const tipoImovel = [
   "Comercial",
   "Ponto estratégico",
 ]
+
+export const perfil = [
+  "laboratorialista",
+  "agente",
+  "supervisor",
+  "coordenador",
+]

@@ -6,12 +6,6 @@ import { ActionTypes } from '../actions/sidebar';
 const location = window.location.origin.toString();
 
 const INITIAL_STATE = {
-  /*
-   * navToggle:
-   *   true -> sidebar expandido
-   *   false -> sidebar minimizado
-   */
-  navToggle: true,
   // Menu ativo currenteNav: [ menu, submenu ]
   currentNav: [ 1, 0 ],
   menu: [

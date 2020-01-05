@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 // ACTIONS
-import { navToggle } from '../../store/actions/sidebar';
+import { navToggle } from '../../store/actions/appConfig';
 
 import './style.css';
 

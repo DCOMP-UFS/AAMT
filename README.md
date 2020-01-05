@@ -16,4 +16,5 @@ yarn add react-icons
 
 heroku login
 
+heroku git:remote -a aamt
 git push heroku feature_local:master

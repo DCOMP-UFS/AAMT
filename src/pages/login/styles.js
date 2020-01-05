@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Color, Button } from '../../styles/global';
+import { Button } from '../../styles/global';
 
 export const ButtonLogin = styled(Button)`
   width: 100%;
@@ -111,7 +111,7 @@ export const Sidebar = styled.section`
   min-height: 100vh;
   flex: 0.2;
   padding: 0 30px;
-  background: ${ Color.dark };
+  background: #181824;
 `;
 
 export const Logo = styled.div`
@@ -119,20 +119,9 @@ export const Logo = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 75px 0 25px;
+  padding: 75px 0 0px;
 
   img {
     width: 100px;
   }
 `;
-
-export const PointBar = styled.div`
-  width: 100%;
-  box-shadow: 0 2px 2px 1px ${ Color.light };
-`;
-
-
-
-
-
-

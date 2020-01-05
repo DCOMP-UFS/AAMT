@@ -1,24 +1,33 @@
 import React, { Fragment } from 'react';
-import isAuthenticated from './auth';
+import { isAuthenticated } from './auth';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
+import SidebarLab from './components/Sidebar/SidebarLab';
+import ButtonMenu from './components/Sidebar/ButtonMenu';
 import { BodyPanel, ContainerBody } from './styles/global';
+import { connect } from 'react-redux';
+import { perfil } from './config/enumerate';
 
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 
-import Typography from './pages/elements/typography';
-import Form from './pages/elements/Form';
-import ViewButton from './pages/elements/ViewButton';
-import Login from './pages/login';
+import Login from './pages/Login';
+
+// Páginas de coordenador
 import CDT_Atividade from './pages/atividade/cadastrar';
 import CDT_Trabalho_diario from './pages/trabalho_diario/Iniciar';
 import ListaVistoria from './pages/trabalho_diario/ListaVistoria';
 import FormVistoria from './pages/trabalho_diario/Form';
-// import Product from './pages/product';
 
-const PrivateRoute = ({ component: Component, ...rest }) => (
+// Páginas de laboratorialista
+import HomeLaboratorio from './pages/laboratorio/HomeLaboratorio';
+
+import Form from './pages/elements/Form';
+import ViewButton from './pages/elements/ViewButton';
+import Typography from './pages/elements/typography';
+
+const PrivateCoordenador = ({ component: Component, perfil: perfilUser, ...rest }) => (
   <Route { ...rest } render={ props => (
-    isAuthenticated() ? (
+    isAuthenticated() && perfilUser === perfil[3] ? (
       <Fragment>
         <Header />
 
@@ -36,22 +45,49 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
   )} />
 )
 
-const Routes = () => (
+const PrivateLaboratorio = ({ component: Component, perfil: perfilUser, ...rest }) => (
+  <Route { ...rest } render={ props => (
+    isAuthenticated() && perfilUser === perfil[0] ? (
+      <Fragment>
+        <ButtonMenu />
+        <SidebarLab />
+
+        <Component { ...props } />
+      </Fragment>
+    ) : (
+      <Redirect to={{ pathname: '/', state: { from: props.location } }} />
+    )
+  ) } />
+)
+
+const Routes = props => (
   <BrowserRouter>
     <Switch>
-      {/* <Route exact path="/" component={Main} /> */}
-      {/* <Route path="/products/:id" component={Product} /> */}
       <Route exact path="/" component={Login} />
-      <PrivateRoute path="/elementos/tipografia" component={Typography} />
-      <PrivateRoute path="/elementos/formulario" component={Form} />
-      <PrivateRoute path="/elementos/botoes" component={ViewButton} />
-      <PrivateRoute path="/atividade/cadastrar" component={CDT_Atividade} />
-      <PrivateRoute path="/trabalho_diario/iniciar" component={CDT_Trabalho_diario} />
-      <PrivateRoute path="/trabalho_diario/vistoria/lista" component={ListaVistoria} />
-      <PrivateRoute path="/trabalho_diario/vistoria/formulario" component={FormVistoria} />
+
+      {/* Rotas de coordenador */}
+      <PrivateCoordenador path="/trabalho_diario/iniciar" component={CDT_Trabalho_diario} perfil={ props.user.perfil } />
+      <PrivateCoordenador path="/trabalho_diario/vistoria/lista" component={ListaVistoria} perfil={ props.user.perfil } />
+      <PrivateCoordenador path="/trabalho_diario/vistoria/formulario" component={FormVistoria} perfil={ props.user.perfil } />
+      <PrivateCoordenador path="/atividade/cadastrar" component={CDT_Atividade} perfil={ props.user.perfil } />
+
+      {/* Rotas de laboratorialista */}
+      <PrivateLaboratorio path="/lab/home" component={ HomeLaboratorio } perfil={ props.user.perfil } />
+
+      <PrivateCoordenador path="/elementos/tipografia" component={Typography} perfil={ props.user.perfil } />
+      <PrivateCoordenador path="/elementos/formulario" component={Form} perfil={ props.user.perfil } />
+      <PrivateCoordenador path="/elementos/botoes" component={ViewButton} perfil={ props.user.perfil } />
+
       <Route exact path="*" component={() => <h1>Página não encontrada</h1>} />
     </Switch>
   </BrowserRouter>
 )
 
-export default Routes;
+const mapStateToProps = state => ({
+  user: state.user
+});
+
+export default connect(
+  mapStateToProps,
+)(Routes);
+

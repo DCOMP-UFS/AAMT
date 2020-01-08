@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import { FaVial } from 'react-icons/fa';
 import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
 import Avatar from '@material-ui/core/Avatar';
-
-
 
 // import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';

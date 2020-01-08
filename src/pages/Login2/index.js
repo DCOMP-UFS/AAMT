@@ -16,7 +16,7 @@ import { connect } from 'react-redux';
 // ACTIONS
 import { authenticate } from '../../store/actions/user';
 
-class Teste extends Component {
+class Login extends Component {
   state = {
     usuario: "",
     senha: "",
@@ -141,5 +141,4 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Teste);
-
+)(Login);

@@ -17,6 +17,7 @@ export const ContainerLab = styled.div`
 export const ContainerButtonMenu = styled.div`
   padding: 10px;
   position: fixed;
+  z-index: 10;
   top: 0;
   left: 0;
 `;

@@ -16,7 +16,7 @@ import { connect } from 'react-redux';
 // ACTIONS
 import { authenticate } from '../../store/actions/user';
 
-class Home extends Component {
+class LoginScreen extends Component {
   state = {
     usuario: "",
     senha: "",
@@ -141,5 +141,5 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Home);
+)(LoginScreen);
 

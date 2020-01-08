@@ -11,6 +11,7 @@ import { perfil } from './config/enumerate';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 
 // import Login from './pages/Login';
+import Teste from './pages/Teste';
 
 // Páginas de coordenador
 import CDT_Atividade from './pages/atividade/cadastrar';
@@ -63,7 +64,7 @@ const PrivateLaboratorio = ({ component: Component, perfil: perfilUser, ...rest 
 const Routes = props => (
   <BrowserRouter>
     <Switch>
-      {/* <Route exact path="/" component={ Login } /> */}
+      <Route exact path="/" component={ Teste } />
 
       {/* Rotas de coordenador */}
       <PrivateCoordenador path="/trabalho_diario/iniciar" component={CDT_Trabalho_diario} perfil={ props.user.perfil } />

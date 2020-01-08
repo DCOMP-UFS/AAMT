@@ -10,7 +10,7 @@ import { perfil } from './config/enumerate';
 
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 
-import Login from './pages/Login/index';
+import Login from './pages/Login';
 
 // Páginas de coordenador
 import CDT_Atividade from './pages/atividade/cadastrar';

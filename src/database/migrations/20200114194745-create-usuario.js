@@ -2,29 +2,47 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('addresses', { 
+    return queryInterface.createTable('usuarios', { 
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,
       },
-      user_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: { model: 'users', key: 'id' },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE', // OPTIONS: CASCADE | SET NULL | RESTRICT
-      },
-      zipcode: {
+      nome: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      street: {
+      cpf: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      number: {
+      rg: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      celular: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      email: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      usuario: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      senha: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      tipo_perfil: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      ativo: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
@@ -40,6 +58,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('addresses');
+    return queryInterface.dropTable('usuarios');
   }
 };

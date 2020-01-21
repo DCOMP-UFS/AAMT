@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { auth } from '../../auth';
-import { validInputIsEmpty } from '../../config/function';
 import { perfil } from '../../config/enumerate';
+import api from '../../services/api';
 
 import { Container, Sidebar, Logo, ButtonLogin, Background } from './styles';
 import { FormGroup, Separator } from '../../styles/global';
@@ -15,6 +14,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { authenticate } from '../../store/actions/user';
+import { setToken } from '../../store/actions/appConfig';
 
 class LoginScreen extends Component {
   state = {
@@ -34,30 +34,32 @@ class LoginScreen extends Component {
     });
   }
 
-  handleSubmit = () => {
+  async handleSubmit( e ) {
+    e.preventDefault();
+
     const usuario = this.state.usuario;
     const senha = this.state.senha;
-    const conectado = this.state.conectado;
-    let fl_valido = true;// true -> válido | false -> inválido
 
-    if( !validInputIsEmpty( "#usuario", usuario ) ) fl_valido = false;
-    if( !validInputIsEmpty( "#senha", senha ) ) fl_valido = false;
+    try {
+      const response = await api.post('/auth/authenticate',{
+        usuario,
+        senha
+      });
 
-    if( fl_valido ) {
-      const result = auth( usuario, senha, conectado );
+      if( response.status === 200 ) {
 
-      if( result === undefined ) {
-        this.setState({ loginFail: false });
-      }else {
-        this.props.authenticate( result );
+        const { user, token } = response.data;
 
-        switch( result.perfil ) {
-          case perfil[0]: {
+        this.props.authenticate( user );
+        this.props.setToken( token );
+
+        switch( user.tipoPerfil ) {
+          case perfil.laboratorialista: {
             window.location = window.location.origin.toString() + "/lab/home";
             break;
           }
 
-          case perfil[3]: {
+          case perfil.coordenador: {
             window.location = window.location.origin.toString() + "/trabalho_diario/iniciar";
             break;
           }
@@ -67,14 +69,10 @@ class LoginScreen extends Component {
             break;
           }
         }
-
       }
-    }
-  }
-
-  onKeyDown = (event) => {
-    if (event.key === 'Enter' || event.key === "NumpadEnter") {
-      this.handleSubmit();
+    } catch (error) {
+      const { response } = error;
+      // SHOW MSG USUÁRIO OU SENHA INCORRETA
     }
   }
 
@@ -87,39 +85,43 @@ class LoginScreen extends Component {
             <Separator sizeBorder="3px"/>
           </Logo>
 
-          <FormGroup className="form-dark">
-            <label htmlFor="usuario">Usuário <code>*</code></label>
-            <input
-              id="usuario"
-              name="usuario"
-              type="text"
-              className="form-control"
-              onChange={ this.handleInputChange.bind(this) }
-              onKeyDown={ this.onKeyDown } />
-          </FormGroup>
+          <form onSubmit={ this.handleSubmit.bind(this) } >
+            <FormGroup className="form-dark">
+              <label htmlFor="usuario">Usuário <code>*</code></label>
+              <input
+                value={ this.state.usuario }
+                id="usuario"
+                name="usuario"
+                type="text"
+                className="form-control"
+                onChange={ this.handleInputChange.bind(this) }
+                required />
+            </FormGroup>
 
-          <FormGroup className="form-dark mb-0">
-            <label htmlFor="senha">Senha <code>*</code></label>
-            <input
-              id="senha"
-              name="senha"
-              type="password"
-              className="form-control"
-              onChange={ this.handleInputChange.bind(this) }
-              onKeyDown={ this.onKeyDown } />
-          </FormGroup>
+            <FormGroup className="form-dark mb-0">
+              <label htmlFor="senha">Senha <code>*</code></label>
+              <input
+                value={ this.state.senha }
+                id="senha"
+                name="senha"
+                type="password"
+                className="form-control"
+                onChange={ this.handleInputChange.bind(this) }
+                required />
+            </FormGroup>
 
-          <FormGroup className="form-dark">
-            <FormControlLabel
-              name="conectado"
-              value="end"
-              control={ <Checkbox color="primary" /> }
-              label="Manter-me conectado"
-              labelPlacement="end"
-              onChange={ this.handleInputChange.bind(this) } />
-          </FormGroup>
+            <FormGroup className="form-dark">
+              <FormControlLabel
+                name="conectado"
+                value="end"
+                control={ <Checkbox color="primary" /> }
+                label="Manter-me conectado"
+                labelPlacement="end"
+                onChange={ this.handleInputChange.bind(this) } />
+            </FormGroup>
 
-          <ButtonLogin onClick={ this.handleSubmit } >Entrar</ButtonLogin>
+            <ButtonLogin type="submit" >Entrar</ButtonLogin>
+          </form>
         </Sidebar>
         <Background>
           <div id="stars"></div>
@@ -136,7 +138,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ authenticate }, dispatch);
+  bindActionCreators({ authenticate, setToken }, dispatch);
 
 export default connect(
   mapStateToProps,

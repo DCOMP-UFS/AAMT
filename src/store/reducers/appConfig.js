@@ -8,6 +8,7 @@ const INITIAL_STATE = {
    */
   navToggleLab: true,
   navToggle: true,
+  token: "",
 }
 
 export default function quarteirao(state = INITIAL_STATE, actions){
@@ -23,6 +24,13 @@ export default function quarteirao(state = INITIAL_STATE, actions){
       return {
         ...state,
         navToggleLab: !state.navToggleLab,
+      }
+    }
+
+    case ActionTypes.SET_TOKEN: {
+      return {
+        ...state,
+        token: actions.payload.token
       }
     }
 

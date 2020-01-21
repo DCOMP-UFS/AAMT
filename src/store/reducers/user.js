@@ -4,8 +4,7 @@ const INITIAL_STATE = {
   nome: "",
   email: "",
   usuario: "",
-  perfil: "",
-  token: "",
+  tipoPerfil: "",
 }
 
 export default function user(state = INITIAL_STATE, action) {
@@ -17,7 +16,7 @@ export default function user(state = INITIAL_STATE, action) {
         nome: user.nome,
         usuario: user.usuario,
         email: user.email,
-        perfil: user.perfil,
+        tipoPerfil: user.tipoPerfil,
       }
     }
 

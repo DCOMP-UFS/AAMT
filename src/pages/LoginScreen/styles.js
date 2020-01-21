@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Button } from '../../styles/global';
+import { Button, device } from '../../styles/global';
 
 export const ButtonLogin = styled(Button)`
   width: 100%;
@@ -16,10 +16,61 @@ export const Container = styled.div`
   width: 100vw;
 `;
 
+export const Sidebar = styled.section`
+  min-height: 100vh;
+  width: 22rem;
+  padding: 0 30px;
+  background: #181824;
+
+  @media ${ device.tablet } {
+    & {
+      margin-top: 70px;
+      min-height: auto;
+      height: auto;
+      position: absolute;
+      z-index: 1;
+      padding: 30px;
+      left: calc( 50% - 11rem );
+    }
+  }
+
+  @media ${ device.mobileL } {
+    & {
+      width: 18rem;
+      left: calc( 50% - 9rem );
+    }
+  }
+`;
+
+export const Logo = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 75px 0 0;
+
+  img {
+    width: 100px;
+  }
+
+  @media ${ device.tablet } {
+    & {
+      padding: 0;
+    }
+  }
+`;
+
 export const Background = styled.div`
-  flex: 0.8;
+  width: calc( 100% - 22rem );
   background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
   overflow: hidden;
+  min-height: 100vh;
+
+  @media ${ device.tablet } {
+    & {
+      width: 100vw;
+    }
+  }
 
   #stars {
     width: 1px;
@@ -92,7 +143,6 @@ export const Background = styled.div`
 
   #title span {
     background: -webkit-linear-gradient(white, #38495a);
-    -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 
@@ -104,24 +154,5 @@ export const Background = styled.div`
     to {
       transform: translateY(-2000px);
     }
-  }
-`;
-
-export const Sidebar = styled.section`
-  min-height: 100vh;
-  flex: 0.2;
-  padding: 0 30px;
-  background: #181824;
-`;
-
-export const Logo = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 75px 0 0px;
-
-  img {
-    width: 100px;
   }
 `;

@@ -26,9 +26,9 @@ export const tipoImovel = [
   "Ponto estratégico",
 ]
 
-export const perfil = [
-  "laboratorialista",
-  "agente",
-  "supervisor",
-  "coordenador",
-]
+export const perfil = {
+  laboratorialista: "L",
+  agente: "A",
+  supervisor: "S",
+  coordenador: "C",
+}

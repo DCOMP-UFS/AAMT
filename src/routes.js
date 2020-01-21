@@ -26,9 +26,9 @@ import Form from './pages/elements/Form';
 import ViewButton from './pages/elements/ViewButton';
 import Typography from './pages/elements/typography';
 
-const PrivateCoordenador = ({ component: Component, perfil: perfilUser, ...rest }) => (
+const PrivateCoordenador = ({ component: Component, tipoPerfil: perfilUser, ...rest }) => (
   <Route { ...rest } render={ props => (
-    isAuthenticated() && perfilUser === perfil[3] ? (
+    isAuthenticated() && perfilUser === perfil.coordenador ? (
       <Fragment>
         <Header />
 
@@ -67,17 +67,17 @@ const Routes = props => (
       <Route exact path="/" component={ LoginScreen } />
 
       {/* Rotas de coordenador */}
-      <PrivateCoordenador path="/trabalho_diario/iniciar" component={CDT_Trabalho_diario} perfil={ props.user.perfil } />
-      <PrivateCoordenador path="/trabalho_diario/vistoria/lista" component={ListaVistoria} perfil={ props.user.perfil } />
-      <PrivateCoordenador path="/trabalho_diario/vistoria/formulario" component={FormVistoria} perfil={ props.user.perfil } />
-      <PrivateCoordenador path="/atividade/cadastrar" component={CDT_Atividade} perfil={ props.user.perfil } />
+      <PrivateCoordenador path="/trabalho_diario/iniciar" component={CDT_Trabalho_diario} tipoPerfil={ props.user.tipoPerfil } />
+      <PrivateCoordenador path="/trabalho_diario/vistoria/lista" component={ListaVistoria} tipoPerfil={ props.user.tipoPerfil } />
+      <PrivateCoordenador path="/trabalho_diario/vistoria/formulario" component={FormVistoria} tipoPerfil={ props.user.tipoPerfil } />
+      <PrivateCoordenador path="/atividade/cadastrar" component={CDT_Atividade} tipoPerfil={ props.user.tipoPerfil } />
 
       {/* Rotas de laboratorialista */}
-      <PrivateLaboratorio path="/lab/home" component={ HomeLaboratorio } perfil={ props.user.perfil } />
+      <PrivateLaboratorio path="/lab/home" component={ HomeLaboratorio } tipoPerfil={ props.user.tipoPerfil } />
 
-      <PrivateCoordenador path="/elementos/tipografia" component={Typography} perfil={ props.user.perfil } />
-      <PrivateCoordenador path="/elementos/formulario" component={Form} perfil={ props.user.perfil } />
-      <PrivateCoordenador path="/elementos/botoes" component={ViewButton} perfil={ props.user.perfil } />
+      <PrivateCoordenador path="/elementos/tipografia" component={Typography} tipoPerfil={ props.user.tipoPerfil } />
+      <PrivateCoordenador path="/elementos/formulario" component={Form} tipoPerfil={ props.user.tipoPerfil } />
+      <PrivateCoordenador path="/elementos/botoes" component={ViewButton} tipoPerfil={ props.user.tipoPerfil } />
 
       <Route exact path="*" component={() => <h1>Página não encontrada</h1>} />
     </Switch>

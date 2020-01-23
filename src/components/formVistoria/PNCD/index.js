@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 
 // COMPONENTS
 import FindImovel from '../FindImovel';
-import Amostra from '../Amostra';
+import InspecaoRecipiente from '../InspecaoRecipiente';
 import { Separator, selectDefault } from '../../../styles/global';
 
 class PNCD extends Component {
@@ -87,6 +87,7 @@ class PNCD extends Component {
                   <label htmlFor="horaEntrada">Horário de entrada <code>*</code></label>
                   <TimePicker
                     id="horaEntrada"
+                    className="form-control"
                     value={ this.state.entrada }
                     onChange={ this.handleEntradaChange.bind(this) } />
                 </div>
@@ -95,6 +96,7 @@ class PNCD extends Component {
                   <label htmlFor="horaSaida">Horário de saída <code>*</code></label>
                   <TimePicker
                     id="horaSaida"
+                    className="form-control"
                     value={ this.state.entrada }
                     onChange={ this.handleSaidaChange.bind(this) } />
                 </div>
@@ -134,7 +136,7 @@ class PNCD extends Component {
           </div>
 
           <div className="col-md-6">
-            <Amostra />
+            <InspecaoRecipiente />
           </div>
         </div>
 

@@ -11,3 +11,10 @@ yarn add react-bootstrap bootstrap
 
 #icones
 yarn add react-icons
+
+## Deploy no Heroku
+
+heroku login
+
+heroku git:remote -a aamt
+git push heroku feature_local:master

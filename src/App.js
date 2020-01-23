@@ -1,37 +1,32 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import Routes from './routes';
 import { GoogleApiWrapper } from 'google-maps-react';
 
-import { BodyPanel, ContainerBody } from './styles/global';
-
-import Header from './components/Header';
-import Sidebar from './components/Sidebar';
-
 import './App.css';
 import './Utilities.css';
+import { GlobalStyle } from './styles/global';
+
+// REDUX
+import { connect } from 'react-redux';
 
 // import Header from './components/Header';
 // import Main from './pages/main';
 
-const App = () => (
-  <Fragment>
-    <Header />
-
-    <ContainerBody>
-      <Sidebar />
-
-      <BodyPanel>
-        <Routes />
-      </BodyPanel>
-    </ContainerBody>
-  </Fragment>
-);
+const App = (props) => <><GlobalStyle /><Routes /></>;
 
 const LoadingContainer = (props) => (
   <div>Carregando...</div>
 )
 
+const mapStateToProps = state => ({
+  navToggle: state.sidebar.navToggle
+});
+
 export default GoogleApiWrapper({
   apiKey: ("AIzaSyCYow9L-l0V_XA6kzpt-62S4-VGKwLy65w"),
   LoadingContainer: LoadingContainer
-})(App)
+})(
+connect(
+  mapStateToProps
+)(App)
+)

@@ -1,11 +1,12 @@
 import { IoIosCode, IoIosCheckboxOutline, IoIosPaper } from 'react-icons/io';
-import { FaTasks } from 'react-icons/fa';
+import { FaTasks, FaUsers } from 'react-icons/fa';
 
 import { ActionTypes } from '../actions/sidebar';
 
 const location = window.location.origin.toString();
 
 const INITIAL_STATE = {
+  // Menu ativo currenteNav: [ menu, submenu ]
   currentNav: [ 1, 0 ],
   menu: [
     {
@@ -26,7 +27,7 @@ const INITIAL_STATE = {
         {
           active: false,
           description: "Realizar Vistoria",
-          url: location + "/trabalho_diario/vistoria"
+          url: location + "/trabalho_diario/vistoria/lista"
         },
       ]
     },
@@ -35,7 +36,7 @@ const INITIAL_STATE = {
       type: "category"
     },
     {
-      description: "Atividade",
+      description: "Atividades",
       type: "nav",
       active: false,
       icon: IoIosPaper,
@@ -43,9 +44,17 @@ const INITIAL_STATE = {
         {
           active: false,
           description: "Cadastrar",
-          url: location + "/atividade/cadastrar"
+          url: location + "/atividades/cadastrar"
         },
       ]
+    },
+    {
+      description: "Usuários",
+      type: "link",
+      active: false,
+      icon: FaUsers,
+      url: location + "/usuarios",
+      submenu: []
     },
     {
       description: "Recursos de Interface",
@@ -82,7 +91,7 @@ const INITIAL_STATE = {
 
 export default function sidebar(state = INITIAL_STATE, action) {
   switch( action.type ) {
-    case ActionTypes.CHANGE_SIDEBAR:
+    case ActionTypes.CHANGE_SIDEBAR: {
       const { index, subIndex } = action.payload;
       let currentNav = state.currentNav;
       let menu = state.menu;
@@ -112,8 +121,18 @@ export default function sidebar(state = INITIAL_STATE, action) {
         currentNav,
         menu
       }
+    }
 
-    default:
+    case ActionTypes.NAV_TOGGLE: {
+
+      return {
+        ...state,
+        navToggle: !state.navToggle,
+      }
+    }
+
+    default: {
       return state;
+    }
   }
 }

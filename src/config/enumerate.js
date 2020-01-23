@@ -18,3 +18,17 @@ export const situacaoUnidade = [
   "pendente",
   "examinado",
 ]
+
+export const tipoImovel = [
+  "Residencial",
+  "Terreno Baldio",
+  "Comercial",
+  "Ponto estratégico",
+]
+
+export const perfil = {
+  laboratorialista: "L",
+  agente: "A",
+  supervisor: "S",
+  coordenador: "C",
+}

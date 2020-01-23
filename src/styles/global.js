@@ -1,4 +1,24 @@
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
+
+export const size = {
+  mobileS: '320px',
+  mobileM: '375px',
+  mobileL: '425px',
+  laptop: '1024px',
+  tablet: '990px',
+  laptopL: '1440px',
+  desktop: '2560px',
+}
+
+export const device = {
+  mobileS: `(max-width: ${size.mobileS})`,
+  mobileM: `(max-width: ${size.mobileM})`,
+  mobileL: `(max-width: ${size.mobileL})`,
+  tablet: `(max-width: ${size.tablet})`,
+  laptop: `(max-width: ${size.laptop})`,
+  laptopL: `(max-width: ${size.laptopL})`,
+  desktop: `(max-width: ${size.desktop})`,
+};
 
 export const Color = {
   primary: "#b66dff",
@@ -14,6 +34,28 @@ export const Color = {
   border_light: "rgba(0,0,0,.125)"
 }
 
+export const GlobalStyle = createGlobalStyle`
+  .Toastify__toast {
+    border-radius: 3px!important;
+  }
+
+  .Toastify__toast--error {
+    background: ${ Color.danger }!important;
+  }
+
+  .Toastify__toast--success {
+    background: ${ Color.success }!important;
+  }
+
+  .Toastify__toast--warning {
+    background: ${ Color.warning }!important;
+  }
+
+  .Toastify__progress-bar--default {
+    background: ${ Color.dark }!important;
+  }
+`;
+
 export const ContainerBody = styled.div`
   padding-top: 64px;
   min-height: 100vh;
@@ -21,9 +63,20 @@ export const ContainerBody = styled.div`
 `;
 
 export const BodyPanel = styled.div`
-  flex: 0.82;
-  display: flex;
-  flex-direction: column;
+  @media (max-width: 990px) {
+    width: 100%;
+  }
+
+  @media (min-width: 991px) {
+    width: calc(100vw - 70px);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.5s ease-out;
+
+    &.body-collapse {
+      width: calc(100vw - 260px);
+    }
+  }
 `;
 
 const basicButton = styled.button`
@@ -186,7 +239,7 @@ export const Separator = styled.div`
   width: calc(100% - 40px);
   padding: 10px 10px;
   margin: auto;
-  border-top: 1px solid ${ Color.dark };
+  border-top: ${props => props.sizeBorder ? props.sizeBorder : "1px" } solid ${ Color.dark };
 `;
 
 const select = {
@@ -223,7 +276,6 @@ export const selectDefault = {
     return {
       ...select,
       height: "2.875rem",
-      lineHeight: "1",
 
       ...focused,
     }
@@ -265,3 +317,185 @@ export const selectSm = {
     }
   },
 }
+
+export const UlIcon = styled.ul`
+  border: 1px solid ${ Color.border_light };
+  list-style: none;
+  padding: 0;
+  max-height: 484px;
+  overflow-y: auto;
+`;
+
+export const LiIcon = styled.li`
+  display: flex;
+  cursor: pointer;
+  padding: 0.375rem 0 0.375rem 1.375rem;
+  align-items: center;
+  /* flex-direction: column; */
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #ebedf2;
+  }
+
+  &:hover {
+    background: ${ Color.bgLight };
+  }
+`;
+
+export const ContainerIcon = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  padding: 0.375rem 0.375rem;
+  color: #fff;
+  background: ${ Color.primary };
+`;
+
+export const DivDescription = styled.div`
+  padding: 0.375rem 1.375rem;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  strong {
+    color: #343a40;
+  }
+
+  @media ${ device.tablet } {
+    & div:first-child {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+  }
+`;
+
+export const LiEmpty = styled.li`
+  padding: 0.375rem 1.375rem;
+  text-align: center;
+
+  h4 {
+    margin: 0!important;
+    color: ${ Color.muted };
+  }
+`;
+
+export const CardDark = styled.div`
+  background: ${ Color.dark };
+  border-radius: 5px;
+  padding: 40px;
+  width: 100%;
+
+  .title{
+    color: ${ Color.light };
+    margin-bottom: 0.75rem;
+    text-transform: capitalize;
+    font-family: "ubuntu-medium", sans-serif;
+    font-size: 1.125rem;
+    border-top: 0;
+  }
+
+  .text-description{
+    color: #76838f;
+    margin-bottom: 1.5rem;
+    font-family: "ubuntu-regular", sans-serif;
+  }
+`;
+
+export const FormGroup = styled.div`
+  margin-bottom: 1.5rem;
+
+  &.form-dark label {
+    color: #fff;
+  }
+
+  &.form-dark .form-control {
+    background: #2e3844;
+    border: 2px solid ${ Color.dark };
+    color: #fff;
+  }
+
+  &.form-dark .form-control:focus,
+  &.form-dark input:focus,
+  &.form-dark select:focus,
+  &.form-dark textarea:focus,
+  &.form-dark button:focus,
+  &.form-dark .form-control .MuiInput-input:focus {
+    border: 2px solid #198ae3;
+    box-shadow: 0 0 3px #719ECE;
+    outline: none;
+    outline-style: none;
+  }
+
+  .form-control:focus,
+  input:focus,
+  select:focus,
+  textarea:focus,
+  button:focus,
+  .form-control .MuiInput-input:focus {
+    border: 1px solid #198ae3;
+    box-shadow: 0 0 3px #719ECE;
+    outline: none;
+    outline-style: none;
+  }
+
+
+  label {
+    font-size: 0.875rem;
+    line-height: 1;
+    margin-bottom: .5rem;
+    display: block;
+  }
+
+  .form-control {
+    border: 1px solid #ebedf2;
+    font-family: "ubuntu-regular", sans-serif;
+    font-size: 0.8125rem;
+    box-shadow: none;
+    display: block;
+    width: 100%;
+    height: 2.875rem;
+    padding-left: 0.81rem;
+    font-weight: 400;
+    line-height: 1;
+    color: #495057;
+    background-color: #ffffff;
+    background-clip: padding-box;
+    border-radius: 2px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+
+  .form-control .MuiInput-input {
+    border: 1px solid #ebedf2 !important;
+    font-family: "ubuntu-regular", sans-serif!important;
+    font-size: 0.8125rem!important;
+    box-shadow: none!important;
+    display: block!important;
+    width: 100%!important;
+    height: 2.875rem!important;
+    padding-left: 0.81rem!important;
+    font-weight: 400!important;
+    line-height: 1!important;
+    color: #495057!important;
+    background-color: #ffffff!important;
+    background-clip: padding-box!important;
+    border-radius: 2px!important;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out!important;
+    box-sizing: inherit!important;
+  }
+
+  .MuiFormControlLabel-root {
+    display: flex;
+    align-items: center;
+  }
+
+  .form-control.invalid,
+  .invalid .css-cenuji-Control {
+    border: 1px solid #fe7c96;
+  }
+`;

@@ -39,10 +39,6 @@ export const GlobalStyle = createGlobalStyle`
     border-radius: 3px!important;
   }
 
-  .Toastify__toast--error {
-    background: ${ Color.danger }!important;
-  }
-
   .Toastify__toast--success {
     background: ${ Color.success }!important;
   }

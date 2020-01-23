@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Usuario = require('../models/Usuario');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 const authConfig = require('../config/auth');
 
@@ -23,7 +24,7 @@ authenticate = async (req, res) => {
   if(!user) 
     return res.status(400).send({ error: 'User not found' });
   
-  if( user.senha !== senha )
+  if( !bcrypt.compareSync(senha, user.senha) )
     return res.status(400).send({ error: 'Invalid password' });
 
   user.senha = undefined;

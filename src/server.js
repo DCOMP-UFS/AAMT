@@ -1,12 +1,13 @@
 const express = require('express');
+const cors = require('cors');
 require('./database');
 
 const app = express();
 
-app.use(express.json());
+app.use( cors() );
+app.use( express.json() );
 
-require('./controllers/TesteController')(app);
 require('./controllers/AuthController')(app);
 require('./controllers/UsuarioController')(app);
 
-app.listen(3001);
+app.listen(3333);

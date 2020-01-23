@@ -1,6 +1,9 @@
 const express = require('express');
-const router = express.Router();
+const bcrypt = require('bcryptjs');
+const authMiddleware = require('../middlewares/auth');
 const Usuario = require('../models/Usuario');
+
+const router = express.Router();
 
 index = async (req, res) => {
   const usuarios = await Usuario.findAll();
@@ -21,6 +24,9 @@ store = async (req, res) => {
     ativo 
   } = req.body;
 
+  const salt = bcrypt.genSaltSync(10);
+  const senhaHash = bcrypt.hashSync(senha, salt);
+
   const user = await Usuario.create({ 
     nome,
     cpf,
@@ -28,13 +34,15 @@ store = async (req, res) => {
     celular,
     email,
     usuario,
-    senha,
+    senha: senhaHash,
     tipoPerfil,
     ativo 
   });
 
   return res.json(user);
 }
+
+router.use(authMiddleware);
 
 router.get('/', index);
 router.post('/', store);

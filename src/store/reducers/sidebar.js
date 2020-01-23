@@ -1,5 +1,5 @@
 import { IoIosCode, IoIosCheckboxOutline, IoIosPaper } from 'react-icons/io';
-import { FaTasks } from 'react-icons/fa';
+import { FaTasks, FaUsers } from 'react-icons/fa';
 
 import { ActionTypes } from '../actions/sidebar';
 
@@ -36,7 +36,7 @@ const INITIAL_STATE = {
       type: "category"
     },
     {
-      description: "Atividade",
+      description: "Atividades",
       type: "nav",
       active: false,
       icon: IoIosPaper,
@@ -44,9 +44,17 @@ const INITIAL_STATE = {
         {
           active: false,
           description: "Cadastrar",
-          url: location + "/atividade/cadastrar"
+          url: location + "/atividades/cadastrar"
         },
       ]
+    },
+    {
+      description: "Usuários",
+      type: "link",
+      active: false,
+      icon: FaUsers,
+      url: location + "/usuarios",
+      submenu: []
     },
     {
       description: "Recursos de Interface",

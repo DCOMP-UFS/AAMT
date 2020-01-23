@@ -4,6 +4,7 @@ import { GoogleApiWrapper } from 'google-maps-react';
 
 import './App.css';
 import './Utilities.css';
+import { GlobalStyle } from './styles/global';
 
 // REDUX
 import { connect } from 'react-redux';
@@ -11,7 +12,7 @@ import { connect } from 'react-redux';
 // import Header from './components/Header';
 // import Main from './pages/main';
 
-const App = (props) => <Routes />;
+const App = (props) => <><GlobalStyle /><Routes /></>;
 
 const LoadingContainer = (props) => (
   <div>Carregando...</div>

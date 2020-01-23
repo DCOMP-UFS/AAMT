@@ -11,8 +11,8 @@ const INITIAL_STATE = {
   token: "",
 }
 
-export default function quarteirao(state = INITIAL_STATE, actions){
-  switch( actions.type ) {
+export default function quarteirao(state = INITIAL_STATE, action){
+  switch( action.type ) {
     case ActionTypes.NAV_TOGGLE: {
       return {
         ...state,
@@ -30,7 +30,7 @@ export default function quarteirao(state = INITIAL_STATE, actions){
     case ActionTypes.SET_TOKEN: {
       return {
         ...state,
-        token: actions.payload.token
+        token: action.payload.token
       }
     }
 

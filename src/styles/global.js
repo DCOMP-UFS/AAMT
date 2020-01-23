@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 
 export const size = {
   mobileS: '320px',
@@ -33,6 +33,28 @@ export const Color = {
   bgLight: "#FCFCFC",
   border_light: "rgba(0,0,0,.125)"
 }
+
+export const GlobalStyle = createGlobalStyle`
+  .Toastify__toast {
+    border-radius: 3px!important;
+  }
+
+  .Toastify__toast--error {
+    background: ${ Color.danger }!important;
+  }
+
+  .Toastify__toast--success {
+    background: ${ Color.success }!important;
+  }
+
+  .Toastify__toast--warning {
+    background: ${ Color.warning }!important;
+  }
+
+  .Toastify__progress-bar--default {
+    background: ${ Color.dark }!important;
+  }
+`;
 
 export const ContainerBody = styled.div`
   padding-top: 64px;

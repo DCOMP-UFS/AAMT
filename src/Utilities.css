@@ -195,6 +195,7 @@ article .card{
   border-radius: 5px;
   padding: 40px;
   width: 100%;
+  box-shadow: 2px 2px 8px #c5baba;
 }
 
 article .title{

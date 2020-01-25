@@ -6,7 +6,7 @@ import sidebar from './sidebar';
 import sidebarLab from './sidebarLab';
 import quarteirao from './quarteirao';
 import supportInfo from './supportInfo';
-import user from './user';
+import usuario from './Usuario';
 import appConfig from './appConfig';
 
 export default combineReducers({
@@ -16,6 +16,6 @@ export default combineReducers({
   sidebarLab,
   quarteirao,
   supportInfo,
-  user,
+  usuario,
   appConfig,
 });

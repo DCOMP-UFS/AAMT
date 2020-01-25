@@ -31,7 +31,7 @@ export const Color = {
   dark: "#3e4b5b",
   muted: "#9c9fa6",
   bgLight: "#FCFCFC",
-  border_light: "rgba(0,0,0,.125)"
+  border_light: "#ebedf2"
 }
 
 export const GlobalStyle = createGlobalStyle`

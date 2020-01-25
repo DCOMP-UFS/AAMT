@@ -5,6 +5,9 @@ export const ActionTypes = {
   CLOSE_POPUP: "CLOSE_POPUP",
   OPEN_POPUP: "OPEN_POPUP",
   CLEAR_TOAST: "CLEAR_TOAST",
+  GET_USUARIOS_REQUEST: "GET_USUARIOS_REQUEST",
+  GET_USUARIOS_SUCCESS: "GET_USUARIOS_SUCCESS",
+  GET_USUARIOS_FAILURE: "GET_USUARIOS_FAILURE"
 }
 
 export const authenticateRequest = (usuario, senha, redirectUser) => {
@@ -27,13 +30,33 @@ export const authenticate = user => {
   }
 }
 
-export const authenticateFailure = user => {
+export const authenticateFailure = () => {
   return {
-    type: ActionTypes.AUTHENTICATE_FAILURE,
-    payload: {}
+    type: ActionTypes.AUTHENTICATE_FAILURE
   }
 }
 
 export const clearToast = () => {
   return { type: ActionTypes.CLEAR_TOAST };
 };
+
+export const getUsuariosRequest = () => {
+  return {
+    type: ActionTypes.GET_USUARIOS_REQUEST
+  }
+}
+
+export const getUsuarios = usuarios => {
+  return {
+    type: ActionTypes.GET_USUARIOS_SUCCESS,
+    payload: {
+      usuarios,
+    }
+  }
+}
+
+export const getUsuariosFailure = () => {
+  return {
+    type: ActionTypes.GET_USUARIOS_FAILURE
+  }
+}

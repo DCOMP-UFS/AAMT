@@ -1,7 +1,7 @@
 import { call, put } from 'redux-saga/effects';
-import { authenticateRequest } from '../../services/requests/User';
+import { authenticateRequest } from '../../services/requests/Usuario';
 
-import * as UserActions from '../actions/user';
+import * as UserActions from '../actions/UsuarioActions';
 import { setToken } from '../actions/appConfig';
 
 export function* authenticate(action) {
@@ -16,7 +16,11 @@ export function* authenticate(action) {
         nome: user.nome,
         usuario: user.usuario,
         email: user.email,
-        tipoPerfil: user.tipoPerfil
+        tipoPerfil: user.tipoPerfil,
+        municipio: {
+          codigo: user.municipio.codigo,
+          nome: user.municipio.nome
+        }
       }
 
       redirectUser( user.tipoPerfil );
@@ -26,5 +30,16 @@ export function* authenticate(action) {
     }
   } catch (error) {
     yield put( UserActions.authenticateFailure() );
+  }
+}
+
+export function* getUsuarios(action) {
+  try {
+    console.log("Sagas");
+
+    // yield put( UserActions.getUsuarios([]) );
+
+  } catch (error) {
+    yield put( UserActions.getUsuariosFailure() );
   }
 }

@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const authMiddleware = require('../middlewares/auth');
 const Usuario = require('../models/Usuario');
+const Municipio = require('../models/Municipio');
 
 const router = express.Router();
 
@@ -12,6 +13,7 @@ index = async (req, res) => {
 }
 
 store = async (req, res) => {
+  const { municipio_id } = req.params;
   const { 
     nome,
     cpf,
@@ -23,6 +25,12 @@ store = async (req, res) => {
     tipoPerfil,
     ativo 
   } = req.body;
+
+  const municipio = await Municipio.findByPk(municipio_id);
+
+  if(!municipio) {
+    return res.status(400).json({ error: 'Município não encontrado' });
+  }
 
   const salt = bcrypt.genSaltSync(10);
   const senhaHash = bcrypt.hashSync(senha, salt);
@@ -36,7 +44,8 @@ store = async (req, res) => {
     usuario,
     senha: senhaHash,
     tipoPerfil,
-    ativo 
+    ativo ,
+    municipio_id
   });
 
   return res.json(user);
@@ -45,6 +54,6 @@ store = async (req, res) => {
 router.use(authMiddleware);
 
 router.get('/', index);
-router.post('/', store);
+router.post('/:municipio_id/municipios', store);
 
 module.exports = app => app.use('/usuarios', router);

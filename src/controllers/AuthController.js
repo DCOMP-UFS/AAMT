@@ -18,6 +18,10 @@ authenticate = async (req, res) => {
   const user = await Usuario.findOne({ 
     where: {
       usuario
+    },
+    include: { association: 'municipio' },
+    attributes: {
+      exclude: [ 'municipio_id' ]
     }
   });
 

@@ -7,7 +7,12 @@ const Municipio = require('../models/Municipio');
 const router = express.Router();
 
 index = async (req, res) => {
-  const usuarios = await Usuario.findAll();
+  const usuarios = await Usuario.findAll({
+    include: { association: 'municipio' },
+    attributes: {
+      exclude: [ 'municipio_id' ]
+    }
+  });
 
   return res.json(usuarios);
 }

@@ -27,8 +27,7 @@ store = async (req, res) => {
     email,
     usuario,
     senha,
-    tipoPerfil,
-    ativo 
+    tipoPerfil
   } = req.body;
 
   const municipio = await Municipio.findByPk(municipio_id);
@@ -49,16 +48,64 @@ store = async (req, res) => {
     usuario,
     senha: senhaHash,
     tipoPerfil,
-    ativo ,
+    ativo: 1,
     municipio_id
+  },{
+    include: { association: 'municipio' },
+    attributes: {
+      exclude: [ 'municipio_id' ]
+    }
   });
 
-  return res.json(user);
+  return res.status(201).json(user);
+}
+
+update = async (req, res) => {
+  const { id } = req.params;
+  const userId = req.userId;
+
+  const userReq = await Usuario.findByPk( userId );
+  const userUpdate = await Usuario.findByPk( id );
+
+  if( !userUpdate ) {
+    return res.status(400).json({ error: 'Usuário não existe' });
+  }
+
+  if( id !== userReq.id && userReq.tipoPerfil !== "C" ) {
+    return res.status(403).json({ error: 'Acesso negado' });
+  }
+
+  if( userReq.municipio_id !== userUpdate.municipio_id ) {
+    return res.status(403).json({ error: 'Acesso negado' });
+  }
+
+  req.body.id = undefined;
+  req.body.senha = undefined;
+  req.body.createdAt = undefined;
+  req.body.updatedAt = undefined;
+
+  const { isRejected } = await Usuario.update(
+    req.body,
+    {
+      where: {
+        id
+      }
+    }
+  );
+
+  if( isRejected ){
+    return res.status(400).json({ error: 'Não foi possível atualizar usuário' });
+  }
+
+  const result = await Usuario.findByPk( id );
+
+  return res.json( result );
 }
 
 router.use(authMiddleware);
 
 router.get('/', index);
 router.post('/:municipio_id/municipios', store);
+router.put('/:id', update);
 
 module.exports = app => app.use('/usuarios', router);

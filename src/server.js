@@ -10,5 +10,6 @@ app.use( express.json() );
 require('./controllers/AuthController')(app);
 require('./controllers/UsuarioController')(app);
 require('./controllers/MunicipioController')(app);
+require('./controllers/ConfigController')(app);
 
 app.listen(3333);

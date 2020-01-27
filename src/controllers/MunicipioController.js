@@ -21,11 +21,13 @@ index = async (req, res) => {
   }
 
   if( user.tipoPerfil !== "C" || user.municipio.id !== parseInt(municipio_id) ) {
-    return res.status(401).json({ error: 'Acesso negado' });
+    return res.status(403).json({ error: 'Acesso negado' });
   }
 
   const municipio = await Municipio.findByPk(municipio_id, {
-    include: { association: 'usuarios' }
+    include: {
+      association: 'usuarios'
+    }
   });
 
   return res.json(municipio.usuarios);

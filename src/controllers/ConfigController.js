@@ -4,7 +4,7 @@ const router = express.Router();
 version = async (req, res) => {
   res.send({ 
     name: 'API AAMT',
-    description: 'support application to combat endemics',
+    description: 'support application to combat endemic diseases',
     version: '0.1'
   });
 }

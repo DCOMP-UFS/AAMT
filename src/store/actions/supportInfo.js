@@ -6,6 +6,7 @@ export const ActionTypes = {
   ADD_RECIPIENTE: "ADD_RECIPIENTE",
   ADD_INSPECAO: "ADD_INSPECAO",
   ADD_UNIDADE: "ADD_UNIDADE",
+  CHANGE_TABLE_SELECTED: "CHANGE_TABLE_SELECTED"
 }
 
 export const setVistoriaImovel = ( index, imovel ) => {
@@ -68,6 +69,16 @@ export const addUnidade = ( idUnidade, tipoColetor, situacao ) => {
       idUnidade,
       tipoColetor,
       situacao
+    }
+  }
+}
+
+export const changeTableSelected = (id, selected) => {
+  return {
+    type: ActionTypes.CHANGE_TABLE_SELECTED,
+    payload: {
+      id,
+      selected
     }
   }
 }

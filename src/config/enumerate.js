@@ -27,8 +27,8 @@ export const tipoImovel = [
 ]
 
 export const perfil = {
-  laboratorialista: "L",
   agente: "A",
-  supervisor: "S",
   coordenador: "C",
+  laboratorialista: "L",
+  supervisor: "S",
 }

@@ -163,7 +163,6 @@ function UlSidebar ( props ) {
 }
 
 const mapStateToProps = state => ({
-  usuario: state.usuario,
   sidebarLab: state.sidebarLab,
   navToggle: state.appConfig.navToggleLab,
 });

@@ -48,8 +48,8 @@ function LoginScreen( props ) {
   }
 
   function notify() {
-    toast(props.usuario.toast.message, {
-      type: props.usuario.toast.type,
+    toast(props.toast.message, {
+      type: props.toast.type,
       onClose: props.clearToast()
     });
   }
@@ -107,13 +107,13 @@ function LoginScreen( props ) {
       </Background>
 
       <ToastContainer />
-      {props.usuario.toast.message && notify()}
+      {props.toast.message && notify()}
     </Container>
   );
 }
 
 const mapStateToProps = state => ({
-  usuario: state.usuario,
+  toast: state.usuario.toast,
 });
 
 const mapDispatchToProps = dispatch =>

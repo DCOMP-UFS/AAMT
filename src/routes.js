@@ -87,7 +87,7 @@ const Routes = props => (
 )
 
 const mapStateToProps = state => ({
-  usuario: state.usuario
+  usuario: state.usuario.usuario
 });
 
 export default connect(

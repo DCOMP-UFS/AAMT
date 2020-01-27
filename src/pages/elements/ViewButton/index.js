@@ -41,6 +41,7 @@ class ViewButton extends Component {
                 <Button className="mt-3 mr-3">Primary</Button>
                 <Button className="secondary mt-3 mr-3">Secundary</Button>
                 <Button className="success mt-3 mr-3">Success</Button>
+                <Button className="danger mt-3 mr-3">danger</Button>
               </div>
 
             </div>

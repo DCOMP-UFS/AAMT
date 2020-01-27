@@ -28,15 +28,15 @@
 }
 
 .icon-lg {
-  font-size: 2.5rem;
+  font-size: 2.5rem!important;
 }
 
 .icon-md {
-  font-size: 1.875rem;
+  font-size: 1.875rem!important;
 }
 
 .icon-sm {
-  font-size: 1rem;
+  font-size: 1rem!important;
 }
 
 .text-primary {

@@ -79,7 +79,8 @@ const INITIAL_STATE = {
         createImovel( 5, 6, -1, tipoImovel[2], "Softeam", "Marlene", -10.922522, -37.103957),
       ]
     ),
-  ]
+  ],
+  tableSelection: {}
 };
 
 export default function supportInfo(state = INITIAL_STATE, action) {
@@ -210,6 +211,18 @@ export default function supportInfo(state = INITIAL_STATE, action) {
       return {
         ...state,
         form_vistoria,
+      }
+    }
+
+    case ActionTypes.CHANGE_TABLE_SELECTED: {
+      let tableSelection = state.tableSelection;
+      const id = action.payload.id;
+      const selected = action.payload.selected;
+
+      tableSelection[id] = selected;
+      return {
+        ...state,
+        tableSelection
       }
     }
 

@@ -12,4 +12,4 @@ require('./controllers/UsuarioController')(app);
 require('./controllers/MunicipioController')(app);
 require('./controllers/ConfigController')(app);
 
-app.listen(3333);
+app.listen( process.env.PORT || 3333 );

@@ -5,6 +5,7 @@ class Municipio extends Model {
     super.init({
       codigo: DataTypes.INTEGER,
       nome: DataTypes.STRING,
+      ativo: DataTypes.INTEGER
     }, {
       sequelize
     });

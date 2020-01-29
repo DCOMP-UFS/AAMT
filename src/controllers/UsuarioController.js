@@ -17,6 +17,26 @@ index = async (req, res) => {
   return res.json(usuarios);
 }
 
+listByCity = async ( req, res ) => {
+  const { municipio_id } = req.params;
+
+  const usuarios = await Usuario.findAll({
+    where: {
+      municipio_id
+    },
+    include: { association: 'municipio' },
+    attributes: {
+      exclude: [ 'municipio_id', 'senha' ]
+    },
+    order: [
+      ['nome', 'ASC'],
+      ['createdAt', 'ASC'],
+    ]
+  });
+
+  return res.json(usuarios);
+}
+
 store = async (req, res) => {
   const { municipio_id } = req.params;
   const { 
@@ -105,6 +125,7 @@ update = async (req, res) => {
 router.use(authMiddleware);
 
 router.get('/', index);
+router.get('/:municipio_id/municipios', listByCity);
 router.post('/:municipio_id/municipios', store);
 router.put('/:id', update);
 

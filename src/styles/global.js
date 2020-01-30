@@ -31,16 +31,41 @@ export const Color = {
   dark: "#3e4b5b",
   muted: "#9c9fa6",
   bgLight: "#FCFCFC",
-  border_light: "rgba(0,0,0,.125)"
+  border_light: "#ebedf2",
+  border_input: "#cccccc"
 }
 
 export const GlobalStyle = createGlobalStyle`
-  .Toastify__toast {
-    border-radius: 3px!important;
+  @font-face {
+    font-family: 'ubuntu-light';
+    src: url('./assets/fonts/Ubuntu-Light.ttf')  format('truetype'), /* Safari, Android, iOS */
+  }
+  @font-face {
+    font-family: 'ubuntu-regular';
+    src: url('./assets/fonts/Ubuntu-Regular.ttf')  format('truetype'), /* Safari, Android, iOS */
+  }
+  @font-face {
+    font-family: 'ubuntu-medium';
+    src: url('./assets/fonts/Ubuntu-Medium.ttf'); /* Safari, Android, iOS */
+  }
+  @font-face {
+    font-family: 'ubuntu-bold';
+    src: url('./assets/fonts/Ubuntu-Bold.ttf'); /* Safari, Android, iOS */
   }
 
-  .Toastify__toast--error {
-    background: ${ Color.danger }!important;
+  @font-face {
+    font-family: 'material-icons';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Material Icons'),
+      local('MaterialIcons-Regular'),
+      url('../node_modules/material-design-icons-iconfont/dist/fonts/MaterialIcons-Regular.woff2') format('woff2'),
+      url('../node_modules/material-design-icons-iconfont/dist/fonts/MaterialIcons-Regular.woff') format('woff'),
+      url('../node_modules/material-design-icons-iconfont/dist/fonts/MaterialIcons-Regular.ttf') format('truetype');
+  }
+
+  .Toastify__toast {
+    border-radius: 3px!important;
   }
 
   .Toastify__toast--success {
@@ -164,6 +189,28 @@ export const Button = styled(basicButton)`
     border-color: ${ Color.success }!important;
   }
   /* </SUCCESS> */
+  /* <DANGER> */
+  &.danger {
+    color: #FFF;
+    background-color: ${ Color.danger };
+    border-color: ${ Color.danger }!important;
+  }
+
+  &.danger:hover {
+    background-color: #FE5678!important;
+    border-color: #FE5678!important;
+  }
+
+  &.danger:focus {
+    box-shadow: 0 0 0 0.2rem #fabfcb!important;
+  }
+
+  &.danger:disabled {
+    color: #FFF;
+    background-color: ${ Color.danger }!important;
+    border-color: ${ Color.danger }!important;
+  }
+  /* </DANGER> */
 `;
 
 export const ButtonInverse = styled(basicButton)`
@@ -244,7 +291,7 @@ export const Separator = styled.div`
 
 const select = {
   display: "flex",
-  border: "1px solid #ebedf2",
+  border: `1px solid ${ Color.border_input }`,
   fontFamily: "\"ubuntu-regular\", sans-serif",
   fontSize: "0.8125rem",
   boxShadow: "none",
@@ -453,7 +500,7 @@ export const FormGroup = styled.div`
   }
 
   .form-control {
-    border: 1px solid #ebedf2;
+    border: 1px solid ${ Color.border_input };
     font-family: "ubuntu-regular", sans-serif;
     font-size: 0.8125rem;
     box-shadow: none;
@@ -471,7 +518,7 @@ export const FormGroup = styled.div`
   }
 
   .form-control .MuiInput-input {
-    border: 1px solid #ebedf2 !important;
+    border: 1px solid ${ Color.border_input } !important;
     font-family: "ubuntu-regular", sans-serif!important;
     font-size: 0.8125rem!important;
     box-shadow: none!important;

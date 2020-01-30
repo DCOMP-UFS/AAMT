@@ -66,3 +66,19 @@ export const validInputIsNull = ( idElement, value ) => {
 
   return valid;
 }
+
+export const getDateBr = date => {
+  const data = new Date( date );
+  let dia  = data.getDate().toString();
+  dia = (dia.length === 1) ? '0'+dia : dia;
+  let mes  = (data.getMonth()+1).toString(); //+1 pois no getMonth Janeiro começa com zero.
+  mes = (mes.length === 1) ? '0'+mes : mes;
+  let ano = data.getFullYear();
+
+  let hh = data.getHours();
+  hh = (hh < 10) ? '0'+hh : hh;
+  let mm = data.getMinutes();
+  mm = (mm < 10) ? '0'+mm : mm;
+
+  return `${ hh }:${ mm } - ${ dia }/${ mes }/${ ano }`;
+}

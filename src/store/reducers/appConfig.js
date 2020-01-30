@@ -9,6 +9,7 @@ const INITIAL_STATE = {
   navToggleLab: true,
   navToggle: true,
   token: "",
+  toast: {},
 }
 
 export default function quarteirao(state = INITIAL_STATE, action){
@@ -33,6 +34,16 @@ export default function quarteirao(state = INITIAL_STATE, action){
         token: action.payload.token
       }
     }
+
+    case ActionTypes.SHOW_NOTIFY_TOAST: {
+      return {
+        ...state,
+        toast: { message: action.payload.message, type: action.payload.type }
+      }
+    }
+
+    case ActionTypes.CLEAR_TOAST:
+      return { ...state, toast: { message: null, type: null } };
 
     default:
       return state;

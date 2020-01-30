@@ -16,6 +16,7 @@ import LoginScreen from './pages/LoginScreen';
 // Páginas de coordenador
 import CDT_Atividade from './pages/atividade/cadastrar';
 import Usuarios from './pages/Usuarios';
+import Municipios from './pages/Municipios';
 import CDT_Trabalho_diario from './pages/trabalho_diario/Iniciar';
 import ListaVistoria from './pages/trabalho_diario/ListaVistoria';
 import FormVistoria from './pages/trabalho_diario/Form';
@@ -68,18 +69,19 @@ const Routes = props => (
       <Route exact path="/" component={ LoginScreen } />
 
       {/* Rotas de coordenador */}
-      <PrivateCoordenador path="/trabalho_diario/iniciar" component={CDT_Trabalho_diario} tipoPerfil={ props.user.tipoPerfil } />
-      <PrivateCoordenador path="/trabalho_diario/vistoria/lista" component={ListaVistoria} tipoPerfil={ props.user.tipoPerfil } />
-      <PrivateCoordenador path="/trabalho_diario/vistoria/formulario" component={FormVistoria} tipoPerfil={ props.user.tipoPerfil } />
-      <PrivateCoordenador path="/atividades/cadastrar" component={CDT_Atividade} tipoPerfil={ props.user.tipoPerfil } />
-      <PrivateCoordenador path="/usuarios" component={Usuarios} tipoPerfil={ props.user.tipoPerfil } />
+      <PrivateCoordenador path="/trabalho_diario/iniciar" component={CDT_Trabalho_diario} tipoPerfil={ props.usuario.tipoPerfil } />
+      <PrivateCoordenador path="/trabalho_diario/vistoria/lista" component={ListaVistoria} tipoPerfil={ props.usuario.tipoPerfil } />
+      <PrivateCoordenador path="/trabalho_diario/vistoria/formulario" component={FormVistoria} tipoPerfil={ props.usuario.tipoPerfil } />
+      <PrivateCoordenador path="/atividades/cadastrar" component={CDT_Atividade} tipoPerfil={ props.usuario.tipoPerfil } />
+      <PrivateCoordenador path="/usuarios" component={Usuarios} tipoPerfil={ props.usuario.tipoPerfil } />
+      <PrivateCoordenador path="/municipios" component={Municipios} tipoPerfil={ props.usuario.tipoPerfil } />
 
       {/* Rotas de laboratorialista */}
-      <PrivateLaboratorio path="/lab/home" component={ HomeLaboratorio } tipoPerfil={ props.user.tipoPerfil } />
+      <PrivateLaboratorio path="/lab/home" component={ HomeLaboratorio } tipoPerfil={ props.usuario.tipoPerfil } />
 
-      <PrivateCoordenador path="/elementos/tipografia" component={Typography} tipoPerfil={ props.user.tipoPerfil } />
-      <PrivateCoordenador path="/elementos/formulario" component={Form} tipoPerfil={ props.user.tipoPerfil } />
-      <PrivateCoordenador path="/elementos/botoes" component={ViewButton} tipoPerfil={ props.user.tipoPerfil } />
+      <PrivateCoordenador path="/elementos/tipografia" component={Typography} tipoPerfil={ props.usuario.tipoPerfil } />
+      <PrivateCoordenador path="/elementos/formulario" component={Form} tipoPerfil={ props.usuario.tipoPerfil } />
+      <PrivateCoordenador path="/elementos/botoes" component={ViewButton} tipoPerfil={ props.usuario.tipoPerfil } />
 
       <Route exact path="*" component={() => <h1>Página não encontrada</h1>} />
     </Switch>
@@ -87,7 +89,7 @@ const Routes = props => (
 )
 
 const mapStateToProps = state => ({
-  user: state.user
+  usuario: state.usuario.usuario
 });
 
 export default connect(

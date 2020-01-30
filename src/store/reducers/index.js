@@ -6,8 +6,9 @@ import sidebar from './sidebar';
 import sidebarLab from './sidebarLab';
 import quarteirao from './quarteirao';
 import supportInfo from './supportInfo';
-import user from './user';
 import appConfig from './appConfig';
+import usuario from './Usuario';
+import municipio from './Municipio';
 
 export default combineReducers({
   atividade,
@@ -16,6 +17,7 @@ export default combineReducers({
   sidebarLab,
   quarteirao,
   supportInfo,
-  user,
   appConfig,
+  usuario,
+  municipio
 });

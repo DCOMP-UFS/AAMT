@@ -28,15 +28,15 @@
 }
 
 .icon-lg {
-  font-size: 2.5rem;
+  font-size: 2.5rem!important;
 }
 
 .icon-md {
-  font-size: 1.875rem;
+  font-size: 1.875rem!important;
 }
 
 .icon-sm {
-  font-size: 1rem;
+  font-size: 1rem!important;
 }
 
 .text-primary {
@@ -195,6 +195,7 @@ article .card{
   border-radius: 5px;
   padding: 40px;
   width: 100%;
+  box-shadow: 2px 2px 8px #c5baba;
 }
 
 article .title{

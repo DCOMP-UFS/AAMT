@@ -17,6 +17,9 @@ import LoginScreen from './pages/LoginScreen';
 import CDT_Atividade from './pages/atividade/cadastrar';
 import Usuarios from './pages/Usuarios';
 import Municipios from './pages/Municipios';
+import Localidades from './pages/Localidades';
+import Zonas from './pages/Zonas';
+import Quarteiroes from './pages/Quarteiroes';
 import CDT_Trabalho_diario from './pages/trabalho_diario/Iniciar';
 import ListaVistoria from './pages/trabalho_diario/ListaVistoria';
 import FormVistoria from './pages/trabalho_diario/Form';
@@ -75,6 +78,9 @@ const Routes = props => (
       <PrivateCoordenador path="/atividades/cadastrar" component={CDT_Atividade} tipoPerfil={ props.usuario.tipoPerfil } />
       <PrivateCoordenador path="/usuarios" component={Usuarios} tipoPerfil={ props.usuario.tipoPerfil } />
       <PrivateCoordenador path="/municipios" component={Municipios} tipoPerfil={ props.usuario.tipoPerfil } />
+      <PrivateCoordenador path="/localidades" component={Localidades} tipoPerfil={ props.usuario.tipoPerfil } />
+      <PrivateCoordenador path="/zonas" component={Zonas} tipoPerfil={ props.usuario.tipoPerfil } />
+      <PrivateCoordenador path="/quarteiroes" component={Quarteiroes} tipoPerfil={ props.usuario.tipoPerfil } />
 
       {/* Rotas de laboratorialista */}
       <PrivateLaboratorio path="/lab/home" component={ HomeLaboratorio } tipoPerfil={ props.usuario.tipoPerfil } />

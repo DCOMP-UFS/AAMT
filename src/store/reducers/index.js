@@ -9,6 +9,7 @@ import supportInfo from './supportInfo';
 import appConfig from './appConfig';
 import usuario from './Usuario';
 import municipio from './Municipio';
+import localidade from './Localidade';
 
 export default combineReducers({
   atividade,
@@ -19,5 +20,6 @@ export default combineReducers({
   supportInfo,
   appConfig,
   usuario,
-  municipio
+  municipio,
+  localidade
 });

@@ -1,5 +1,7 @@
 import { IoIosCode, IoIosCheckboxOutline, IoIosPaper } from 'react-icons/io';
-import { FaTasks, FaUsers } from 'react-icons/fa';
+import BorderAllIcon from '@material-ui/icons/BorderAll';
+import { FaTasks, FaUsers, FaCity, FaMapSigns } from 'react-icons/fa';
+import ViewCompactIcon from '@material-ui/icons/ViewCompact';
 
 import { ActionTypes } from '../actions/sidebar';
 
@@ -33,7 +35,11 @@ const INITIAL_STATE = {
     createCategory( "Administrativo" ),
     createNav( "Atividades", false, IoIosPaper, [ createSubmenu( false, "Cadastrar", "/atividades/cadastrar" ) ]),
     createLink( "Usuários", false, FaUsers, "/usuarios" ),
-    createNav( "Municípios", false, IoIosPaper, [ createSubmenu( false, "Consultar", "/municipios" ) ]),
+    createCategory( "Região" ),
+    createLink( "Municípios", false, FaCity, "/municipios"),
+    createLink( "Bairro/Localidade", false, FaMapSigns, "/localidades"),
+    createLink( "Zonas", false, ViewCompactIcon, "/zonas"),
+    createLink( "Quarteirão", false, BorderAllIcon, "/quarteiroes"),
     createCategory( "Recursos de Interface" ),
     createNav( "Elementos Básicos", false, IoIosCode, [
       createSubmenu( false, "Botões", "/elementos/botoes" ),

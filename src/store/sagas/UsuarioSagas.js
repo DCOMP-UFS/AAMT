@@ -1,8 +1,9 @@
 import { call, put } from 'redux-saga/effects';
 import { authenticateRequest, createUsuarioRequest, updateRequest } from '../../services/requests/Usuario';
-import { getUsuarios as getUsuariosRequest } from '../../services/requests/Municipio';
+import { getUsuariosPorMunicipios } from '../../services/requests/Usuario';
 
 import * as UserActions from '../actions/UsuarioActions';
+import * as AppConfigActions from '../actions/appConfig';
 import { setToken } from '../actions/appConfig';
 
 export function* authenticate(action) {
@@ -31,13 +32,13 @@ export function* authenticate(action) {
       yield put( setToken( token ) );
     }
   } catch (error) {
-    yield put( UserActions.authenticateFailure() );
+    yield put( AppConfigActions.showNotifyToast( "Usuário ou senha inválidos", "error" ) );
   }
 }
 
 export function* getUsuarios(action) {
   try {
-    const { data, status } = yield call( getUsuariosRequest, action.payload.municipio_id );
+    const { data, status } = yield call( getUsuariosPorMunicipios, action.payload.municipio_id );
 
     if( status === 200 ) {
       yield put( UserActions.getUsuarios( data ) );

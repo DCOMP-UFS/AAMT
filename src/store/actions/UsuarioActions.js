@@ -2,9 +2,6 @@ export const ActionTypes = {
   AUTHENTICATE_REQUEST: "AUTHENTICATE_REQUEST",
   AUTHENTICATE_SUCCESS: "AUTHENTICATE_SUCCESS",
   AUTHENTICATE_FAILURE: "AUTHENTICATE_FAILURE",
-  CLOSE_POPUP: "CLOSE_POPUP",
-  OPEN_POPUP: "OPEN_POPUP",
-  CLEAR_TOAST: "CLEAR_TOAST",
   GET_USUARIOS_REQUEST: "GET_USUARIOS_REQUEST",
   GET_USUARIOS_SUCCESS: "GET_USUARIOS_SUCCESS",
   GET_USUARIOS_FAILURE: "GET_USUARIOS_FAILURE",
@@ -45,10 +42,6 @@ export const authenticateFailure = () => {
     type: ActionTypes.AUTHENTICATE_FAILURE
   }
 }
-
-export const clearToast = () => {
-  return { type: ActionTypes.CLEAR_TOAST };
-};
 
 export const getUsuariosRequest = municipio_id => {
   return {

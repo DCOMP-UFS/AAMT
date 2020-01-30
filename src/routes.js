@@ -16,6 +16,7 @@ import LoginScreen from './pages/LoginScreen';
 // Páginas de coordenador
 import CDT_Atividade from './pages/atividade/cadastrar';
 import Usuarios from './pages/Usuarios';
+import Municipios from './pages/Municipios';
 import CDT_Trabalho_diario from './pages/trabalho_diario/Iniciar';
 import ListaVistoria from './pages/trabalho_diario/ListaVistoria';
 import FormVistoria from './pages/trabalho_diario/Form';
@@ -73,6 +74,7 @@ const Routes = props => (
       <PrivateCoordenador path="/trabalho_diario/vistoria/formulario" component={FormVistoria} tipoPerfil={ props.usuario.tipoPerfil } />
       <PrivateCoordenador path="/atividades/cadastrar" component={CDT_Atividade} tipoPerfil={ props.usuario.tipoPerfil } />
       <PrivateCoordenador path="/usuarios" component={Usuarios} tipoPerfil={ props.usuario.tipoPerfil } />
+      <PrivateCoordenador path="/municipios" component={Municipios} tipoPerfil={ props.usuario.tipoPerfil } />
 
       {/* Rotas de laboratorialista */}
       <PrivateLaboratorio path="/lab/home" component={ HomeLaboratorio } tipoPerfil={ props.usuario.tipoPerfil } />

@@ -14,7 +14,6 @@ const INITIAL_STATE = {
       nome: "",
     },
   },
-  toast: { message: null, type: null },
   usuarios: [],
   createUser: null,
   updateUser: null,
@@ -32,16 +31,6 @@ export default function Usuario(state = INITIAL_STATE, action) {
         usuario
       }
     }
-
-    case ActionTypes.AUTHENTICATE_FAILURE: {
-      return {
-        ...state,
-        toast: { message: "Usuário ou senha inválidos", type: "error" }
-      }
-    }
-
-    case ActionTypes.CLEAR_TOAST:
-      return { ...state, toast: { message: null, type: null } };
 
     case ActionTypes.GET_USUARIOS_SUCCESS: {
       let usuarios = state.usuarios;
@@ -68,7 +57,7 @@ export default function Usuario(state = INITIAL_STATE, action) {
 
       const user = action.payload.usuario;
 
-      usuarios = [...usuarios , user];
+      usuarios = [ user, ...usuarios ];
 
       return {
         ...state,

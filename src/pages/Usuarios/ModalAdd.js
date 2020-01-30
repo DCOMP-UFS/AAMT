@@ -135,7 +135,7 @@ function ModalAdd({ createUsuarioRequest, municipio_id, createUser, ...props }) 
 }
 
 const mapStateToProps = state => ({
-  municipio_id: state.usuario.municipio.id,
+  municipio_id: state.usuario.usuario.municipio.id,
   createUser: state.usuario.createUser
  });
 

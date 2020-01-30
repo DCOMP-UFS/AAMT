@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { changeUserEditIndex } from '../../store/actions/UsuarioActions';
 
 function ButtonEdit( props ) {
-  const index = props.index;
+  const [ index ] = props.params;
 
   const handleClick = index => {
     props.changeUserEditIndex( index );

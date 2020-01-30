@@ -57,11 +57,15 @@ function ModalUpdate({ updateUsuarioRequest, municipio_id, updateUser, ...props 
   }, [ updateUser ]);
 
   useEffect(() => {
-    setUser();
+    if( props.indexUser >= 0 ) {
+      setUser();
+    }
   }, [ props.indexUser ]);
 
   useEffect(() => {
-    setUser();
+    if( props.indexUser >= 0 ) {
+      setUser();
+    }
   }, [ props.reloadIndex ]);
 
   function setUser() {
@@ -82,7 +86,7 @@ function ModalUpdate({ updateUsuarioRequest, municipio_id, updateUser, ...props 
   }
 
   return(
-    <Modal id="modal-update-usuario" title="Cadastrar Usuário" size='lg'>
+    <Modal id="modal-update-usuario" title="Atualizar Usuário" size='lg'>
       <form onSubmit={ handleCadastrar }>
         <ModalBody>
           <Row>
@@ -151,7 +155,7 @@ function ModalUpdate({ updateUsuarioRequest, municipio_id, updateUser, ...props 
 }
 
 const mapStateToProps = state => ({
-  municipio_id: state.usuario.municipio.id,
+  municipio_id: state.usuario.usuario.municipio.id,
   updateUser: state.usuario.updateUser,
   indexUser: state.usuario.indexUser,
   usuarios: state.usuario.usuarios,

@@ -15,7 +15,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { authenticateRequest, clearToast } from '../../store/actions/UsuarioActions';
+import { clearToast } from '../../store/actions/appConfig';
+import { authenticateRequest } from '../../store/actions/UsuarioActions';
 
 function LoginScreen( props ) {
   const [ usuario, setUsuario ] = useState("");
@@ -113,7 +114,7 @@ function LoginScreen( props ) {
 }
 
 const mapStateToProps = state => ({
-  toast: state.usuario.toast,
+  toast: state.appConfig.toast,
 });
 
 const mapDispatchToProps = dispatch =>

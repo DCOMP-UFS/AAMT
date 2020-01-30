@@ -18,6 +18,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { ContainerTable } from './styles';
+import Edit from '@material-ui/icons/Edit';
+import $ from 'jquery';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -328,11 +330,11 @@ function TableComponent({ title, description, ...props}) {
 
                   {headCells.map(( head, index ) => {
                     if( head.id === 'actions' ) {
-                      const [ ComponentAction, params ] = row.actions;
+                      const [ ComponentAction, ...params ] = row.actions;
 
                       return (
                         <TableCell key={ index } id={labelId} scope="row" padding="none">
-                          <ComponentAction index={ params } />
+                          <ComponentAction params={ params } />
                         </TableCell>
                       );
                     }
@@ -388,3 +390,28 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(TableComponent);
+
+
+export function createHeadCell(id, align, label) {
+  return { id, align, disablePadding: false, label }
+}
+
+export function ButtonEdit( props ) {
+  const [ index, idModal, changeIndex ] = props.params;
+
+  const handleClick = index => {
+    changeIndex( index );
+    $('#' + idModal).modal('show');
+  }
+
+  return(
+    <Tooltip
+      className="bg-warning mt-2 mb-2"
+      title="Editar"
+      onClick={ () => { handleClick(index) } } >
+      <IconButton aria-label="more">
+        <Edit />
+      </IconButton>
+    </Tooltip>
+  );
+}

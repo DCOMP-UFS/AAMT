@@ -21,7 +21,8 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../store/actions/sidebar';
-import { getUsuariosRequest, clearToast, changeUserEditIndex } from '../../store/actions/UsuarioActions';
+import { clearToast } from '../../store/actions/appConfig';
+import { getUsuariosRequest, changeUserEditIndex } from '../../store/actions/UsuarioActions';
 
 // STYLES
 import { GlobalStyle } from './styles';
@@ -173,7 +174,7 @@ function TooltipUnselected( props ) {
 const mapStateToProps = state => ({
   municipio_id: state.usuario.usuario.municipio.id,
   usuarios: state.usuario.usuarios,
-  toast: state.usuario.toast
+  toast: state.appConfig.toast
 });
 
 const mapDispatchToProps = dispatch =>

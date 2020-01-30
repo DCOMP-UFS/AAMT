@@ -37,3 +37,9 @@ export const updateRequest = data => {
     ...headerAuthorization()
   });
 }
+
+export const getUsuariosPorMunicipios = municipio_id => {
+  return api.get(`/usuarios/${ municipio_id }/usuarios`, {
+    ...headerAuthorization()
+  });
+}

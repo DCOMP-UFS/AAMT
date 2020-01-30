@@ -16,7 +16,7 @@ import { updateUsuarioRequest, clearUpdateUser } from '../../store/actions/Usuar
 // STYLES
 import { Button, FormGroup, selectDefault } from '../../styles/global';
 
-function ModalUpdate({ updateUsuarioRequest, municipio_id, updateUser, ...props }) {
+function ModalUpdate({ updateUsuarioRequest, updateUser, ...props }) {
   const [ nome, setNome ] = useState("");
   const [ cpf, setCpf ] = useState("");
   const [ rg, setRg ] = useState("");
@@ -31,7 +31,8 @@ function ModalUpdate({ updateUsuarioRequest, municipio_id, updateUser, ...props 
     return { value: value, label };
   });
 
-  function handleCadastrar( e ) {
+  function handleSubmit( e ) {
+    e.preventDefault();
     const id = props.usuarios[ props.indexUser ].id;
 
     updateUsuarioRequest( id, {
@@ -62,12 +63,6 @@ function ModalUpdate({ updateUsuarioRequest, municipio_id, updateUser, ...props 
     }
   }, [ props.indexUser ]);
 
-  useEffect(() => {
-    if( props.indexUser >= 0 ) {
-      setUser();
-    }
-  }, [ props.reloadIndex ]);
-
   function setUser() {
     const user = props.usuarios[ props.indexUser ];
 
@@ -87,7 +82,7 @@ function ModalUpdate({ updateUsuarioRequest, municipio_id, updateUser, ...props 
 
   return(
     <Modal id="modal-update-usuario" title="Atualizar Usuário" size='lg'>
-      <form onSubmit={ handleCadastrar }>
+      <form onSubmit={ handleSubmit }>
         <ModalBody>
           <Row>
             <Col>
@@ -155,12 +150,10 @@ function ModalUpdate({ updateUsuarioRequest, municipio_id, updateUser, ...props 
 }
 
 const mapStateToProps = state => ({
-  municipio_id: state.usuario.usuario.municipio.id,
   updateUser: state.usuario.updateUser,
   indexUser: state.usuario.indexUser,
-  usuarios: state.usuario.usuarios,
-  reloadIndex: state.usuario.reloadIndex
- });
+  usuarios: state.usuario.usuarios
+});
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({ updateUsuarioRequest, clearUpdateUser }, dispatch);

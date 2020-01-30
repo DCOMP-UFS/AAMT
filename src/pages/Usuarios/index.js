@@ -1,19 +1,13 @@
 ﻿/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
-import TableComponent from '../../components/TableComponent';
 import { perfil } from '../../config/enumerate';
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import Block from '@material-ui/icons/Block';
-import AddBoxIcon from '@material-ui/icons/AddBox';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import $ from 'jquery';
 import ModalAdd from './ModalAdd';
 import ModalDesativar from './ModalDesativar';
 import ModalUpdate from './ModalUpdate';
-import ButtonEdit from './ButtonEdit';
+import Table, { ButtonEdit, ButtonAdd, ButtonDesabled } from '../../components/Table';
+import { getDateBr } from '../../config/function';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -21,56 +15,62 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../store/actions/sidebar';
+import { changeTableSelected } from '../../store/actions/supportInfo';
 import { clearToast } from '../../store/actions/appConfig';
-import { getUsuariosRequest, changeUserEditIndex } from '../../store/actions/UsuarioActions';
+import { getUsuariosRequest, changeUserEditIndex, } from '../../store/actions/UsuarioActions';
 
 // STYLES
 import { GlobalStyle } from './styles';
 
-function createRowUser(id, nome, email, createdAt, tipoPerfil, actions) {
+const columns = [
+  "#",
+  "Nome",
+  "E-mail",
+  "Criado em",
+  "Perfil",
+  {
+    name: "Ação",
+    options: {
+      customBodyRender: (value, tableMeta, updateValue) => {
+        const { index, idModal, changeIndex } = value;
+
+        return (
+          <ButtonEdit index={ index } idModal={ idModal } changeIndex={ changeIndex } />
+        );
+      }
+    }
+  }
+];
+
+function MapPerfil(tipoPerfil) {
   let perfilUser = Object.entries(perfil).find(([key, value]) => {
     return tipoPerfil === value;
   });
 
   perfilUser[0] = perfilUser[0].replace(/^\w/, c => c.toUpperCase());
-
-  const data = new Date( createdAt );
-
-  let dia  = data.getDate().toString();
-  dia = (dia.length === 1) ? '0'+dia : dia;
-  let mes  = (data.getMonth()+1).toString(); //+1 pois no getMonth Janeiro começa com zero.
-  mes = (mes.length === 1) ? '0'+mes : mes;
-  let ano = data.getFullYear();
-
-  let hh = data.getHours();
-  hh = (hh < 10) ? '0'+hh : hh;
-  let mm = data.getMinutes();
-  mm = (mm < 10) ? '0'+mm : mm;
-
-  return {
-    id: id + 1,
-    nome,
-    email,
-    createdAt: `${ hh }:${ mm } - ${ dia }/${ mes }/${ ano }`,
-    tipoPerfil: perfilUser[0],
-    actions
-  }
-}
-
-function createHeadCell(id, align, label) {
-  return { id, align, disablePadding: false, label }
+  return perfilUser[0];
 }
 
 function Usuarios({ municipio_id, usuarios, ...props }) {
   const [ rows, setRows ] = useState([]);
-  const [ headCells ] = useState([
-    createHeadCell('id', 'left', '#'),
-    createHeadCell('nome', 'left', 'Nome'),
-    createHeadCell('email', 'left', 'E-mail'),
-    createHeadCell('createdAt', 'left', 'Criado em'),
-    createHeadCell('tipoPerfil', 'left', 'Perfil'),
-    createHeadCell('actions', 'right', '')
-  ]);
+  const options = {
+    customToolbar: () => {
+      return (
+        <ButtonAdd
+          toggle="modal"
+          target="#modal-novo-usuario" />
+      );
+    },
+    customToolbarSelect: ({ data }) => {
+      props.changeTableSelected('tableUser', data);
+      return (
+        <ButtonDesabled
+          toggle="modal"
+          target="#modal-desativar-usuario"
+          data={ data } />
+      );
+    }
+  };
 
   useEffect(() => {
     props.changeSidebar(4, 1);
@@ -79,18 +79,22 @@ function Usuarios({ municipio_id, usuarios, ...props }) {
 
   useEffect(() => {
     createRows();
-  }, [usuarios]);
+  }, [ usuarios ]);
+
+  useEffect(() => {
+    createRows();
+  }, [ props.reload ]);
 
   function createRows() {
     const users = usuarios.map( (user, index) => (
-      createRowUser(
-        index,
+      [
+        (index + 1),
         user.nome,
         user.email,
-        user.createdAt,
-        user.tipoPerfil,
-        [ButtonEdit, index]
-      )
+        getDateBr(user.createdAt),
+        MapPerfil(user.tipoPerfil),
+        { index, idModal: 'modal-update-usuario', changeIndex: props.changeUserEditIndex }
+      ]
     ));
 
     setRows( users );
@@ -112,16 +116,11 @@ function Usuarios({ municipio_id, usuarios, ...props }) {
           {/* Formulário básico */}
           <article className="col-md-12 stretch-card">
             <div className="card">
-              <TableComponent
-                id="tableUser"
+              <Table
                 title="Usuários"
-                description="Lista de usuários no sistema"
-                reload={ props.reload }
-                rows={ rows }
-                headCells={ headCells }
-                TypographyTable={ TypographyUser }
-                TooltipSelected={ TooltipSelected }
-                TooltipUnselected={ TooltipUnselected } />
+                columns={ columns }
+                data={ rows }
+                options={ options } />
             </div>
           </article>
         </div>
@@ -136,49 +135,15 @@ function Usuarios({ municipio_id, usuarios, ...props }) {
   );
 }
 
-function TypographyUser(props) {
-  return (
-    <Typography className={ props.className } color="inherit" variant="subtitle1">
-      { props.children }
-    </Typography>
-  )
-}
-
-function TooltipSelected( props ) {
-  return(
-    <Tooltip
-      title="Desativar usuário(s)"
-      className="bg-light"
-      onClick={() => $('#modal-desativar-usuario').modal('show') } >
-      <IconButton aria-label="desativar">
-        <Block />
-      </IconButton>
-    </Tooltip>
-  );
-}
-
-function TooltipUnselected( props ) {
-  return(
-    <Tooltip
-      title="Novo usuário"
-      className={ props.className }
-      data-toggle="modal"
-      data-target="#modal-novo-usuario" >
-      <IconButton aria-label="more" className="text-success">
-        <AddBoxIcon />
-      </IconButton>
-    </Tooltip>
-  );
-}
-
 const mapStateToProps = state => ({
-  municipio_id: state.usuario.usuario.municipio.id,
   usuarios: state.usuario.usuarios,
+  reload: state.usuario.reload,
+  municipio_id: state.usuario.usuario.municipio.id,
   toast: state.appConfig.toast
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ changeSidebar, getUsuariosRequest, clearToast, changeUserEditIndex }, dispatch);
+  bindActionCreators({ changeSidebar, getUsuariosRequest, clearToast, changeUserEditIndex, changeTableSelected }, dispatch);
 
 export default connect(
   mapStateToProps,

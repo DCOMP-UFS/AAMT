@@ -1,8 +1,6 @@
 import { ActionTypes } from '../actions/UsuarioActions';
 
 const INITIAL_STATE = {
-  reload: false,
-
   usuario: {
     nome: "",
     email: "",
@@ -15,10 +13,10 @@ const INITIAL_STATE = {
     },
   },
   usuarios: [],
+  indexUser: -1,
   createUser: null,
   updateUser: null,
-  indexUser: -1,
-  reloadIndex: false,
+  reload: false
 }
 
 export default function Usuario(state = INITIAL_STATE, action) {
@@ -76,9 +74,16 @@ export default function Usuario(state = INITIAL_STATE, action) {
     }
 
     case ActionTypes.UPDATE_USUARIO_SUCCESS: {
+      let usuarios = state.usuarios;
+      const usuario = action.payload.usuario;
+
+      const index = usuarios.findIndex(( m ) => usuario.id === m.id );
+
+      usuarios[ index ] = usuario;
+
       return {
         ...state,
-        toast: { message: "Usuário(s) alterado com sucesso", type: "success" },
+        usuarios,
         updateUser: true,
         reload: !state.reload
       }
@@ -109,8 +114,7 @@ export default function Usuario(state = INITIAL_STATE, action) {
     case ActionTypes.CHANGE_USER_EDIT_INDEX: {
       return {
         ...state,
-        indexUser: action.payload.index,
-        reloadIndex: !state.reloadIndex
+        indexUser: action.payload.index
       }
     }
 

@@ -16,7 +16,7 @@ import { Button } from '../../styles/global';
 function ModalDisabled( props ) {
   function handleClick() {
     props.tableSelected.forEach( row => {
-      const { id } = props.municipios[ --row.id ];
+      const { id } = props.municipios[ row.index ];
 
       props.updateCityRequest( id, { ativo: 0 } );
     });
@@ -48,7 +48,7 @@ function ModalDisabled( props ) {
 }
 
 const mapStateToProps = state => ({
-  tableSelected: state.supportInfo.tableSelection.tableMunicipio,
+  tableSelected: state.supportInfo.tableSelection.tableCity,
   municipios: state.municipio.municipios,
   updatedCity: state.municipio.updatedCity
 });

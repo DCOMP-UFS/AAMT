@@ -15,6 +15,7 @@ const optionsDefault = {
   filterType: 'dropdown',
   print: false,
   download: false,
+  responsive: 'scroll',
   textLabels: {
     body: {
       noMatch: "Desculpa, nenhum registro correspondente encontrado",
@@ -88,8 +89,6 @@ export default function Table({ title, data, columns, options: optionsProps }) {
 
 export function ButtonEdit({ index, idModal, changeIndex }) {
   const handleClick = index => {
-    console.log(index);
-
     changeIndex( index );
     $('#' + idModal).modal('show');
   }
@@ -116,7 +115,7 @@ export function ButtonAdd({ handleClick, toggle, target }) {
   );
 }
 
-export function ButtonDesabled({ handleClick, toggle, target }) {
+export function ButtonDesabled({ handleClick, toggle, target, ...props }) {
   return (
     <Tooltip
       title="Deletar município(s)"

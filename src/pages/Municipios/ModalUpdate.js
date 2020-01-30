@@ -22,7 +22,7 @@ function ModalUpdate({ updateCityRequest, updatedCity, ...props }) {
 
   const optionAtivo = [ { value: 1, label: 'Sim' }, { value: 0, label: 'Não' } ];
 
-  function handleCadastrar( e ) {
+  function handleSubmit( e ) {
     e.preventDefault();
     const id = props.municipios[ props.indexCity ].id;
 
@@ -63,7 +63,7 @@ function ModalUpdate({ updateCityRequest, updatedCity, ...props }) {
 
   return(
     <Modal id="modal-update-city" title="Atualizar Usuário">
-      <form onSubmit={ handleCadastrar }>
+      <form onSubmit={ handleSubmit }>
         <ModalBody>
           <Row>
             <Col>
@@ -107,9 +107,8 @@ function ModalUpdate({ updateCityRequest, updatedCity, ...props }) {
 const mapStateToProps = state => ({
   updatedCity: state.municipio.updatedCity,
   indexCity: state.municipio.indexCity,
-  municipios: state.municipio.municipios,
-  reloadIndex: state.municipio.reloadIndex
- });
+  municipios: state.municipio.municipios
+});
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({ updateCityRequest, clearUpdateCity }, dispatch);

@@ -12,7 +12,6 @@ export const ActionTypes = {
   UPDATE_USUARIO_REQUEST: "UPDATE_USUARIO_REQUEST",
   UPDATE_ALL_USUARIO_REQUEST: "UPDATE_ALL_USUARIO_REQUEST",
   UPDATE_USUARIO_SUCCESS: "UPDATE_USUARIO_SUCCESS",
-  UPDATE_USUARIO_FAILURE: "UPDATE_USUARIO_FAILURE",
   CLEAR_UPDATE_USER: "CLEAR_UPDATE_USER",
   CHANGE_USER_EDIT_INDEX: "CHANGE_USER_EDIT_INDEX"
 }
@@ -119,15 +118,12 @@ export const updateAllUsuarioRequest = ( id, body ) => {
   }
 }
 
-export const updateUsuario = () => {
+export const updateUsuario = usuario => {
   return {
-    type: ActionTypes.UPDATE_USUARIO_SUCCESS
-  }
-}
-
-export const updateUsuarioFailure = () => {
-  return {
-    type: ActionTypes.UPDATE_USUARIO_FAILURE
+    type: ActionTypes.UPDATE_USUARIO_SUCCESS,
+    payload: {
+      usuario
+    }
   }
 }
 

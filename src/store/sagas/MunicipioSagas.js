@@ -42,7 +42,7 @@ export function* updateCity( action ) {
       yield put( MunicipioActions.updateCity( data ) );
       yield put( AppConfigActions.showNotifyToast( "Município atualizado com sucesso", "success" ) );
     } else {
-      yield put( AppConfigActions.showNotifyToast( "Falha ao atualizar município: " + status, "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Falha ao atualizar informações do município: " + status, "error" ) );
     }
   } catch (error) {
     yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar o município, favor verifique sua conexão com a internet", "error" ) );

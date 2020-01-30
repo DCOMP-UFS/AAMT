@@ -15,7 +15,7 @@ import { Button } from '../../styles/global';
 function ModalDesativar( props ) {
   function handleClick() {
     props.tableSelected.forEach( row => {
-      const { id } = props.usuarios[ --row.id ];
+      const { id } = props.usuarios[ row.index ];
 
       props.updateAllUsuarioRequest( id, { ativo: 0 } );
     });

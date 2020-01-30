@@ -14,6 +14,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../store/actions/sidebar';
+import { changeTableSelected } from '../../store/actions/supportInfo';
 import { clearToast } from '../../store/actions/appConfig';
 import { getMunicipiosRequest, changeCityEditIndex } from '../../store/actions/MunicipioActions';
 
@@ -39,7 +40,6 @@ const columns = [
 
 function Municipios({ municipios, ...props }) {
   const [ rows, setRows ] = useState([]);
-
   const options = {
     customToolbar: () => {
       return (
@@ -48,7 +48,8 @@ function Municipios({ municipios, ...props }) {
           target="#modal-novo-municipio" />
       );
     },
-    customToolbarSelect: () => {
+    customToolbarSelect: ({ data }) => {
+      props.changeTableSelected('tableCity', data);
       return (
         <ButtonDesabled
           toggle="modal"
@@ -120,12 +121,11 @@ function Municipios({ municipios, ...props }) {
 const mapStateToProps = state => ({
   municipios: state.municipio.municipios,
   reload: state.municipio.reload,
-  updatedCity: state.municipio.updatedCity,
   toast: state.appConfig.toast
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ changeSidebar, getMunicipiosRequest, clearToast, changeCityEditIndex }, dispatch);
+  bindActionCreators({ changeSidebar, getMunicipiosRequest, clearToast, changeCityEditIndex, changeTableSelected }, dispatch);
 
 export default connect(
   mapStateToProps,

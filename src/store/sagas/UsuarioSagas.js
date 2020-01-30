@@ -67,14 +67,15 @@ export function* createUsuario( action ) {
 
 export function* updateUsuario( action ) {
   try {
-    const { status } = yield call( updateRequest, action.payload );
+    const { data, status } = yield call( updateRequest, action.payload );
 
     if( status === 200 ) {
-      yield put( UserActions.updateUsuario() );
+      yield put( UserActions.updateUsuario( data ) );
+      yield put( AppConfigActions.showNotifyToast( "Usuário(s) alterado com sucesso", "success" ) );
     } else {
-      yield put( UserActions.updateUsuarioFailure() );
+      yield put( AppConfigActions.showNotifyToast( "Falha ao atualizar informações do usuário: " + status, "error" ) );
     }
   } catch (error) {
-    yield put( UserActions.updateUsuarioFailure() );
+    yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar o usuário, favor verifique sua conexão com a internet", "error" ) );
   }
 }

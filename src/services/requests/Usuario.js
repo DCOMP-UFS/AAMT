@@ -39,7 +39,7 @@ export const updateRequest = data => {
 }
 
 export const getUsuariosPorMunicipios = municipio_id => {
-  return api.get(`/usuarios/${ municipio_id }/usuarios`, {
+  return api.get(`/usuarios/${ municipio_id }/municipios`, {
     ...headerAuthorization()
   });
 }

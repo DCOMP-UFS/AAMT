@@ -11,5 +11,7 @@ require('./controllers/AuthController')(app);
 require('./controllers/UsuarioController')(app);
 require('./controllers/MunicipioController')(app);
 require('./controllers/ConfigController')(app);
+require('./controllers/CategoriaController')(app);
+require('./controllers/LocalidadeController')(app);
 
 app.listen( process.env.PORT || 3333 );

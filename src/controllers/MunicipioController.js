@@ -53,7 +53,7 @@ store = async (req, res) => {
     ativo: 1
   });
 
-  return res.json(municipio);
+  return res.status(201).json(municipio);
 }
 
 update = async (req, res) => {
@@ -92,11 +92,24 @@ update = async (req, res) => {
   return res.json( result );
 }
 
+destroy = async ( req, res ) => {
+  const { id } = req.params;
+
+  const result = await Municipio.destroy({
+    where: {
+      id
+    }
+  });
+
+  return res.json( result );
+}
+
 router.use(authMiddleware);
 
 router.get('/', index);
 router.get('/:municipio_id/usuarios', listUser);
 router.post('/', store);
 router.put('/:id', update);
+router.delete('/:id', destroy);
 
 module.exports = app => app.use('/municipios', router);

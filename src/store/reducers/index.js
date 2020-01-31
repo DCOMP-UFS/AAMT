@@ -10,6 +10,7 @@ import appConfig from './appConfig';
 import usuario from './Usuario';
 import municipio from './Municipio';
 import localidade from './Localidade';
+import categoria from './Categoria';
 
 export default combineReducers({
   atividade,
@@ -21,5 +22,6 @@ export default combineReducers({
   appConfig,
   usuario,
   municipio,
-  localidade
+  localidade,
+  categoria
 });

@@ -7,9 +7,9 @@ export const listRequest = () => {
 }
 
 export const createLocationRequest = data => {
-  const { codigo, nome } = data;
+  const { codigo, nome, categoria: categoria_id, municipio: municipio_id } = data;
 
-  return api.post(`/localidades/2/categorias/2/municipios`, {
+  return api.post(`/localidades/${ categoria_id }/categorias/${ municipio_id }/municipios`, {
     nome,
     codigo
   },

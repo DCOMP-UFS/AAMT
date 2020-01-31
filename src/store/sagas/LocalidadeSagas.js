@@ -20,31 +20,31 @@ export function* getLocalidades(action) {
 }
 
 export function* createLocation( action ) {
-  // try {
-  //   const { data, status } = yield call( createCityRequest, action.payload );
+  try {
+    const { data, status } = yield call( createLocationRequest, action.payload );
 
-  //   if( status === 201 ) {
-  //     yield put( MunicipioActions.createCity( data ) );
-  //     yield put( AppConfigActions.showNotifyToast( "Município criado com sucesso", "success" ) );
-  //   }else {
-  //     yield put( AppConfigActions.showNotifyToast( "Falha ao criar município: " + status, "error" ) );
-  //   }
-  // } catch (error) {
-  //   yield put( AppConfigActions.showNotifyToast( "Erro ao criar o município, favor verifique sua conexão com a internet", "error" ) );
-  // }
+    if( status === 201 ) {
+      yield put( LocalidadeActions.createLocation( data ) );
+      yield put( AppConfigActions.showNotifyToast( "Localidade criada com sucesso", "success" ) );
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Falha ao criar a localidade: " + status, "error" ) );
+    }
+  } catch (error) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao criar a localidade, favor verifique sua conexão com a internet", "error" ) );
+  }
 }
 
 export function* updateLocation( action ) {
-  // try {
-  //   const { data, status } = yield call( updateRequest, action.payload );
+  try {
+    const { data, status } = yield call( updateRequest, action.payload );
 
-  //   if( status === 200 ) {
-  //     yield put( MunicipioActions.updateCity( data ) );
-  //     yield put( AppConfigActions.showNotifyToast( "Município atualizado com sucesso", "success" ) );
-  //   } else {
-  //     yield put( AppConfigActions.showNotifyToast( "Falha ao atualizar informações do município: " + status, "error" ) );
-  //   }
-  // } catch (error) {
-  //   yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar o município, favor verifique sua conexão com a internet", "error" ) );
-  // }
+    if( status === 200 ) {
+      yield put( LocalidadeActions.updateLocation( data ) );
+      yield put( AppConfigActions.showNotifyToast( "Localidade atualizada com sucesso", "success" ) );
+    } else {
+      yield put( AppConfigActions.showNotifyToast( "Falha ao atualizar as informações da localidade: " + status, "error" ) );
+    }
+  } catch (error) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar a localidade, favor verifique sua conexão com a internet", "error" ) );
+  }
 }

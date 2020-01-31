@@ -3,7 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { getDateBr } from '../../config/function';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Table, { ButtonEdit, ButtonAdd, ButtonDesabled } from '../../components/Table';
+import $ from 'jquery';
+import Table, { ButtonAdd, ButtonDesabled } from '../../components/Table';
+import ModalAdd from './ModalAdd';
+import ModalDisabled from './ModalDisabled';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -15,28 +18,66 @@ import { changeTableSelected } from '../../store/actions/supportInfo';
 import { clearToast } from '../../store/actions/appConfig';
 import { getLocationRequest, changeIndex } from '../../store/actions/LocalidadeActions';
 
+import { Color } from '../../styles/global';
+
 const columns = [
-  "#",
-  "Código",
-  "Nome",
-  "Criado em",
-  "Atualizado em",
-  "Ativo",
-  "Categoria",
-  "Cód. Município",
-  "Município",
   {
-    name: "Ação",
+    name: "index",
+    label: "#",
+    options: {
+      filter: false,
+      display: 'false'
+    }
+  },
+  {
+    label: "Código",
+    options: {
+      filter: false
+    }
+  },
+  {
+    label: "Nome",
+    options: {
+      filter: false
+    }
+  },
+  {
+    name: "createdAt",
+    label: "Criado em",
+    options: {
+     display: 'false',
+     filter: false
+    }
+  },
+  {
+    name: "updatedAt",
+    label: "Atualizado em",
+    options: {
+     display: 'false',
+     filter: false
+    }
+  },
+  {
+    name: "Categoria",
     options: {
       customBodyRender: (value, tableMeta, updateValue) => {
-        const { index, idModal, changeIndex } = value;
+        let bg_mark = "info";
+
+        if( value === "Rural" )
+          bg_mark = "success";
+
+        if( value === "Terra indígena" )
+          bg_mark = "primary";
 
         return (
-          <ButtonEdit index={ index } idModal={ idModal } changeIndex={ changeIndex } />
+          <mark className={`bg-${ bg_mark } text-white`}>{ value }</mark>
         );
       }
     }
-  }
+  },
+  "Cód. Município",
+  "Município",
+  "Ativo",
 ];
 
 function Localidades({ localidades, ...props }) {
@@ -56,12 +97,24 @@ function Localidades({ localidades, ...props }) {
           toggle="modal"
           target="#modal-desativar-localidade" />
       );
+    },
+    setRowProps: (row) => {
+      const className = row[8] === "Não" ? "row-desabled" : "";
+
+      return {
+        className
+      }
+    },
+    onRowClick: (row, ...props) => {
+      // row[0] === index + 1
+
+      window.location = `${ window.location.origin.toString() }/localidades/${ row[0] }`;
     }
   };
 
   useEffect(() => {
     props.changeSidebar(7, 0);
-    // props.getMunicipiosRequest();
+    props.getLocationRequest();
   }, []);
 
   useEffect(() => {
@@ -73,20 +126,19 @@ function Localidades({ localidades, ...props }) {
   }, [ props.reload ]);
 
   function createRows() {
-    const list = localidades.map( (l, index) => (
-      [
+    const list = localidades.map( (l, index) => {
+      return ([
         (index + 1),
         l.codigo,
         l.nome,
         getDateBr( l.createdAt ),
         getDateBr( l.updatedAt ),
-        l.ativo,
         l.categoria.nome,
         l.municipio.codigo,
         l.municipio.nome,
-        { index, idModal: 'modal-update-city', changeIndex: props.changeCityEditIndex }
-      ]
-    ));
+        l.ativo ? "Sim" : "Não",
+      ])
+    });
 
     setRows( list );
   }
@@ -106,13 +158,16 @@ function Localidades({ localidades, ...props }) {
         <article className="col-md-12 stretch-card">
           <div className="card">
             <Table
-              title="Municípios"
+              title="Bairro(s)/Localidade(s)"
               columns={ columns }
               data={ rows }
-              options={ options } />
+              options={ options }
+              turnRed={ "ativo" } />
           </div>
         </article>
       </div>
+      <ModalAdd />
+      <ModalDisabled />
 
       <ToastContainer />
       { props.toast.message && notify() }

@@ -78,9 +78,10 @@ const Routes = props => (
       <PrivateCoordenador path="/atividades/cadastrar" component={CDT_Atividade} tipoPerfil={ props.usuario.tipoPerfil } />
       <PrivateCoordenador path="/usuarios" component={Usuarios} tipoPerfil={ props.usuario.tipoPerfil } />
       <PrivateCoordenador path="/municipios" component={Municipios} tipoPerfil={ props.usuario.tipoPerfil } />
-      <PrivateCoordenador path="/localidades" component={Localidades} tipoPerfil={ props.usuario.tipoPerfil } />
       <PrivateCoordenador path="/zonas" component={Zonas} tipoPerfil={ props.usuario.tipoPerfil } />
       <PrivateCoordenador path="/quarteiroes" component={Quarteiroes} tipoPerfil={ props.usuario.tipoPerfil } />
+      <PrivateCoordenador exact path="/localidades" component={Localidades} tipoPerfil={ props.usuario.tipoPerfil } />
+      <PrivateCoordenador path="/localidades/:index" component={ props => (<h1>{ props.match.params.index }</h1>)} tipoPerfil={ props.usuario.tipoPerfil } />
 
       {/* Rotas de laboratorialista */}
       <PrivateLaboratorio path="/lab/home" component={ HomeLaboratorio } tipoPerfil={ props.usuario.tipoPerfil } />

@@ -24,6 +24,7 @@ const columns = [
   "Nome",
   "Criado em",
   "Atualizado em",
+  "Ativo",
   {
     name: "Ação",
     options: {
@@ -55,6 +56,13 @@ function Municipios({ municipios, ...props }) {
           toggle="modal"
           target="#modal-desativar-municipio" />
       );
+    },
+    setRowProps: (row) => {
+      const className = row[5] === "Não" ? "row-desabled" : "";
+
+      return {
+        className
+      }
     }
   };
 
@@ -79,6 +87,7 @@ function Municipios({ municipios, ...props }) {
         municipio.nome,
         getDateBr( municipio.createdAt ),
         getDateBr( municipio.updatedAt ),
+        municipio.ativo ? "Sim" : "Não",
         { index, idModal: 'modal-update-city', changeIndex: props.changeCityEditIndex }
       ]
     ));

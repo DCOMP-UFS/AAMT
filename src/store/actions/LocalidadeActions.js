@@ -25,12 +25,14 @@ export const getLocations = localidades => {
   }
 }
 
-export const createLocationRequest = ( codigo, nome ) => {
+export const createLocationRequest = ( codigo, nome, categoria, municipio ) => {
   return {
     type: ActionTypes.CREATE_LOCATION_REQUEST,
     payload: {
       codigo,
-      nome
+      nome,
+      categoria,
+      municipio
     }
   }
 }
@@ -57,11 +59,11 @@ export const updateLocationRequest = ( id, body ) => {
   }
 }
 
-export const updateLocation = municipio => {
+export const updateLocation = localidade => {
   return {
     type: ActionTypes.UPDATE_LOCATION_SUCCESS,
     payload: {
-      municipio
+      localidade
     }
   }
 }

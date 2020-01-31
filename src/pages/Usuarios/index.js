@@ -28,6 +28,7 @@ const columns = [
   "E-mail",
   "Criado em",
   "Perfil",
+  "Ativo",
   {
     name: "Ação",
     options: {
@@ -69,7 +70,14 @@ function Usuarios({ municipio_id, usuarios, ...props }) {
           target="#modal-desativar-usuario"
           data={ data } />
       );
-    }
+    },
+    setRowProps: (row) => {
+      const className = row[5] === "Não" ? "row-desabled" : "";
+
+      return {
+        className
+      }
+    },
   };
 
   useEffect(() => {
@@ -93,6 +101,7 @@ function Usuarios({ municipio_id, usuarios, ...props }) {
         user.email,
         getDateBr(user.createdAt),
         MapPerfil(user.tipoPerfil),
+        user.ativo ? "Sim" : "Não",
         { index, idModal: 'modal-update-usuario', changeIndex: props.changeUserEditIndex }
       ]
     ));

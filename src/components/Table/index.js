@@ -1,5 +1,8 @@
 import React from 'react';
 import MUIDataTable from "mui-datatables";
+import TableCell from "@material-ui/core/TableCell";
+import TableRow from "@material-ui/core/TableRow";
+import Typography from "@material-ui/core/Typography";
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Edit from '@material-ui/icons/Edit';
@@ -48,7 +51,7 @@ const optionsDefault = {
       text: "linha(s) selecionadas",
       delete: "Apagar",
       deleteAria: "Apagar linha(s) selecionada(s)",
-    },
+    }
   }
 };
 

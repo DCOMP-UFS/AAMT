@@ -11,7 +11,12 @@ index = async (req, res) => {
     include: { association: 'municipio' },
     attributes: {
       exclude: [ 'municipio_id' ]
-    }
+    },
+    order: [
+      [ 'ativo', 'desc' ], 
+      [ 'nome', 'asc' ], 
+      [ 'createdAt', 'asc' ]
+    ]
   });
 
   return res.json(usuarios);
@@ -29,8 +34,9 @@ listByCity = async ( req, res ) => {
       exclude: [ 'municipio_id', 'senha' ]
     },
     order: [
-      ['nome', 'ASC'],
-      ['createdAt', 'ASC'],
+      [ 'ativo', 'desc' ], 
+      [ 'nome', 'asc' ], 
+      [ 'createdAt', 'asc' ]
     ]
   });
 

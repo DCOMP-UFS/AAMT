@@ -10,7 +10,11 @@ const router = express.Router();
 
 index = async ( req, res ) => {
   const municipios = await Municipio.findAll({
-    order: [[ 'nome', 'asc' ], [ 'codigo', 'asc' ]]
+    order: [
+      [ 'ativo', 'desc' ],
+      [ 'nome', 'asc' ], 
+      [ 'codigo', 'asc' ]
+    ]
   });
 
   res.json( municipios );

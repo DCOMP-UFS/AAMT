@@ -1,10 +1,9 @@
 const { Model, DataTypes } = require('sequelize');
 
-class Localidade extends Model {
+class Zona extends Model {
   static init(sequelize) {
     super.init({
       nome: DataTypes.STRING,
-      codigo: DataTypes.INTEGER,
       ativo: DataTypes.INTEGER
     }, {
       sequelize
@@ -13,9 +12,8 @@ class Localidade extends Model {
 
   static associate( models ) {
     this.belongsTo( models.Municipio, { foreignKey: 'municipio_id', as: 'municipio' } );
-    this.belongsTo( models.Categoria, { foreignKey: 'categoria_id', as: 'categoria' } );
-    this.hasMany( models.Zona, { foreignKey: 'localidade_id', as: 'zonas' } );
+    this.belongsTo( models.Localidade, { foreignKey: 'localidade_id', as: 'localidade' } );
   }
 }
 
-module.exports = Localidade;
+module.exports = Zona;

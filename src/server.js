@@ -13,5 +13,6 @@ require('./controllers/MunicipioController')(app);
 require('./controllers/ConfigController')(app);
 require('./controllers/CategoriaController')(app);
 require('./controllers/LocalidadeController')(app);
+require('./controllers/ZonaController')(app);
 
 app.listen( process.env.PORT || 3333 );

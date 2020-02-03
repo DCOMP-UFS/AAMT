@@ -15,10 +15,31 @@ index = async (req, res) => {
     ],
     attributes: {
       exclude: [ 'categoria_id', 'municipio_id' ]
-    }
+    },
+    order: [['ativo', 'desc'], ['nome', 'asc'], ['createdAt', 'asc']]
   });
 
-  return res.json(localidades);
+  return res.json( localidades );
+}
+
+getById = async (req, res) => {
+  const { id } = req.params;
+
+  const localidade = await Localidade.findByPk( id, {
+    include: [
+      { association: 'categoria', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }, 
+      { association: 'municipio', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }
+    ],
+    attributes: {
+      exclude: [ 'categoria_id', 'municipio_id' ]
+    },
+  });
+
+  if( !localidade ) {
+    return res.status(400).json({ error: "Localidade não existe" });
+  }
+
+  return res.json( localidade );
 }
 
 listByCategory = async ( req, res ) => {
@@ -27,6 +48,29 @@ listByCategory = async ( req, res ) => {
   const localidades = await Localidade.findAll({
     where: {
       categoria_id
+    },
+    include: [
+      { association: 'categoria', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }, 
+      { association: 'municipio', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }
+    ],
+    attributes: {
+      exclude: [ 'categoria_id', 'municipio_id' ]
+    },
+    order: [
+      ['nome', 'ASC'],
+      ['createdAt', 'ASC'],
+    ]
+  });
+
+  return res.json(localidades);
+}
+
+listByCity = async ( req, res ) => {
+  const { municipio_id } = req.params;
+
+  const localidades = await Localidade.findAll({
+    where: {
+      municipio_id
     },
     include: [
       { association: 'categoria', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }, 
@@ -66,7 +110,7 @@ store = async (req, res) => {
     return res.status(400).json({ error: 'Município não encontrada' });
   }
 
-  const user = await Localidade.create({ 
+  const localidade = await Localidade.create({ 
     nome,
     codigo,
     ativo: 1,
@@ -74,7 +118,17 @@ store = async (req, res) => {
     municipio_id
   });
 
-  return res.status(201).json(user);
+  const result = await Localidade.findByPk( localidade.id, {
+    include: [
+      { association: 'categoria', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }, 
+      { association: 'municipio', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }
+    ],
+    attributes: {
+      exclude: [ 'categoria_id', 'municipio_id' ]
+    },
+  } );
+
+  return res.status(201).json(result);
 }
 
 update = async (req, res) => {
@@ -115,6 +169,13 @@ update = async (req, res) => {
     {
       where: {
         id
+      },
+      include: [
+        { association: 'categoria', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }, 
+        { association: 'municipio', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }
+      ],
+      attributes: {
+        exclude: [ 'categoria_id', 'municipio_id' ]
       }
     }
   );
@@ -140,7 +201,9 @@ const router = express.Router();
 router.use(authMiddleware);
 
 router.get('/', index);
+router.get('/:id', getById);
 router.get('/:categoria_id/categorias', listByCategory);
+router.get('/:municipio_id/municipios', listByCity);
 router.post('/:categoria_id/categorias/:municipio_id/municipios', store);
 router.put('/:id', update);
 

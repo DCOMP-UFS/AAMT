@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { getDateBr } from '../../config/function';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import $ from 'jquery';
+import Typography from "@material-ui/core/Typography";
 import Table, { ButtonAdd, ButtonDesabled } from '../../components/Table';
 import ModalAdd from './ModalAdd';
 import ModalDisabled from './ModalDisabled';
@@ -18,7 +18,8 @@ import { changeTableSelected } from '../../store/actions/supportInfo';
 import { clearToast } from '../../store/actions/appConfig';
 import { getLocationRequest, changeIndex } from '../../store/actions/LocalidadeActions';
 
-import { Color } from '../../styles/global';
+// STYLES
+import { GlobalStyle } from './styles';
 
 const columns = [
   {
@@ -26,7 +27,12 @@ const columns = [
     label: "#",
     options: {
       filter: false,
-      display: 'false'
+      display: 'false',
+      customBodyRender: (value, tableMeta, updateValue) => {
+        return (
+          <Typography data-id={ value.id }>{ value.index }</Typography>
+        );
+      }
     }
   },
   {
@@ -106,14 +112,14 @@ function Localidades({ localidades, ...props }) {
       }
     },
     onRowClick: (row, ...props) => {
-      // row[0] === index + 1
+      const id = row[0].props['data-id'];
 
-      window.location = `${ window.location.origin.toString() }/localidades/${ row[0] }`;
+      window.location = `${ window.location.origin.toString() }/localidades/${ id }`;
     }
   };
 
   useEffect(() => {
-    props.changeSidebar(7, 0);
+    props.changeSidebar(5, 0);
     props.getLocationRequest();
   }, []);
 
@@ -128,7 +134,7 @@ function Localidades({ localidades, ...props }) {
   function createRows() {
     const list = localidades.map( (l, index) => {
       return ([
-        (index + 1),
+        { index: (index + 1), id: l.id },
         l.codigo,
         l.nome,
         getDateBr( l.createdAt ),
@@ -152,6 +158,7 @@ function Localidades({ localidades, ...props }) {
 
   return (
     <section className="card-list">
+      <GlobalStyle />
       <div className="row">
 
         {/* Formulário básico */}

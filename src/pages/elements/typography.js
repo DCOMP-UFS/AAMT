@@ -18,7 +18,7 @@ class Typography extends Component {
   constructor(props) {
     super(props);
 
-    this.props.changeSidebar(7, 1);
+    this.props.changeSidebar(8, 2);
   }
 
   render () {

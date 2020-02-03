@@ -79,7 +79,7 @@ export class CDT_Atividade extends Component {
   constructor(props){
     super(props);
 
-    this.props.changeSidebar(3, 0);
+    this.props.changeSidebar(2, 1);
   }
 
   handleLocal = ( local ) => {

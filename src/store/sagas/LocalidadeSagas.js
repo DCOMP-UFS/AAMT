@@ -1,5 +1,11 @@
 import { call, put } from 'redux-saga/effects';
-import { listRequest, createLocationRequest, updateRequest } from '../../services/requests/Localidade';
+import {
+  listRequest,
+  createLocationRequest,
+  updateRequest,
+  getLocationByIdRequest,
+  getLocationByCityRequest
+} from '../../services/requests/Localidade';
 
 import * as LocalidadeActions from '../actions/LocalidadeActions';
 import * as AppConfigActions from '../actions/appConfig';
@@ -16,6 +22,36 @@ export function* getLocalidades(action) {
 
   } catch (error) {
     yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os municípios, favor verifique a conexão", "error" ) );
+  }
+}
+
+export function* getLocationById(action) {
+  try {
+    const { data, status } = yield call( getLocationByIdRequest, action.payload );
+
+    if( status === 200 ) {
+      yield put( LocalidadeActions.getLocationById( data ) );
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar a localidade: " + status, "error" ) );
+    }
+
+  } catch (error) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar a localidade, favor verifique a conexão", "error" ) );
+  }
+}
+
+export function* getLocationByCity(action) {
+  try {
+    const { data, status } = yield call( getLocationByCityRequest, action.payload.municipio_id );
+
+    if( status === 200 ) {
+      yield put( LocalidadeActions.getLocationByCity( data ) );
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as localidades: " + status, "error" ) );
+    }
+
+  } catch (error) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as localidades, favor verifique a conexão", "error" ) );
   }
 }
 

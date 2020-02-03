@@ -17,7 +17,7 @@ class Iniciar extends Component {
   constructor(props){
     super(props);
 
-    this.props.changeSidebar(1, 0);
+    this.props.changeSidebar(1, 1);
   }
 
   render() {

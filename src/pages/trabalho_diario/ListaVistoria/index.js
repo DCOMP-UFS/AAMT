@@ -227,7 +227,7 @@ function createData(id, numQuarteirao, logradouro, numero, tipoImovel, horaInici
 class ListaVistoria extends Component {
   constructor(props){
     super(props);
-    this.props.changeSidebar(1, 1);
+    this.props.changeSidebar(1, 2);
   }
 
   prefix_id_rows = "v_";

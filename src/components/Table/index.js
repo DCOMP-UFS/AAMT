@@ -1,8 +1,5 @@
 import React from 'react';
 import MUIDataTable from "mui-datatables";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
-import Typography from "@material-ui/core/Typography";
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Edit from '@material-ui/icons/Edit';
@@ -118,10 +115,10 @@ export function ButtonAdd({ handleClick, toggle, target }) {
   );
 }
 
-export function ButtonDesabled({ handleClick, toggle, target, ...props }) {
+export function ButtonDesabled({ title, handleClick, toggle, target, ...props }) {
   return (
     <Tooltip
-      title="Deletar município(s)"
+      title={ title }
       className="bg-light text-dark"
       data-toggle={ toggle }
       data-target={ target }

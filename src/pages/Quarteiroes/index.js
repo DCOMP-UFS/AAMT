@@ -1,8 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { getDateBr } from '../../config/function';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import Table, { ButtonEdit, ButtonAdd, ButtonDesabled } from '../../components/Table';
 
 // REDUX
@@ -36,13 +34,9 @@ const columns = [
 ];
 
 function Quarteiroes({ municipios, ...props }) {
-
-  function notify() {
-    toast(props.toast.message, {
-      type: props.toast.type,
-      onClose: props.clearToast()
-    });
-  }
+  useEffect(() => {
+    props.changeSidebar(7, 1);
+  }, []);
 
   return (
     <section className="card-list">
@@ -54,9 +48,6 @@ function Quarteiroes({ municipios, ...props }) {
           </div>
         </article>
       </div>
-
-      <ToastContainer />
-      { props.toast.message && notify() }
     </section>
   );
 }
@@ -66,7 +57,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({  }, dispatch);
+  bindActionCreators({ changeSidebar }, dispatch);
 
 export default connect(
   mapStateToProps,

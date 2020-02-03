@@ -6,6 +6,20 @@ export const listRequest = () => {
   });
 }
 
+export const getLocationByIdRequest = data => {
+  const { id } = data;
+
+  return api.get(`/localidades/${ id }`, {
+    ...headerAuthorization()
+  });
+}
+
+export const getLocationByCityRequest = municipio_id => {
+  return api.get(`/localidades/${ municipio_id }/municipios`, {
+    ...headerAuthorization()
+  });
+}
+
 export const createLocationRequest = data => {
   const { codigo, nome, categoria: categoria_id, municipio: municipio_id } = data;
 

@@ -11,6 +11,7 @@ import usuario from './Usuario';
 import municipio from './Municipio';
 import localidade from './Localidade';
 import categoria from './Categoria';
+import zona from './Zona';
 
 export default combineReducers({
   atividade,
@@ -23,5 +24,6 @@ export default combineReducers({
   usuario,
   municipio,
   localidade,
-  categoria
+  categoria,
+  zona
 });

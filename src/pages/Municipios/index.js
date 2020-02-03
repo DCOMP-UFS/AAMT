@@ -67,7 +67,7 @@ function Municipios({ municipios, ...props }) {
   };
 
   useEffect(() => {
-    props.changeSidebar(5, 0);
+    props.changeSidebar(4, 0);
     props.getMunicipiosRequest();
   }, []);
 

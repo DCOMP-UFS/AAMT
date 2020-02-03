@@ -38,7 +38,7 @@ class Form extends Component {
   constructor(props) {
     super(props);
 
-    this.props.changeSidebar(6, 0);
+    this.props.changeSidebar(9, 1);
   }
 
   handleTime = time => {

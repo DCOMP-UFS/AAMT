@@ -211,6 +211,28 @@ export const Button = styled(basicButton)`
     border-color: ${ Color.danger }!important;
   }
   /* </DANGER> */
+  /* <WARNING> */
+  &.warning {
+    color: #FFF;
+    background-color: ${ Color.warning };
+    border-color: ${ Color.warning }!important;
+  }
+
+  &.warning:hover {
+    background-color: #EAC301!important;
+    border-color: #EAC301!important;
+  }
+
+  &.warning:focus {
+    box-shadow: 0 0 0 0.2rem #EEDD8A!important;
+  }
+
+  &.warning:disabled {
+    color: #FFF;
+    background-color: ${ Color.danger }!important;
+    border-color: ${ Color.danger }!important;
+  }
+  /* </WARNING> */
 `;
 
 export const ButtonInverse = styled(basicButton)`

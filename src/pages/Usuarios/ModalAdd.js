@@ -14,6 +14,7 @@ import { connect } from 'react-redux';
 import { createUsuarioRequest, clearCreateUser } from '../../store/actions/UsuarioActions';
 
 // STYLES
+import { ContainerArrow } from '../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../styles/global';
 
 function ModalAdd({ createUsuarioRequest, municipio_id, createUser, ...props }) {
@@ -55,6 +56,17 @@ function ModalAdd({ createUsuarioRequest, municipio_id, createUser, ...props }) 
       setTipoPerfil({});
     }
   }, [ createUser ]);
+
+  function clearInput() {
+    setNome("");
+    setCpf("");
+    setRg("");
+    setEmail("");
+    setCelular("");
+    setUsuario("");
+    setSenha("");
+    setTipoPerfil({});
+  }
 
   return(
     <Modal id="modal-novo-usuario" title="Cadastrar Usuário" size='lg'>
@@ -126,8 +138,15 @@ function ModalAdd({ createUsuarioRequest, municipio_id, createUser, ...props }) 
           </Row>
         </ModalBody>
         <ModalFooter>
-          <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
-          <Button type="submit">Cadastrar</Button>
+          <ContainerArrow>
+            <div>
+              <Button type="button" className="warning" onClick={ clearInput }>Limpar</Button>
+            </div>
+            <div>
+              <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
+              <Button type="submit">Salvar</Button>
+            </div>
+          </ContainerArrow>
         </ModalFooter>
       </form>
     </Modal>

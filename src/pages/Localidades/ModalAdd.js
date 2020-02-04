@@ -15,6 +15,7 @@ import { getMunicipiosRequest } from '../../store/actions/MunicipioActions';
 import { getCategoryRequest } from '../../store/actions/CategoriaActions';
 
 // STYLES
+import { ContainerArrow } from '../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../styles/global';
 
 function ModalAdd({ createLocationRequest, created, ...props }) {
@@ -57,8 +58,15 @@ function ModalAdd({ createLocationRequest, created, ...props }) {
     }
   }, [ created ]);
 
+  function clearInput() {
+    setCodigo(null);
+    setNome("");
+    setCategoria({});
+    setMunicipio({});
+  }
+
   return(
-    <Modal id="modal-novo-localidade" title="Cadastrar Localidade">
+    <Modal id="modal-novo-localidade" title="Cadastrar Localidade" size='lg'>
       <form onSubmit={ handleCadastrar }>
         <ModalBody>
           <Row>
@@ -119,8 +127,15 @@ function ModalAdd({ createLocationRequest, created, ...props }) {
           </Row>
         </ModalBody>
         <ModalFooter>
-          <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
-          <Button type="submit">Cadastrar</Button>
+          <ContainerArrow>
+            <div>
+              <Button type="button" className="warning" onClick={ clearInput }>Limpar</Button>
+            </div>
+            <div>
+              <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
+              <Button type="submit">Salvar</Button>
+            </div>
+          </ContainerArrow>
         </ModalFooter>
       </form>
     </Modal>

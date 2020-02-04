@@ -3,7 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { getDateBr } from '../../config/function';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Table, { ButtonEdit, ButtonAdd, ButtonDesabled } from '../../components/Table';
+import Typography from "@material-ui/core/Typography";
+import Table, { ButtonAdd, ButtonDesabled } from '../../components/Table';
+import ModalAdd from './ModalAdd';
+import ModalDisabled from './ModalDisabled';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -15,28 +18,72 @@ import { changeTableSelected } from '../../store/actions/supportInfo';
 import { clearToast } from '../../store/actions/appConfig';
 import { getLocationRequest, changeIndex } from '../../store/actions/LocalidadeActions';
 
-const columns = [
-  "#",
-  "Código",
-  "Nome",
-  "Criado em",
-  "Atualizado em",
-  "Ativo",
-  "Categoria",
-  "Cód. Município",
-  "Município",
-  {
-    name: "Ação",
-    options: {
-      customBodyRender: (value, tableMeta, updateValue) => {
-        const { index, idModal, changeIndex } = value;
+// STYLES
+import { GlobalStyle } from './styles';
 
+const columns = [
+  {
+    name: "index",
+    label: "#",
+    options: {
+      filter: false,
+      display: 'false',
+      customBodyRender: (value, tableMeta, updateValue) => {
         return (
-          <ButtonEdit index={ index } idModal={ idModal } changeIndex={ changeIndex } />
+          <Typography data-id={ value.id }>{ value.index }</Typography>
         );
       }
     }
-  }
+  },
+  {
+    label: "Código",
+    options: {
+      filter: false
+    }
+  },
+  {
+    label: "Nome",
+    options: {
+      filter: false
+    }
+  },
+  {
+    name: "createdAt",
+    label: "Criado em",
+    options: {
+     display: 'false',
+     filter: false
+    }
+  },
+  {
+    name: "updatedAt",
+    label: "Atualizado em",
+    options: {
+     display: 'false',
+     filter: false
+    }
+  },
+  {
+    name: "Categoria",
+    options: {
+      customBodyRender: (value, tableMeta, updateValue) => {
+        let bg_mark = "info";
+
+        if( value === "Rural" )
+          bg_mark = "success";
+
+        if( value === "Terra indígena" )
+          bg_mark = "primary";
+
+        return (
+          <mark className={`bg-${ bg_mark } text-white`}>{ value }</mark>
+        );
+      }
+    }
+  },
+  "Cód. Município",
+  "Município",
+  "Ativo",
 ];
 
 function Localidades({ localidades, ...props }) {
@@ -56,12 +103,24 @@ function Localidades({ localidades, ...props }) {
           toggle="modal"
           target="#modal-desativar-localidade" />
       );
+    },
+    setRowProps: (row) => {
+      const className = row[8] === "Não" ? "row-desabled" : "";
+
+      return {
+        className
+      }
+    },
+    onRowClick: (row, ...props) => {
+      const id = row[0].props['data-id'];
+
+      window.location = `${ window.location.origin.toString() }/localidades/${ id }`;
     }
   };
 
   useEffect(() => {
-    props.changeSidebar(7, 0);
-    // props.getMunicipiosRequest();
+    props.changeSidebar(5, 0);
+    props.getLocationRequest();
   }, []);
 
   useEffect(() => {
@@ -73,20 +132,19 @@ function Localidades({ localidades, ...props }) {
   }, [ props.reload ]);
 
   function createRows() {
-    const list = localidades.map( (l, index) => (
-      [
-        (index + 1),
+    const list = localidades.map( (l, index) => {
+      return ([
+        { index: (index + 1), id: l.id },
         l.codigo,
         l.nome,
         getDateBr( l.createdAt ),
         getDateBr( l.updatedAt ),
-        l.ativo,
         l.categoria.nome,
         l.municipio.codigo,
         l.municipio.nome,
-        { index, idModal: 'modal-update-city', changeIndex: props.changeCityEditIndex }
-      ]
-    ));
+        l.ativo ? "Sim" : "Não",
+      ])
+    });
 
     setRows( list );
   }
@@ -100,19 +158,23 @@ function Localidades({ localidades, ...props }) {
 
   return (
     <section className="card-list">
+      <GlobalStyle />
       <div className="row">
 
         {/* Formulário básico */}
         <article className="col-md-12 stretch-card">
           <div className="card">
             <Table
-              title="Municípios"
+              title="Bairro(s)/Localidade(s)"
               columns={ columns }
               data={ rows }
-              options={ options } />
+              options={ options }
+              turnRed={ "ativo" } />
           </div>
         </article>
       </div>
+      <ModalAdd />
+      <ModalDisabled />
 
       <ToastContainer />
       { props.toast.message && notify() }

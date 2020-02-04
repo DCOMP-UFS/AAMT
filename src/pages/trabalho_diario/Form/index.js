@@ -15,7 +15,7 @@ class Form extends Component {
   constructor(props){
     super(props);
 
-    this.props.changeSidebar(1, 1);
+    this.props.changeSidebar(1, 2);
   }
 
   render() {

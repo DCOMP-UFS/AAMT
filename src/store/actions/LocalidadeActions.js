@@ -1,6 +1,10 @@
 export const ActionTypes = {
   GET_LOCATION_REQUEST: "GET_LOCATION_REQUEST",
   GET_LOCATION_SUCCESS: "GET_LOCATION_SUCCESS",
+  GET_LOCATION_BY_ID_REQUEST: "GET_LOCATION_BY_ID_REQUEST",
+  GET_LOCATION_BY_ID_SUCCESS: "GET_LOCATION_BY_ID_SUCCESS",
+  GET_LOCATION_BY_CITY_REQUEST: "GET_LOCATION_BY_CITY_REQUEST",
+  GET_LOCATION_BY_CITY_SUCCESS: "GET_LOCATION_BY_CITY_SUCCESS",
   CREATE_LOCATION_REQUEST: "CREATE_LOCATION_REQUEST",
   CREATE_LOCATION_SUCCESS: "CREATE_LOCATION_SUCCESS",
   CLEAR_CREATE_LOCATION: "CLEAR_CREATE_LOCATION",
@@ -25,12 +29,50 @@ export const getLocations = localidades => {
   }
 }
 
-export const createLocationRequest = ( codigo, nome ) => {
+export const getLocationByIdRequest = id => {
+  return {
+    type: ActionTypes.GET_LOCATION_BY_ID_REQUEST,
+    payload: {
+      id
+    }
+  }
+}
+
+export const getLocationById = localidade => {
+  return {
+    type: ActionTypes.GET_LOCATION_BY_ID_SUCCESS,
+    payload: {
+      localidade
+    }
+  }
+}
+
+export const getLocationByCityRequest = municipio_id => {
+  return {
+    type: ActionTypes.GET_LOCATION_BY_CITY_REQUEST,
+    payload: {
+      municipio_id
+    }
+  }
+}
+
+export const getLocationByCity = localidades => {
+  return {
+    type: ActionTypes.GET_LOCATION_BY_CITY_SUCCESS,
+    payload: {
+      localidades
+    }
+  }
+}
+
+export const createLocationRequest = ( codigo, nome, categoria, municipio ) => {
   return {
     type: ActionTypes.CREATE_LOCATION_REQUEST,
     payload: {
       codigo,
-      nome
+      nome,
+      categoria,
+      municipio
     }
   }
 }
@@ -57,11 +99,11 @@ export const updateLocationRequest = ( id, body ) => {
   }
 }
 
-export const updateLocation = municipio => {
+export const updateLocation = localidade => {
   return {
     type: ActionTypes.UPDATE_LOCATION_SUCCESS,
     payload: {
-      municipio
+      localidade
     }
   }
 }

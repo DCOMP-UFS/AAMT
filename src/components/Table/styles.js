@@ -23,4 +23,25 @@ export const Container = styled.div`
   .MuiCheckbox-colorPrimary.Mui-checked {
     color: #f50057;
   }
+
+  .row-desabled {
+    background: ${ Color.danger };
+  }
+
+  tr:hover td:first-child {
+    background: #EDEDED;
+  }
+
+  .row-desabled:hover,
+  .row-desabled:hover > td:first-child {
+    background: #FE5678!important;
+  }
+
+  .row-desabled td:first-child {
+    background: ${ Color.danger };
+  }
+
+  .row-desabled td:not(:first-child) {
+    color: #fff;
+  }
 `;

@@ -48,7 +48,7 @@ const optionsDefault = {
       text: "linha(s) selecionadas",
       delete: "Apagar",
       deleteAria: "Apagar linha(s) selecionada(s)",
-    },
+    }
   }
 };
 
@@ -115,10 +115,10 @@ export function ButtonAdd({ handleClick, toggle, target }) {
   );
 }
 
-export function ButtonDesabled({ handleClick, toggle, target, ...props }) {
+export function ButtonDesabled({ title, handleClick, toggle, target, ...props }) {
   return (
     <Tooltip
-      title="Deletar município(s)"
+      title={ title }
       className="bg-light text-dark"
       data-toggle={ toggle }
       data-target={ target }

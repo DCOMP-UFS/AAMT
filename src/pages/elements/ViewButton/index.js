@@ -18,7 +18,7 @@ class ViewButton extends Component {
   constructor(props) {
     super(props);
 
-    this.props.changeSidebar(5, 0);
+    this.props.changeSidebar(8, 1);
   }
 
   render() {

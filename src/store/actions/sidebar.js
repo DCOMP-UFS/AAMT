@@ -2,12 +2,12 @@ export const ActionTypes = {
   CHANGE_SIDEBAR: "CHANGE_SIDEBAR",
 };
 
-export const changeSidebar = ( index, subIndex ) => {
+export const changeSidebar = ( id, subId ) => {
   return {
     type: ActionTypes.CHANGE_SIDEBAR,
     payload: {
-      index,
-      subIndex
+      id,
+      subId
     }
   }
 }

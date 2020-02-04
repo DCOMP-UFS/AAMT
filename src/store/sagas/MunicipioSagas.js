@@ -11,7 +11,7 @@ export function* getMunicipios(action) {
     if( status === 200 ) {
       yield put( MunicipioActions.getMunicipios( data ) );
     }else {
-      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os municípios, favor verifique a conexão", "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Falha ao consultar municípios: " + status, "error" ) );
     }
 
   } catch (error) {

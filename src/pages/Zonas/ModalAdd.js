@@ -14,6 +14,7 @@ import { createZoneRequest, clearCreate } from '../../store/actions/ZonaActions'
 import { getLocationByCityRequest } from '../../store/actions/LocalidadeActions';
 
 // STYLES
+import { ContainerArrow } from '../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../styles/global';
 
 function ModalAdd({ createZoneRequest, created, municipio_id, ...props }) {
@@ -45,8 +46,12 @@ function ModalAdd({ createZoneRequest, created, municipio_id, ...props }) {
     }
   }, [ created ]);
 
+  function clearInput() {
+    setLocalidade({});
+  }
+
   return(
-    <Modal id="modal-novo-zona" title="Cadastrar Zona">
+    <Modal id="modal-novo-zona" title="Cadastrar Zona" size="lg">
       <form onSubmit={ handleCadastrar }>
         <ModalBody>
           <Row>
@@ -65,8 +70,15 @@ function ModalAdd({ createZoneRequest, created, municipio_id, ...props }) {
           </Row>
         </ModalBody>
         <ModalFooter>
-          <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
-          <Button type="submit">Cadastrar</Button>
+          <ContainerArrow>
+            <div>
+              <Button type="button" className="warning" onClick={ clearInput }>Limpar</Button>
+            </div>
+            <div>
+              <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
+              <Button type="submit">Salvar</Button>
+            </div>
+          </ContainerArrow>
         </ModalFooter>
       </form>
     </Modal>

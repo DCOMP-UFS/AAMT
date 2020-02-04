@@ -36,7 +36,7 @@ function ModalDesativar( props ) {
       </ModalBody>
       <ModalFooter>
         <Button className="secondary" data-dismiss="modal">Cancelar</Button>
-        <Button className="danger" onClick={ handleClick }>Desativar</Button>
+        <Button className="danger" onClick={ handleClick }>Confirmar</Button>
       </ModalFooter>
     </Modal>
   );

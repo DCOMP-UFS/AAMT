@@ -142,7 +142,7 @@ function ModalUpdate({ updateUsuarioRequest, updateUser, ...props }) {
         </ModalBody>
         <ModalFooter>
           <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
-          <Button type="submit">Editar</Button>
+          <Button type="submit">Salvar</Button>
         </ModalFooter>
       </form>
     </Modal>

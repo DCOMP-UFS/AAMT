@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import { createCityRequest, clearCreateCity } from '../../store/actions/MunicipioActions';
 
 // STYLES
+import { ContainerArrow } from '../../styles/util';
 import { Button, FormGroup } from '../../styles/global';
 
 function ModalAdd({ createCityRequest, createdCity, ...props }) {
@@ -36,8 +37,13 @@ function ModalAdd({ createCityRequest, createdCity, ...props }) {
     }
   }, [ createdCity ]);
 
+  function clearInput() {
+    setCodigo(null);
+    setNome("");
+  }
+
   return(
-    <Modal id="modal-novo-municipio" title="Cadastrar Município">
+    <Modal id="modal-novo-municipio" title="Cadastrar Município" size='lg'>
       <form onSubmit={ handleCadastrar }>
         <ModalBody>
           <Row>
@@ -58,8 +64,15 @@ function ModalAdd({ createCityRequest, createdCity, ...props }) {
           </Row>
         </ModalBody>
         <ModalFooter>
-          <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
-          <Button type="submit">Cadastrar</Button>
+          <ContainerArrow>
+            <div>
+              <Button type="button" className="warning" onClick={ clearInput }>Limpar</Button>
+            </div>
+            <div>
+              <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
+              <Button type="submit">Salvar</Button>
+            </div>
+          </ContainerArrow>
         </ModalFooter>
       </form>
     </Modal>

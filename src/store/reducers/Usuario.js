@@ -12,6 +12,7 @@ const INITIAL_STATE = {
       nome: "",
     },
   },
+  usuarioUpdate: {},
   usuarios: [],
   indexUser: -1,
   createUser: null,
@@ -62,6 +63,13 @@ export default function Usuario(state = INITIAL_STATE, action) {
         toast: { message: "Usuário criado com sucesso", type: "success" },
         usuarios,
         createUser: true
+      }
+    }
+
+    case ActionTypes.GET_USUARIO_BY_ID_SUCCESS: {
+      return {
+        ...state,
+        usuarioUpdate: action.payload.usuario
       }
     }
 

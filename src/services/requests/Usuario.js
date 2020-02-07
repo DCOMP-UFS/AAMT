@@ -43,3 +43,9 @@ export const getUsuariosPorMunicipios = municipio_id => {
     ...headerAuthorization()
   });
 }
+
+export const getUsuarioByIdRequest = id => {
+  return api.get(`/usuarios/${ id }`, {
+    ...headerAuthorization()
+  });
+}

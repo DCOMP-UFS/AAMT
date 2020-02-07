@@ -5,6 +5,8 @@ export const ActionTypes = {
   GET_USUARIOS_REQUEST: "GET_USUARIOS_REQUEST",
   GET_USUARIOS_SUCCESS: "GET_USUARIOS_SUCCESS",
   GET_USUARIOS_FAILURE: "GET_USUARIOS_FAILURE",
+  GET_USUARIO_BY_ID_REQUEST: "GET_USUARIO_BY_ID_REQUEST",
+  GET_USUARIO_BY_ID_SUCCESS: "GET_USUARIO_BY_ID_SUCCESS",
   CREATE_USUARIO_REQUEST: "CREATE_USUARIO_REQUEST",
   CREATE_USUARIO_SUCCESS: "CREATE_USUARIO_SUCCESS",
   CREATE_USUARIO_FAILURE: "CREATE_USUARIO_FAILURE",
@@ -63,6 +65,24 @@ export const getUsuarios = usuarios => {
 export const getUsuariosFailure = () => {
   return {
     type: ActionTypes.GET_USUARIOS_FAILURE
+  }
+}
+
+export const getUsuarioByIdRequest = id => {
+  return {
+    type: ActionTypes.GET_USUARIO_BY_ID_REQUEST,
+    payload: {
+      id
+    }
+  }
+}
+
+export const getUsuarioById = usuario => {
+  return {
+    type: ActionTypes.GET_USUARIO_BY_ID_SUCCESS,
+    payload: {
+      usuario
+    }
   }
 }
 

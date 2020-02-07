@@ -1,6 +1,6 @@
 import { call, put } from 'redux-saga/effects';
 import { authenticateRequest, createUsuarioRequest, updateRequest } from '../../services/requests/Usuario';
-import { getUsuariosPorMunicipios } from '../../services/requests/Usuario';
+import { getUsuariosPorMunicipios, getUsuarioByIdRequest } from '../../services/requests/Usuario';
 
 import * as UserActions from '../actions/UsuarioActions';
 import * as AppConfigActions from '../actions/appConfig';
@@ -48,6 +48,21 @@ export function* getUsuarios(action) {
 
   } catch (error) {
     yield put( UserActions.getUsuariosFailure() );
+  }
+}
+
+export function* getUsuarioById(action) {
+  try {
+    const { data, status } = yield call( getUsuarioByIdRequest, action.payload.id );
+
+    if( status === 200 ) {
+      yield put( UserActions.getUsuarioById( data ) );
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Falha consultar o usuário: " + status, "error" ) );
+    }
+
+  } catch (error) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar usuário, favor verifique sua conexão com a internet", "error" ) );
   }
 }
 

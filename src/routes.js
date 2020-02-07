@@ -16,7 +16,9 @@ import LoginScreen from './pages/LoginScreen';
 // Páginas de coordenador
 import CDT_Atividade from './pages/atividade/cadastrar';
 import Usuarios from './pages/Usuarios';
+import EditarUsuario from './pages/Usuarios/EditarUsuario';
 import Municipios from './pages/Municipios';
+import EditarMunicipio from './pages/Municipios/EditarMunicipio';
 import Localidades from './pages/Localidades';
 import EditarLocalidade from './pages/Localidades/EditarLocalidade';
 import Zonas from './pages/Zonas';
@@ -78,8 +80,10 @@ const Routes = props => (
       <PrivateCoordenador path="/trabalho_diario/vistoria/lista" component={ListaVistoria} tipoPerfil={ props.usuario.tipoPerfil } />
       <PrivateCoordenador path="/trabalho_diario/vistoria/formulario" component={FormVistoria} tipoPerfil={ props.usuario.tipoPerfil } />
       <PrivateCoordenador path="/atividades/cadastrar" component={CDT_Atividade} tipoPerfil={ props.usuario.tipoPerfil } />
-      <PrivateCoordenador path="/usuarios" component={Usuarios} tipoPerfil={ props.usuario.tipoPerfil } />
-      <PrivateCoordenador path="/municipios" component={Municipios} tipoPerfil={ props.usuario.tipoPerfil } />
+      <PrivateCoordenador exact path="/usuarios" component={ Usuarios } tipoPerfil={ props.usuario.tipoPerfil } />
+      <PrivateCoordenador path="/usuarios/:id" component={ EditarUsuario } tipoPerfil={ props.usuario.tipoPerfil } />
+      <PrivateCoordenador exact path="/municipios" component={Municipios} tipoPerfil={ props.usuario.tipoPerfil } />
+      <PrivateCoordenador path="/municipios/:id" component={ EditarMunicipio } tipoPerfil={ props.usuario.tipoPerfil } />
       <PrivateCoordenador exact path="/zonas" component={Zonas} tipoPerfil={ props.usuario.tipoPerfil } />
       <PrivateCoordenador path="/zonas/:id" component={ EditarZona } tipoPerfil={ props.usuario.tipoPerfil } />
       <PrivateCoordenador path="/quarteiroes" component={Quarteiroes} tipoPerfil={ props.usuario.tipoPerfil } />

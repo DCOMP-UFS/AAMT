@@ -6,7 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import ModalAdd from './ModalAdd';
 import ModalUpdate from './ModalUpdate';
 import ModalDisabled from './ModalDisabled';
-import Table, { ButtonEdit, ButtonAdd, ButtonDesabled } from '../../components/Table';
+import Table, { ButtonAdd, ButtonDesabled } from '../../components/Table';
+import Typography from "@material-ui/core/Typography";
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -18,25 +19,26 @@ import { changeTableSelected } from '../../store/actions/supportInfo';
 import { clearToast } from '../../store/actions/appConfig';
 import { getMunicipiosRequest, changeCityEditIndex } from '../../store/actions/MunicipioActions';
 
+// STYLES
+import { GlobalStyle } from './styles';
+
 const columns = [
-  "#",
+  {
+    name: "index",
+    label: "#",
+    options: {
+      filter: false,
+      display: 'false',
+      customBodyRender: (value, tableMeta, updateValue) => (
+        <Typography data-id={ value.id }>{ value.index }</Typography>
+      )
+    }
+  },
   "Código",
   "Nome",
   "Criado em",
   "Atualizado em",
-  "Ativo",
-  {
-    name: "Ação",
-    options: {
-      customBodyRender: (value, tableMeta, updateValue) => {
-        const { index, idModal, changeIndex } = value;
-
-        return (
-          <ButtonEdit index={ index } idModal={ idModal } changeIndex={ changeIndex } />
-        );
-      }
-    }
-  }
+  "Ativo"
 ];
 
 function Municipios({ municipios, ...props }) {
@@ -63,6 +65,11 @@ function Municipios({ municipios, ...props }) {
       return {
         className
       }
+    },
+    onRowClick: (row, ...props) => {
+      const id = row[0].props['data-id'];
+
+      window.location = `${ window.location.origin.toString() }/municipios/${ id }`;
     }
   };
 
@@ -82,13 +89,12 @@ function Municipios({ municipios, ...props }) {
   function createRows() {
     const municipiosList = municipios.map( (municipio, index) => (
       [
-        (index + 1),
+        { index: (index + 1), id: municipio.id },
         municipio.codigo,
         municipio.nome,
         getDateBr( municipio.createdAt ),
         getDateBr( municipio.updatedAt ),
-        municipio.ativo ? "Sim" : "Não",
-        { index, idModal: 'modal-update-city', changeIndex: props.changeCityEditIndex }
+        municipio.ativo ? "Sim" : "Não"
       ]
     ));
 
@@ -104,6 +110,7 @@ function Municipios({ municipios, ...props }) {
 
   return (
     <section className="card-list">
+      <GlobalStyle />
       <div className="row">
 
         {/* Formulário básico */}

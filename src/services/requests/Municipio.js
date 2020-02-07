@@ -12,6 +12,12 @@ export const listRequest = () => {
   });
 }
 
+export const getCityByIdRequest = id => {
+  return api.get(`/municipios/${ id }`, {
+    ...headerAuthorization()
+  });
+}
+
 export const createCityRequest = data => {
   const { codigo, nome } = data;
 

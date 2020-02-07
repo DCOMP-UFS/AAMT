@@ -6,8 +6,8 @@ import { ActionTypes as LocalidadeActions } from '../actions/LocalidadeActions';
 import { ActionTypes as CategoriaActions } from '../actions/CategoriaActions';
 import { ActionTypes as ZonaActions } from '../actions/ZonaActions';
 
-import { authenticate, getUsuarios, createUsuario, updateUsuario } from './UsuarioSagas';
-import { getMunicipios, createCity, updateCity } from './MunicipioSagas';
+import { authenticate, getUsuarios, createUsuario, updateUsuario, getUsuarioById } from './UsuarioSagas';
+import { getMunicipios, createCity, updateCity, getCityById } from './MunicipioSagas';
 import { getLocalidades, createLocation, updateLocation, getLocationById, getLocationByCity } from './LocalidadeSagas';
 import { getZoneByCity, createZone, updateZone, getZoneById } from './ZonaSagas';
 import { getCategorys } from './CategoriaSagas';
@@ -18,12 +18,14 @@ export default function* rootSaga() {
 
     // Gerir Usuario
     takeLatest( UserActions.GET_USUARIOS_REQUEST, getUsuarios ),
+    takeLatest( UserActions.GET_USUARIO_BY_ID_REQUEST, getUsuarioById ),
     takeLatest( UserActions.CREATE_USUARIO_REQUEST, createUsuario ),
     takeLatest( UserActions.UPDATE_ALL_USUARIO_REQUEST, updateUsuario ),
     takeLatest( UserActions.UPDATE_USUARIO_REQUEST, updateUsuario ),
 
     //Gerir Município
     takeLatest( MunicipioActions.GET_MUNICIPIOS_REQUEST, getMunicipios ),
+    takeLatest( MunicipioActions.GET_CITY_BY_ID_REQUEST, getCityById ),
     takeLatest( MunicipioActions.CREATE_CITY_REQUEST, createCity ),
     takeLatest( MunicipioActions.UPDATE_CITY_REQUEST, updateCity ),
 

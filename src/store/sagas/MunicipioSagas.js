@@ -1,5 +1,5 @@
 import { call, put } from 'redux-saga/effects';
-import { listRequest, createCityRequest, updateRequest } from '../../services/requests/Municipio';
+import { listRequest, createCityRequest, updateRequest, getCityByIdRequest } from '../../services/requests/Municipio';
 
 import * as MunicipioActions from '../actions/MunicipioActions';
 import * as AppConfigActions from '../actions/appConfig';
@@ -16,6 +16,24 @@ export function* getMunicipios(action) {
 
   } catch (error) {
     yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os municípios, favor verifique a conexão", "error" ) );
+  }
+}
+
+export function* getCityById(action) {
+  try {
+    const { data, status } = yield call( getCityByIdRequest, action.payload.id );
+
+    console.log(data);
+
+
+    if( status === 200 ) {
+      yield put( MunicipioActions.getCityById( data ) );
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Falha ao consultar município: " + status, "error" ) );
+    }
+
+  } catch (error) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar município, favor verifique a conexão", "error" ) );
   }
 }
 

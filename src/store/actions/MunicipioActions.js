@@ -1,6 +1,8 @@
 export const ActionTypes = {
   GET_MUNICIPIOS_REQUEST: "GET_MUNICIPIOS_REQUEST",
   GET_MUNICIPIOS_SUCCESS: "GET_MUNICIPIOS_SUCCESS",
+  GET_CITY_BY_ID_REQUEST: "GET_CITY_BY_ID_REQUEST",
+  GET_CITY_BY_ID_SUCCESS: "GET_CITY_BY_ID_SUCCESS",
   CREATE_CITY_REQUEST: "CREATE_CITY_REQUEST",
   CREATE_CITY_SUCCESS: "CREATE_CITY_SUCCESS",
   CLEAR_CREATE_CITY: "CLEAR_CREATE_CITY",
@@ -21,6 +23,24 @@ export const getMunicipios = municipios => {
     type: ActionTypes.GET_MUNICIPIOS_SUCCESS,
     payload: {
       municipios
+    }
+  }
+}
+
+export const getCityByIdRequest = id => {
+  return {
+    type: ActionTypes.GET_CITY_BY_ID_REQUEST,
+    payload: {
+      id
+    }
+  }
+}
+
+export const getCityById = municipio => {
+  return {
+    type: ActionTypes.GET_CITY_BY_ID_SUCCESS,
+    payload: {
+      municipio
     }
   }
 }

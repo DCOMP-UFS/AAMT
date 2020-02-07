@@ -1,6 +1,7 @@
 import { ActionTypes } from '../actions/MunicipioActions';
 
 const INITIAL_STATE = {
+  municipio: {},
   municipios: [],
   indexCity: -1,
   createdCity: null,
@@ -14,6 +15,13 @@ export default function Municipio(state = INITIAL_STATE, action) {
       return {
         ...state,
         municipios: action.payload.municipios
+      }
+    }
+
+    case ActionTypes.GET_CITY_BY_ID_SUCCESS: {
+      return {
+        ...state,
+        municipio: action.payload.municipio
       }
     }
 

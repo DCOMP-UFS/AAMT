@@ -22,6 +22,25 @@ index = async (req, res) => {
   return res.json(usuarios);
 }
 
+getUserById = async ( req, res ) => {
+  const { id } = req.params;
+
+  const user = await Usuario.findByPk( id, {
+    include: { association: 'municipio' },
+    attributes: {
+      exclude: [ 'municipio_id' ]
+    }
+  });
+
+  if( !user ) {
+    return res.status(400).json({ error: "Usuário não encontrado" });
+  }
+
+  user.senha = undefined;
+
+  return res.json( user );
+}
+
 listByCity = async ( req, res ) => {
   const { municipio_id } = req.params;
 
@@ -131,6 +150,7 @@ update = async (req, res) => {
 router.use(authMiddleware);
 
 router.get('/', index);
+router.get('/:id', getUserById);
 router.get('/:municipio_id/municipios', listByCity);
 router.post('/:municipio_id/municipios', store);
 router.put('/:id', update);

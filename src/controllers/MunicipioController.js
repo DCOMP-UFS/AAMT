@@ -20,6 +20,18 @@ index = async ( req, res ) => {
   res.json( municipios );
 }
 
+getCityById = async ( req, res ) => {
+  const { id } = req.params;
+
+  const municipio = await Municipio.findByPk( id );
+
+  if( !municipio ) {
+    return res.status(400).json({ error: 'Município não encontrado' });
+  }
+
+  return res.json( municipio );
+}
+
 listUser = async (req, res) => {
   const { municipio_id } = req.params;
 
@@ -111,6 +123,7 @@ destroy = async ( req, res ) => {
 router.use(authMiddleware);
 
 router.get('/', index);
+router.get('/:id', getCityById);
 router.get('/:municipio_id/usuarios', listUser);
 router.post('/', store);
 router.put('/:id', update);

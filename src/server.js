@@ -14,5 +14,9 @@ require('./controllers/ConfigController')(app);
 require('./controllers/CategoriaController')(app);
 require('./controllers/LocalidadeController')(app);
 require('./controllers/ZonaController')(app);
+require('./controllers/PaisController')(app);
+require('./controllers/RegiaoController')(app);
+require('./controllers/EstadoController')(app);
+require('./controllers/RegionalSaudeController')(app);
 
 app.listen( process.env.PORT || 3333 );

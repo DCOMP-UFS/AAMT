@@ -2,6 +2,7 @@ const express = require('express');
 const authMiddleware = require('../middlewares/auth');
 const Municipio = require('../models/Municipio');
 const Usuario = require('../models/Usuario');
+const RegionalSaude = require('../models/RegionalSaude');
 
 // UTILITY
 const isCoordinator = require('../util/isCoordinator');
@@ -30,6 +31,25 @@ getCityById = async ( req, res ) => {
   }
 
   return res.json( municipio );
+}
+
+getCityByRegionalHealth = async ( req, res ) => {
+  const { regionalSaude_id } = req.params;
+
+  const regional = RegionalSaude.findByPk( regionalSaude_id );
+
+  if( !regional ) {
+    return res.status(400).json({ error: "Regional não existe" });
+  }
+
+  const municipios = await Municipio.findAll({
+    where: {
+      regionalSaude_id
+    },
+    order: [[ 'nome', 'asc' ]]
+  });
+
+  return res.json( municipios );
 }
 
 listUser = async (req, res) => {
@@ -125,6 +145,7 @@ router.use(authMiddleware);
 router.get('/', index);
 router.get('/:id', getCityById);
 router.get('/:municipio_id/usuarios', listUser);
+router.get('/:regionalSaude_id/regionaisSaude', getCityByRegionalHealth);
 router.post('/', store);
 router.put('/:id', update);
 router.delete('/:id', destroy);

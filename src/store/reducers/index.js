@@ -12,6 +12,10 @@ import municipio from './Municipio';
 import localidade from './Localidade';
 import categoria from './Categoria';
 import zona from './Zona';
+import pais from './Pais';
+import regiao from './Regiao';
+import estado from './Estado';
+import regionalSaude from './RegionalSaude';
 
 export default combineReducers({
   atividade,
@@ -25,5 +29,9 @@ export default combineReducers({
   municipio,
   localidade,
   categoria,
-  zona
+  zona,
+  pais,
+  regiao,
+  estado,
+  regionalSaude
 });

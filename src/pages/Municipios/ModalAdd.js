@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
+import Select from 'react-select'
 import Modal, { ModalBody, ModalFooter } from '../../components/Modal';
 import { Row, Col } from 'react-bootstrap';
 import $ from 'jquery';
@@ -10,24 +11,83 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { createCityRequest, clearCreateCity } from '../../store/actions/MunicipioActions';
+import { getNationsRequest } from '../../store/actions/PaisActions';
+import { GetRegionsByNationRequest } from '../../store/actions/RegiaoActions';
+import { GetStatesByRegionRequest } from '../../store/actions/EstadoActions';
+import { getRegionalHealthByStateRequest } from '../../store/actions/RegionalSaudeActions';
+import { getCityByRegionalHealthRequest } from '../../store/actions/MunicipioActions';
 
 // STYLES
 import { ContainerArrow } from '../../styles/util';
-import { Button, FormGroup } from '../../styles/global';
+import { Button, FormGroup, selectDefault } from '../../styles/global';
 
 function ModalAdd({ createCityRequest, createdCity, ...props }) {
   const [ codigo, setCodigo ] = useState(null);
   const [ nome, setNome ] = useState("");
-
-  function handleCadastrar( e ) {
-    e.preventDefault();
-
-    createCityRequest( codigo, nome );
-  }
+  const [ pais, setPais ] = useState({ value: 37, label: 'BRASIL' });
+  const [ optionPais, setOptionPais ] = useState([]);
+  const [ regiao, setRegiao ] = useState({});
+  const [ optionRegiao, setOptionRegiao ] = useState([]);
+  const [ estado, setEstado ] = useState({});
+  const [ optionEstado, setOptionEstado ] = useState([]);
+  const [ regionalSaude, setRegionalSaude ] = useState({});
+  const [ optionRegionalSaude, setOptionRegionalSaude ] = useState([]);
 
   useEffect(() => {
-    props.clearCreateCity()
+    props.clearCreateCity();
+    props.getNationsRequest();
   }, []);
+
+  useEffect(() => {
+    const options = props.paises.map(( p ) => ({ value: p.id, label: p.nome }));
+
+    setOptionPais( options );
+  }, [ props.paises ]);
+
+  useEffect(() => {
+    if( Object.entries(pais).length > 0 ) {
+      props.GetRegionsByNationRequest( pais.value );
+      setRegiao({});
+      setEstado({});
+      setOptionEstado([]);
+      setRegionalSaude({});
+      setOptionRegionalSaude([]);
+    }
+  }, [ pais ]);
+
+  useEffect(() => {
+    const options = props.regioes.map(( r ) => ({ value: r.id, label: r.nome }));
+
+    setOptionRegiao( options );
+  }, [ props.regioes ]);
+
+  useEffect(() => {
+    if( Object.entries(regiao).length > 0 ) {
+      props.GetStatesByRegionRequest( regiao.value );
+      setEstado({});
+      setRegionalSaude({});
+      setOptionRegionalSaude([]);
+    }
+  }, [ regiao ]);
+
+  useEffect(() => {
+    const options = props.estados.map(( e ) => ({ value: e.id, label: e.nome }));
+
+    setOptionEstado( options );
+  }, [ props.estados ]);
+
+  useEffect(() => {
+    if( Object.entries(estado).length > 0 ) {
+      props.getRegionalHealthByStateRequest( estado.value );
+      setRegionalSaude({});
+    }
+  }, [ estado ]);
+
+  useEffect(() => {
+    const options = props.regionaisSaude.map(( r ) => ({ value: r.id, label: r.nome }));
+
+    setOptionRegionalSaude( options );
+  }, [ props.regionaisSaude ]);
 
   useEffect(() => {
     if( createdCity ) {
@@ -42,10 +102,72 @@ function ModalAdd({ createCityRequest, createdCity, ...props }) {
     setNome("");
   }
 
+  function handleCadastrar( e ) {
+    e.preventDefault();
+
+    createCityRequest( codigo, nome, regionalSaude.value );
+  }
+
   return(
     <Modal id="modal-novo-municipio" title="Cadastrar Município" size='lg'>
       <form onSubmit={ handleCadastrar }>
         <ModalBody>
+        <Row>
+            <Col sm="6">
+              <FormGroup>
+                <label htmlFor="pais">Páis <code>*</code></label>
+                <Select
+                  id="pais"
+                  value={ pais }
+                  styles={ selectDefault }
+                  options={ optionPais }
+                  onChange={ e => setPais(e) }
+                  required
+                />
+              </FormGroup>
+            </Col>
+            <Col sm="6">
+              <FormGroup>
+                <label htmlFor="regiao">Região <code>*</code></label>
+                <Select
+                  id="regiao"
+                  value={ regiao }
+                  styles={ selectDefault }
+                  options={ optionRegiao }
+                  onChange={ e => setRegiao(e) }
+                  required
+                />
+              </FormGroup>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm="6">
+              <FormGroup>
+                <label htmlFor="estado">Estado <code>*</code></label>
+                <Select
+                  id="estado"
+                  value={ estado }
+                  styles={ selectDefault }
+                  options={ optionEstado }
+                  onChange={ e => setEstado(e) }
+                  required
+                />
+              </FormGroup>
+            </Col>
+            <Col sm="6">
+              <FormGroup>
+                <label htmlFor="regionalSaude">Regional de saúde <code>*</code></label>
+                <Select
+                  id="regionalSaude"
+                  value={ regionalSaude }
+                  styles={ selectDefault }
+                  options={ optionRegionalSaude }
+                  onChange={ e => setRegionalSaude(e) }
+                  required
+                />
+              </FormGroup>
+            </Col>
+          </Row>
           <Row>
             <Col>
               <FormGroup>
@@ -80,11 +202,23 @@ function ModalAdd({ createCityRequest, createdCity, ...props }) {
 }
 
 const mapStateToProps = state => ({
-  createdCity: state.municipio.createdCity
+  createdCity: state.municipio.createdCity,
+  paises: state.pais.paises,
+  regioes: state.regiao.regioes,
+  estados: state.estado.estados,
+  regionaisSaude: state.regionalSaude.regionaisSaude
  });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ createCityRequest, clearCreateCity }, dispatch);
+  bindActionCreators({
+    createCityRequest,
+    clearCreateCity,
+    getNationsRequest,
+    GetRegionsByNationRequest,
+    GetStatesByRegionRequest,
+    getRegionalHealthByStateRequest,
+    getCityByRegionalHealthRequest
+  }, dispatch);
 
 export default connect(
   mapStateToProps,

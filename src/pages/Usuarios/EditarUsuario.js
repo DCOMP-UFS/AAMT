@@ -12,7 +12,11 @@ import { connect } from 'react-redux';
 // ACTIONS
 import { changeSidebar } from '../../store/actions/sidebar';
 import { updateUsuarioRequest, getUsuarioByIdRequest } from '../../store/actions/UsuarioActions';
-import { getMunicipiosRequest } from '../../store/actions/MunicipioActions';
+import { getNationsRequest } from '../../store/actions/PaisActions';
+import { GetRegionsByNationRequest } from '../../store/actions/RegiaoActions';
+import { GetStatesByRegionRequest } from '../../store/actions/EstadoActions';
+import { getRegionalHealthByStateRequest } from '../../store/actions/RegionalSaudeActions';
+import { getCityByRegionalHealthRequest } from '../../store/actions/MunicipioActions';
 
 // STYLES
 import { FormGroup, selectDefault } from '../../styles/global';
@@ -28,30 +32,129 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
   const [ usuario, setUsuario ] = useState("");
   const [ ativo, setAtivo ] = useState("");
   const [ tipoPerfil, setTipoPerfil ] = useState({});
+  const [ pais, setPais ] = useState({});
+  const [ optionPais, setOptionPais ] = useState([]);
+  const [ regiao, setRegiao ] = useState({});
+  const [ optionRegiao, setOptionRegiao ] = useState([]);
+  const [ estado, setEstado ] = useState({});
+  const [ optionEstado, setOptionEstado ] = useState([]);
+  const [ regionalSaude, setRegionalSaude ] = useState({});
+  const [ optionRegionalSaude, setOptionRegionalSaude ] = useState([]);
   const [ municipio, setMunicipio ] = useState({});
+  const [ optionMunicipio, setOptionMunicipio ] = useState([]);
 
   const optionPerfil = Object.entries(perfil).map(([key, value]) => {
     const label = key.replace(/^\w/, c => c.toUpperCase());
 
     return { value: value, label };
   });
-  const [ optionMunicipio, setOptionMunicipio ] = useState([]);
+
   const [ optionAtivo ] = useState([ { value: 1, label: 'Sim' }, { value: 0, label: 'Não' } ]);
 
   useEffect(() => {
     props.changeSidebar(3, 0);
-    props.getMunicipiosRequest();
     getUsuarioByIdRequest( id );
   }, []);
 
   useEffect(() => {
-    const options = props.municipios.map(( m ) => ({ value: m.id, label: m.nome }));
+    const options = props.paises.map(( p ) => {
+      if( p.id === usuarioUpdate.pais_id )
+        setPais( { value: p.id, label: p.nome } );
+
+      return ({ value: p.id, label: p.nome })
+    });
+
+    setOptionPais( options );
+  }, [ props.paises ]);
+
+  useEffect(() => {
+    if( Object.entries(pais).length > 0 ) {
+      props.GetRegionsByNationRequest( pais.value );
+      setRegiao({});
+      setEstado({});
+      setOptionEstado([]);
+      setRegionalSaude({});
+      setOptionRegionalSaude([]);
+      setMunicipio({});
+      setOptionMunicipio([]);
+    }
+  }, [ pais ]);
+
+  useEffect(() => {
+    const options = props.regioes.map(( r ) => {
+      if( r.id === usuarioUpdate.regiao_id )
+        setRegiao( { value: r.id, label: r.nome } );
+
+      return ({ value: r.id, label: r.nome });
+    });
+
+    setOptionRegiao( options );
+  }, [ props.regioes ]);
+
+  useEffect(() => {
+    if( Object.entries(regiao).length > 0 ) {
+      props.GetStatesByRegionRequest( regiao.value );
+      setEstado({});
+      setRegionalSaude({});
+      setOptionRegionalSaude([]);
+      setMunicipio({});
+      setOptionMunicipio([]);
+    }
+  }, [ regiao ]);
+
+  useEffect(() => {
+    const options = props.estados.map(( e ) => {
+      if( e.id === usuarioUpdate.estado_id )
+        setEstado( { value: e.id, label: e.nome } );
+
+      return ({ value: e.id, label: e.nome });
+    });
+
+    setOptionEstado( options );
+  }, [ props.estados ]);
+
+  useEffect(() => {
+    if( Object.entries(estado).length > 0 ) {
+      props.getRegionalHealthByStateRequest( estado.value );
+      setRegionalSaude({});
+      setMunicipio({});
+      setOptionMunicipio([]);
+    }
+  }, [ estado ]);
+
+  useEffect(() => {
+    const options = props.regionaisSaude.map(( r ) => {
+      if( r.id === usuarioUpdate.regionalSaude_id )
+        setRegionalSaude( { value: r.id, label: r.nome } );
+
+      return ({ value: r.id, label: r.nome });
+    });
+
+    setOptionRegionalSaude( options );
+  }, [ props.regionaisSaude ]);
+
+  useEffect(() => {
+    if( Object.entries(regionalSaude).length > 0 ) {
+      props.getCityByRegionalHealthRequest( regionalSaude.value );
+      setMunicipio({});
+    }
+  }, [ regionalSaude ]);
+
+  useEffect(() => {
+    const options = props.municipiosList.map(( m ) => {
+      if( m.id === usuarioUpdate.municipio.id )
+        setMunicipio( { value: m.id, label: m.nome } );
+
+      return ({ value: m.id, label: m.nome })
+    });
 
     setOptionMunicipio( options );
-  }, [ props.municipios ]);
+  }, [ props.municipiosList ]);
 
   useEffect(() => {
     if( Object.entries( usuarioUpdate ).length > 0 ) {
+      props.getNationsRequest();
+
       let labelPerfil = Object.entries(perfil)
       .find(([key, value]) => value === usuarioUpdate.tipoPerfil )[0];
 
@@ -65,7 +168,6 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
       setUsuario( usuarioUpdate.usuario );
       setAtivo( { value: usuarioUpdate.ativo, label: usuarioUpdate.ativo ? 'Sim' : 'Não' } );
       setTipoPerfil( { value: usuarioUpdate.tipoPerfil, label: labelPerfil } );
-      setMunicipio( { value: usuarioUpdate.municipio.id, label: usuarioUpdate.municipio.nome } );
     }
   }, [ usuarioUpdate ]);
 
@@ -181,21 +283,23 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
                       <FormGroup>
                         <label htmlFor="pais">Páis <code>*</code></label>
                         <Select
-                          // value={ tipoPerfil }
+                          id="pais"
+                          value={ pais }
                           styles={ selectDefault }
-                          // options={ optionPerfil }
-                          // onChange={ e => setTipoPerfil(e) }
+                          options={ optionPais }
+                          onChange={ e => setPais(e) }
                         />
                       </FormGroup>
                     </Col>
                     <Col sm="6">
                       <FormGroup>
-                        <label htmlFor="rigiao">Região <code>*</code></label>
+                        <label htmlFor="regiao">Região <code>*</code></label>
                         <Select
-                           // value={ tipoPerfil }
-                           styles={ selectDefault }
-                           // options={ optionPerfil }
-                           // onChange={ e => setTipoPerfil(e) }
+                          id="regiao"
+                          value={ regiao }
+                          styles={ selectDefault }
+                          options={ optionRegiao }
+                          onChange={ e => setRegiao(e) }
                         />
                       </FormGroup>
                     </Col>
@@ -205,10 +309,11 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
                       <FormGroup>
                         <label htmlFor="estado">Estado <code>*</code></label>
                         <Select
-                          // value={ tipoPerfil }
+                          id="estado"
+                          value={ estado }
                           styles={ selectDefault }
-                          // options={ optionPerfil }
-                          // onChange={ e => setTipoPerfil(e) }
+                          options={ optionEstado }
+                          onChange={ e => setEstado(e) }
                         />
                       </FormGroup>
                     </Col>
@@ -216,10 +321,11 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
                       <FormGroup>
                         <label htmlFor="regionalSaude">Regional de saúde <code>*</code></label>
                         <Select
-                           // value={ tipoPerfil }
+                           id="regionalSaude"
+                           value={ regionalSaude }
                            styles={ selectDefault }
-                           // options={ optionPerfil }
-                           // onChange={ e => setTipoPerfil(e) }
+                           options={ optionRegionalSaude }
+                           onChange={ e => setRegionalSaude(e) }
                         />
                       </FormGroup>
                     </Col>
@@ -257,15 +363,24 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
 
 const mapStateToProps = state => ({
   municipios: state.municipio.municipios,
-  usuarioUpdate: state.usuario.usuarioUpdate
+  usuarioUpdate: state.usuario.usuarioUpdate,
+  paises: state.pais.paises,
+  regioes: state.regiao.regioes,
+  estados: state.estado.estados,
+  regionaisSaude: state.regionalSaude.regionaisSaude,
+  municipiosList: state.municipio.municipiosList
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
     changeSidebar,
-    getMunicipiosRequest,
     updateUsuarioRequest,
-    getUsuarioByIdRequest
+    getUsuarioByIdRequest,
+    getNationsRequest,
+    GetRegionsByNationRequest,
+    GetStatesByRegionRequest,
+    getRegionalHealthByStateRequest,
+    getCityByRegionalHealthRequest
   }, dispatch);
 
 export default connect(

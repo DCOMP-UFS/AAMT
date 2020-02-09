@@ -18,12 +18,20 @@ export const getCityByIdRequest = id => {
   });
 }
 
+export const getCityByRegionalHealthRequest = regionalSaude_id => {
+  return api.get(`/municipios/${ regionalSaude_id }/regionaisSaude`, {
+    ...headerAuthorization()
+  });
+}
+
+
 export const createCityRequest = data => {
-  const { codigo, nome } = data;
+  const { codigo, nome, regionalSaude_id } = data;
 
   return api.post('municipios', {
     codigo,
-    nome
+    nome,
+    regionalSaude_id
   },
   {
     ...headerAuthorization()

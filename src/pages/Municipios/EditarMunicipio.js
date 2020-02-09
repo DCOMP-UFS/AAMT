@@ -11,6 +11,10 @@ import { connect } from 'react-redux';
 // ACTIONS
 import { changeSidebar } from '../../store/actions/sidebar';
 import { updateCityRequest, getCityByIdRequest } from '../../store/actions/MunicipioActions';
+import { getNationsRequest } from '../../store/actions/PaisActions';
+import { GetRegionsByNationRequest } from '../../store/actions/RegiaoActions';
+import { GetStatesByRegionRequest } from '../../store/actions/EstadoActions';
+import { getRegionalHealthByStateRequest } from '../../store/actions/RegionalSaudeActions';
 
 // STYLES
 import { FormGroup, selectDefault } from '../../styles/global';
@@ -21,6 +25,14 @@ function EditarMunicipio({ municipio, updateCityRequest, getCityByIdRequest, ...
   const [ codigo, setCodigo ] = useState(null);
   const [ nome, setNome ] = useState("");
   const [ ativo, setAtivo ] = useState({});
+  const [ pais, setPais ] = useState({});
+  const [ optionPais, setOptionPais ] = useState([]);
+  const [ regiao, setRegiao ] = useState({});
+  const [ optionRegiao, setOptionRegiao ] = useState([]);
+  const [ estado, setEstado ] = useState({});
+  const [ optionEstado, setOptionEstado ] = useState([]);
+  const [ regionalSaude, setRegionalSaude ] = useState({});
+  const [ optionRegionalSaude, setOptionRegionalSaude ] = useState([]);
 
   const optionAtivo = [ { value: 1, label: 'Sim' }, { value: 0, label: 'Não' } ];
 
@@ -30,7 +42,79 @@ function EditarMunicipio({ municipio, updateCityRequest, getCityByIdRequest, ...
   }, []);
 
   useEffect(() => {
+    const options = props.paises.map(( p ) => {
+      if( p.id === municipio.pais_id )
+        setPais( { value: p.id, label: p.nome } );
+
+      return ({ value: p.id, label: p.nome })
+    });
+
+    setOptionPais( options );
+  }, [ props.paises ]);
+
+  useEffect(() => {
+    if( Object.entries(pais).length > 0 ) {
+      props.GetRegionsByNationRequest( pais.value );
+      setRegiao({});
+      setEstado({});
+      setOptionEstado([]);
+      setRegionalSaude({});
+      setOptionRegionalSaude([]);
+    }
+  }, [ pais ]);
+
+  useEffect(() => {
+    const options = props.regioes.map(( r ) => {
+      if( r.id === municipio.regiao_id )
+        setRegiao( { value: r.id, label: r.nome } );
+
+      return ({ value: r.id, label: r.nome });
+    });
+
+    setOptionRegiao( options );
+  }, [ props.regioes ]);
+
+  useEffect(() => {
+    if( Object.entries(regiao).length > 0 ) {
+      props.GetStatesByRegionRequest( regiao.value );
+      setEstado({});
+      setRegionalSaude({});
+      setOptionRegionalSaude([]);
+    }
+  }, [ regiao ]);
+
+  useEffect(() => {
+    const options = props.estados.map(( e ) => {
+      if( e.id === municipio.estado_id )
+        setEstado( { value: e.id, label: e.nome } );
+
+      return ({ value: e.id, label: e.nome });
+    });
+
+    setOptionEstado( options );
+  }, [ props.estados ]);
+
+  useEffect(() => {
+    if( Object.entries(estado).length > 0 ) {
+      props.getRegionalHealthByStateRequest( estado.value );
+      setRegionalSaude({});
+    }
+  }, [ estado ]);
+
+  useEffect(() => {
+    const options = props.regionaisSaude.map(( r ) => {
+      if( r.id === municipio.regionalSaude_id )
+        setRegionalSaude( { value: r.id, label: r.nome } );
+
+      return ({ value: r.id, label: r.nome });
+    });
+
+    setOptionRegionalSaude( options );
+  }, [ props.regionaisSaude ]);
+
+  useEffect(() => {
     if( Object.entries( municipio ).length > 0 ) {
+      props.getNationsRequest();
 
       setCodigo( municipio.codigo );
       setNome( municipio.nome );
@@ -44,6 +128,7 @@ function EditarMunicipio({ municipio, updateCityRequest, getCityByIdRequest, ...
     updateCityRequest( id, {
       codigo,
       nome,
+      regionalSaude_id: regionalSaude.value,
       ativo: ativo.value
     });
   }
@@ -68,21 +153,23 @@ function EditarMunicipio({ municipio, updateCityRequest, getCityByIdRequest, ...
                       <FormGroup>
                         <label htmlFor="pais">Páis <code>*</code></label>
                         <Select
-                          // value={ tipoPerfil }
+                          id="pais"
+                          value={ pais }
                           styles={ selectDefault }
-                          // options={ optionPerfil }
-                          // onChange={ e => setTipoPerfil(e) }
+                          options={ optionPais }
+                          onChange={ e => setPais(e) }
                         />
                       </FormGroup>
                     </Col>
                     <Col sm="6">
                       <FormGroup>
-                        <label htmlFor="rigiao">Região <code>*</code></label>
+                        <label htmlFor="regiao">Região <code>*</code></label>
                         <Select
-                           // value={ tipoPerfil }
+                           id="regiao"
+                           value={ regiao }
                            styles={ selectDefault }
-                           // options={ optionPerfil }
-                           // onChange={ e => setTipoPerfil(e) }
+                           options={ optionRegiao }
+                           onChange={ e => setRegiao(e) }
                         />
                       </FormGroup>
                     </Col>
@@ -92,10 +179,11 @@ function EditarMunicipio({ municipio, updateCityRequest, getCityByIdRequest, ...
                       <FormGroup>
                         <label htmlFor="estado">Estado <code>*</code></label>
                         <Select
-                          // value={ tipoPerfil }
+                          id="estado"
+                          value={ estado }
                           styles={ selectDefault }
-                          // options={ optionPerfil }
-                          // onChange={ e => setTipoPerfil(e) }
+                          options={ optionEstado }
+                          onChange={ e => setEstado(e) }
                         />
                       </FormGroup>
                     </Col>
@@ -103,10 +191,11 @@ function EditarMunicipio({ municipio, updateCityRequest, getCityByIdRequest, ...
                       <FormGroup>
                         <label htmlFor="regionalSaude">Regional de saúde <code>*</code></label>
                         <Select
-                           // value={ tipoPerfil }
+                           id="regionalSaude"
+                           value={ regionalSaude }
                            styles={ selectDefault }
-                           // options={ optionPerfil }
-                           // onChange={ e => setTipoPerfil(e) }
+                           options={ optionRegionalSaude }
+                           onChange={ e => setRegionalSaude(e) }
                         />
                       </FormGroup>
                     </Col>
@@ -159,14 +248,22 @@ function EditarMunicipio({ municipio, updateCityRequest, getCityByIdRequest, ...
 }
 
 const mapStateToProps = state => ({
-  municipio: state.municipio.municipio
+  municipio: state.municipio.municipio,
+  paises: state.pais.paises,
+  regioes: state.regiao.regioes,
+  estados: state.estado.estados,
+  regionaisSaude: state.regionalSaude.regionaisSaude
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
     changeSidebar,
     updateCityRequest,
-    getCityByIdRequest
+    getCityByIdRequest,
+    getNationsRequest,
+    GetRegionsByNationRequest,
+    GetStatesByRegionRequest,
+    getRegionalHealthByStateRequest
   }, dispatch);
 
 export default connect(

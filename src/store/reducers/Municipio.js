@@ -6,7 +6,8 @@ const INITIAL_STATE = {
   indexCity: -1,
   createdCity: null,
   updatedCity: null,
-  reload: false
+  reload: false,
+  municipiosList: []
 }
 
 export default function Municipio(state = INITIAL_STATE, action) {
@@ -22,6 +23,13 @@ export default function Municipio(state = INITIAL_STATE, action) {
       return {
         ...state,
         municipio: action.payload.municipio
+      }
+    }
+
+    case ActionTypes.GET_CITY_BY_REGIONAL_HEALTH_SUCCESS: {
+      return {
+        ...state,
+        municipiosList: action.payload.municipios
       }
     }
 

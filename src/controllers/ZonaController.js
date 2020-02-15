@@ -203,7 +203,7 @@ update = async (req, res) => {
   );
 
   if( isRejected ){
-    return res.status(400).json({ error: 'Não foi possível atualizar usuário' });
+    return res.status(400).json({ error: 'Não foi possível atualizar a zona' });
   }
 
   const result = await Zona.findByPk( id,  {

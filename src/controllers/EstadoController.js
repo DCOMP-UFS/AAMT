@@ -18,7 +18,15 @@ index = async ( req, res ) => {
 getById = async ( req, res ) => {
   const { id } = req.params;
 
-  const estado = await Estado.findByPk( id );
+  const estado = await Estado.findByPk( id, {
+    include: {
+      association: 'regiao'
+    },
+    attributes: {
+      exclude: 'regiao_id',
+      include: 'id'
+    }
+  });
 
   if( !estado ) {
     return res.status(400).json({ error: "Estado não existe" });

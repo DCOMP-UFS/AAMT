@@ -3,33 +3,25 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable(
-      'quarteiroes', { 
+      'ruas', { 
         id: {
           type: Sequelize.INTEGER,
           primaryKey: true,
           autoIncrement: true,
           allowNull: false,
         },
-        numero: {
-          type: Sequelize.INTEGER,
+        nome: {
+          type: Sequelize.STRING,
           allowNull: false,
         },
-        ativo: {
-          type: Sequelize.INTEGER,
-          allowNull: false,
-          defaultValue: 1
-        },
-        zona_id: {
-          type: Sequelize.INTEGER,
+        cep: {
+          type: Sequelize.STRING,
           allowNull: true,
-          references: { model: 'zonas', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE'
         },
-        quarteirao_id: {
+        localidade_id: {
           type: Sequelize.INTEGER,
           allowNull: false,
-          references: { model: 'quarteiroes', key: 'id' },
+          references: { model: 'localidades', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'RESTRICT'
         },
@@ -45,6 +37,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('quarteiroes');
+    return queryInterface.dropTable('ruas');
   }
 };

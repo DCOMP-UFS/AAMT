@@ -6,11 +6,14 @@ const Municipio = require('../models/Municipio');
 const Categoria = require('../models/Categoria');
 const Localidade = require('../models/Localidade');
 const Zona = require('../models/Zona');
-const Quarteirao = require('../models/Quarteirao');
 const Pais = require('../models/Pais');
 const Regiao = require('../models/Regiao');
 const Estado = require('../models/Estado');
 const RegionalSaude = require('../models/RegionalSaude');
+const Rua = require('../models/Rua');
+const Quarteirao = require('../models/Quarteirao');
+const Lado = require('../models/Lado');
+const Imovel = require('../models/Imovel');
 
 const connection = new Sequelize(dbConfig);
 
@@ -19,21 +22,27 @@ Municipio.init( connection );
 Categoria.init( connection );
 Localidade.init( connection );
 Zona.init( connection );
-Quarteirao.init( connection );
 Pais.init( connection );
 Regiao.init( connection );
 Estado.init( connection );
 RegionalSaude.init( connection );
+Rua.init( connection );
+Quarteirao.init( connection );
+Lado.init( connection );
+Imovel.init( connection );
 
 Usuario.associate( connection.models );
 Municipio.associate( connection.models );
 Categoria.associate( connection.models );
 Localidade.associate( connection.models );
 Zona.associate( connection.models );
-Quarteirao.associate( connection.models );
 Pais.associate( connection.models );
 Regiao.associate( connection.models );
 Estado.associate( connection.models );
 RegionalSaude.associate( connection.models );
+Rua.associate( connection.models );
+Quarteirao.associate( connection.models );
+Lado.associate( connection.models );
+Imovel.associate( connection.models );
 
 module.exports = connection;

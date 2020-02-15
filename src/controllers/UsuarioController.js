@@ -3,6 +3,8 @@ const bcrypt = require('bcryptjs');
 const authMiddleware = require('../middlewares/auth');
 const Usuario = require('../models/Usuario');
 const Municipio = require('../models/Municipio');
+const { QueryTypes } = require('sequelize');
+const sequelize = require('sequelize');
 
 const router = express.Router();
 
@@ -25,20 +27,66 @@ index = async (req, res) => {
 getUserById = async ( req, res ) => {
   const { id } = req.params;
 
-  const user = await Usuario.findByPk( id, {
-    include: { association: 'municipio' },
-    attributes: {
-      exclude: [ 'municipio_id' ]
+  const usuario = await Usuario.sequelize.query(
+    'SELECT ' +
+      'u.*, ' +
+      'rs.id AS regional_saude_id, ' +
+      'e.id AS estado_id, ' +
+      'r.id AS regiao_id, ' + 
+      'p.id AS pais_id  ' +
+    'FROM  ' +
+      'usuarios as u  ' +
+      'JOIN municipios as m ON( u.municipio_id = m.id ) ' +
+      'JOIN "regionaisSaude" as rs ON( m.regional_saude_id = rs.id ) ' +
+      'JOIN estados as e ON( rs.estado_id = e.id ) ' +
+      'JOIN regioes as r ON( e.regiao_id = r.id ) ' +
+      'JOIN paises as p ON( r.pais_id = p.id ) ' +
+    'WHERE ' +
+      'u.id = $1', 
+    {
+      bind: [id],
+      logging: console.log,
+      plain: true,
+      model: Usuario,
+      mapToModel: true,
+      type: QueryTypes.SELECT
     }
-  });
+  );
 
-  if( !user ) {
+  const municipio = await Municipio.findByPk( usuario.municipio_id );
+  usuario.municipio_id = undefined;
+
+  // const usuario = await Usuario.findByPk( id, {
+  //   include: { association: 'municipio' },
+  //   attributes: {
+  //     exclude: [ 'municipio_id' ]
+  //   }
+  // });
+
+  if( !usuario ) {
     return res.status(400).json({ error: "Usuário não encontrado" });
   }
 
-  user.senha = undefined;
+  usuario.senha = undefined;
 
-  return res.json( user );
+  return res.json({ 
+    id: usuario.id,
+    nome: usuario.nome,
+    cpf: usuario.cpf,
+    rg: usuario.rg,
+    celular: usuario.celular ,
+    email: usuario.email,
+    usuario: usuario.usuario,
+    ativo: usuario.ativo,
+    regionalSaude_id: usuario.dataValues.regional_saude_id,
+    estado_id: usuario.dataValues.estado_id,
+    regiao_id: usuario.dataValues.regiao_id,
+    pais_id: usuario.dataValues.pais_id,
+    tipoPerfil: usuario.tipoPerfil,
+    createdAt: usuario.createdAt,
+    updatedAt: usuario.updatedAt,
+    municipio
+  });
 }
 
 listByCity = async ( req, res ) => {

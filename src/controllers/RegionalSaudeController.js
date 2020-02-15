@@ -18,7 +18,15 @@ index = async ( req, res ) => {
 getById = async ( req, res ) => {
   const { id } = req.params;
 
-  const regional = await RegionalSaude.findByPk( id );
+  const regional = await RegionalSaude.findByPk( id, {
+    include: {
+      association: 'estado'
+    },
+    attributes: {
+      exclude: 'estado_id',
+      include: 'id'
+    }
+  });
 
   if( !regional ) {
     return res.status(400).json({ error: "Regional não existe" });

@@ -16,7 +16,15 @@ index = async ( req, res ) => {
 getById = async ( req, res ) => {
   const { id } = req.params;
 
-  const regiao = await Regiao.findByPk( id );
+  const regiao = await Regiao.findByPk( id, {
+    include: {
+      association: 'pais'
+    },
+    attributes: {
+      include: 'id',
+      exclude: 'pais_id'
+    }
+  });
 
   if( !regiao ) {
     return res.status(400).json({ error: "Região não existe" });

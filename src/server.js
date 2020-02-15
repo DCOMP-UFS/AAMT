@@ -18,5 +18,8 @@ require('./controllers/PaisController')(app);
 require('./controllers/RegiaoController')(app);
 require('./controllers/EstadoController')(app);
 require('./controllers/RegionalSaudeController')(app);
+require('./controllers/RuaController')(app);
+require('./controllers/QuarteiraoController')(app);
+require('./controllers/ImovelController')(app);
 
 app.listen( process.env.PORT || 3333 );

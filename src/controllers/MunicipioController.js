@@ -24,7 +24,38 @@ index = async ( req, res ) => {
 getCityById = async ( req, res ) => {
   const { id } = req.params;
 
-  const municipio = await Municipio.findByPk( id );
+  const municipio = await Municipio.sequelize.query(
+    'SELECT ' +
+      'm.*, ' +
+      'rs.id AS regional_saude_id, ' +
+      'e.id AS estado_id, ' +
+      'r.id AS regiao_id, ' + 
+      'p.id AS pais_id  ' +
+    'FROM  ' +
+      'municipios as m  ' +
+      'JOIN "regionaisSaude" as rs ON( m.regional_saude_id = rs.id ) ' +
+      'JOIN estados as e ON( rs.estado_id = e.id ) ' +
+      'JOIN regioes as r ON( e.regiao_id = r.id ) ' +
+      'JOIN paises as p ON( r.pais_id = p.id ) ' +
+    'WHERE ' +
+      'm.id = $1', 
+    {
+      bind: [id],
+      logging: console.log,
+      plain: true,
+      model: Municipio,
+      mapToModel: true
+    }
+  );
+
+  // const municipio = await Municipio.findByPk( id, {
+  //   include: {
+  //       association: 'regional'
+  //   },
+  //   attributes: {
+  //     exclude: [ 'regionalSaude_id' ]
+  //   }
+  // });
 
   if( !municipio ) {
     return res.status(400).json({ error: 'Município não encontrado' });
@@ -81,11 +112,12 @@ listUser = async (req, res) => {
 }
 
 store = async (req, res) => {
-  const { codigo, nome } = req.body;
+  const { codigo, nome, regionalSaude_id } = req.body;
 
   const municipio = await Municipio.create({ 
     codigo,
     nome,
+    regional_saude_id: regionalSaude_id,
     ativo: 1
   });
 

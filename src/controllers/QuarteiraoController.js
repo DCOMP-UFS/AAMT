@@ -7,7 +7,7 @@ const Rua = require('../models/Rua');
 const Lado = require('../models/Lado');
 
 // UTILITY
-const isCoordinator = require('../util/isCoordinator');
+const allowFunction = require('../util/allowFunction');
 
 index = async ( req, res ) => {
   const { id } = req.params;
@@ -174,8 +174,8 @@ store = async ( req, res ) => {
   const { numero, zona_id, quarteirao_id, lados } = req.body;
   const userId = req.userId;
 
-  const coordinator = await isCoordinator( userId );
-  if( !coordinator ) {
+  const allow = await allowFunction( userId, 'manter_quarteirao' );
+  if( !allow ) {
     return res.status(403).json({ error: 'Acesso negado' });
   }
 
@@ -228,8 +228,8 @@ update = async ( req, res ) => {
 
   const userId = req.userId;
 
-  const coordinator = await isCoordinator( userId );
-  if( !coordinator ) {
+  const allow = await allowFunction( userId, 'manter_quarteirao' );
+  if( !allow ) {
     return res.status(403).json({ error: 'Acesso negado' });
   }
 

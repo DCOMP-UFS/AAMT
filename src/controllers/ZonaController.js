@@ -5,7 +5,7 @@ const Municipio = require('../models/Municipio');
 const Zona = require('../models/Zona');
 
 // UTILITY
-const isCoordinator = require('../util/isCoordinator');
+const allowFunction = require('../util/allowFunction');
 
 getByCityId = async (req, res) => {
   const { municipio_id } = req.params;
@@ -85,8 +85,8 @@ store = async (req, res) => {
   const userId = req.userId;
   let nome = 'a';
 
-  const coordinator = await isCoordinator( userId );
-  if( !coordinator ) {
+  const allow = await allowFunction( userId, 'manter_zona' );
+  if( !allow ) {
     return res.status(403).json({ error: 'Acesso negado' });
   }
 
@@ -158,8 +158,8 @@ update = async (req, res) => {
   const userId = req.userId;
   const { localidade_id, municipio_id } = req.body;
 
-  const coordinator = await isCoordinator( userId );
-  if( !coordinator ) {
+  const allow = await allowFunction( req.userId, 'manter_zona' );
+  if( !allow ) {
     return res.status(403).json({ error: 'Acesso negado' });
   }
 

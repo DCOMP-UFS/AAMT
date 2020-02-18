@@ -5,7 +5,7 @@ const Categoria = require('../models/Categoria');
 const Municipio = require('../models/Municipio');
 
 // UTILITY
-const isCoordinator = require('../util/isCoordinator');
+const allowFunction = require('../util/allowFunction');
 
 index = async (req, res) => {
   const localidades = await Localidade.findAll({
@@ -93,8 +93,8 @@ store = async (req, res) => {
   const { nome, codigo } = req.body;
   const userId = req.userId;
 
-  const coordinator = await isCoordinator( userId );
-  if( !coordinator ) {
+  const allow = await allowFunction( req.userId, 'manter_localidade' );
+  if( !allow ) {
     return res.status(403).json({ error: 'Acesso negado' });
   }
 
@@ -136,8 +136,8 @@ update = async (req, res) => {
   const userId = req.userId;
   const { categoria_id, municipio_id } = req.body;
 
-  const coordinator = await isCoordinator( userId );
-  if( !coordinator ) {
+  const allow = await allowFunction( req.userId, 'manter_localidade' );
+  if( !allow ) {
     return res.status(403).json({ error: 'Acesso negado' });
   }
 

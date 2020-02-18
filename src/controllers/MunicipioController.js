@@ -5,7 +5,7 @@ const Usuario = require('../models/Usuario');
 const RegionalSaude = require('../models/RegionalSaude');
 
 // UTILITY
-const isCoordinator = require('../util/isCoordinator');
+const allowFunction = require('../util/allowFunction');
 
 const router = express.Router();
 
@@ -114,6 +114,11 @@ listUser = async (req, res) => {
 store = async (req, res) => {
   const { codigo, nome, regionalSaude_id } = req.body;
 
+  const allow = await allowFunction( req.userId, 'manter_municipio' );
+  if( !allow ) {
+    return res.status(403).json({ error: 'Acesso negado' });
+  }
+
   const municipio = await Municipio.create({ 
     codigo,
     nome,
@@ -128,9 +133,9 @@ update = async (req, res) => {
   const userId = req.userId;
   const { id } = req.params;
 
-  const coordinator = await isCoordinator( userId );
-  if( !coordinator ) {
-      return res.status(403).json({ error: 'Acesso negado' });
+  const allow = await allowFunction( req.userId, 'manter_municipio' );
+  if( !allow ) {
+    return res.status(403).json({ error: 'Acesso negado' });
   }
 
   const municipio = await Municipio.findByPk( id );

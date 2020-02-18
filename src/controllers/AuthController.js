@@ -19,12 +19,27 @@ authenticate = async (req, res) => {
     where: {
       usuario
     },
-    include: { association: 'municipio' },
-    attributes: {
-      exclude: [ 'municipio_id' ]
-    }
+    include: [
+      { association: 'municipio' },
+      { association: 'tiposPerfis' }
+    ],
+    attributes: { exclude: [ 'municipio_id' ] }
   });
-
+  
+  let perfil = {};
+  if( user.tiposPerfis.length > 1) {
+    perfil = user.tiposPerfis.map(( tipoPerfil ) => {
+      const tp = tipoPerfil.dataValues;
+      return { id: tp.id, descricao: tp.descricao }
+    });
+  } else {
+    perfil = { 
+      id: user.tiposPerfis[0].dataValues.id, 
+      descricao: user.tiposPerfis[0].dataValues.descricao, 
+      sigla: user.tiposPerfis[0].dataValues.sigla 
+    }
+  }
+  
   if(!user) 
     return res.status(400).send({ error: 'User not found' });
   
@@ -34,7 +49,19 @@ authenticate = async (req, res) => {
   user.senha = undefined;
 
   res.send({ 
-    user, 
+    user: {
+      id: user.id,
+      nome: user.nome,
+      cpf: user.cpf,
+      rg: user.rg,
+      email: user.email,
+      usuario: user.usuario,
+      ativo: user.ativo,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      municipio: user.municipio,
+      tipoPerfil: perfil
+    },
     token: generateToken({ id: user.id }) 
   });
 }

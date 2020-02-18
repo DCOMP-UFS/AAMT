@@ -4,7 +4,7 @@ const Pais = require('../models/Pais');
 const { Op } = require("sequelize");
 
 // UTILITY
-const isCoordinator = require('../util/isCoordinator');
+const allowFunction = require('../util/allowFunction');
 
 index = async ( req, res ) => {
   const paises = await Pais.findAll();
@@ -29,8 +29,8 @@ destroy = async ( req, res ) => {
 
   const userId = req.userId;
 
-  const coordinator = await isCoordinator( userId );
-  if( !coordinator ) {
+  const allow = await allowFunction( req.userId, 'manter_pais' );
+  if( !allow ) {
     return res.status(403).json({ error: 'Acesso negado' });
   }
 
@@ -47,8 +47,8 @@ store = async (req, res) => {
   const { nome, sigla } = req.body;
   const userId = req.userId;
 
-  const coordinator = await isCoordinator( userId );
-  if( !coordinator ) {
+  const allow = await allowFunction( req.userId, 'manter_pais' );
+  if( !allow ) {
     return res.status(403).json({ error: 'Acesso negado' });
   }
 

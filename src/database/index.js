@@ -14,6 +14,8 @@ const Rua = require('../models/Rua');
 const Quarteirao = require('../models/Quarteirao');
 const Lado = require('../models/Lado');
 const Imovel = require('../models/Imovel');
+const Funcao = require('../models/Funcao');
+const TipoPerfil = require('../models/TipoPerfil');
 
 const connection = new Sequelize(dbConfig);
 
@@ -30,6 +32,8 @@ Rua.init( connection );
 Quarteirao.init( connection );
 Lado.init( connection );
 Imovel.init( connection );
+Funcao.init( connection );
+TipoPerfil.init( connection );
 
 Usuario.associate( connection.models );
 Municipio.associate( connection.models );
@@ -44,5 +48,7 @@ Rua.associate( connection.models );
 Quarteirao.associate( connection.models );
 Lado.associate( connection.models );
 Imovel.associate( connection.models );
+Funcao.associate( connection.models );
+TipoPerfil.associate( connection.models );
 
 module.exports = connection;

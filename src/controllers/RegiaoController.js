@@ -5,7 +5,7 @@ const Pais = require('../models/Pais');
 const { Op } = require("sequelize");
 
 // UTILITY
-const isCoordinator = require('../util/isCoordinator');
+const allowFunction = require('../util/allowFunction');
 
 index = async ( req, res ) => {
   const regioes = await Regiao.findAll();
@@ -57,10 +57,10 @@ getRegionsByNation = async ( req, res ) => {
 
 //   const userId = req.userId;
 
-//   const coordinator = await isCoordinator( userId );
-//   if( !coordinator ) {
-//     return res.status(403).json({ error: 'Acesso negado' });
-//   }
+//   const allow = await allowFunction( req.userId, 'manter_regiao' );
+//  if( !allow ) {
+//    return res.status(403).json({ error: 'Acesso negado' });
+//  }
 
 //   const result = await Pais.destroy({
 //     where: {
@@ -75,8 +75,8 @@ store = async (req, res) => {
   const { nome, sigla, pais_id } = req.body;
   const userId = req.userId;
 
-  const coordinator = await isCoordinator( userId );
-  if( !coordinator ) {
+  const allow = await allowFunction( req.userId, 'manter_regiao' );
+  if( !allow ) {
     return res.status(403).json({ error: 'Acesso negado' });
   }
 

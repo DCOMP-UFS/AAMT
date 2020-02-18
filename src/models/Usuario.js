@@ -9,7 +9,6 @@ class Usuario extends Model {
       email: DataTypes.STRING,
       usuario: DataTypes.STRING,
       senha: DataTypes.STRING,
-      tipoPerfil: DataTypes.STRING,
       ativo: DataTypes.INTEGER
     }, {
       sequelize
@@ -18,6 +17,12 @@ class Usuario extends Model {
 
   static associate( models ) {
     this.belongsTo( models.Municipio, { foreignKey: 'municipio_id', as: 'municipio' } );
+
+    this.belongsToMany( models.TipoPerfil, { 
+      through: 'atuacoes',
+      as: 'tiposPerfis',
+      foreignKey: 'usuario_id'
+    });
   }
 }
 

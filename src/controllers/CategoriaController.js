@@ -4,7 +4,7 @@ const Categoria = require('../models/Categoria');
 const Localidade = require('../models/Localidade');
 
 // UTILITY
-const isCoordinator = require('../util/isCoordinator');
+const allowFunction = require('../util/allowFunction');
 
 index = async ( req, res ) => {
   const categorias = await Categoria.findAll({
@@ -30,8 +30,9 @@ update = async (req, res) => {
   const userId = req.userId;
   const { id } = req.params;
 
-  const coordinator = await isCoordinator( userId );
-  if( !coordinator ) {
+  const allow = await allowFunction( req.userId, 'manter_categoria' );
+
+  if( !allow ) {
     return res.status(403).json({ error: 'Acesso negado' });
   }
 

@@ -3,12 +3,20 @@ const bcrypt = require('bcryptjs');
 const authMiddleware = require('../middlewares/auth');
 const Usuario = require('../models/Usuario');
 const Municipio = require('../models/Municipio');
+const TipoPerfil = require('../models/TipoPerfil');
 const { QueryTypes } = require('sequelize');
-const sequelize = require('sequelize');
+
+// UTILITY
+const allowFunction = require('../util/allowFunction');
 
 const router = express.Router();
 
 index = async (req, res) => {
+  const allow = await allowFunction( req.userId, 'manter_usuario' );
+  if( !allow ) {
+    return res.status(403).json({ error: 'Acesso negado' });
+  }
+
   const usuarios = await Usuario.findAll({
     include: { association: 'municipio' },
     attributes: {
@@ -21,7 +29,7 @@ index = async (req, res) => {
     ]
   });
 
-  return res.json(usuarios);
+  return res.json( usuarios );
 }
 
 getUserById = async ( req, res ) => {
@@ -53,15 +61,12 @@ getUserById = async ( req, res ) => {
     }
   );
 
+  const result = await Usuario.findByPk( id, {
+    include: { association: 'tiposPerfis' }
+  });
+
   const municipio = await Municipio.findByPk( usuario.municipio_id );
   usuario.municipio_id = undefined;
-
-  // const usuario = await Usuario.findByPk( id, {
-  //   include: { association: 'municipio' },
-  //   attributes: {
-  //     exclude: [ 'municipio_id' ]
-  //   }
-  // });
 
   if( !usuario ) {
     return res.status(400).json({ error: "Usuário não encontrado" });
@@ -85,7 +90,12 @@ getUserById = async ( req, res ) => {
     tipoPerfil: usuario.tipoPerfil,
     createdAt: usuario.createdAt,
     updatedAt: usuario.updatedAt,
-    municipio
+    municipio,
+    tipoPerfil: {
+      id: result.tiposPerfis[0].dataValues.id,
+      descricao: result.tiposPerfis[0].dataValues.descricao,
+      sigla: result.tiposPerfis[0].dataValues.sigla
+    }
   });
 }
 
@@ -96,7 +106,10 @@ listByCity = async ( req, res ) => {
     where: {
       municipio_id
     },
-    include: { association: 'municipio' },
+    include: [
+      { association: 'municipio' },
+      { association: 'tiposPerfis' }
+    ],
     attributes: {
       exclude: [ 'municipio_id', 'senha' ]
     },
@@ -107,7 +120,27 @@ listByCity = async ( req, res ) => {
     ]
   });
 
-  return res.json(usuarios);
+  const users = usuarios.map( u => {    
+    return { 
+      id: u.id,
+      nome: u.nome,
+      cpf: u.cpf,
+      rg: u.rg,
+      email: u.email,
+      usuario: u.usuario,
+      ativo: u.ativo,
+      createdAt: u.createdAt,
+      updatedAt: u.updatedAt,
+      municipio: u.municipio.dataValues,
+      tipoPerfil: { 
+        id: u.tiposPerfis[0].dataValues.id, 
+        descricao: u.tiposPerfis[0].dataValues.descricao, 
+        sigla: u.tiposPerfis[0].dataValues.sigla
+      }   
+    };
+  });
+  
+  return res.json(users);
 }
 
 store = async (req, res) => {

@@ -1,6 +1,5 @@
 import { all, takeLatest } from 'redux-saga/effects';
 
-import { ActionTypes as SupportActions } from '../actions/supportInfo';
 import { ActionTypes as UserActions } from '../actions/UsuarioActions';
 import { ActionTypes as MunicipioActions } from '../actions/MunicipioActions';
 import { ActionTypes as LocalidadeActions } from '../actions/LocalidadeActions';
@@ -10,16 +9,27 @@ import { ActionTypes as PaisActions } from '../actions/PaisActions';
 import { ActionTypes as RegiaoActions } from '../actions/RegiaoActions';
 import { ActionTypes as EstadoActions } from '../actions/EstadoActions';
 import { ActionTypes as RegionalSaudeActions } from '../actions/RegionalSaudeActions';
+import { ActionTypes as QuarteiraoActions } from '../actions/QuarteiraoActions';
+import { ActionTypes as RuaActions } from '../actions/RuaActions';
 
 import { authenticate, getUsuarios, createUsuario, updateUsuario, getUsuarioById } from './UsuarioSagas';
 import { getMunicipios, createCity, updateCity, getCityById, getCityByRegionalHealth } from './MunicipioSagas';
 import { getLocalidades, createLocation, updateLocation, getLocationById, getLocationByCity } from './LocalidadeSagas';
-import { getZoneByCity, createZone, updateZone, getZoneById } from './ZonaSagas';
+import { getZoneByCity, createZone, updateZone, getZoneById, getZoneByLocality } from './ZonaSagas';
 import { getCategorys } from './CategoriaSagas';
 import { getNations } from './PaisSagas';
 import { GetRegionsByNation } from './RegiaoSagas';
 import { GetStatesByRegion } from './EstadoSagas';
 import { getRegionalHealthByState } from './RegionalSaudeSagas';
+import {
+  getBlockByCity,
+  createCityBlock,
+  getBlockById,
+  addHouse,
+  deleteHouse,
+  updateHouse
+} from './QuarteiraoSagas';
+import { getStreetByLocality, createStreet, updateStreet, deleteStreet } from './RuaSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -52,6 +62,7 @@ export default function* rootSaga() {
     // Gerir Zonas
     takeLatest( ZonaActions.GET_ZONE_BY_CITY_REQUEST, getZoneByCity ),
     takeLatest( ZonaActions.GET_ZONE_BY_ID_REQUEST, getZoneById ),
+    takeLatest( ZonaActions.GET_ZONE_BY_LOCALITY_REQUEST, getZoneByLocality ),
     takeLatest( ZonaActions.CREATE_ZONE_REQUEST, createZone ),
     takeLatest( ZonaActions.UPDATE_ZONE_REQUEST, updateZone ),
 
@@ -65,6 +76,21 @@ export default function* rootSaga() {
     takeLatest( EstadoActions.GET_STATES_BY_REGION_REQUEST, GetStatesByRegion ),
 
     // Gerir Regionais de Saúde
-    takeLatest( RegionalSaudeActions.GET_REGIONAL_HEALTH_BY_STATE_REQUEST, getRegionalHealthByState )
+    takeLatest( RegionalSaudeActions.GET_REGIONAL_HEALTH_BY_STATE_REQUEST, getRegionalHealthByState ),
+
+    // Gerir Quarteirão
+    takeLatest( QuarteiraoActions.GET_BLOCK_BY_CITY_REQUEST, getBlockByCity ),
+    takeLatest( QuarteiraoActions.GET_BY_ID_REQUEST, getBlockById ),
+    takeLatest( QuarteiraoActions.CREATE_CITY_BLOCK_REQUEST, createCityBlock ),
+    takeLatest( QuarteiraoActions.ADD_HOUSE_REQUEST, addHouse ),
+    takeLatest( QuarteiraoActions.DELETE_HOUSE_REQUEST, deleteHouse ),
+    takeLatest( QuarteiraoActions.UPDATE_HOUSE_REQUEST, updateHouse ),
+
+    // Gerir Rua
+    takeLatest( RuaActions.GET_STREET_BY_LOCALITY_REQUEST, getStreetByLocality ),
+    takeLatest( RuaActions.CREATE_STREET_REQUEST, createStreet ),
+    takeLatest( RuaActions.UPDATE_STREET_REQUEST, updateStreet ),
+    takeLatest( RuaActions.DELETE_STREET_REQUEST, deleteStreet ),
+
   ]);
 }

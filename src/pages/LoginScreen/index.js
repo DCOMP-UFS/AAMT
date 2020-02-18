@@ -24,7 +24,7 @@ function LoginScreen( props ) {
   const [ conectado, setConectado ] = useState(false);
 
   const redirectUser = tipoPerfil => {
-    switch( tipoPerfil ) {
+    switch( tipoPerfil.sigla ) {
       case perfil.laboratorialista: {
         window.location = window.location.origin.toString() + "/lab/home";
         break;

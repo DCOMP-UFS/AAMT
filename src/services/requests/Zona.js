@@ -6,6 +6,13 @@ export const getZoneByCityRequest = municipio_id => {
   });
 }
 
+export const getZoneByLocalityRequest = data => {
+  const { localidade_id } = data;
+  return api.get(`/zonas/${ localidade_id }/localidades`, {
+    ...headerAuthorization()
+  });
+}
+
 export const createZoneRequest = data => {
   const { localidade_id, municipio_id } = data;
 

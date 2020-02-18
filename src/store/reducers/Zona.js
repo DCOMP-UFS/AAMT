@@ -25,6 +25,13 @@ export default function Zona(state = INITIAL_STATE, action) {
       }
     }
 
+    case ActionTypes.GET_ZONE_BY_LOCALITY_SUCCESS: {
+      return {
+        ...state,
+        zonas: action.payload.zonas
+      }
+    }
+
     case ActionTypes.CREATE_ZONE_SUCCESS: {
       let zonas = state.zonas;
 

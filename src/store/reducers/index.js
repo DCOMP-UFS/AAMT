@@ -16,6 +16,8 @@ import pais from './Pais';
 import regiao from './Regiao';
 import estado from './Estado';
 import regionalSaude from './RegionalSaude';
+import rua from './Rua';
+import imovel from './Imovel';
 
 export default combineReducers({
   atividade,
@@ -33,5 +35,7 @@ export default combineReducers({
   pais,
   regiao,
   estado,
-  regionalSaude
+  regionalSaude,
+  rua,
+  imovel
 });

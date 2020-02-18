@@ -1,5 +1,11 @@
 import { call, put } from 'redux-saga/effects';
-import { getZoneByCityRequest, createZoneRequest, updateRequest, getZoneByIdRequest } from '../../services/requests/Zona';
+import {
+  getZoneByCityRequest,
+  createZoneRequest,
+  updateRequest,
+  getZoneByIdRequest,
+  getZoneByLocalityRequest
+} from '../../services/requests/Zona';
 
 import * as ZonaActions from '../actions/ZonaActions';
 import * as AppConfigActions from '../actions/appConfig';
@@ -16,6 +22,21 @@ export function* getZoneByCity(action) {
 
   } catch (error) {
     yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as zonas do município, favor verifique a conexão", "error" ) );
+  }
+}
+
+export function* getZoneByLocality(action) {
+  try {
+    const { data, status } = yield call( getZoneByLocalityRequest, action.payload );
+
+    if( status === 200 ) {
+      yield put( ZonaActions.getZoneByLocality( data ) );
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Falha ao consultar as zonas da localidade: " + status, "error" ) );
+    }
+
+  } catch (error) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as zonas da localidade, favor verifique a conexão", "error" ) );
   }
 }
 

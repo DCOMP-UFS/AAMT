@@ -3,6 +3,8 @@ export const ActionTypes = {
   GET_ZONE_BY_CITY_SUCCESS: "GET_ZONE_BY_CITY_SUCCESS",
   GET_ZONE_BY_ID_REQUEST: "GET_ZONE_BY_ID_REQUEST",
   GET_ZONE_BY_ID_SUCCESS: "GET_ZONE_BY_ID_SUCCESS",
+  GET_ZONE_BY_LOCALITY_REQUEST: "GET_ZONE_BY_LOCALITY_REQUEST",
+  GET_ZONE_BY_LOCALITY_SUCCESS: "GET_ZONE_BY_LOCALITY_SUCCESS",
   CREATE_ZONE_REQUEST: "CREATE_ZONE_REQUEST",
   CREATE_ZONE_SUCCESS: "CREATE_ZONE_SUCCESS",
   UPDATE_ZONE_REQUEST: "UPDATE_ZONE_REQUEST",
@@ -43,6 +45,24 @@ export const getZoneById = zona => {
     type: ActionTypes.GET_ZONE_BY_ID_SUCCESS,
     payload: {
       zona
+    }
+  }
+}
+
+export const getZoneByLocalityRequest = localidade_id => {
+  return {
+    type: ActionTypes.GET_ZONE_BY_LOCALITY_REQUEST,
+    payload: {
+      localidade_id
+    }
+  }
+}
+
+export const getZoneByLocality = zonas => {
+  return {
+    type: ActionTypes.GET_ZONE_BY_LOCALITY_SUCCESS,
+    payload: {
+      zonas
     }
   }
 }

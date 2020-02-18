@@ -521,6 +521,10 @@ export const FormGroup = styled.div`
     display: block;
   }
 
+  .form-control:not(textarea) {
+    height: 2.875rem;
+  }
+
   .form-control {
     border: 1px solid ${ Color.border_input };
     font-family: "ubuntu-regular", sans-serif;
@@ -528,7 +532,6 @@ export const FormGroup = styled.div`
     box-shadow: none;
     display: block;
     width: 100%;
-    height: 2.875rem;
     padding-left: 0.81rem;
     font-weight: 400;
     line-height: 1;

@@ -3,6 +3,7 @@ import Routes from './routes';
 import { GoogleApiWrapper } from 'google-maps-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import 'bootstrap/dist/js/bootstrap';
 
 import './App.css';
 import './Utilities.css';

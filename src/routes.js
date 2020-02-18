@@ -14,7 +14,9 @@ import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import LoginScreen from './pages/LoginScreen';
 
 // Páginas de coordenador
-import CDT_Atividade from './pages/atividade/cadastrar';
+import Atividades from './pages/atividade/cadastrar';
+import AtividadesConsultar from './pages/atividade';
+import PlanejarAtividade from './pages/atividade/planejar';
 import Usuarios from './pages/Usuarios';
 import EditarUsuario from './pages/Usuarios/EditarUsuario';
 import Municipios from './pages/Municipios';
@@ -24,6 +26,7 @@ import EditarLocalidade from './pages/Localidades/EditarLocalidade';
 import Zonas from './pages/Zonas';
 import EditarZona from './pages/Zonas/EditarZona';
 import Quarteiroes from './pages/Quarteiroes';
+import EditarQuarteirao from './pages/Quarteiroes/EditarQuarteirao';
 import CDT_Trabalho_diario from './pages/trabalho_diario/Iniciar';
 import ListaVistoria from './pages/trabalho_diario/ListaVistoria';
 import FormVistoria from './pages/trabalho_diario/Form';
@@ -70,38 +73,44 @@ const PrivateLaboratorio = ({ component: Component, perfil: perfilUser, ...rest 
   ) } />
 )
 
-const Routes = props => (
-  <BrowserRouter>
-    <Switch>
-      <Route exact path="/" component={ LoginScreen } />
+const Routes = props => {
+  const perfil = props.usuario.tipoPerfil.sigla;
+  return (
+    <BrowserRouter>
+      <Switch>
+        <Route exact path="/" component={ LoginScreen } />
 
-      {/* Rotas de coordenador */}
-      <PrivateCoordenador path="/trabalho_diario/iniciar" component={CDT_Trabalho_diario} tipoPerfil={ props.usuario.tipoPerfil } />
-      <PrivateCoordenador path="/trabalho_diario/vistoria/lista" component={ListaVistoria} tipoPerfil={ props.usuario.tipoPerfil } />
-      <PrivateCoordenador path="/trabalho_diario/vistoria/formulario" component={FormVistoria} tipoPerfil={ props.usuario.tipoPerfil } />
-      <PrivateCoordenador path="/atividades/cadastrar" component={CDT_Atividade} tipoPerfil={ props.usuario.tipoPerfil } />
-      <PrivateCoordenador exact path="/usuarios" component={ Usuarios } tipoPerfil={ props.usuario.tipoPerfil } />
-      <PrivateCoordenador path="/usuarios/:id" component={ EditarUsuario } tipoPerfil={ props.usuario.tipoPerfil } />
-      <PrivateCoordenador exact path="/municipios" component={Municipios} tipoPerfil={ props.usuario.tipoPerfil } />
-      <PrivateCoordenador path="/municipios/:id" component={ EditarMunicipio } tipoPerfil={ props.usuario.tipoPerfil } />
-      <PrivateCoordenador exact path="/zonas" component={Zonas} tipoPerfil={ props.usuario.tipoPerfil } />
-      <PrivateCoordenador path="/zonas/:id" component={ EditarZona } tipoPerfil={ props.usuario.tipoPerfil } />
-      <PrivateCoordenador path="/quarteiroes" component={Quarteiroes} tipoPerfil={ props.usuario.tipoPerfil } />
-      <PrivateCoordenador exact path="/localidades" component={Localidades} tipoPerfil={ props.usuario.tipoPerfil } />
-      {/* <PrivateCoordenador path="/localidades/:index" component={ props => (<h1>{ props.match.params.index }</h1>)} tipoPerfil={ props.usuario.tipoPerfil } /> */}
-      <PrivateCoordenador path="/localidades/:id" component={ EditarLocalidade} tipoPerfil={ props.usuario.tipoPerfil } />
+        {/* Rotas de coordenador */}
+        <PrivateCoordenador path="/trabalho_diario/iniciar" component={CDT_Trabalho_diario} tipoPerfil={ perfil } />
+        <PrivateCoordenador path="/trabalho_diario/vistoria/lista" component={ListaVistoria} tipoPerfil={ perfil } />
+        <PrivateCoordenador path="/trabalho_diario/vistoria/formulario" component={FormVistoria} tipoPerfil={ perfil } />
+        <PrivateCoordenador exact path="/atividades" component={ AtividadesConsultar } tipoPerfil={ perfil } />
+        <PrivateCoordenador path="/atividades/cadastrar" component={ Atividades } tipoPerfil={ perfil } />
+        <PrivateCoordenador path="/atividades/planejamento/:id" component={ PlanejarAtividade } tipoPerfil={ perfil } />
+        <PrivateCoordenador exact path="/usuarios" component={ Usuarios } tipoPerfil={ perfil } />
+        <PrivateCoordenador path="/usuarios/:id" component={ EditarUsuario } tipoPerfil={ perfil } />
+        <PrivateCoordenador exact path="/municipios" component={Municipios} tipoPerfil={ perfil } />
+        <PrivateCoordenador path="/municipios/:id" component={ EditarMunicipio } tipoPerfil={ perfil } />
+        <PrivateCoordenador exact path="/zonas" component={Zonas} tipoPerfil={ perfil } />
+        <PrivateCoordenador path="/zonas/:id" component={ EditarZona } tipoPerfil={ perfil } />
+        <PrivateCoordenador exact path="/quarteiroes" component={ Quarteiroes } tipoPerfil={ perfil } />
+        <PrivateCoordenador path="/quarteiroes/:id" component={ EditarQuarteirao } tipoPerfil={ perfil } />
+        <PrivateCoordenador exact path="/localidades" component={Localidades} tipoPerfil={ perfil } />
+        {/* <PrivateCoordenador path="/localidades/:index" component={ props => (<h1>{ props.match.params.index }</h1>)} tipoPerfil={ perfil } /> */}
+        <PrivateCoordenador path="/localidades/:id" component={ EditarLocalidade} tipoPerfil={ perfil } />
 
-      {/* Rotas de laboratorialista */}
-      <PrivateLaboratorio path="/lab/home" component={ HomeLaboratorio } tipoPerfil={ props.usuario.tipoPerfil } />
+        {/* Rotas de laboratorialista */}
+        <PrivateLaboratorio path="/lab/home" component={ HomeLaboratorio } tipoPerfil={ perfil } />
 
-      <PrivateCoordenador path="/elementos/tipografia" component={Typography} tipoPerfil={ props.usuario.tipoPerfil } />
-      <PrivateCoordenador path="/elementos/formulario" component={Form} tipoPerfil={ props.usuario.tipoPerfil } />
-      <PrivateCoordenador path="/elementos/botoes" component={ViewButton} tipoPerfil={ props.usuario.tipoPerfil } />
+        <PrivateCoordenador path="/elementos/tipografia" component={Typography} tipoPerfil={ perfil } />
+        <PrivateCoordenador path="/elementos/formulario" component={Form} tipoPerfil={ perfil } />
+        <PrivateCoordenador path="/elementos/botoes" component={ViewButton} tipoPerfil={ perfil } />
 
-      <Route exact path="*" component={() => <h1>Página não encontrada</h1>} />
-    </Switch>
-  </BrowserRouter>
-)
+        <Route exact path="*" component={() => <h1>Página não encontrada</h1>} />
+      </Switch>
+    </BrowserRouter>
+  )
+}
 
 const mapStateToProps = state => ({
   usuario: state.usuario.usuario

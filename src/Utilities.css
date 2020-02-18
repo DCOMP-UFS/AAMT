@@ -477,3 +477,12 @@ select.form-control {
 .form-group .invalid .css-cenuji-Control {
   border: 1px solid #fe7c96;
 }
+
+.expansion.Mui-expanded::before {
+  background-color: transparent!important;
+  opacity: 1!important;
+  box-shadow:
+    0px 2px 3px -1px rgba(0,0,0,0.2),
+    0px 1px 1px 0px rgba(0,0,0,0.14),
+    0px 1px 1px 0px rgba(0,0,0,0.12);
+}

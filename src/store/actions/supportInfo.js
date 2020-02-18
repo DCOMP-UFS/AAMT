@@ -6,7 +6,8 @@ export const ActionTypes = {
   ADD_RECIPIENTE: "ADD_RECIPIENTE",
   ADD_INSPECAO: "ADD_INSPECAO",
   ADD_UNIDADE: "ADD_UNIDADE",
-  CHANGE_TABLE_SELECTED: "CHANGE_TABLE_SELECTED"
+  CHANGE_TABLE_SELECTED: "CHANGE_TABLE_SELECTED",
+  CHANGE_IMOVEL_SELECT: "CHANGE_IMOVEL_SELECT"
 }
 
 export const setVistoriaImovel = ( index, imovel ) => {
@@ -82,3 +83,33 @@ export const changeTableSelected = (id, selected) => {
     }
   }
 }
+
+export const changeImovelSelect = (
+  id,
+  lado_id,
+  lado_numero,
+  logradouro,
+  imovel_numero,
+  sequencia,
+  responsavel,
+  complemento,
+  tipoImovel
+) => {
+  return {
+    type: ActionTypes.CHANGE_IMOVEL_SELECT,
+    payload: {
+      id,
+      numero: imovel_numero,
+      sequencia,
+      responsavel,
+      complemento,
+      tipoImovel,
+      lado: {
+        id: lado_id,
+        numero: lado_numero,
+        logradouro
+      }
+    }
+  }
+}
+

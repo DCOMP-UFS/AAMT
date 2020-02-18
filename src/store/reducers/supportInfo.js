@@ -80,7 +80,8 @@ const INITIAL_STATE = {
       ]
     ),
   ],
-  tableSelection: {}
+  tableSelection: {},
+  imovelSelect: {}
 };
 
 export default function supportInfo(state = INITIAL_STATE, action) {
@@ -223,6 +224,15 @@ export default function supportInfo(state = INITIAL_STATE, action) {
       return {
         ...state,
         tableSelection
+      }
+    }
+
+    case ActionTypes.CHANGE_IMOVEL_SELECT: {
+      const imovelSelect = action.payload;
+
+      return {
+        ...state,
+        imovelSelect
       }
     }
 

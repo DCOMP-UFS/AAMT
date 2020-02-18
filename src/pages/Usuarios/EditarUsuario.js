@@ -156,7 +156,7 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
       props.getNationsRequest();
 
       let labelPerfil = Object.entries(perfil)
-      .find(([key, value]) => value === usuarioUpdate.tipoPerfil )[0];
+      .find(([key, value]) => value === usuarioUpdate.tipoPerfil.sigla )[0];
 
       labelPerfil = labelPerfil.replace(/^\w/, c => c.toUpperCase());
 

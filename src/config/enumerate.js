@@ -19,12 +19,12 @@ export const situacaoUnidade = [
   "examinado",
 ]
 
-export const tipoImovel = [
-  "Residencial",
-  "Terreno Baldio",
-  "Comercial",
-  "Ponto estratégico",
-]
+export const tipoImovel = {
+  comercial: { value: "C", label: "Comercial" },
+  pontoEstrategico: { value: "PE", label: "Ponto estratégico" },
+  residencial: { value: "R", label: "Residencial" },
+  terrenoBaldio: { value: "TB", label: "Terreno Baldio" }
+}
 
 export const perfil = {
   agente: "A",

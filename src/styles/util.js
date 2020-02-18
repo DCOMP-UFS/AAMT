@@ -4,6 +4,7 @@ export const ContainerFixed = styled.div`
   position: fixed;
   right: 30px;
   bottom: 30px;
+  z-index: 1;
 `;
 
 export const ContainerArrow = styled.div`
@@ -25,5 +26,11 @@ export const ContainerArrow = styled.div`
 
   div button:last-child {
     margin-left: 4px;
+  }
+`;
+
+export const InfoGroup = styled.div`
+  label {
+    font-weight: bold;
   }
 `;

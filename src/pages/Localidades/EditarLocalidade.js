@@ -3,6 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
 import ButtonSave from '../../components/ButtonSave';
+import ButtonNewObject from '../../components/ButtonNewObject';
+import { FaRoad } from 'react-icons/fa';
+import ModalAddStreet from './ModalAddStreet';
+import ModalUpdateStreet from './ModalUpdateStreet';
+import ModalDeleteStreet from './ModalDeleteStreet';
+import ButtonClose from '../../components/ButtonClose';
+import $ from 'jquery';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -13,12 +20,24 @@ import { changeSidebar } from '../../store/actions/sidebar';
 import { getLocationByIdRequest, updateLocationRequest } from '../../store/actions/LocalidadeActions';
 import { getMunicipiosRequest } from '../../store/actions/MunicipioActions';
 import { getCategoryRequest } from '../../store/actions/CategoriaActions';
+import { getStreetByLocalityRequest, changeStreetSelect } from '../../store/actions/RuaActions';
 
 // STYLES
+import {
+  ContainerInfo,
+  DivZone,
+  DivStreet,
+  UlStreet,
+  Street,
+  ContainerIcon,
+  DivDescription,
+  Span,
+  Container
+} from './styles';
 import { FormGroup, selectDefault } from '../../styles/global';
 import { ContainerFixed } from '../../styles/util';
 
-function EditarLocalidades({ localidade, getLocationByIdRequest, ...props }) {
+function EditarLocalidades({ localidade, ruas, getLocationByIdRequest, ...props }) {
   const [ id ] = useState(props.match.params.id);
   const [ codigo, setCodigo ] = useState(null);
   const [ nome, setNome ] = useState("");
@@ -34,6 +53,7 @@ function EditarLocalidades({ localidade, getLocationByIdRequest, ...props }) {
     getLocationByIdRequest( id );
     props.getMunicipiosRequest();
     props.getCategoryRequest();
+    props.getStreetByLocalityRequest( id );
   }, []);
 
   useEffect(() => {
@@ -58,6 +78,16 @@ function EditarLocalidades({ localidade, getLocationByIdRequest, ...props }) {
     }
   }, [ localidade ]);
 
+  function openModalUpdate( index ) {
+    props.changeStreetSelect( index );
+    $('#modal-editar-rua').modal('show');
+  }
+
+  function openModalDelete( index ) {
+    props.changeStreetSelect( index );
+    $('#modal-excluir-rua').modal('show');
+  }
+
   function handleSubmit( e ) {
     e.preventDefault();
 
@@ -77,7 +107,7 @@ function EditarLocalidades({ localidade, getLocationByIdRequest, ...props }) {
         {/* Formulário básico */}
         <article className="col-md-12 stretch-card">
           <div className="card">
-            <h4 className="title">Localidade: <mark className="bg-info text-white" >{ localidade.nome }</mark></h4>
+            <h4 className="title">Localidade/Bairro: <mark className="bg-info text-white" >{ localidade.nome }</mark></h4>
             <p className="text-description">
               Atenção os campos com <code>*</code> são obrigatórios
             </p>
@@ -179,7 +209,60 @@ function EditarLocalidades({ localidade, getLocationByIdRequest, ...props }) {
               </Col>
 
               <Col sm='6'>
-                <h4 className="title">Zonas</h4>
+                <ContainerInfo>
+                  <DivZone className="col-12">
+                    <h4 className="title">
+                      Zonas
+                      <ButtonNewObject
+                        title="Cadastrar Zona"
+                        data-toggle="modal"
+                        data-target="#modal-novo-zona"
+                      />
+                    </h4>
+
+                  </DivZone>
+                  <DivStreet className="col-12">
+                    <h4 className="title">
+                      Ruas
+                      <ButtonNewObject
+                        title="Cadastrar Rua"
+                        data-toggle="modal"
+                        data-target="#modal-novo-rua"
+                      />
+                    </h4>
+
+                    <UlStreet>
+                      {
+                        ruas.map( (rua, index) => (
+                          <Street key={ index } >
+                            <Container onClick={ () => openModalUpdate( index ) }>
+                              <ContainerIcon>
+                                <FaRoad />
+                              </ContainerIcon>
+                              <DivDescription>
+                                <div>
+                                  <mark className="mr-2 bg-info text-white">{ rua.nome }</mark>
+                                  <span>CEP: { rua.cep }</span>
+                                </div>
+
+                                <Span></Span>
+                              </DivDescription>
+                            </Container>
+                            <ButtonClose
+                              title="Excluir Rua"
+                              onClick={ () => openModalDelete( index ) }
+                              className="ml-2 text-danger"
+                            />
+                          </Street>
+                        ))
+                      }
+                    </UlStreet>
+
+                    <ModalAddStreet data-localidade-id={ id } />
+                    <ModalUpdateStreet />
+                    <ModalDeleteStreet />
+                  </DivStreet>
+                </ContainerInfo>
               </Col>
             </Row>
           </div>
@@ -192,7 +275,10 @@ function EditarLocalidades({ localidade, getLocationByIdRequest, ...props }) {
 const mapStateToProps = state => ({
   localidade: state.localidade.localidade,
   municipios: state.municipio.municipios,
-  categorias: state.categoria.categorias
+  categorias: state.categoria.categorias,
+  ruas: state.rua.ruas,
+  created: state.rua.created,
+  updatedStreet: state.rua.updated
 });
 
 const mapDispatchToProps = dispatch =>
@@ -200,7 +286,9 @@ const mapDispatchToProps = dispatch =>
     getLocationByIdRequest,
     getMunicipiosRequest,
     getCategoryRequest,
-    updateLocationRequest
+    updateLocationRequest,
+    getStreetByLocalityRequest,
+    changeStreetSelect
   }, dispatch);
 
 export default connect(

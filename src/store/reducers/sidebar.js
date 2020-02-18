@@ -30,11 +30,12 @@ const INITIAL_STATE = {
     createCategory( "Operacional" ),
     createNav( 1, "Trabalho Diário", true, FaTasks, [
       createSubmenu( 1, true, "Iniciar", "/trabalho_diario/iniciar" ),
-      createSubmenu( 2, false, "Realizar Vistoria", "/trabalho_diario/vistoria/lista" ),
+      // createSubmenu( 2, false, "Realizar Vistoria", "/trabalho_diario/vistoria/lista" ),
     ]),
     createCategory( "Administrativo" ),
     createNav( 2, "Atividades", false, IoIosPaper, [
-      createSubmenu( 1, false, "Cadastrar", "/atividades/cadastrar" )
+      createSubmenu( 2, false, "Consultar", "/atividades/" ),
+      createSubmenu( 1, false, "Cadastrar", "/atividades/cadastrar" ),
     ]),
     createLink( 3, "Usuários", false, FaUsers, "/usuarios" ),
     createCategory( "Região" ),
@@ -42,12 +43,12 @@ const INITIAL_STATE = {
     createLink( 5, "Bairro/Localidade", false, FaMapSigns, "/localidades"),
     createLink( 6, "Zonas", false, ViewCompactIcon, "/zonas"),
     createLink( 7, "Quarteirão", false, BorderAllIcon, "/quarteiroes"),
-    createCategory( "Recursos de Interface" ),
-    createNav( 8, "Elementos Básicos", false, IoIosCode, [
-      createSubmenu( 1, false, "Botões", "/elementos/botoes" ),
-      createSubmenu( 2, false, "Tipografia", "/elementos/tipografia" ),
-    ]),
-    createLink( 9, "Formulários", false, IoIosCheckboxOutline, "/elementos/formulario" )
+    // createCategory( "Recursos de Interface" ),
+    // createNav( 8, "Elementos Básicos", false, IoIosCode, [
+    //   createSubmenu( 1, false, "Botões", "/elementos/botoes" ),
+    //   createSubmenu( 2, false, "Tipografia", "/elementos/tipografia" ),
+    // ]),
+    // createLink( 9, "Formulários", false, IoIosCheckboxOutline, "/elementos/formulario" )
   ]
 }
 

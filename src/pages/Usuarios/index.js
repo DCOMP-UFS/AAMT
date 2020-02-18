@@ -44,7 +44,7 @@ const columns = [
 
 function MapPerfil(tipoPerfil) {
   let perfilUser = Object.entries(perfil).find(([key, value]) => {
-    return tipoPerfil === value;
+    return tipoPerfil.sigla === value;
   });
 
   perfilUser[0] = perfilUser[0].replace(/^\w/, c => c.toUpperCase());

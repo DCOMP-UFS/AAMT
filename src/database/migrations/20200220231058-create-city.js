@@ -3,12 +3,16 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable(
-      'zonas', { 
+      'municipios', { 
         id: {
           type: Sequelize.INTEGER,
           primaryKey: true,
           autoIncrement: true,
           allowNull: false,
+        },
+        codigo: {
+          type: Sequelize.INTEGER,
+          allowNull: true,
         },
         nome: {
           type: Sequelize.STRING,
@@ -19,19 +23,12 @@ module.exports = {
           allowNull: false,
           defaultValue: 1
         },
-        localidade_id: {
-          type: Sequelize.INTEGER,
-          allowNull: true,
-          references: { model: 'localidades', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'RESTRICT'
-        },
-        municipio_id: {
+        regional_saude_id: {
           type: Sequelize.INTEGER,
           allowNull: false,
-          references: { model: 'municipios', key: 'id' },
+          references: { model: 'regionais_saude', key: 'id' },
           onUpdate: 'CASCADE',
-          onDelete: 'CASCADE'
+          onDelete: 'RESTRICT'
         },
         created_at: {
           type: Sequelize.DATE,
@@ -45,6 +42,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('zonas');
+    return queryInterface.dropTable('municipios');
   }
 };

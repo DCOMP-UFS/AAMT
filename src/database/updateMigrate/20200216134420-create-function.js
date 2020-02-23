@@ -3,7 +3,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable(
-      'regionaisSaude', { 
+      'funcoes', { 
         id: {
           type: Sequelize.INTEGER,
           primaryKey: true,
@@ -14,22 +14,6 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: false,
         },
-        endereco: {
-          type: Sequelize.STRING,
-          allowNull: false,
-        },
-        estado_id: {
-          type: Sequelize.INTEGER,
-          allowNull: false,
-          references: { model: 'estados', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'RESTRICT'
-        },
-        ativo: {
-          type: Sequelize.INTEGER,
-          allowNull: false,
-          defaultValue: 1
-        },
         created_at: {
           type: Sequelize.DATE,
           allowNull: false,
@@ -38,10 +22,11 @@ module.exports = {
           type: Sequelize.DATE,
           allowNull: false,
         }
-      });
+      }
+    );
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('regionaisSaude');
+    return queryInterface.dropTable('funcoes');
   }
 };

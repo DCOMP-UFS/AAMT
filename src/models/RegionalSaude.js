@@ -8,12 +8,12 @@ class RegionalSaude extends Model {
       ativo: DataTypes.INTEGER
     }, {
       sequelize,
-      tableName: 'regionaisSaude'
+      tableName: 'regionais_saude'
     });
   }
 
   static associate( models ) {
-    this.hasMany( models.Municipio, { foreignKey: 'regionalSaude_id', as: 'municipios' } )
+    this.hasMany( models.Municipio, { foreignKey: 'regional_saude_id', as: 'municipios' } )
     this.belongsTo( models.Estado, { foreignKey: 'estado_id', as: 'estado' } )
   }
 }

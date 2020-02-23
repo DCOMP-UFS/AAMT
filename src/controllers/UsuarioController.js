@@ -1,26 +1,30 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
+const { QueryTypes } = require('sequelize');
+
 const authMiddleware = require('../middlewares/auth');
+const Atuacao = require('../models/Atuacao');
 const Usuario = require('../models/Usuario');
 const Municipio = require('../models/Municipio');
-const TipoPerfil = require('../models/TipoPerfil');
-const { QueryTypes } = require('sequelize');
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
+const getLocationByOperation = require('../util/getLocationByOperation');
+const checkLocationByOperation = require('../util/checkLocationByOperation');
 
 const router = express.Router();
 
 index = async (req, res) => {
   const allow = await allowFunction( req.userId, 'manter_usuario' );
+
   if( !allow ) {
     return res.status(403).json({ error: 'Acesso negado' });
   }
 
   const usuarios = await Usuario.findAll({
-    include: { association: 'municipio' },
-    attributes: {
-      exclude: [ 'municipio_id' ]
+    include: { 
+      association: 'atuacoes',
+      attributes: { exclude: [ 'createdAt', 'updatedAt', 'usuario_id' ] } 
     },
     order: [
       [ 'ativo', 'desc' ], 
@@ -34,84 +38,60 @@ index = async (req, res) => {
 
 getUserById = async ( req, res ) => {
   const { id } = req.params;
+  const userId = req.userId
+  const allow = await allowFunction( req.userId, 'manter_usuario' );
 
-  const usuario = await Usuario.sequelize.query(
-    'SELECT ' +
-      'u.*, ' +
-      'rs.id AS regional_saude_id, ' +
-      'e.id AS estado_id, ' +
-      'r.id AS regiao_id, ' + 
-      'p.id AS pais_id  ' +
-    'FROM  ' +
-      'usuarios as u  ' +
-      'JOIN municipios as m ON( u.municipio_id = m.id ) ' +
-      'JOIN "regionaisSaude" as rs ON( m.regional_saude_id = rs.id ) ' +
-      'JOIN estados as e ON( rs.estado_id = e.id ) ' +
-      'JOIN regioes as r ON( e.regiao_id = r.id ) ' +
-      'JOIN paises as p ON( r.pais_id = p.id ) ' +
-    'WHERE ' +
-      'u.id = $1', 
-    {
-      bind: [id],
-      logging: console.log,
-      plain: true,
-      model: Usuario,
-      mapToModel: true,
-      type: QueryTypes.SELECT
+  if( userId !== parseInt(id) && !allow ) 
+    return res.status(403).json({ error: 'Acesso negado' });
+
+  const usuario = await Usuario.findByPk( id, { 
+    include: { 
+      association: 'atuacoes',
+      attributes: { exclude: [ 'createdAt', 'updatedAt', 'usuario_id' ] } 
     }
-  );
-
-  const result = await Usuario.findByPk( id, {
-    include: { association: 'tiposPerfis' }
   });
-
-  const municipio = await Municipio.findByPk( usuario.municipio_id );
-  usuario.municipio_id = undefined;
-
-  if( !usuario ) {
-    return res.status(400).json({ error: "Usuário não encontrado" });
-  }
+  
+  if(!usuario) 
+    return res.status(400).send({ error: 'Usuário não encontrado' });
 
   usuario.senha = undefined;
 
-  return res.json({ 
+  // Consultando os locais do usuário de acordo com sua atuação
+  const locais = await getLocationByOperation( usuario.atuacoes );
+
+  res.send({ 
     id: usuario.id,
     nome: usuario.nome,
     cpf: usuario.cpf,
     rg: usuario.rg,
-    celular: usuario.celular ,
     email: usuario.email,
     usuario: usuario.usuario,
     ativo: usuario.ativo,
-    regionalSaude_id: usuario.dataValues.regional_saude_id,
-    estado_id: usuario.dataValues.estado_id,
-    regiao_id: usuario.dataValues.regiao_id,
-    pais_id: usuario.dataValues.pais_id,
-    tipoPerfil: usuario.tipoPerfil,
+    ...locais,
     createdAt: usuario.createdAt,
     updatedAt: usuario.updatedAt,
-    municipio,
-    tipoPerfil: {
-      id: result.tiposPerfis[0].dataValues.id,
-      descricao: result.tiposPerfis[0].dataValues.descricao,
-      sigla: result.tiposPerfis[0].dataValues.sigla
-    }
+    atuacoes: usuario.atuacoes
   });
 }
 
 listByCity = async ( req, res ) => {
   const { municipio_id } = req.params;
 
+  const municipio = await Municipio.findByPk( municipio_id, {
+    attributes: { exclude: [ 'createdAt', 'updatedAt' ] } 
+  });
+
   const usuarios = await Usuario.findAll({
-    where: {
-      municipio_id
+    include: { 
+      where: {
+        escopo: 2,
+        local_id: municipio_id
+      },
+      association: 'atuacoes',
+      attributes: { exclude: [ 'createdAt', 'updatedAt', 'usuario_id' ] } 
     },
-    include: [
-      { association: 'municipio' },
-      { association: 'tiposPerfis' }
-    ],
     attributes: {
-      exclude: [ 'municipio_id', 'senha' ]
+      exclude: [ 'senha' ]
     },
     order: [
       [ 'ativo', 'desc' ], 
@@ -129,14 +109,9 @@ listByCity = async ( req, res ) => {
       email: u.email,
       usuario: u.usuario,
       ativo: u.ativo,
+      municipio,
       createdAt: u.createdAt,
       updatedAt: u.updatedAt,
-      municipio: u.municipio.dataValues,
-      tipoPerfil: { 
-        id: u.tiposPerfis[0].dataValues.id, 
-        descricao: u.tiposPerfis[0].dataValues.descricao, 
-        sigla: u.tiposPerfis[0].dataValues.sigla
-      }   
     };
   });
   
@@ -144,7 +119,6 @@ listByCity = async ( req, res ) => {
 }
 
 store = async (req, res) => {
-  const { municipio_id } = req.params;
   const { 
     nome,
     cpf,
@@ -153,56 +127,80 @@ store = async (req, res) => {
     email,
     usuario,
     senha,
-    tipoPerfil
+    atuacoes
   } = req.body;
 
-  const municipio = await Municipio.findByPk(municipio_id);
+  const checkLocation = await checkLocationByOperation( atuacoes );
 
-  if(!municipio) {
-    return res.status(400).json({ error: 'Município não encontrado' });
-  }
+  if( !checkLocation )
+    return res.status(400).json({ error: 'Local não existe, cheque as localidades das atuações!' });
 
   const salt = bcrypt.genSaltSync(10);
   const senhaHash = bcrypt.hashSync(senha, salt);
+  let user = {};
+  
+  try {
 
-  const user = await Usuario.create({ 
-    nome,
-    cpf,
-    rg,
-    celular,
-    email,
-    usuario,
-    senha: senhaHash,
-    tipoPerfil,
-    ativo: 1,
-    municipio_id
-  },{
-    include: { association: 'municipio' },
-    attributes: {
-      exclude: [ 'municipio_id' ]
+    user = await Usuario.create({ 
+      nome,
+      cpf,
+      rg,
+      celular,
+      email,
+      usuario,
+      senha: senhaHash,
+      ativo: 1
+    });
+
+  }catch(e) {
+    return res.status(400).json({ error: "Usuário, CPF, RG ou e-mail já existe na base" });
+  }
+
+  let at = [];
+  for (atuacao of atuacoes) {
+    const { tipoPerfil, local_id } = atuacao;
+    let escopo = 3;
+    switch (tipoPerfil) {
+      case 1:
+        escopo = 1;
+        break;
+    
+      default:
+        escopo = 2;
+        break;
     }
-  });
+
+    const result = await Atuacao.create({
+      usuario_id: user.id,
+      tipoPerfil,
+      local_id,
+      escopo
+    });
+    result.dataValues.usuario_id = undefined;
+    result.dataValues.createdAt = undefined;
+    result.dataValues.updatedAt = undefined;
+
+    at.push( result );
+  }
+
+  user.dataValues.atuacoes = at;
 
   return res.status(201).json(user);
 }
 
 update = async (req, res) => {
   const { id } = req.params;
+  const { atuacoes, ...body } = req.body;
   const userId = req.userId;
+  const allow = await allowFunction( req.userId, 'manter_usuario' );
 
-  const userReq = await Usuario.findByPk( userId );
+  if( userId !== parseInt(id) && !allow ) 
+    return res.status(403).json({ error: 'Acesso negado' });
+    
   const userUpdate = await Usuario.findByPk( id );
 
   if( !userUpdate ) {
     return res.status(400).json({ error: 'Usuário não existe' });
-  }
-
-  if( id !== userReq.id && userReq.tipoPerfil !== "C" ) {
-    return res.status(403).json({ error: 'Acesso negado' });
-  }
-
-  if( userReq.municipio_id !== userUpdate.municipio_id ) {
-    return res.status(403).json({ error: 'Acesso negado' });
   }
 
   req.body.id = undefined;
@@ -211,7 +209,7 @@ update = async (req, res) => {
   req.body.updatedAt = undefined;
 
   const { isRejected } = await Usuario.update(
-    req.body,
+    body,
     {
       where: {
         id
@@ -219,13 +217,60 @@ update = async (req, res) => {
     }
   );
 
-  if( isRejected ){
+  if( isRejected )
     return res.status(400).json({ error: 'Não foi possível atualizar usuário' });
+
+  if( atuacoes ) {
+    await Atuacao.destroy({
+      where: {
+        usuario_id: id
+      }
+    });
+
+    for (atuacao of atuacoes) {
+      const { tipoPerfil, local_id } = atuacao;
+      let escopo = 3;
+      switch (tipoPerfil) {
+        case 1:
+          escopo = 1;
+          break;
+      
+        default:
+          escopo = 2;
+          break;
+      }
+  
+      const result = await Atuacao.create({
+        usuario_id: id,
+        tipoPerfil,
+        local_id,
+        escopo
+      });
+    }
   }
 
-  const result = await Usuario.findByPk( id );
+  const result = await Usuario.findByPk( id, {
+    include: { 
+      association: 'atuacoes',
+      attributes: { exclude: [ 'createdAt', 'updatedAt', 'usuario_id' ] } 
+    }
+  });
 
-  return res.json( result );
+  const locais = await getLocationByOperation( result.dataValues.atuacoes );
+
+  return res.json({
+    id: result.id,
+    nome: result.nome,
+    cpf: result.cpf,
+    rg: result.rg,
+    email: result.email,
+    usuario: result.usuario,
+    ativo: result.ativo,
+    ...locais,
+    createdAt: result.createdAt,
+    updatedAt: result.updatedAt,
+    atuacoes: result.atuacoes
+  });
 }
 
 router.use(authMiddleware);
@@ -233,7 +278,7 @@ router.use(authMiddleware);
 router.get('/', index);
 router.get('/:id', getUserById);
 router.get('/:municipio_id/municipios', listByCity);
-router.post('/:municipio_id/municipios', store);
+router.post('/', store);
 router.put('/:id', update);
 
 module.exports = app => app.use('/usuarios', router);

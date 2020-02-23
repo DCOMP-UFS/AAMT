@@ -11,7 +11,6 @@ class Zona extends Model {
   }
 
   static associate( models ) {
-    this.belongsTo( models.Municipio, { foreignKey: 'municipio_id', as: 'municipio' } );
     this.belongsTo( models.Localidade, { foreignKey: 'localidade_id', as: 'localidade' } );
     this.hasMany( models.Quarteirao, { foreignKey: 'zona_id', as: 'quarteiroes' } );
   }

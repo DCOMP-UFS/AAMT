@@ -3,30 +3,30 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable(
-      'atuacoes', { 
+      'lados', { 
         id: {
           type: Sequelize.INTEGER,
           primaryKey: true,
           autoIncrement: true,
-          allowNull: false
+          allowNull: false,
         },
-        local_id: {
-          type: Sequelize.INTEGER,
-          allowNull: false
-        },
-        usuario_id: {
+        numero: {
           type: Sequelize.INTEGER,
           allowNull: false,
-          references: { model: 'usuarios', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE'
         },
-        tipo_perfil_id: {
+        rua_id: {
           type: Sequelize.INTEGER,
           allowNull: false,
-          references: { model: 'tipos_perfis', key: 'id' },
+          references: { model: 'ruas', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'RESTRICT'
+        },
+        quarteirao_id: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references: { model: 'quarteiroes', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE'
         },
         created_at: {
           type: Sequelize.DATE,
@@ -36,16 +36,10 @@ module.exports = {
           type: Sequelize.DATE,
           allowNull: false,
         }
-      }
-    ).then(() => {
-      return queryInterface.addConstraint('atuacoes', ['usuario_id', 'tipo_perfil_id'], {
-        type: 'unique',
-        name: 'atuacoes_unique'
       });
-    });
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('atuacoes');
+    return queryInterface.dropTable('lados');
   }
 };

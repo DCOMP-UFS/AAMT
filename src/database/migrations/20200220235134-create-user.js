@@ -1,4 +1,5 @@
 'use strict';
+const bcrypt = require('bcryptjs');
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
@@ -16,10 +17,12 @@ module.exports = {
       cpf: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: true
       },
       rg: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: true
       },
       celular: {
         type: Sequelize.STRING,
@@ -28,23 +31,21 @@ module.exports = {
       email: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: true
       },
       usuario: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
+        unique: true
       },
       senha: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      tipo_perfil: {
         type: Sequelize.STRING,
         allowNull: false,
       },
       ativo: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        defaultValue: 1
       },
       created_at: {
         type: Sequelize.DATE,

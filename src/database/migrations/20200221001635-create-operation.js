@@ -3,20 +3,31 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable(
-      'municipios', { 
+      'atuacoes', { 
         id: {
           type: Sequelize.INTEGER,
           primaryKey: true,
           autoIncrement: true,
-          allowNull: false,
+          allowNull: false
         },
-        codigo: {
+        usuario_id: {
           type: Sequelize.INTEGER,
-          allowNull: true,
-        },
-        nome: {
-          type: Sequelize.STRING,
           allowNull: false,
+          references: { model: 'usuarios', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE'
+        },
+        tipo_perfil: {
+          type: Sequelize.INTEGER,
+          allowNull: false
+        },
+        escopo: {
+          type: Sequelize.INTEGER,
+          allowNull: false
+        },
+        local_id: {
+          type: Sequelize.INTEGER,
+          allowNull: false
         },
         created_at: {
           type: Sequelize.DATE,
@@ -26,10 +37,11 @@ module.exports = {
           type: Sequelize.DATE,
           allowNull: false,
         }
-      });
+      }
+    );
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('municipios');
+    return queryInterface.dropTable('atuacoes');
   }
 };

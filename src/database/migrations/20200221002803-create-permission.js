@@ -3,30 +3,23 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable(
-      'lados', { 
+      'permissoes', { 
         id: {
           type: Sequelize.INTEGER,
           primaryKey: true,
           autoIncrement: true,
           allowNull: false,
         },
-        numero: {
+        tipo_perfil: {
           type: Sequelize.INTEGER,
           allowNull: false,
         },
-        rua_id: {
+        funcao_id: {
           type: Sequelize.INTEGER,
           allowNull: false,
-          references: { model: 'ruas', key: 'id' },
+          references: { model: 'funcoes', key: 'id' },
           onUpdate: 'CASCADE',
-          onDelete: 'RESTRICT'
-        },
-        quarteirao_id: {
-          type: Sequelize.INTEGER,
-          allowNull: false,
-          references: { model: 'quarteiroes', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'RESTRICT'
+          onDelete: 'CASCADE'
         },
         created_at: {
           type: Sequelize.DATE,
@@ -36,10 +29,11 @@ module.exports = {
           type: Sequelize.DATE,
           allowNull: false,
         }
-      });
+      }
+    );
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('lados');
+    return queryInterface.dropTable('permissoes');
   }
 };

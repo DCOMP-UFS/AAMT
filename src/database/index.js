@@ -15,7 +15,8 @@ const Quarteirao = require('../models/Quarteirao');
 const Lado = require('../models/Lado');
 const Imovel = require('../models/Imovel');
 const Funcao = require('../models/Funcao');
-const TipoPerfil = require('../models/TipoPerfil');
+const Atuacao = require('../models/Atuacao');
+const Permissao = require('../models/Permissao');
 
 const connection = new Sequelize(dbConfig);
 
@@ -33,7 +34,8 @@ Quarteirao.init( connection );
 Lado.init( connection );
 Imovel.init( connection );
 Funcao.init( connection );
-TipoPerfil.init( connection );
+Atuacao.init( connection );
+Permissao.init( connection );
 
 Usuario.associate( connection.models );
 Municipio.associate( connection.models );
@@ -49,6 +51,7 @@ Quarteirao.associate( connection.models );
 Lado.associate( connection.models );
 Imovel.associate( connection.models );
 Funcao.associate( connection.models );
-TipoPerfil.associate( connection.models );
+Atuacao.associate( connection.models );
+Permissao.associate( connection.models );
 
 module.exports = connection;

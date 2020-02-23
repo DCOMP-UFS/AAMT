@@ -16,13 +16,7 @@ class Usuario extends Model {
   }
 
   static associate( models ) {
-    this.belongsTo( models.Municipio, { foreignKey: 'municipio_id', as: 'municipio' } );
-
-    this.belongsToMany( models.TipoPerfil, { 
-      through: 'atuacoes',
-      as: 'tiposPerfis',
-      foreignKey: 'usuario_id'
-    });
+    this.hasMany( models.Atuacao, { foreignKey: 'usuario_id', as: 'atuacoes' } );
   }
 }
 

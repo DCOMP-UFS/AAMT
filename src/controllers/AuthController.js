@@ -1,10 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const Usuario = require('../models/Usuario');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 const authConfig = require('../config/auth');
+const Municipio = require('../models/Municipio');
+const Permissao = require('../models/Permissao');
+const RegionalSaude = require('../models/RegionalSaude');
+const Usuario = require('../models/Usuario');
+const getLocationByOperation = require('../util/getLocationByOperation');
+const getPermissionByOperation = require('../util/getPermissionByOperation');
 
 function generateToken(params = {}) {
   return jwt.sign(params, authConfig.secret, {
@@ -19,34 +24,25 @@ authenticate = async (req, res) => {
     where: {
       usuario
     },
-    include: [
-      { association: 'municipio' },
-      { association: 'tiposPerfis' }
-    ],
-    attributes: { exclude: [ 'municipio_id' ] }
+    include: { 
+      association: 'atuacoes',
+      attributes: { exclude: [ 'createdAt', 'updatedAt', 'usuario_id' ] } 
+    }
   });
   
-  let perfil = {};
-  if( user.tiposPerfis.length > 1) {
-    perfil = user.tiposPerfis.map(( tipoPerfil ) => {
-      const tp = tipoPerfil.dataValues;
-      return { id: tp.id, descricao: tp.descricao }
-    });
-  } else {
-    perfil = { 
-      id: user.tiposPerfis[0].dataValues.id, 
-      descricao: user.tiposPerfis[0].dataValues.descricao, 
-      sigla: user.tiposPerfis[0].dataValues.sigla 
-    }
-  }
-  
   if(!user) 
-    return res.status(400).send({ error: 'User not found' });
+    return res.status(400).send({ error: 'Usuário ou senha incorreta' });
   
   if( !bcrypt.compareSync(senha, user.senha) )
-    return res.status(400).send({ error: 'Invalid password' });
+    return res.status(400).send({ error: 'Usuário ou senha incorreta' });
 
   user.senha = undefined;
+
+  // Consultando as funções que usuário pode acessar de acordo com a atuação
+  const permissoes = await getPermissionByOperation( user.atuacoes );
+
+  // Consultando os locais do usuário de acordo com sua atuação
+  const locais = await getLocationByOperation( user.atuacoes );
 
   res.send({ 
     user: {
@@ -57,10 +53,11 @@ authenticate = async (req, res) => {
       email: user.email,
       usuario: user.usuario,
       ativo: user.ativo,
+      ...locais,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
-      municipio: user.municipio,
-      tipoPerfil: perfil
+      atuacoes: user.atuacoes,
+      permissoes
     },
     token: generateToken({ id: user.id }) 
   });

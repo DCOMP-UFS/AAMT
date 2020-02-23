@@ -12,8 +12,7 @@ class Municipio extends Model {
   }
 
   static associate( models ) {
-    this.belongsTo( models.RegionalSaude, { foreignKey: 'regionalSaude_id', as: 'regional' } )
-    this.hasMany( models.Usuario, { foreignKey: 'municipio_id', as: 'usuarios' } )
+    this.belongsTo( models.RegionalSaude, { foreignKey: 'regional_saude_id', as: 'regional' } )
   }
 }
 

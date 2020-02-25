@@ -33,7 +33,7 @@ getCityById = async ( req, res ) => {
       'p.id AS pais_id  ' +
     'FROM  ' +
       'municipios as m  ' +
-      'JOIN "regionaisSaude" as rs ON( m.regional_saude_id = rs.id ) ' +
+      'JOIN "regionais_saude" as rs ON( m.regional_saude_id = rs.id ) ' +
       'JOIN estados as e ON( rs.estado_id = e.id ) ' +
       'JOIN regioes as r ON( e.regiao_id = r.id ) ' +
       'JOIN paises as p ON( r.pais_id = p.id ) ' +
@@ -75,7 +75,7 @@ getCityByRegionalHealth = async ( req, res ) => {
 
   const municipios = await Municipio.findAll({
     where: {
-      regionalSaude_id
+      regional_saude_id: regionalSaude_id
     },
     order: [[ 'nome', 'asc' ]]
   });

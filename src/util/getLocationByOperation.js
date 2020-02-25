@@ -11,7 +11,21 @@ module.exports = async ( atuacoes ) => {
       case 1:
         locais.regionalSaude =  await RegionalSaude.findByPk( 
           at.local_id, 
-          { attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }
+          { 
+            attributes: [ 'id', 'nome' ],
+            include: {
+              association: 'estado',
+              attributes: [ 'id', 'nome' ],
+              include: {
+                association: 'regiao',
+                attributes: [ 'id', 'nome', 'sigla' ],
+                include: {
+                  association: 'pais',
+                  attributes: [ 'id', 'nome', 'sigla' ]
+                }
+              }
+            }
+          }
         );
         break;
       case 3:
@@ -20,7 +34,25 @@ module.exports = async ( atuacoes ) => {
       default:
         locais.municipio =  await Municipio.findByPk( 
           at.local_id, 
-          { attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }
+          { 
+            include: { 
+              association: 'regional',
+              attributes: [ 'id', 'nome' ],
+              include: {
+                association: 'estado',
+                attributes: [ 'id', 'nome' ],
+                include: {
+                  association: 'regiao',
+                  attributes: [ 'id', 'nome', 'sigla' ],
+                  include: {
+                    association: 'pais',
+                    attributes: [ 'id', 'nome', 'sigla' ]
+                  }
+                }
+              }
+            },
+            attributes: [ 'id', 'nome', 'codigo' ],
+          }
         );
         break;
     }

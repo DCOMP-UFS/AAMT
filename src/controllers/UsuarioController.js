@@ -6,11 +6,13 @@ const authMiddleware = require('../middlewares/auth');
 const Atuacao = require('../models/Atuacao');
 const Usuario = require('../models/Usuario');
 const Municipio = require('../models/Municipio');
+const RegionalSaude = require('../models/RegionalSaude');
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
 const getLocationByOperation = require('../util/getLocationByOperation');
 const checkLocationByOperation = require('../util/checkLocationByOperation');
+const getAllUsersByRegional = require('../util/getAllUsersByRegional');
 
 const router = express.Router();
 
@@ -74,10 +76,37 @@ getUserById = async ( req, res ) => {
   });
 }
 
+getUsersByRegional = async ( req, res ) => {
+  const { regionalSaude_id } = req.params;
+  const userId = req.userId
+  const allow = await allowFunction( userId, 'manter_usuario' );
+
+  if( !allow ) 
+    return res.status(403).json({ error: 'Acesso negado' });
+
+  const regionalSaude = await RegionalSaude.findByPk( regionalSaude_id );
+  if( !regionalSaude )
+    return res.status(400).json({ error: 'Regional de saúde não existe' });
+
+  const municipios = await Municipio.findAll({
+    include: {
+      association: 'regional',
+      where: {
+        id: regionalSaude_id
+      }
+    }
+  });
+
+  const usuarios = await getAllUsersByRegional( municipios, regionalSaude );
+
+  return res.json( usuarios );
+}
+
 listByCity = async ( req, res ) => {
   const { municipio_id } = req.params;
 
   const municipio = await Municipio.findByPk( municipio_id, {
+    include: { association: 'regional', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } },
     attributes: { exclude: [ 'createdAt', 'updatedAt' ] } 
   });
 
@@ -110,6 +139,7 @@ listByCity = async ( req, res ) => {
       usuario: u.usuario,
       ativo: u.ativo,
       municipio,
+      atuacoes: u.atuacoes,
       createdAt: u.createdAt,
       updatedAt: u.updatedAt,
     };
@@ -184,8 +214,13 @@ store = async (req, res) => {
   }
 
   user.dataValues.atuacoes = at;
+  const locais = await getLocationByOperation( user.dataValues.atuacoes );
+  user.dataValues.senha = undefined;
 
-  return res.status(201).json(user);
+  return res.status(201).json({
+    ...user.dataValues,
+    ...locais,
+  });
 }
 
 update = async (req, res) => {
@@ -278,6 +313,7 @@ router.use(authMiddleware);
 router.get('/', index);
 router.get('/:id', getUserById);
 router.get('/:municipio_id/municipios', listByCity);
+router.get('/:regionalSaude_id/regionaisSaude', getUsersByRegional);
 router.post('/', store);
 router.put('/:id', update);
 

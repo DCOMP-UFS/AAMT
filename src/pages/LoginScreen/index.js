@@ -16,22 +16,28 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { clearToast } from '../../store/actions/appConfig';
-import { authenticateRequest } from '../../store/actions/UsuarioActions';
+import { authenticateRequest } from '../../store/actions/appConfig';
 
 function LoginScreen( props ) {
   const [ usuario, setUsuario ] = useState("");
   const [ senha, setSenha ] = useState("");
   const [ conectado, setConectado ] = useState(false);
 
-  const redirectUser = tipoPerfil => {
-    switch( tipoPerfil.sigla ) {
-      case perfil.laboratorialista: {
-        window.location = window.location.origin.toString() + "/lab/home";
+  const redirectUser = atuacoes => {
+    const atuacao = atuacoes[0];
+    switch( atuacao.tipoPerfil ) {
+      case perfil.coordenadorGeral.id: {
+        window.location = window.location.origin.toString() + "/cg/home";
         break;
       }
 
-      case perfil.coordenador: {
-        window.location = window.location.origin.toString() + "/trabalho_diario/iniciar";
+      case perfil.coordenador.id: {
+        window.location = window.location.origin.toString() + "/coord/atividades";
+        break;
+      }
+
+      case perfil.laboratorista.id: {
+        window.location = window.location.origin.toString() + "/lab/home";
         break;
       }
 

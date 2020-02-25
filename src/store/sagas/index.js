@@ -1,5 +1,6 @@
-import { all, takeLatest } from 'redux-saga/effects';
+import { all, takeLatest, takeEvery } from 'redux-saga/effects';
 
+import { ActionTypes as AppConfig } from '../actions/appConfig';
 import { ActionTypes as UserActions } from '../actions/UsuarioActions';
 import { ActionTypes as MunicipioActions } from '../actions/MunicipioActions';
 import { ActionTypes as LocalidadeActions } from '../actions/LocalidadeActions';
@@ -12,7 +13,15 @@ import { ActionTypes as RegionalSaudeActions } from '../actions/RegionalSaudeAct
 import { ActionTypes as QuarteiraoActions } from '../actions/QuarteiraoActions';
 import { ActionTypes as RuaActions } from '../actions/RuaActions';
 
-import { authenticate, getUsuarios, createUsuario, updateUsuario, getUsuarioById } from './UsuarioSagas';
+import {
+  authenticate,
+  getUsuarios,
+  createUsuario,
+  updateUsuario,
+  getUsuarioById,
+  getUsersByRegional,
+  getUsersByCity
+} from './UsuarioSagas';
 import { getMunicipios, createCity, updateCity, getCityById, getCityByRegionalHealth } from './MunicipioSagas';
 import { getLocalidades, createLocation, updateLocation, getLocationById, getLocationByCity } from './LocalidadeSagas';
 import { getZoneByCity, createZone, updateZone, getZoneById, getZoneByLocality } from './ZonaSagas';
@@ -33,13 +42,15 @@ import { getStreetByLocality, createStreet, updateStreet, deleteStreet } from '.
 
 export default function* rootSaga() {
   yield all([
-    takeLatest( UserActions.AUTHENTICATE_REQUEST, authenticate ),
+    takeLatest( AppConfig.AUTHENTICATE_REQUEST, authenticate ),
 
     // Gerir Usuario
     takeLatest( UserActions.GET_USUARIOS_REQUEST, getUsuarios ),
     takeLatest( UserActions.GET_USUARIO_BY_ID_REQUEST, getUsuarioById ),
+    takeLatest( UserActions.GET_USERS_BY_REGIONAL_REQUEST, getUsersByRegional ),
+    takeLatest( UserActions.GET_USERS_BY_CITY_REQUEST, getUsersByCity ),
     takeLatest( UserActions.CREATE_USUARIO_REQUEST, createUsuario ),
-    takeLatest( UserActions.UPDATE_ALL_USUARIO_REQUEST, updateUsuario ),
+    takeEvery( UserActions.UPDATE_ALL_USUARIO_REQUEST, updateUsuario ),
     takeLatest( UserActions.UPDATE_USUARIO_REQUEST, updateUsuario ),
 
     //Gerir Município

@@ -3,9 +3,30 @@ export const ActionTypes = {
   NAV_TOGGLE: "NAV_TOGGLE",
   SET_TOKEN: "SET_TOKEN",
   SHOW_NOTIFY_TOAST: "SHOW_NOTIFY_TOAST",
-  CLEAR_TOAST: "CLEAR_TOAST"
+  CLEAR_TOAST: "CLEAR_TOAST",
+  AUTHENTICATE_REQUEST: "AUTHENTICATE_REQUEST",
+  AUTHENTICATE_SUCCESS: "AUTHENTICATE_SUCCESS"
 };
 
+export const authenticateRequest = (usuario, senha, redirectUser) => {
+  return {
+    type: ActionTypes.AUTHENTICATE_REQUEST,
+    payload: {
+      usuario,
+      senha,
+      redirectUser
+    }
+  }
+}
+
+export const authenticate = user => {
+  return {
+    type: ActionTypes.AUTHENTICATE_SUCCESS,
+    payload: {
+      user,
+    }
+  }
+}
 
 export const navToggleLab = () => {
   return {

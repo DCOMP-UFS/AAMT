@@ -27,8 +27,9 @@ export const tipoImovel = {
 }
 
 export const perfil = {
-  agente: "A",
-  coordenador: "C",
-  laboratorialista: "L",
-  supervisor: "S",
+  agente: { id: 4, label: "Agente" },
+  coordenador: { id: 2, label: "Coordenador" },
+  coordenadorGeral: { id: 1, label: "Coordenador Geral" },
+  laboratorista: { id: 5, label: "Laboratorista"},
+  supervisor: { id: 3, label: "Supervisor"},
 }

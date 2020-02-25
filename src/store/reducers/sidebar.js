@@ -1,6 +1,5 @@
-import { IoIosCode, IoIosCheckboxOutline, IoIosPaper } from 'react-icons/io';
-import BorderAllIcon from '@material-ui/icons/BorderAll';
-import { FaTasks, FaUsers, FaCity, FaMapSigns } from 'react-icons/fa';
+import { IoIosPaper } from 'react-icons/io';
+import { FaTasks, FaUsers, FaMapSigns, FaVials } from 'react-icons/fa';
 import ViewCompactIcon from '@material-ui/icons/ViewCompact';
 
 import { ActionTypes } from '../actions/sidebar';
@@ -27,22 +26,22 @@ const INITIAL_STATE = {
   // Menu ativo currenteNav: [ menu, submenu ]
   currentNav: [ 1, 0 ],
   menu: [
-    createCategory( "Operacional" ),
-    createNav( 1, "Trabalho Diário", true, FaTasks, [
-      createSubmenu( 1, true, "Iniciar", "/trabalho_diario/iniciar" ),
-      // createSubmenu( 2, false, "Realizar Vistoria", "/trabalho_diario/vistoria/lista" ),
-    ]),
+    // createCategory( "Operacional" ),
+    // createNav( 1, "Trabalho Diário", true, FaTasks, [
+    //   createSubmenu( 1, true, "Iniciar", "/trabalho_diario/iniciar" ),
+    //   // createSubmenu( 2, false, "Realizar Vistoria", "/trabalho_diario/vistoria/lista" ),
+    // ]),
     createCategory( "Administrativo" ),
-    createNav( 2, "Atividades", false, IoIosPaper, [
-      createSubmenu( 2, false, "Consultar", "/atividades/" ),
-      createSubmenu( 1, false, "Cadastrar", "/atividades/cadastrar" ),
+    createNav( 1, "Atividades", false, IoIosPaper, [
+      createSubmenu( 1, false, "Consultar", "/coord/atividades/" ),
+      createSubmenu( 2, false, "Cadastrar", "/coord/atividades/cadastrar" ),
     ]),
-    createLink( 3, "Usuários", false, FaUsers, "/usuarios" ),
+    createLink( 2, "Usuários", false, FaUsers, "/coord/usuarios" ),
     createCategory( "Região" ),
-    createLink( 4, "Municípios", false, FaCity, "/municipios"),
-    createLink( 5, "Bairro/Localidade", false, FaMapSigns, "/localidades"),
-    createLink( 6, "Zonas", false, ViewCompactIcon, "/zonas"),
-    createLink( 7, "Quarteirão", false, BorderAllIcon, "/quarteiroes"),
+    createLink( 3, "Bairro/Localidade", false, FaMapSigns, "/coord/localidades"),
+    createLink( 4, "Zonas", false, ViewCompactIcon, "/coord/zonas"),
+    createLink( 5, "Laboratórios", false, FaVials, "/coord/laboratorios"),
+    // createLink( 7, "Quarteirão", false, BorderAllIcon, "/quarteiroes"),
     // createCategory( "Recursos de Interface" ),
     // createNav( 8, "Elementos Básicos", false, IoIosCode, [
     //   createSubmenu( 1, false, "Botões", "/elementos/botoes" ),

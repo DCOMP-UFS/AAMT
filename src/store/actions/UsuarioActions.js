@@ -1,12 +1,12 @@
 export const ActionTypes = {
-  AUTHENTICATE_REQUEST: "AUTHENTICATE_REQUEST",
-  AUTHENTICATE_SUCCESS: "AUTHENTICATE_SUCCESS",
-  AUTHENTICATE_FAILURE: "AUTHENTICATE_FAILURE",
   GET_USUARIOS_REQUEST: "GET_USUARIOS_REQUEST",
   GET_USUARIOS_SUCCESS: "GET_USUARIOS_SUCCESS",
   GET_USUARIOS_FAILURE: "GET_USUARIOS_FAILURE",
   GET_USUARIO_BY_ID_REQUEST: "GET_USUARIO_BY_ID_REQUEST",
   GET_USUARIO_BY_ID_SUCCESS: "GET_USUARIO_BY_ID_SUCCESS",
+  GET_USERS_BY_REGIONAL_REQUEST: "GET_USERS_BY_REGIONAL_REQUEST",
+  GET_USERS_BY_REGIONAL_SUCCESS: "GET_USERS_BY_REGIONAL_SUCCESS",
+  GET_USERS_BY_CITY_REQUEST: "GET_USERS_BY_CITY_REQUEST",
   CREATE_USUARIO_REQUEST: "CREATE_USUARIO_REQUEST",
   CREATE_USUARIO_SUCCESS: "CREATE_USUARIO_SUCCESS",
   CREATE_USUARIO_FAILURE: "CREATE_USUARIO_FAILURE",
@@ -16,32 +16,6 @@ export const ActionTypes = {
   UPDATE_USUARIO_SUCCESS: "UPDATE_USUARIO_SUCCESS",
   CLEAR_UPDATE_USER: "CLEAR_UPDATE_USER",
   CHANGE_USER_EDIT_INDEX: "CHANGE_USER_EDIT_INDEX"
-}
-
-export const authenticateRequest = (usuario, senha, redirectUser) => {
-  return {
-    type: ActionTypes.AUTHENTICATE_REQUEST,
-    payload: {
-      usuario,
-      senha,
-      redirectUser
-    }
-  }
-}
-
-export const authenticate = user => {
-  return {
-    type: ActionTypes.AUTHENTICATE_SUCCESS,
-    payload: {
-      user,
-    }
-  }
-}
-
-export const authenticateFailure = () => {
-  return {
-    type: ActionTypes.AUTHENTICATE_FAILURE
-  }
 }
 
 export const getUsuariosRequest = municipio_id => {
@@ -86,7 +60,43 @@ export const getUsuarioById = usuario => {
   }
 }
 
-export const createUsuarioRequest = ( nome, cpf, rg, email, celular, usuario, senha, tipoPerfil, municipio_id ) => {
+export const getUsersByRegionalRequest = regionalSaude_id => {
+  return {
+    type: ActionTypes.GET_USERS_BY_REGIONAL_REQUEST,
+    payload: {
+      regionalSaude_id
+    }
+  }
+}
+
+export const getUsersByRegional = usuarios => {
+  return {
+    type: ActionTypes.GET_USERS_BY_REGIONAL_SUCCESS,
+    payload: {
+      usuarios
+    }
+  }
+}
+
+export const getUsersByCityRequest = municipio_id => {
+  return {
+    type: ActionTypes.GET_USERS_BY_CITY_REQUEST,
+    payload: {
+      municipio_id
+    }
+  }
+}
+
+export const getUsersByCity = usuarios => {
+  return {
+    type: ActionTypes.GET_USUARIOS_SUCCESS,
+    payload: {
+      usuarios
+    }
+  }
+}
+
+export const createUsuarioRequest = ( nome, cpf, rg, email, celular, usuario, senha, tipoPerfil, regionalSaude_id, municipio_id ) => {
   return {
     type: ActionTypes.CREATE_USUARIO_REQUEST,
     payload: {
@@ -98,6 +108,7 @@ export const createUsuarioRequest = ( nome, cpf, rg, email, celular, usuario, se
       usuario,
       senha,
       tipoPerfil,
+      regionalSaude_id,
       municipio_id
     }
   }

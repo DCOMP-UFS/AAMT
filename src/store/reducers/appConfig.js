@@ -1,6 +1,11 @@
 import { ActionTypes } from '../actions/appConfig';
 
 const INITIAL_STATE = {
+  usuario: {
+    atuacoes: [
+      { tipoPerfil: null }
+    ]
+  },
   /*
    * navToggle:
    *   true -> sidebar expandido
@@ -14,6 +19,15 @@ const INITIAL_STATE = {
 
 export default function quarteirao(state = INITIAL_STATE, action){
   switch( action.type ) {
+    case ActionTypes.AUTHENTICATE_SUCCESS: {
+      const usuario = action.payload.user;
+
+      return {
+        ...state,
+        usuario
+      }
+    }
+
     case ActionTypes.NAV_TOGGLE: {
       return {
         ...state,

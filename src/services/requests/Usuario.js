@@ -10,9 +10,20 @@ export const authenticateRequest = data => {
 }
 
 export const createUsuarioRequest = data => {
-  const { nome, cpf, rg, email, celular, usuario, senha, tipoPerfil, municipio_id } = data;
+  const { nome, cpf, rg, email, celular, usuario, senha, tipoPerfil, regionalSaude_id, municipio_id } = data;
 
-  return api.post(`/usuarios/${ municipio_id }/municipios`, {
+  let local_id = null;
+  switch (tipoPerfil) {
+    case 1:
+      local_id = regionalSaude_id;
+      break;
+
+    default:
+      local_id = municipio_id
+      break;
+  }
+
+  return api.post(`/usuarios/`, {
     nome,
     cpf,
     rg,
@@ -20,7 +31,12 @@ export const createUsuarioRequest = data => {
     celular,
     usuario,
     senha,
-    tipoPerfil
+    atuacoes: [
+      {
+        tipoPerfil: tipoPerfil,
+        local_id
+      }
+    ]
   },
   {
     ...headerAuthorization()
@@ -39,6 +55,20 @@ export const updateRequest = data => {
 }
 
 export const getUsuariosPorMunicipios = municipio_id => {
+  return api.get(`/usuarios/${ municipio_id }/municipios`, {
+    ...headerAuthorization()
+  });
+}
+
+export const getUsersByRegionalRequest = data => {
+  const { regionalSaude_id } = data;
+  return api.get(`/usuarios/${ regionalSaude_id }/regionaisSaude`, {
+    ...headerAuthorization()
+  });
+}
+
+export const getUsersByCityRequest = data => {
+  const { municipio_id } = data;
   return api.get(`/usuarios/${ municipio_id }/municipios`, {
     ...headerAuthorization()
   });

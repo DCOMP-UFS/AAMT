@@ -1,5 +1,11 @@
 import { call, put } from 'redux-saga/effects';
-import { authenticateRequest, createUsuarioRequest, updateRequest } from '../../services/requests/Usuario';
+import {
+  authenticateRequest,
+  createUsuarioRequest,
+  updateRequest,
+  getUsersByRegionalRequest,
+  getUsersByCityRequest
+} from '../../services/requests/Usuario';
 import { getUsuariosPorMunicipios, getUsuarioByIdRequest } from '../../services/requests/Usuario';
 
 import * as UserActions from '../actions/UsuarioActions';
@@ -14,21 +20,9 @@ export function* authenticate(action) {
     if( status === 200 ) {
       const { token, user } = data;
 
-      const userInfo = {
-        nome: user.nome,
-        usuario: user.usuario,
-        email: user.email,
-        tipoPerfil: user.tipoPerfil,
-        municipio: {
-          id: user.municipio.id,
-          codigo: user.municipio.codigo,
-          nome: user.municipio.nome
-        }
-      }
+      redirectUser( user.atuacoes );
 
-      redirectUser( user.tipoPerfil );
-
-      yield put( UserActions.authenticate( userInfo ) );
+      yield put( AppConfigActions.authenticate( user ) );
       yield put( setToken( token ) );
     }
   } catch (error) {
@@ -51,6 +45,21 @@ export function* getUsuarios(action) {
   }
 }
 
+export function* getUsersByRegional( action ) {
+  try {
+    const { data, status } = yield call( getUsersByRegionalRequest, action.payload );
+
+    if( status === 200 ) {
+      yield put( UserActions.getUsersByRegional( data ) );
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Falha consultar os usuários: " + status, "error" ) );
+    }
+
+  } catch (error) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar usuários, favor verifique sua conexão com a internet", "error" ) );
+  }
+}
+
 export function* getUsuarioById(action) {
   try {
     const { data, status } = yield call( getUsuarioByIdRequest, action.payload.id );
@@ -66,12 +75,28 @@ export function* getUsuarioById(action) {
   }
 }
 
+export function* getUsersByCity(action) {
+  try {
+    const { data, status } = yield call( getUsersByCityRequest, action.payload );
+
+    if( status === 200 ) {
+      yield put( UserActions.getUsersByCity( data ) );
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Falha consultar os usuários: " + status, "error" ) );
+    }
+
+  } catch (error) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar usuários, favor verifique sua conexão com a internet", "error" ) );
+  }
+}
+
 export function* createUsuario( action ) {
   try {
     const { data, status } = yield call( createUsuarioRequest, action.payload );
 
     if( status === 201 ) {
       yield put( UserActions.createUsuario( data ) );
+      yield put( AppConfigActions.showNotifyToast( "Usuário criado com sucesso", "success" ) );
     }else {
       yield put( UserActions.createUsuarioFailure() );
     }

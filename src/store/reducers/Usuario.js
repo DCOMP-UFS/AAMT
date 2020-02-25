@@ -1,17 +1,7 @@
 import { ActionTypes } from '../actions/UsuarioActions';
 
 const INITIAL_STATE = {
-  usuario: {
-    nome: "",
-    email: "",
-    usuario: "",
-    tipoPerfil: "",
-    municipio: {
-      id: null,
-      codigo: null,
-      nome: "",
-    },
-  },
+  usuario: {},
   usuarioUpdate: {},
   usuarios: [],
   indexUser: -1,
@@ -22,15 +12,6 @@ const INITIAL_STATE = {
 
 export default function Usuario(state = INITIAL_STATE, action) {
   switch (action.type) {
-    case ActionTypes.AUTHENTICATE_SUCCESS: {
-      const usuario = action.payload.user;
-
-      return {
-        ...state,
-        usuario
-      }
-    }
-
     case ActionTypes.GET_USUARIOS_SUCCESS: {
       let usuarios = state.usuarios;
 
@@ -39,6 +20,14 @@ export default function Usuario(state = INITIAL_STATE, action) {
       return {
         ...state,
         usuarios,
+        reload: !state.reload
+      }
+    }
+
+    case ActionTypes.GET_USERS_BY_REGIONAL_SUCCESS: {
+      return {
+        ...state,
+        usuarios: action.payload.usuarios,
         reload: !state.reload
       }
     }
@@ -92,7 +81,6 @@ export default function Usuario(state = INITIAL_STATE, action) {
       return {
         ...state,
         usuarios,
-        updateUser: true,
         reload: !state.reload
       }
     }

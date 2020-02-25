@@ -67,12 +67,11 @@ export const getZoneByLocality = zonas => {
   }
 }
 
-export const createZoneRequest = ( localidade_id, municipio_id ) => {
+export const createZoneRequest = ( localidade_id ) => {
   return {
     type: ActionTypes.CREATE_ZONE_REQUEST,
     payload: {
-      localidade_id,
-      municipio_id
+      localidade_id
     }
   }
 }

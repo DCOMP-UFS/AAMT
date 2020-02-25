@@ -334,19 +334,29 @@ const focus = {
   outlineStyle: "none",
 }
 
+const disable = {
+  backgroundColor: "#E9ECEF"
+}
+
 export const selectDefault = {
   control: (base, state) => {
     let focused = {};
+    let disabled = {};
 
     state.isFocused ?
       focused = focus :
       focused = {};
+
+    state.isDisabled ?
+      disabled = disable :
+      disabled = {};
 
     return {
       ...select,
       height: "2.875rem",
 
       ...focused,
+      ...disabled
     }
   },
 }

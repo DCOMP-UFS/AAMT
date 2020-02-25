@@ -1,29 +1,31 @@
 import { combineReducers } from 'redux';
 
-import atividade from './atividade';
-import trabalhoDiario from './trabalhoDiario';
-import sidebar from './sidebar';
-import sidebarLab from './sidebarLab';
-import quarteirao from './quarteirao';
-import supportInfo from './supportInfo';
 import appConfig from './appConfig';
-import usuario from './Usuario';
-import municipio from './Municipio';
-import localidade from './Localidade';
+import atividade from './atividade';
 import categoria from './Categoria';
-import zona from './Zona';
-import pais from './Pais';
-import regiao from './Regiao';
 import estado from './Estado';
+import imovel from './Imovel';
+import localidade from './Localidade';
+import municipio from './Municipio';
+import pais from './Pais';
+import quarteirao from './quarteirao';
+import regiao from './Regiao';
 import regionalSaude from './RegionalSaude';
 import rua from './Rua';
-import imovel from './Imovel';
+import sidebar from './sidebar';
+import sidebarCoordGeral from './sidebarCoordGeral';
+import sidebarLab from './sidebarLab';
+import supportInfo from './supportInfo';
+import trabalhoDiario from './trabalhoDiario';
+import usuario from './Usuario';
+import zona from './Zona';
 
 export default combineReducers({
-  atividade,
-  trabalhoDiario,
+  sidebarCoordGeral,
   sidebar,
   sidebarLab,
+  atividade,
+  trabalhoDiario,
   quarteirao,
   supportInfo,
   appConfig,

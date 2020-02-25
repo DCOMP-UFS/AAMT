@@ -14,9 +14,9 @@ export const getZoneByLocalityRequest = data => {
 }
 
 export const createZoneRequest = data => {
-  const { localidade_id, municipio_id } = data;
+  const { localidade_id } = data;
 
-  return api.post(`/zonas/${ municipio_id }/municipios`, {
+  return api.post(`/zonas`, {
     localidade_id
   },
   {

@@ -17,6 +17,10 @@ const Imovel = require('../models/Imovel');
 const Funcao = require('../models/Funcao');
 const Atuacao = require('../models/Atuacao');
 const Permissao = require('../models/Permissao');
+const Metodologia = require('../models/Metodologia');
+const Objetivo = require('../models/Objetivo');
+const Ciclo = require('../models/Ciclo');
+const Atividade = require('../models/Atividade');
 
 const connection = new Sequelize(dbConfig);
 
@@ -36,6 +40,10 @@ Imovel.init( connection );
 Funcao.init( connection );
 Atuacao.init( connection );
 Permissao.init( connection );
+Metodologia.init( connection );
+Objetivo.init( connection );
+Ciclo.init( connection );
+Atividade.init( connection );
 
 Usuario.associate( connection.models );
 Municipio.associate( connection.models );
@@ -53,5 +61,9 @@ Imovel.associate( connection.models );
 Funcao.associate( connection.models );
 Atuacao.associate( connection.models );
 Permissao.associate( connection.models );
+Metodologia.associate( connection.models );
+Objetivo.associate( connection.models );
+Ciclo.associate( connection.models );
+Atividade.associate( connection.models );
 
 module.exports = connection;

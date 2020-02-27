@@ -1,4 +1,5 @@
 'use strict';
+const { Op } = require('sequelize');
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
@@ -49,35 +50,10 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete('metodologias_objetivos', Sequelize.or(
-      Sequelize.and(
-        { metodologia_id: 1 },
-        { objetivo_id: 1 }
-      ),
-      Sequelize.and(
-        { metodologia_id: 2 },
-        { objetivo_id: 1 }
-      ),
-      Sequelize.and(
-        { metodologia_id: 2 },
-        { objetivo_id: 2 }
-      ),
-      Sequelize.and(
-        { metodologia_id: 2 },
-        { objetivo_id: 3 }
-      ),
-      Sequelize.and(
-        { metodologia_id: 2 },
-        { objetivo_id: 4 }
-      ),
-      Sequelize.and(
-        { metodologia_id: 2 },
-        { objetivo_id: 5 }
-      ),
-      Sequelize.and(
-        { metodologia_id: 2 },
-        { objetivo_id: 6 }
-      ),
-    ));
+    return queryInterface.bulkDelete('metodologias_objetivos', {
+      id: {
+        [Op.gt]: 0
+      }
+    });
   }
 };

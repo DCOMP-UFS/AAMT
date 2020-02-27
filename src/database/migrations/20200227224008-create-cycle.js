@@ -2,10 +2,6 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    // return queryInterface.addConstraint('ciclos', ['metodologia_id', 'objetivo_id'], {
-    //   type: 'primary key',
-    //   name: 'ciclos_pkey'
-    // });
     return queryInterface.createTable(
       'ciclos', {
         id: {
@@ -28,7 +24,14 @@ module.exports = {
         },
         sequencia: {
           type: Sequelize.INTEGER,
-          allowNull: false
+          allowNull: false,
+        },
+        regional_saude_id: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references: { model: 'regionais_saude', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
         },
         created_at: {
           type: Sequelize.DATE,

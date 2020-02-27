@@ -39,6 +39,13 @@ module.exports = {
           onUpdate: 'CASCADE',
           onDelete: 'RESTRICT'
         },
+        municipio_id: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references: { model: 'municipios', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'RESTRICT'
+        },
         created_at: {
           type: Sequelize.DATE,
           allowNull: false,

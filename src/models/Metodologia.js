@@ -7,7 +7,8 @@ class Metodologia extends Model {
       sigla: DataTypes.STRING,
       flEstrato: DataTypes.BOOLEAN
     }, {
-      sequelize
+      sequelize,
+      tableName: 'metodologias'
     });
   }
 

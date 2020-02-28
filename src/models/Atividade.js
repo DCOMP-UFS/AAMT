@@ -4,7 +4,8 @@ class Atividade extends Model {
   static init(sequelize) {
     super.init({
       abrangencia: DataTypes.STRING,
-      situacao: DataTypes.STRING
+      situacao: DataTypes.STRING,
+      responsabilidade: DataTypes.INTEGER
     }, {
       sequelize
     });

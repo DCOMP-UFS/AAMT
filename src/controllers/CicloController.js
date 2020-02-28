@@ -1,0 +1,210 @@
+const authMiddleware = require('../middlewares/auth');
+const express = require('express');
+const { Op } = require('sequelize');
+const Atividade = require('../models/Atividade');
+const Ciclo = require('../models/Ciclo');
+const Municipio = require('../models/Municipio');
+
+// UTILITY
+const allowFunction = require('../util/allowFunction');
+
+index = async ( req, res ) => {
+  const { regionalSaude_id } = req.params;
+
+  const allow = await allowFunction( req.userId, 'definir_ciclo' );
+  if( !allow ) 
+    return res.status(403).json({ error: 'Acesso negado' });
+
+  const ciclos = await Ciclo.findAll({
+    where: {
+      regional_saude_id: regionalSaude_id
+    },
+    include: [
+      {
+        association: 'regional',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+      }
+    ],
+    order: [[ 'ano', 'desc' ], [ 'sequencia', 'asc' ]]
+  });
+
+  return res.json( ciclos );
+}
+
+getOpenCycles = async ( req, res ) => {
+  const current_date = new Date();
+
+  const ciclos = await Ciclo.findAll({
+    where: {
+      [Op.and]: [
+        {
+          dataInicio: {
+            [Op.lt]: current_date
+          }
+        },
+        {
+          dataFim: {
+            [Op.gt]: current_date
+          }
+        }
+      ]
+    }
+  });
+
+  return res.json( ciclos );
+}
+
+store = async ( req, res ) => {
+  const { ano, sequencia, dataInicio, dataFim, regionalSaude_id, atividades } = req.body;
+
+  const allow = await allowFunction( req.userId, 'definir_ciclo' );
+  if( !allow )
+    return res.status(403).json({ error: 'Acesso negado' });
+
+  const ciclo = await Ciclo.create({
+    ano,
+    sequencia,
+    dataInicio,
+    dataFim,
+    regional_saude_id: regionalSaude_id
+  });
+
+  if( atividades ) {
+    for (const atividade of atividades) {
+      const { abrangencia, metodologia_id, objetivo_id } = atividade;
+      const municipios = await Municipio.findAll({
+        where: {
+          regional_saude_id: regionalSaude_id
+        }
+      });
+
+      for (const municipio of municipios) {
+        const { id: municipio_id } = municipio.dataValues;
+
+        await Atividade.create({
+          abrangencia, 
+          situacao: 1,
+          responsabilidade: 1,
+          ciclo_id: ciclo.id,
+          municipio_id,
+          metodologia_id, 
+          objetivo_id
+        });
+      }
+    }
+  }
+
+  return res.status(201).json( ciclo );
+}
+
+update = async ( req, res ) => {
+  const { id } = req.params;
+  const { atividades, ...body } = req.body;
+  const current_date = new Date();
+
+  const allow = await allowFunction( req.userId, 'definir_ciclo' );
+  if( !allow )
+    return res.status(403).json({ error: 'Acesso negado' });
+
+  let ciclo = await Ciclo.findByPk( id );
+  if( !ciclo )
+    return res.status(400).json({ error: 'Ciclo não existe' });
+
+  if( ciclo.dataInicio < current_date && ciclo.dataFim > current_date )
+    return res.status(400).json({ error: 'Não é possível alterar ciclo em aberto!' });
+
+  req.body.id = undefined;
+  req.body.createdAt = undefined;
+  req.body.updatedAt = undefined;
+
+  const { isRejected } = await Ciclo.update(
+    body,
+    {
+      where: {
+        id
+      }
+    }
+  );
+
+  if( isRejected ){
+    return res.status(400).json({ error: 'Não foi possível atualizar o ciclo' });
+  }
+
+  await Atividade.destroy({
+    where: {
+      ciclo_id: id
+    }
+  });
+
+  if( atividades ) {
+    for (const atividade of atividades) {
+      const { abrangencia, metodologia_id, objetivo_id } = atividade;
+      const municipios = await Municipio.findAll({
+        where: {
+          regional_saude_id: ciclo.regional_saude_id
+        }
+      });
+
+      for (const municipio of municipios) {
+        const { id: municipio_id } = municipio.dataValues;
+
+        await Atividade.create({
+          abrangencia, 
+          situacao: 1,
+          responsabilidade: 1,
+          ciclo_id: ciclo.id,
+          municipio_id,
+          metodologia_id, 
+          objetivo_id
+        });
+      }
+    }
+  }
+
+  ciclo = await Ciclo.findByPk( id );
+
+  return res.json(ciclo);
+}
+
+destroy = async ( req, res ) => {
+  const { id } = req.params;
+  const current_date = new Date();
+
+  const allow = await allowFunction( req.userId, 'definir_ciclo' );
+  if( !allow )
+    return res.status(403).json({ error: 'Acesso negado' });
+
+  const deleted = await Ciclo.destroy({
+    where: {
+      id,
+      [Op.or]: [
+        {
+          dataInicio: {
+            [Op.gt]: current_date
+          }
+        },
+        {
+          dataFim: {
+            [Op.lt]: current_date
+          }
+        }
+      ]
+    }
+  });
+
+  if( deleted ) 
+    return res.json({ message: "Ciclo deletado" });
+
+  return res.status(200).json({ message: "Não é permitido excluír ciclo aberto!" });
+}
+
+const router = express.Router();
+router.use(authMiddleware);
+
+router.get('/:regionalSaude_id/regionaisSaude', index);
+router.get('/open', getOpenCycles);
+router.put('/:id', update);
+router.post('/', store);
+router.delete('/:id', destroy);
+
+module.exports = app => app.use('/ciclos', router);

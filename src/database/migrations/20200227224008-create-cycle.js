@@ -14,11 +14,11 @@ module.exports = {
           type: Sequelize.INTEGER,
           allowNull: false
         },
-        dataInicio: {
+        data_inicio: {
           type: Sequelize.DATE,
           allowNull: false
         },
-        dataFim: {
+        data_fim: {
           type: Sequelize.DATE,
           allowNull: false
         },

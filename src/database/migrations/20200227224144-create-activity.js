@@ -18,6 +18,10 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: false,
         },
+        responsabilidade: {
+          type: Sequelize.INTEGER,
+          allowNull: false
+        },
         ciclo_id: {
           type: Sequelize.INTEGER,
           allowNull: false,
@@ -44,7 +48,7 @@ module.exports = {
           allowNull: false,
           references: { model: 'municipios', key: 'id' },
           onUpdate: 'CASCADE',
-          onDelete: 'RESTRICT'
+          onDelete: 'CASCADE'
         },
         created_at: {
           type: Sequelize.DATE,

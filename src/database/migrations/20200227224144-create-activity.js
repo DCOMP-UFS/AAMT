@@ -10,13 +10,22 @@ module.exports = {
           autoIncrement: true,
           allowNull: false,
         },
+        objetivo_atividade: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
         abrangencia: {
           type: Sequelize.STRING,
           allowNull: false,
         },
         situacao: {
-          type: Sequelize.STRING,
+          type: Sequelize.INTEGER,
           allowNull: false,
+        },
+        fl_todos_imoveis: {
+          type: Sequelize.BOOLEAN,
+          allowNull: false,
+          defaultValue: false
         },
         responsabilidade: {
           type: Sequelize.INTEGER,

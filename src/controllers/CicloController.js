@@ -26,16 +26,41 @@ index = async ( req, res ) => {
       }
     ],
     order: [[ 'ano', 'desc' ], [ 'sequencia', 'asc' ]]
+  }).then(( ciclos ) => {
+    let current_date = new Date();
+    current_date.setHours(0,0,0,0);
+    
+    const cycles = ciclos.map(( data ) => {
+      const { dataValues: ciclo } = data;
+      let dataInicio = ciclo.dataInicio;
+      let dataFim = ciclo.dataFim;
+
+      dataInicio.setHours(0,0,0,0);
+      dataFim.setHours(0,0,0,0);
+
+      if( dataInicio <= current_date && dataFim >= current_date )
+        ciclo.situacao = "Em aberto";
+      else if( dataFim < current_date )
+        ciclo.situacao = "Finalizado";
+      else
+        ciclo.situacao = "Planejado";
+
+      return ciclo;
+    });
+
+    return cycles
   });
 
   return res.json( ciclos );
 }
 
 getOpenCycles = async ( req, res ) => {
+  const { regionalSaude_id } = req.params;
   const current_date = new Date();
 
-  const ciclos = await Ciclo.findAll({
+  const ciclos = await Ciclo.findOne({
     where: {
+      regional_saude_id: regionalSaude_id,
       [Op.and]: [
         {
           dataInicio: {
@@ -48,6 +73,39 @@ getOpenCycles = async ( req, res ) => {
           }
         }
       ]
+    }
+  });
+
+  return res.json( ciclos );
+}
+
+getCyclesForYear = async ( req, res ) => {
+  const { ano, regionalSaude_id } = req.params;
+
+  const ciclos = await Ciclo.findAll({
+    where: {
+      regional_saude_id: regionalSaude_id,
+      ano
+    },
+    include: {
+      association: 'atividades'
+    }
+  });
+
+  return res.json( ciclos );
+}
+
+getAllowedCycles = async ( req, res ) => {
+  const { regionalSaude_id } = req.params;
+  let current_date = new Date();
+  current_date.setHours(0,0,0,0);
+
+  const ciclos = await Ciclo.findAll({
+    where: {
+      regional_saude_id: regionalSaude_id,
+      dataFim: {
+        [Op.gt]: current_date
+      }
     }
   });
 
@@ -71,7 +129,7 @@ store = async ( req, res ) => {
 
   if( atividades ) {
     for (const atividade of atividades) {
-      const { abrangencia, metodologia_id, objetivo_id } = atividade;
+      const { abrangencia, metodologia_id, objetivo_id, objetivoAtividade, flTodosImoveis } = atividade;
       const municipios = await Municipio.findAll({
         where: {
           regional_saude_id: regionalSaude_id
@@ -83,6 +141,8 @@ store = async ( req, res ) => {
 
         await Atividade.create({
           abrangencia, 
+          objetivoAtividade, 
+          flTodosImoveis,
           situacao: 1,
           responsabilidade: 1,
           ciclo_id: ciclo.id,
@@ -138,7 +198,13 @@ update = async ( req, res ) => {
 
   if( atividades ) {
     for (const atividade of atividades) {
-      const { abrangencia, metodologia_id, objetivo_id } = atividade;
+      const { 
+        abrangencia, 
+        metodologia_id, 
+        objetivo_id, 
+        objetivoAtividade,
+        flTodosImoveis 
+      } = atividade;
       const municipios = await Municipio.findAll({
         where: {
           regional_saude_id: ciclo.regional_saude_id
@@ -149,7 +215,9 @@ update = async ( req, res ) => {
         const { id: municipio_id } = municipio.dataValues;
 
         await Atividade.create({
-          abrangencia, 
+          abrangencia,
+          objetivoAtividade,
+          flTodosImoveis,
           situacao: 1,
           responsabilidade: 1,
           ciclo_id: ciclo.id,
@@ -202,7 +270,9 @@ const router = express.Router();
 router.use(authMiddleware);
 
 router.get('/:regionalSaude_id/regionaisSaude', index);
-router.get('/open', getOpenCycles);
+router.get('/open/:regionalSaude_id/regionaisSaude', getOpenCycles);
+router.get('/allowedCycles/:regionalSaude_id/regionaisSaude', getAllowedCycles);
+router.get('/:ano/:regionalSaude_id/regionaisSaude', getCyclesForYear);
 router.put('/:id', update);
 router.post('/', store);
 router.delete('/:id', destroy);

@@ -3,9 +3,11 @@ const { Model, DataTypes } = require('sequelize');
 class Atividade extends Model {
   static init(sequelize) {
     super.init({
+      objetivoAtividade: DataTypes.STRING,
       abrangencia: DataTypes.STRING,
-      situacao: DataTypes.STRING,
-      responsabilidade: DataTypes.INTEGER
+      situacao: DataTypes.INTEGER,
+      responsabilidade: DataTypes.INTEGER,
+      flTodosImoveis: DataTypes.BOOLEAN
     }, {
       sequelize
     });

@@ -23,5 +23,6 @@ require('./controllers/QuarteiraoController')(app);
 require('./controllers/ImovelController')(app);
 require('./controllers/MetodologiaController')(app);
 require('./controllers/CicloController')(app);
+require('./controllers/AtividadeController')(app);
 
 app.listen( process.env.PORT || 3333 );

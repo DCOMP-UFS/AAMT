@@ -1,49 +1,45 @@
-import { ActionTypes } from '../actions/atividade';
+import { ActionTypes } from '../actions/AtividadeActions';
 
 const INITIAL_STATE = {
-  atividadeAtiva: 0,
-  atividades: [
-    {
-      id: 1,
-      objetivo: "LI+T = Lev. de índice + Tratamento" ,
-      local: { id: 1, titulo: "Localidade A", sigla: "Loc.A" },
-      periodo: {
-        dataInicio: new Date(Date.parse("Nov 18, 2019")).toLocaleString(),
-        dataFim: new Date(Date.parse("Nov 25, 2019")).toLocaleString()
-      },
-      equipe: [
-        { id: 1, nome: "Capitão", funcao: "supervisor" },
-        { id: 2, nome: "Recruta", funcao: "tecnico" },
-        { id: 3, nome: "Kowalski", funcao: "tecnico" },
-        { id: 4, nome: "Rico", funcao: "tecnico" },
-      ]
-    },
-    {
-      id: 2,
-      objetivo: "PPE + TPE = Pesquisa e Tratamento" ,
-      local: { id: 2, titulo: "Localidade B", sigla: "Loc.B" },
-      periodo: {
-        dataInicio: new Date(Date.parse("Nov 18, 2019")).toLocaleString(),
-        dataFim: new Date(Date.parse("Nov 25, 2019")).toLocaleString()
-      },
-      equipe: [
-        { id: 1, nome: "Capitão", funcao: "supervisor" },
-        { id: 2, nome: "Recruta", funcao: "tecnico" },
-        { id: 3, nome: "Kowalski", funcao: "tecnico" },
-        { id: 4, nome: "Rico", funcao: "tecnico" },
-      ]
-    }
-  ]
-};
+  atividade: {},
+  atividades: [],
+  index: -1,
+  created: null,
+  updated: null,
+  reload: false
+}
 
-export default function atividade(state = INITIAL_STATE, action) {
+export default function Atividade(state = INITIAL_STATE, action) {
   switch (action.type) {
-    case ActionTypes.TOGGLE_ATIVIDADE_ATIVA:
+    case ActionTypes.GET_ACTIVITIES_OF_CITY_SUCCESS: {
       return {
         ...state,
-        atividadeAtiva: action.payload.atividadeAtiva
+        atividades: action.payload.atividades
       }
+    }
+
+    case ActionTypes.GET_ACTIVITIES_BY_CITY_SUCCESS: {
+      return {
+        ...state,
+        atividades: action.payload.atividades
+      }
+    }
+
+    case ActionTypes.CREATE_ACTIVE_SUCCESS: {
+      let atividades = state.atividades;
+
+      const atividade = action.payload.atividade;
+
+      atividades = [atividade, ...atividades];
+
+      return {
+        ...state,
+        atividades,
+        created: true
+      }
+    }
+
     default:
-      return state;
+      return { ...state }
   }
 }

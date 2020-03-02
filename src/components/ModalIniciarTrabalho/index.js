@@ -39,8 +39,6 @@ class ModalIniciarTrabalho extends Component {
     }
 
     this.handleInputChange = this.handleInputChange.bind(this);
-
-    console.log(this.props.trabalhoDiario);
   }
 
   handleInputChange(event) {

@@ -15,7 +15,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebar';
+import { changeSidebar } from '../../../store/actions/sidebarCoordGeral';
 import { changeTableSelected } from '../../../store/actions/supportInfo';
 import { clearToast } from '../../../store/actions/appConfig';
 import { getUsersByRegionalRequest, changeUserEditIndex, } from '../../../store/actions/UsuarioActions';
@@ -117,7 +117,6 @@ function Usuarios({ regionalSaude_id, usuarios, ...props }) {
   }, []);
 
   useEffect(() => {
-    console.log(props.reload);
     createRows();
   }, [ usuarios, props.reload ]);
 

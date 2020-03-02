@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
 import appConfig from './appConfig';
-import atividade from './atividade';
+import atividade from './Atividade';
 import categoria from './Categoria';
 import estado from './Estado';
 import imovel from './Imovel';
@@ -15,15 +15,19 @@ import rua from './Rua';
 import sidebar from './sidebar';
 import sidebarCoordGeral from './sidebarCoordGeral';
 import sidebarLab from './sidebarLab';
+import sidebarSupervisor from './sidebarSupervisor';
 import supportInfo from './supportInfo';
 import trabalhoDiario from './trabalhoDiario';
 import usuario from './Usuario';
 import zona from './Zona';
+import ciclo from './Ciclo';
+import metodologia from './Metodologia';
 
 export default combineReducers({
   sidebarCoordGeral,
   sidebar,
   sidebarLab,
+  sidebarSupervisor,
   atividade,
   trabalhoDiario,
   quarteirao,
@@ -39,5 +43,7 @@ export default combineReducers({
   estado,
   regionalSaude,
   rua,
-  imovel
+  imovel,
+  ciclo,
+  metodologia
 });

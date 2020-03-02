@@ -1,5 +1,5 @@
 import { IoIosPaper } from 'react-icons/io';
-import { FaUsers, FaCity, FaSyncAlt } from 'react-icons/fa';
+import { FaUsers, FaCity, FaSyncAlt, FaBuilding } from 'react-icons/fa';
 
 import { ActionTypes } from '../actions/sidebarCoordGeral';
 
@@ -26,16 +26,17 @@ const INITIAL_STATE = {
   currentNav: [ 1, 0 ],
   menu: [
     createCategory( "Administrativo" ),
-    createNav( 2, "Ciclos", false, FaSyncAlt, [
-      createSubmenu( 2, false, "Consultar", "/cg/ciclos/" ),
-      createSubmenu( 1, false, "Cadastrar", "/cg/ciclos/cadastrar" ),
+    createNav( 1, "Ciclos", false, FaSyncAlt, [
+      createSubmenu( 1, false, "Dashboard", "/cg/ciclos/" ),
+      createSubmenu( 2, false, "Consultar", "/cg/ciclos/consultar" ),
     ]),
     createNav( 2, "Atividades", false, IoIosPaper, [
-      createSubmenu( 2, false, "Consultar", "/cg/atividades/" ),
-      createSubmenu( 1, false, "Cadastrar", "/cg/atividades/cadastrar" ),
+      createSubmenu( 1, false, "Consultar", "/cg/atividades/" ),
+      createSubmenu( 2, false, "Cadastrar", "/cg/atividades/cadastrar" ),
     ]),
     createLink( 3, "Usuários", false, FaUsers, "/cg/usuarios" ),
     createCategory( "Região" ),
+    createLink( 5, "Regionais de Saúde", false, FaBuilding, "/cg/regionaisSaude"),
     createLink( 4, "Municípios", false, FaCity, "/cg/municipios"),
   ]
 }

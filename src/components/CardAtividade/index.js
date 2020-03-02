@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 // ACTIONS
-import { toggleAtividadeAtiva } from '../../store/actions/atividade';
 
 // COMPONENTS
 import ButtonMore from '../ButtonMore';
@@ -16,7 +15,7 @@ import { Header } from './styles';
 
 class CardAtividade extends Component {
   openModal = () => {
-    this.props.toggleAtividadeAtiva(this.props.indexAtividade)
+    // this.props.toggleAtividadeAtiva(this.props.indexAtividade);
   };
 
   render() {
@@ -80,7 +79,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ toggleAtividadeAtiva }, dispatch);
+  bindActionCreators({}, dispatch);
 
 export default connect(
   mapStateToProps,

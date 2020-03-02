@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
-import Modal, { ModalBody, ModalFooter } from '../../components/Modal';
+import Modal, { ModalBody, ModalFooter } from '../../../components/Modal';
 import { Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
-import { tipoImovel as tipoImovelEnum } from '../../config/enumerate';
+import { tipoImovel as tipoImovelEnum } from '../../../config/enumerate';
 import $ from 'jquery';
 
 // REDUX
@@ -11,14 +11,14 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { updateHouseRequest, clearUpdated as clearUpdatedCityBlock } from '../../store/actions/QuarteiraoActions'
-import { clearUpdate as clearUpdateHouse } from '../../store/actions/ImovelActions'
+import { clearCreate } from '../../../store/actions/ImovelActions'
+import { addHouseRequest, clearUpdated as clearUpdatedCityBlock } from '../../../store/actions/QuarteiraoActions'
 
 // STYLES
-import { ContainerArrow } from '../../styles/util';
-import { Button, FormGroup, selectDefault } from '../../styles/global';
+import { ContainerArrow } from '../../../styles/util';
+import { Button, FormGroup, selectDefault } from '../../../styles/global';
 
-function ModalUpdateHouse({ lados, imovel, ...props }) {
+function ModalAddHouse({ lados, ...props }) {
   const [ numero, setNumero ] = useState( null );
   const [ sequencia, setSequencia ] = useState( null );
   const [ responsavel, setResponsavel ] = useState( "" );
@@ -31,69 +31,42 @@ function ModalUpdateHouse({ lados, imovel, ...props }) {
   );
   const [ lado, setLado ] = useState({});
   const [ optionLado, setOptionLado ] = useState([]);
-
   useEffect(() => {
-    const options = lados.filter( l => l.id ? true : false ).map( l => {
-      if( l.id === imovel.lado_id ) {
-        setLado({
-          value: l.id,
-          label: "Nº " + l.numero  + " - " + l.logradouro
-        });
-      }
-
-      return ({
-        value: l.id,
-        label: "Nº " + l.numero  + " - " + l.logradouro
-      })
-    });
+    const options = lados.filter( l => l.id ? true : false ).map( l => ({
+      value: l.id,
+      label: "Nº " + l.numero  + " - " + l.logradouro
+    }));
 
     setOptionLado( options );
   }, [ lados ]);
 
   useEffect(() => {
-    if( Object.entries( imovel ).length > 0 ) {
-      const lado = imovel.lado;
-      setNumero( imovel.numero );
-      setSequencia( imovel.sequencia );
-      setResponsavel( imovel.responsavel );
-      setComplemento( imovel.complemento );
-
-      const ti = Object.entries( tipoImovelEnum ).find( ([ name, attr ]) => {
-        return attr.value === imovel.tipoImovel;
-      });
-
-      setTipoImovel({ value: ti[1].value, label: ti[1].label });
-      setLado({ value: lado.id, label: "Nº " + lado.numero  + " - " + lado.logradouro });
-    }
-  }, [ imovel ]);
-
-  useEffect(() => {
-    if( props.updated ) {
-      $('#modal-editar-imovel').modal('hide');
+    if( props.created ) {
+      $('#modal-novo-imovel').modal('hide');
+      setNumero(null);
+      setSequencia(null);
+      setResponsavel("");
+      setComplemento("");
+      setTipoImovel({});
+      setLado({});
+      props.clearCreate();
       props.clearUpdatedCityBlock();
-      props.clearUpdateHouse();
     }
-  }, [ props.updated ]);
+  }, [ props.created ]);
 
-  function handleSubmit( e ) {
+  function handleCadastrar( e ) {
     e.preventDefault();
 
-    props.updateHouseRequest(
-      imovel.id,
-      {
-        numero,
-        sequencia,
-        responsavel,
-        complemento,
-        tipoImovel: tipoImovel.value,
-        lado_id: lado.value
-      }
-    );
+    props.addHouseRequest( numero, sequencia, responsavel, complemento, tipoImovel.value, lado.value )
   }
 
   return(
-    <Modal id="modal-editar-imovel" title="Editar Imóvel" centered={ true }>
-      <form onSubmit={ handleSubmit }>
+    <Modal
+      id="modal-novo-imovel"
+      title="Cadastrar Imóvel"
+      size="md"
+    >
+      <form onSubmit={ handleCadastrar }>
         <ModalBody>
           <Row>
             <Col>
@@ -190,14 +163,13 @@ function ModalUpdateHouse({ lados, imovel, ...props }) {
 }
 
 const mapStateToProps = state => ({
-  imovel: state.supportInfo.imovelSelect,
-  updated: state.imovel.updated
-});
+  created: state.imovel.created
+ });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ updateHouseRequest, clearUpdatedCityBlock, clearUpdateHouse }, dispatch);
+  bindActionCreators({ addHouseRequest, clearCreate, clearUpdatedCityBlock }, dispatch);
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ModalUpdateHouse);
+)(ModalAddHouse);

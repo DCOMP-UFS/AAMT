@@ -36,6 +36,11 @@ function LoginScreen( props ) {
         break;
       }
 
+      case perfil.supervisor.id: {
+        window.location = window.location.origin.toString() + "/sup/quarteiroes";
+        break;
+      }
+
       case perfil.laboratorista.id: {
         window.location = window.location.origin.toString() + "/lab/home";
         break;

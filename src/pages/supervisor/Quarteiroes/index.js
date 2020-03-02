@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
-import { getDateBr } from '../../config/function';
-import Table, { ButtonAdd, ButtonDesabled } from '../../components/Table';
+import { getDateBr } from '../../../config/function';
+import Table, { ButtonAdd, ButtonDesabled } from '../../../components/Table';
 import Typography from "@material-ui/core/Typography";
 import ModalAdd from './ModalAdd';
 
@@ -10,9 +10,9 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../store/actions/sidebar';
-import { changeTableSelected } from '../../store/actions/supportInfo';
-import { getBlockByCityRequest } from '../../store/actions/QuarteiraoActions';
+import { changeSidebar } from '../../../store/actions/sidebarSupervisor';
+import { changeTableSelected } from '../../../store/actions/supportInfo';
+import { getBlockByCityRequest } from '../../../store/actions/QuarteiraoActions';
 
 // STYLES
 import { GlobalStyle } from './styles';
@@ -64,13 +64,13 @@ function Quarteiroes({ quarteiroes, ...props }) {
     onRowClick: (row, ...props) => {
       const id = row[0].props['data-id'];
 
-      window.location = `${ window.location.origin.toString() }/quarteiroes/${ id }`;
+      window.location = `${ window.location.origin.toString() }/sup/quarteiroes/${ id }`;
     }
   };
 
   useEffect(() => {
-    props.changeSidebar(7, 1);
-    props.getBlockByCityRequest( props.municipio_id );
+    props.changeSidebar(1, 1);
+    props.getBlockByCityRequest( props.municipio.id );
   }, []);
 
   useEffect(() => {
@@ -101,7 +101,7 @@ function Quarteiroes({ quarteiroes, ...props }) {
         <article className="col-md-12 stretch-card">
           <div className="card">
             <Table
-              title="Municípios"
+              title={`Quarteirões de ${ props.municipio.nome }`}
               columns={ columns }
               data={ rows }
               options={ options } />
@@ -114,7 +114,7 @@ function Quarteiroes({ quarteiroes, ...props }) {
 }
 
 const mapStateToProps = state => ({
-  municipio_id: state.usuario.usuario.municipio.id,
+  municipio: state.appConfig.usuario.municipio,
   quarteiroes: state.quarteirao.quarteiroes
 });
 

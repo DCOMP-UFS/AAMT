@@ -12,6 +12,9 @@ import { ActionTypes as EstadoActions } from '../actions/EstadoActions';
 import { ActionTypes as RegionalSaudeActions } from '../actions/RegionalSaudeActions';
 import { ActionTypes as QuarteiraoActions } from '../actions/QuarteiraoActions';
 import { ActionTypes as RuaActions } from '../actions/RuaActions';
+import { ActionTypes as CicloActions } from '../actions/CicloActions';
+import { ActionTypes as MetodologiaActions } from '../actions/MetodologiaActions';
+import { ActionTypes as AtividadeActions } from '../actions/AtividadeActions';
 
 import {
   authenticate,
@@ -39,6 +42,9 @@ import {
   updateHouse
 } from './QuarteiraoSagas';
 import { getStreetByLocality, createStreet, updateStreet, deleteStreet } from './RuaSagas';
+import * as CicloSagas from './CicloSagas';
+import * as MetodologiaSagas from './MetodologiaSagas';
+import * as AtividadeSagas from './AtividadeSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -103,5 +109,18 @@ export default function* rootSaga() {
     takeLatest( RuaActions.UPDATE_STREET_REQUEST, updateStreet ),
     takeLatest( RuaActions.DELETE_STREET_REQUEST, deleteStreet ),
 
+    // Gerir Ciclo
+    takeLatest( CicloActions.GET_CYCLES_FOR_YEAR_REQUEST, CicloSagas.getCyclesForYear ),
+    takeLatest( CicloActions.GET_CYCLES_REQUEST, CicloSagas.getCycles ),
+    takeLatest( CicloActions.GET_ALLOWED_CYCLES_REQUEST, CicloSagas.getAllowedCycles ),
+    takeLatest( CicloActions.CREATE_CYCLE_REQUEST, CicloSagas.createCycle ),
+
+    // Gerir Metodologia
+    takeLatest( MetodologiaActions.GET_METHODOLOGIES_REQUEST, MetodologiaSagas.getMethodologies ),
+
+    // Gerir Atividade
+    takeLatest( AtividadeActions.GET_ACTIVITIES_OF_CITY_REQUEST, AtividadeSagas.getActivitiesOfCity ),
+    takeLatest( AtividadeActions.GET_ACTIVITIES_BY_CITY_REQUEST, AtividadeSagas.getActivitiesByCity ),
+    takeLatest( AtividadeActions.CREATE_ACTIVE_REQUEST, AtividadeSagas.createActive )
   ]);
 }

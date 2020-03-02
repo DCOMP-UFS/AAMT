@@ -4,6 +4,7 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import SidebarCoordGeral from './components/Sidebar/SidebarCoordGeral';
 import SidebarLab from './components/Sidebar/SidebarLab';
+import SidebarSupervisor from './components/Sidebar/SidebarSupervisor';
 import ButtonMenu from './components/Sidebar/ButtonMenu';
 import { BodyPanel, ContainerBody } from './styles/global';
 import { connect } from 'react-redux';
@@ -16,6 +17,12 @@ import LoginScreen from './pages/LoginScreen';
 
 // Páginas de coordenador Geral
 import Home from './pages/coordenador_geral';
+import CGAtividadesConsultar from './pages/coordenador_geral/atividade';
+import DashBoardCiclo from './pages/coordenador_geral/Ciclos/dashboard';
+import CGCicloConsultar from './pages/coordenador_geral/Ciclos';
+import CGCicloCadastrar from './pages/coordenador_geral/Ciclos/cadastrar';
+import CGAtividades from './pages/coordenador_geral/atividade/cadastrar';
+import CGPlanejarAtividade from './pages/coordenador_geral/atividade/planejar';
 import CGUsuarios from './pages/coordenador_geral/Usuarios';
 import CGEditarUsuario from './pages/coordenador_geral/Usuarios/EditarUsuario';
 import CGMunicipios from './pages/coordenador_geral/Municipios';
@@ -33,8 +40,8 @@ import Zonas from './pages/coordenador/Zonas';
 import EditarZona from './pages/coordenador/Zonas/EditarZona';
 
 // Páginas do supervisor
-import Quarteiroes from './pages/Quarteiroes';
-import EditarQuarteirao from './pages/Quarteiroes/EditarQuarteirao';
+import Quarteiroes from './pages/supervisor/Quarteiroes';
+import EditarQuarteirao from './pages/supervisor/Quarteiroes/EditarQuarteirao';
 
 // Páginas do agente
 import CDT_Trabalho_diario from './pages/trabalho_diario/Iniciar';
@@ -103,6 +110,26 @@ const PrivateCoordenadorGeral = ({ component: Component, tipoPerfil: perfilUser,
   )} />
 );
 
+const PrivateSupervisor = ({ component: Component, tipoPerfil: perfilUser, ...rest }) => (
+  <Route { ...rest } render={ props => (
+    isAuthenticated() && perfilUser === perfil.supervisor.id ? (
+      <Fragment>
+        <Header />
+
+        <ContainerBody>
+          <SidebarSupervisor />
+
+          <BodyPanel className={ props.navToggle ? "body-collapse" : "" }>
+            <Component { ...props } />
+          </BodyPanel>
+        </ContainerBody>
+      </Fragment>
+    ) : (
+      <Redirect to={{ pathname: '/', state: { from: props.location } }} />
+    )
+  )} />
+);
+
 const Routes = props => {
   const perfil = props.usuario.atuacoes[0].tipoPerfil;
   return (
@@ -112,6 +139,12 @@ const Routes = props => {
 
         {/* Rotas de coordenador geral */}
         <PrivateCoordenadorGeral path="/cg/home" component={ Home } tipoPerfil={ perfil } />
+        <PrivateCoordenadorGeral exact path="/cg/ciclos" component={ DashBoardCiclo } tipoPerfil={ perfil } />
+        <PrivateCoordenadorGeral path="/cg/ciclos/consultar" component={ CGCicloConsultar } tipoPerfil={ perfil } />
+        <PrivateCoordenadorGeral path="/cg/ciclos/cadastrar" component={ CGCicloCadastrar } tipoPerfil={ perfil } />
+        <PrivateCoordenadorGeral exact path="/cg/atividades" component={ CGAtividadesConsultar } tipoPerfil={ perfil } />
+        <PrivateCoordenadorGeral path="/cg/atividades/cadastrar" component={ CGAtividades } tipoPerfil={ perfil } />
+        <PrivateCoordenadorGeral path="/cg/atividades/planejamento/:id" component={ CGPlanejarAtividade } tipoPerfil={ perfil } />
         <PrivateCoordenadorGeral exact path="/cg/municipios" component={ CGMunicipios } tipoPerfil={ perfil } />
         <PrivateCoordenadorGeral path="/cg/municipios/:id" component={ CGEditarMunicipio } tipoPerfil={ perfil } />
         <PrivateCoordenadorGeral exact path="/cg/usuarios" component={ CGUsuarios } tipoPerfil={ perfil } />
@@ -130,8 +163,8 @@ const Routes = props => {
         <PrivateCoordenador path="/coord/localidades/:id" component={ EditarLocalidade } tipoPerfil={ perfil } />
 
         {/* Rotas de supervisor */}
-        <PrivateCoordenador exact path="/quarteiroes" component={ Quarteiroes } tipoPerfil={ perfil } />
-        <PrivateCoordenador path="/quarteiroes/:id" component={ EditarQuarteirao } tipoPerfil={ perfil } />
+        <PrivateSupervisor exact path="/sup/quarteiroes" component={ Quarteiroes } tipoPerfil={ perfil } />
+        <PrivateSupervisor path="/sup/quarteiroes/:id" component={ EditarQuarteirao } tipoPerfil={ perfil } />
 
         {/* Rotas de agentes */}
         <PrivateCoordenador path="/trabalho_diario/iniciar" component={CDT_Trabalho_diario} tipoPerfil={ perfil } />

@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
+import Checkbox from '@material-ui/core/Checkbox';
 import { abrangencia as abrangenciaEnum }  from '../../../../config/enumerate';
 import ButtonSave from '../../../../components/ButtonSave';
 
@@ -11,14 +12,22 @@ import ButtonSave from '../../../../components/ButtonSave';
 import { changeSidebar } from '../../../../store/actions/sidebarCoordGeral';
 import { getMethodologiesRequest } from '../../../../store/actions/MetodologiaActions';
 import { getAllowedCyclesRequest } from '../../../../store/actions/CicloActions';
+import { getCityByRegionalHealthRequest } from '../../../../store/actions/MunicipioActions';
 import { createActiveRequest } from '../../../../store/actions/AtividadeActions';
 
 // STYLES
 import { FormGroup, selectDefault } from '../../../../styles/global';
-import { ContainerFixed } from '../../../../styles/util';
+import {
+  ContainerFixed,
+  UlIcon,
+  LiIcon,
+  ContainerUl,
+  DivDescription
+} from '../../../../styles/util';
 
 
 function Atividades({ metodologias, ciclos, ...props }) {
+  const [ reload, setReload ] = useState( false );
   const [ objetivoAtividade, setObjetivoAtividade ] = useState("");
   const [ ciclo, setCiclo ] = useState({});
   const [ flTodosImoveis, setFlTodosImoveis ] = useState({ value: false, label: "Não" });
@@ -35,11 +44,13 @@ function Atividades({ metodologias, ciclos, ...props }) {
   const [ optionMetodologia, setOptionMetodologia ] = useState([]);
   const [ objetivo, setObjetivo ] = useState({});
   const [ optionObjetivo, setoptionObjetivo ] = useState([]);
+  const [ listaMunicipios, setListaMunicipios ] = useState([]);
 
   useEffect(() => {
     props.changeSidebar(2, 2);
     props.getMethodologiesRequest();
-    props.getAllowedCyclesRequest( props.regionalSaude_id );
+    props.getAllowedCyclesRequest();
+    props.getCityByRegionalHealthRequest( props.regionalSaude_id );
   }, []);
 
   useEffect(() => {
@@ -71,23 +82,38 @@ function Atividades({ metodologias, ciclos, ...props }) {
   }, [ ciclos ]);
 
   useEffect(() => {
+    const lista = props.municipios.map( municipio => ({
+      checked: false,
+      municipio
+    }));
+
+    setListaMunicipios(lista);
+  }, [ props.municipios ]);
+
+  useEffect(() => {
     if( props.created )
-      window.location = window.location.origin.toString() + "/coord/atividades";
+      window.location = window.location.origin.toString() + "/cg/atividades";
   }, [ props.created ]);
 
   function handleSubmit( e ) {
     e.preventDefault();
 
-    props.createActiveRequest(
-      objetivoAtividade,
-      flTodosImoveis.value,
-      2,//responsabilidade
-      ciclo.value,
-      props.municipio_id,
-      metodologia.value,
-      objetivo.value,
-      abrangencia.value
-    );
+    const mun = listaMunicipios
+      .filter( l => l.checked )
+      .map( l => ( l.municipio ));
+
+    for (const m of mun) {
+      props.createActiveRequest(
+        objetivoAtividade,
+        flTodosImoveis.value,
+        1,//responsabilidade
+        ciclo.value,
+        m.id,
+        metodologia.value,
+        objetivo.value,
+        abrangencia.value
+      );
+    }
   }
 
   return (
@@ -110,7 +136,7 @@ function Atividades({ metodologias, ciclos, ...props }) {
                   type="submit" />
               </ContainerFixed>
               <Row>
-                <Col>
+                <Col sm='6'>
                   <Row>
                     <Col>
                     <FormGroup>
@@ -194,6 +220,48 @@ function Atividades({ metodologias, ciclos, ...props }) {
                     </Col>
                   </Row>
                 </Col>
+                <Col sm='6'>
+                  <h4 className="title">Município(s)</h4>
+                  <p className="text-description">
+                    Qual(is) os município(s) deseja aplicar a atividade?
+                  </p>
+
+                  <UlIcon>
+                    {listaMunicipios.map( (lista, index) => {
+                      const { checked, municipio } = lista;
+                      return (
+                        <LiIcon
+                          key={ index }
+                          onClick={
+                            (e) => {
+                              let lista = listaMunicipios;
+                              lista[ index ].checked = !lista[ index ].checked;
+                              setListaMunicipios( lista );
+                              setReload( !reload );
+                            }
+                          }
+                        >
+                          <ContainerUl>
+                            <Checkbox
+                              checked={ checked }
+                              onChange={
+                                (e) => {
+                                  let lista = listaMunicipios;
+                                  lista[ index ].checked = e.target.checked;
+                                  setListaMunicipios( lista );
+                                  setReload( !reload );
+                                }
+                              }
+                            />
+                            <DivDescription>
+                              <div>{ municipio.nome }</div>
+                            </DivDescription>
+                          </ContainerUl>
+                        </LiIcon>
+                      );
+                    })}
+                  </UlIcon>
+                </Col>
               </Row>
             </form>
           </div>
@@ -204,10 +272,10 @@ function Atividades({ metodologias, ciclos, ...props }) {
 }
 
 const mapStateToProps = state => ({
-  municipio_id: state.appConfig.usuario.municipio.id,
-  regionalSaude_id: state.appConfig.usuario.municipio.regional.id,
+  regionalSaude_id: state.appConfig.usuario.regionalSaude.id,
   metodologias: state.metodologia.metodologias,
   ciclos: state.ciclo.ciclos,
+  municipios: state.municipio.municipiosList,
   created: state.atividade.created
 });
 
@@ -216,6 +284,7 @@ const mapDispatchToProps = dispatch =>
     changeSidebar,
     getMethodologiesRequest,
     getAllowedCyclesRequest,
+    getCityByRegionalHealthRequest,
     createActiveRequest
   }, dispatch);
 

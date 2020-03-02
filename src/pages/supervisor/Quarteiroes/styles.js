@@ -1,6 +1,6 @@
 import styled, { createGlobalStyle } from 'styled-components';
 
-import { Color, device } from '../../styles/global';
+import { Color, device } from '../../../styles/global';
 
 export const GlobalStyle = createGlobalStyle`
   table tbody tr {

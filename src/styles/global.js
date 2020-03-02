@@ -32,7 +32,16 @@ export const Color = {
   muted: "#9c9fa6",
   bgLight: "#FCFCFC",
   border_light: "#ebedf2",
-  border_input: "#cccccc"
+  border_input: "#cccccc",
+  chartColor: [
+    [ 'rgba(182, 109, 255, 0.2)', 'rgba(182, 109, 255, 1)' ],
+    [ 'rgba(255, 197, 66, 0.2)', 'rgba(255, 197, 66, 1)' ],
+    [ 'rgba(27, 207, 180, 0.2)', 'rgba(27, 207, 180, 1)' ],
+    [ 'rgba(254, 124, 150, 0.2)', 'rgba(254, 124, 150, 1)' ],
+    [ 'rgba(25, 138, 227, 0.2)', 'rgba(25, 138, 227, 1)' ],
+    [ 'rgba(195, 189, 189, 0.2)', 'rgba(195, 189, 189, 1)' ],
+    [ 'rgba(54, 162, 235, 0.2)', 'rgba(54, 162, 235, 1)' ]
+  ]
 }
 
 export const GlobalStyle = createGlobalStyle`
@@ -62,6 +71,10 @@ export const GlobalStyle = createGlobalStyle`
       url('../node_modules/material-design-icons-iconfont/dist/fonts/MaterialIcons-Regular.woff2') format('woff2'),
       url('../node_modules/material-design-icons-iconfont/dist/fonts/MaterialIcons-Regular.woff') format('woff'),
       url('../node_modules/material-design-icons-iconfont/dist/fonts/MaterialIcons-Regular.ttf') format('truetype');
+  }
+
+  [class^="MUIDataTable-responsiveScroll"] {
+    z-index: 0;
   }
 
   .Toastify__toast {

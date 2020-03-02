@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
-import Modal, { ModalBody, ModalFooter } from '../../components/Modal';
+import Modal, { ModalBody, ModalFooter } from '../../../components/Modal';
 import $ from 'jquery';
 
 // REDUX
@@ -8,10 +8,10 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { deleteHouseRequest } from '../../store/actions/QuarteiraoActions';
+import { deleteHouseRequest } from '../../../store/actions/QuarteiraoActions';
 
 // STYLES
-import { Button } from '../../styles/global';
+import { Button } from '../../../styles/global';
 
 function ModalDeleteHouse({ imovel, ...props }) {
   function handleClick() {

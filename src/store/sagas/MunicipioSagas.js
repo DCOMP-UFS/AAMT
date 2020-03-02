@@ -28,9 +28,6 @@ export function* getCityById(action) {
   try {
     const { data, status } = yield call( getCityByIdRequest, action.payload.id );
 
-    console.log(data);
-
-
     if( status === 200 ) {
       yield put( MunicipioActions.getCityById( data ) );
     }else {

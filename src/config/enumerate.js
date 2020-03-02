@@ -33,3 +33,9 @@ export const perfil = {
   laboratorista: { id: 5, label: "Laboratorista"},
   supervisor: { id: 3, label: "Supervisor"},
 }
+
+export const abrangencia = {
+  local: { id: 1, label: "Por Localidade/Bairro" },
+  zona: { id: 2, label: "Por Zona" },
+  quarteirao: { id: 3, label: "Por Quarteirão" },
+}

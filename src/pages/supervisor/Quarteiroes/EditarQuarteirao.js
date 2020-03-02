@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
-import ButtonSave from '../../components/ButtonSave';
-import ButtonNewObject from '../../components/ButtonNewObject';
+import ButtonSave from '../../../components/ButtonSave';
+import ButtonNewObject from '../../../components/ButtonNewObject';
 import Fab from '@material-ui/core/Fab';
 import AddBox from '@material-ui/icons/AddBox';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -14,7 +14,7 @@ import ModalAddHouse from './ModalAddHouse';
 import ModalDeleteHouse from './ModalDeleteHouse';
 import ModalUpdateHouse from './ModalUpdateHouse';
 import { IoIosHome } from 'react-icons/io';
-import ButtonClose from '../../components/ButtonClose';
+import ButtonClose from '../../../components/ButtonClose';
 import $ from 'jquery';
 
 // REDUX
@@ -22,12 +22,12 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../store/actions/sidebar';
-import { getByIdRequest } from '../../store/actions/QuarteiraoActions';
-import { getLocationByCityRequest } from '../../store/actions/LocalidadeActions';
-import { getZoneByLocalityRequest } from '../../store/actions/ZonaActions';
-import { getStreetByLocalityRequest } from '../../store/actions/RuaActions';
-import { changeImovelSelect } from '../../store/actions/supportInfo';
+import { changeSidebar } from '../../../store/actions/sidebarSupervisor';
+import { getByIdRequest } from '../../../store/actions/QuarteiraoActions';
+import { getLocationByCityRequest } from '../../../store/actions/LocalidadeActions';
+import { getZoneByLocalityRequest } from '../../../store/actions/ZonaActions';
+import { getStreetByLocalityRequest } from '../../../store/actions/RuaActions';
+import { changeImovelSelect } from '../../../store/actions/supportInfo';
 
 // STYLES
 import {
@@ -40,8 +40,8 @@ import {
   Span,
   Container
 } from './styles';
-import { FormGroup, selectDefault } from '../../styles/global';
-import { ContainerFixed } from '../../styles/util';
+import { FormGroup, selectDefault } from '../../../styles/global';
+import { ContainerFixed } from '../../../styles/util';
 
 function EditarQuarteirao({ quarteirao, municipio_id, ...props }) {
   const [ id ] = useState(props.match.params.id);
@@ -66,7 +66,7 @@ function EditarQuarteirao({ quarteirao, municipio_id, ...props }) {
   const [ cep, setCep ] = useState( "" );
 
   useEffect(() => {
-    props.changeSidebar(7, 0);
+    props.changeSidebar(1, 0);
     props.getByIdRequest( id );
     props.getLocationByCityRequest( municipio_id );
   }, []);
@@ -437,7 +437,7 @@ function ListHouse({ lado, update: updateAction, delete: deleteAction }) {
 }
 
 const mapStateToProps = state => ({
-  municipio_id: state.usuario.usuario.municipio.id,
+  municipio_id: state.appConfig.usuario.municipio.id,
   quarteirao: state.quarteirao.quarteirao,
   localidades: state.localidade.localidades,
   zonas: state.zona.zonas,

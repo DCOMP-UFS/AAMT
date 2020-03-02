@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
-import Modal, { ModalBody, ModalFooter } from '../../components/Modal';
+import Modal, { ModalBody, ModalFooter } from '../../../components/Modal';
 import { Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
 import $ from 'jquery';
@@ -13,15 +13,15 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { createCityBlockRequest, clearCreate } from '../../store/actions/QuarteiraoActions';
-import { getLocationByCityRequest } from '../../store/actions/LocalidadeActions';
-import { getZoneByLocalityRequest } from '../../store/actions/ZonaActions';
-import { getStreetByLocalityRequest } from '../../store/actions/RuaActions';
+import { createCityBlockRequest, clearCreate } from '../../../store/actions/QuarteiraoActions';
+import { getLocationByCityRequest } from '../../../store/actions/LocalidadeActions';
+import { getZoneByLocalityRequest } from '../../../store/actions/ZonaActions';
+import { getStreetByLocalityRequest } from '../../../store/actions/RuaActions';
 
 // STYLES
 import { ContainerSide, UlSides, LiSide, ContainerIcon, DivDescription, Span } from './styles';
-import { ContainerArrow } from '../../styles/util';
-import { Button, FormGroup, selectDefault, Separator } from '../../styles/global';
+import { ContainerArrow } from '../../../styles/util';
+import { Button, FormGroup, selectDefault, Separator } from '../../../styles/global';
 
 function ModalAdd({ createCityBlockRequest, municipio_id, created, ...props }) {
   const [ numero, setNumero ] = useState( null );
@@ -101,7 +101,7 @@ function ModalAdd({ createCityBlockRequest, municipio_id, created, ...props }) {
       numero: numeroLado,
       localidade_id: localidade.value,
       rua_id: rua.value,
-      logradouro: rua.label,
+      logradouro: rua.value ? rua.label : outra,
       cep: rua.cep ? rua.cep : cep,
       outro: outra
     };
@@ -280,7 +280,7 @@ function ModalAdd({ createCityBlockRequest, municipio_id, created, ...props }) {
 }
 
 const mapStateToProps = state => ({
-  municipio_id: state.usuario.usuario.municipio.id,
+  municipio_id: state.appConfig.usuario.municipio.id,
   created: state.quarteirao.created,
   localidades: state.localidade.localidades,
   zonas: state.zona.zonas,

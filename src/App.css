@@ -151,6 +151,20 @@ mark, .mark {
   border-radius: .25rem;
 }
 
+.mark-primary {
+  background: #b66dff;
+  color: #fff;
+}
+
+.mark-warning {
+  background: #ffc542;
+}
+
+.mark-success {
+  background: #1bcfb4;
+  color: #fff;
+}
+
 ul, ol, dl {
   padding-left: 1rem;
   font-size: 0.875rem;

@@ -1,18 +1,16 @@
-import { IoIosPaper } from 'react-icons/io';
-import { FaUsers, FaMapSigns, FaVials } from 'react-icons/fa';
-import ViewCompactIcon from '@material-ui/icons/ViewCompact';
+import BorderAllIcon from '@material-ui/icons/BorderAll';
 
-import { ActionTypes } from '../actions/sidebar';
+import { ActionTypes } from '../actions/sidebarSupervisor';
 
 const location = window.location.origin.toString();
 
-function createNav( id, description, active, icon, submenu ){
-  return { id, description, type: "nav", active, icon, submenu }
-}
+// function createNav( id, description, active, icon, submenu ){
+//   return { id, description, type: "nav", active, icon, submenu }
+// }
 
-function createSubmenu( id, active, description, url ) {
-  return { id, active, description, url: location + url }
-}
+// function createSubmenu( id, active, description, url ) {
+//   return { id, active, description, url: location + url }
+// }
 
 function createCategory( description ) {
   return { description, type: "category" }
@@ -26,22 +24,9 @@ const INITIAL_STATE = {
   // Menu ativo currenteNav: [ menu, submenu ]
   currentNav: [ 1, 0 ],
   menu: [
-    // createCategory( "Operacional" ),
-    // createNav( 1, "Trabalho Diário", true, FaTasks, [
-    //   createSubmenu( 1, true, "Iniciar", "/trabalho_diario/iniciar" ),
-    //   // createSubmenu( 2, false, "Realizar Vistoria", "/trabalho_diario/vistoria/lista" ),
-    // ]),
-    createCategory( "Administrativo" ),
-    createNav( 1, "Atividades", false, IoIosPaper, [
-      createSubmenu( 1, false, "Consultar", "/coord/atividades/" ),
-      createSubmenu( 2, false, "Cadastrar", "/coord/atividades/cadastrar" ),
-    ]),
-    createLink( 2, "Usuários", false, FaUsers, "/coord/usuarios" ),
+
     createCategory( "Região" ),
-    createLink( 3, "Bairro/Localidade", false, FaMapSigns, "/coord/localidades"),
-    createLink( 4, "Zonas", false, ViewCompactIcon, "/coord/zonas"),
-    createLink( 5, "Laboratórios", false, FaVials, "/coord/laboratorios"),
-    // createLink( 7, "Quarteirão", false, BorderAllIcon, "/quarteiroes"),
+    createLink( 1, "Quarteirão", false, BorderAllIcon, "/sup/quarteiroes"),
     // createCategory( "Recursos de Interface" ),
     // createNav( 8, "Elementos Básicos", false, IoIosCode, [
     //   createSubmenu( 1, false, "Botões", "/elementos/botoes" ),
@@ -51,9 +36,9 @@ const INITIAL_STATE = {
   ]
 }
 
-export default function sidebar(state = INITIAL_STATE, action) {
+export default function sidebarSupervisor(state = INITIAL_STATE, action) {
   switch( action.type ) {
-    case ActionTypes.CHANGE_SIDEBAR: {
+    case ActionTypes.CHANGE_SIDEBAR_SUPERVISOR: {
       const { id, subId } = action.payload;
       let currentNav = state.currentNav;
       let menu = state.menu;

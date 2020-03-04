@@ -4,6 +4,7 @@ import { getDateBr } from '../../../config/function';
 import Table, { ButtonAdd, ButtonDesabled } from '../../../components/Table';
 import Typography from "@material-ui/core/Typography";
 import ModalAdd from './ModalAdd';
+import BorderAllIcon from '@material-ui/icons/BorderAll';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -16,6 +17,7 @@ import { getBlockByCityRequest } from '../../../store/actions/QuarteiraoActions'
 
 // STYLES
 import { GlobalStyle } from './styles';
+import { PageIcon, PageHeader } from '../../../styles/util';
 
 const columns = [
   {
@@ -93,23 +95,30 @@ function Quarteiroes({ quarteiroes, ...props }) {
   }
 
   return (
-    <section className="card-list">
-      <GlobalStyle />
-      <div className="row">
+    <>
+      <PageHeader>
+        <h3 className="page-title">
+          <PageIcon><BorderAllIcon /></PageIcon>
+          Quarteirões
+        </h3>
+      </PageHeader>
+      <section className="card-list">
+        <GlobalStyle />
+        <div className="row">
 
-        {/* Formulário básico */}
-        <article className="col-md-12 stretch-card">
-          <div className="card">
+          {/* Formulário básico */}
+          <article className="col-md-12 stretch-card">
             <Table
               title={`Quarteirões de ${ props.municipio.nome }`}
               columns={ columns }
               data={ rows }
-              options={ options } />
-          </div>
-        </article>
-      </div>
-      <ModalAdd />
-    </section>
+              options={ options }
+            />
+          </article>
+        </div>
+        <ModalAdd />
+      </section>
+    </>
   );
 }
 

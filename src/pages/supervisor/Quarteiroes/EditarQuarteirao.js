@@ -16,6 +16,7 @@ import ModalUpdateHouse from './ModalUpdateHouse';
 import { IoIosHome } from 'react-icons/io';
 import ButtonClose from '../../../components/ButtonClose';
 import $ from 'jquery';
+import BorderAllIcon from '@material-ui/icons/BorderAll';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -41,7 +42,7 @@ import {
   Container
 } from './styles';
 import { FormGroup, selectDefault } from '../../../styles/global';
-import { ContainerFixed } from '../../../styles/util';
+import { ContainerFixed, PageIcon, PageHeader } from '../../../styles/util';
 
 function EditarQuarteirao({ quarteirao, municipio_id, ...props }) {
   const [ id ] = useState(props.match.params.id);
@@ -188,192 +189,200 @@ function EditarQuarteirao({ quarteirao, municipio_id, ...props }) {
   }
 
   return (
-    <section className="card-list">
-      <div className="row">
+    <>
+      <PageHeader>
+        <h3 className="page-title">
+          <PageIcon><BorderAllIcon /></PageIcon>
+          Editar Quarteirão
+        </h3>
+      </PageHeader>
+      <section className="card-list">
+        <div className="row">
 
-        {/* Formulário básico */}
-        <article className="col-md-12 stretch-card">
-          <div className="card">
-            <h4 className="title">Quarteirão: <mark className="bg-info text-white" >{ quarteirao.numero }</mark></h4>
-            <p className="text-description">
-              Atenção os campos com <code>*</code> são obrigatórios
-            </p>
-            <Row>
-              <Col sm='6'>
-                <form onSubmit={ handleSubmit } >
-                  <h4 className="title">Informações Do Quarteirão</h4>
-                  <Row>
-                    <Col sm='6'>
-                      <FormGroup>
-                        <label htmlFor="localidade">Localidade <code>*</code></label>
-                        <Select
-                          id="localidade"
-                          value={ localidade }
-                          styles={ selectDefault }
-                          options={ optionLocalidade }
-                          onChange={ e => { setLocalidade(e); }}
-                          required />
-                      </FormGroup>
-                    </Col>
-                    <Col sm='6'>
-                      <FormGroup>
-                        <label htmlFor="zona">Zona <code>*</code></label>
-                        <Select
-                          id="zona"
-                          value={ zona }
-                          styles={ selectDefault }
-                          options={ optionZona }
-                          onChange={ e => { setZona(e); } }
-                          required />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <FormGroup>
-                        <label htmlFor="numero">Número <code>*</code></label>
-                        <input
-                          id="numero"
-                          value={ numero ? numero : "" }
-                          type="number"
-                          className="form-control"
-                          onChange={ e => setNumero( e.target.value ) }
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <FormGroup>
-                        <label>Lados <code>*</code></label>
-                        <ContainerSide>
-                          <Row>
-                            <Col>
-                              <FormGroup>
-                                <label htmlFor="rua">Rua <code>*</code></label>
-                                <Select
-                                  id="rua"
-                                  value={ rua }
-                                  styles={ selectDefault }
-                                  options={ optionRua }
-                                  onChange={ e => setRua( e ) }
-                                />
-                              </FormGroup>
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col sm='6'>
-                              <FormGroup>
-                                <label htmlFor="cep">CEP</label>
-                                <input
-                                  id="cep"
-                                  value={ cep }
-                                  className="form-control"
-                                  onChange={ e => setCep( e.target.value ) }
-                                  disabled={ rua.value ? true : false }
-                                />
-                              </FormGroup>
-                            </Col>
-                            <Col sm='6'>
-                              <FormGroup>
-                                <label htmlFor="outra">Outra</label>
-                                <input
-                                  id="outra"
-                                  value={ outra }
-                                  className="form-control"
-                                  onChange={ e => setOutra( e.target.value ) }
-                                  disabled={ rua.value ? true : false }
-                                />
-                              </FormGroup>
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col>
-                              <FormGroup>
-                                <label htmlFor="numeroLado">Número do lado <code>*</code></label>
-                                <input
-                                  id="numeroLado"
-                                  value={ numeroLado ? numeroLado : "" }
-                                  type="number"
-                                  className="form-control"
-                                  onChange={ e => setNumeroLado( e.target.value ) }
-                                />
-                              </FormGroup>
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col className="text-right">
-                              <Fab
-                                className="bg-success text-white"
-                                size="medium"
-                                aria-label="add"
-                                onClick={ addSide }
-                              >
-                                <AddBox />
-                              </Fab>
-                            </Col>
-                          </Row>
-                        </ContainerSide>
-                      </FormGroup>
-                    </Col>
-                  </Row>
-
-                  <ContainerFixed>
-                    <ButtonSave
-                      title="Salvar"
-                      className="bg-info text-white"
-                      type="submit" />
-                  </ContainerFixed>
-                </form>
-              </Col>
-
-              <Col sm='6'>
-                <h4 className="title">
-                  Imóveis
-                  <ButtonNewObject
-                    title="Cadastrar Imóvel"
-                    data-toggle="modal"
-                    data-target="#modal-novo-imovel"
-                  />
-                </h4>
-
-                {
-                  lados.map( (l, index) => {
-                    const [bg, text] = l.id ? ["", "text-muted"] : ["bg-success", "text-white"];
-                    return (
-                      <ExpansionPanel key={ index } className={"expansion " + bg}>
-                        <ExpansionPanelSummary
-                          expandIcon={<ExpandMoreIcon />}
-                          aria-controls={"panel-side-content" + l.id}
-                          id={"panel-side-" + l.id}
-                        >
-                          <PanelTitle>
-                            <p>Lado nº <mark className="bg-info text-white">{ l.numero }</mark></p>
-                            <small className={ text }>{ l.logradouro }</small>
-                          </PanelTitle>
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails>
-                          <ListHouse
-                            lado={ l }
-                            update={ openModalUpdateHouse }
-                            delete={ openModalDeleteHouse }
+          {/* Formulário básico */}
+          <article className="col-md-12 stretch-card">
+            <div className="card">
+              <h4 className="title">Quarteirão: <mark className="bg-info text-white" >{ quarteirao.numero }</mark></h4>
+              <p className="text-description">
+                Atenção os campos com <code>*</code> são obrigatórios
+              </p>
+              <Row>
+                <Col sm='6'>
+                  <form onSubmit={ handleSubmit } >
+                    <h4 className="title">Informações Do Quarteirão</h4>
+                    <Row>
+                      <Col sm='6'>
+                        <FormGroup>
+                          <label htmlFor="localidade">Localidade <code>*</code></label>
+                          <Select
+                            id="localidade"
+                            value={ localidade }
+                            styles={ selectDefault }
+                            options={ optionLocalidade }
+                            onChange={ e => { setLocalidade(e); }}
+                            required />
+                        </FormGroup>
+                      </Col>
+                      <Col sm='6'>
+                        <FormGroup>
+                          <label htmlFor="zona">Zona <code>*</code></label>
+                          <Select
+                            id="zona"
+                            value={ zona }
+                            styles={ selectDefault }
+                            options={ optionZona }
+                            onChange={ e => { setZona(e); } }
+                            required />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        <FormGroup>
+                          <label htmlFor="numero">Número <code>*</code></label>
+                          <input
+                            id="numero"
+                            value={ numero ? numero : "" }
+                            type="number"
+                            className="form-control"
+                            onChange={ e => setNumero( e.target.value ) }
+                            required
                           />
-                        </ExpansionPanelDetails>
-                      </ExpansionPanel>
-                    )
-                  })
-                }
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        <FormGroup>
+                          <label>Lados <code>*</code></label>
+                          <ContainerSide>
+                            <Row>
+                              <Col>
+                                <FormGroup>
+                                  <label htmlFor="rua">Rua <code>*</code></label>
+                                  <Select
+                                    id="rua"
+                                    value={ rua }
+                                    styles={ selectDefault }
+                                    options={ optionRua }
+                                    onChange={ e => setRua( e ) }
+                                  />
+                                </FormGroup>
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col sm='6'>
+                                <FormGroup>
+                                  <label htmlFor="cep">CEP</label>
+                                  <input
+                                    id="cep"
+                                    value={ cep }
+                                    className="form-control"
+                                    onChange={ e => setCep( e.target.value ) }
+                                    disabled={ rua.value ? true : false }
+                                  />
+                                </FormGroup>
+                              </Col>
+                              <Col sm='6'>
+                                <FormGroup>
+                                  <label htmlFor="outra">Outra</label>
+                                  <input
+                                    id="outra"
+                                    value={ outra }
+                                    className="form-control"
+                                    onChange={ e => setOutra( e.target.value ) }
+                                    disabled={ rua.value ? true : false }
+                                  />
+                                </FormGroup>
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col>
+                                <FormGroup>
+                                  <label htmlFor="numeroLado">Número do lado <code>*</code></label>
+                                  <input
+                                    id="numeroLado"
+                                    value={ numeroLado ? numeroLado : "" }
+                                    type="number"
+                                    className="form-control"
+                                    onChange={ e => setNumeroLado( e.target.value ) }
+                                  />
+                                </FormGroup>
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col className="text-right">
+                                <Fab
+                                  className="bg-success text-white"
+                                  size="medium"
+                                  aria-label="add"
+                                  onClick={ addSide }
+                                >
+                                  <AddBox />
+                                </Fab>
+                              </Col>
+                            </Row>
+                          </ContainerSide>
+                        </FormGroup>
+                      </Col>
+                    </Row>
 
-                <ModalAddHouse lados={ lados } />
-                <ModalUpdateHouse lados={ lados } />
-                <ModalDeleteHouse />
-              </Col>
-            </Row>
-          </div>
-        </article>
-      </div>
-    </section>
+                    <ContainerFixed>
+                      <ButtonSave
+                        title="Salvar"
+                        className="bg-info text-white"
+                        type="submit" />
+                    </ContainerFixed>
+                  </form>
+                </Col>
+
+                <Col sm='6'>
+                  <h4 className="title">
+                    Imóveis
+                    <ButtonNewObject
+                      title="Cadastrar Imóvel"
+                      data-toggle="modal"
+                      data-target="#modal-novo-imovel"
+                    />
+                  </h4>
+
+                  {
+                    lados.map( (l, index) => {
+                      const [bg, text] = l.id ? ["", "text-muted"] : ["bg-success", "text-white"];
+                      return (
+                        <ExpansionPanel key={ index } className={"expansion " + bg}>
+                          <ExpansionPanelSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls={"panel-side-content" + l.id}
+                            id={"panel-side-" + l.id}
+                          >
+                            <PanelTitle>
+                              <p>Lado nº <mark className="bg-info text-white">{ l.numero }</mark></p>
+                              <small className={ text }>{ l.logradouro }</small>
+                            </PanelTitle>
+                          </ExpansionPanelSummary>
+                          <ExpansionPanelDetails>
+                            <ListHouse
+                              lado={ l }
+                              update={ openModalUpdateHouse }
+                              delete={ openModalDeleteHouse }
+                            />
+                          </ExpansionPanelDetails>
+                        </ExpansionPanel>
+                      )
+                    })
+                  }
+
+                  <ModalAddHouse lados={ lados } />
+                  <ModalUpdateHouse lados={ lados } />
+                  <ModalDeleteHouse />
+                </Col>
+              </Row>
+            </div>
+          </article>
+        </div>
+      </section>
+    </>
   );
 }
 

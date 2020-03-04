@@ -8,6 +8,7 @@ import ModalAdd from './ModalAdd';
 import ModalDesativar from './ModalDesativar';
 import Table, { ButtonAdd, ButtonDesabled } from '../../../components/Table';
 import { getDateBr } from '../../../config/function';
+import { FaUsers } from 'react-icons/fa';
 
 
 // REDUX
@@ -22,6 +23,7 @@ import { getUsersByRegionalRequest, changeUserEditIndex, } from '../../../store/
 
 // STYLES
 import { GlobalStyle } from './styles';
+import { PageIcon, PageHeader } from '../../../styles/util';
 
 const columns = [
   {
@@ -147,19 +149,24 @@ function Usuarios({ regionalSaude_id, usuarios, ...props }) {
 
   return (
     <>
+      <PageHeader>
+        <h3 className="page-title">
+          <PageIcon><FaUsers /></PageIcon>
+          Usuários
+        </h3>
+      </PageHeader>
       <GlobalStyle />
       <section className="card-list">
         <div className="row">
 
           {/* Formulário básico */}
           <article className="col-md-12 stretch-card">
-            <div className="card">
-              <Table
-                title="Usuários"
-                columns={ columns }
-                data={ rows }
-                options={ options } />
-            </div>
+            <Table
+              title="Usuários"
+              columns={ columns }
+              data={ rows }
+              options={ options }
+            />
           </article>
         </div>
 

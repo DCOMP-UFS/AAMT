@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
 import ButtonSave from '../../../components/ButtonSave';
+import { FaCity } from 'react-icons/fa';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -18,7 +19,7 @@ import { getRegionalHealthByStateRequest } from '../../../store/actions/Regional
 
 // STYLES
 import { FormGroup, selectDefault } from '../../../styles/global';
-import { ContainerFixed } from '../../../styles/util';
+import { ContainerFixed, PageIcon, PageHeader } from '../../../styles/util';
 
 function EditarMunicipio({ municipio, updateCityRequest, getCityByIdRequest, ...props }) {
   const [ id ] = useState(props.match.params.id);
@@ -134,116 +135,124 @@ function EditarMunicipio({ municipio, updateCityRequest, getCityByIdRequest, ...
   }
 
   return (
-    <section className="card-list">
-      <div className="row">
+    <>
+      <PageHeader>
+        <h3 className="page-title">
+          <PageIcon><FaCity /></PageIcon>
+          Editar Município
+        </h3>
+      </PageHeader>
+      <section className="card-list">
+        <div className="row">
 
-        {/* Formulário básico */}
-        <article className="col-md-12 stretch-card">
-          <div className="card">
-            <h4 className="title">Município: <mark className="bg-info text-white" >{ municipio.nome }</mark></h4>
-            <p className="text-description">
-              Atenção os campos com <code>*</code> são obrigatórios
-            </p>
-            <Row>
-              <Col sm='6'>
-                <form onSubmit={ handleSubmit }>
-                <h4 className="title">Informações do município</h4>
-                  <Row>
-                    <Col sm="6">
-                      <FormGroup>
-                        <label htmlFor="pais">Páis <code>*</code></label>
-                        <Select
-                          id="pais"
-                          value={ pais }
-                          styles={ selectDefault }
-                          options={ optionPais }
-                          onChange={ e => setPais(e) }
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col sm="6">
-                      <FormGroup>
-                        <label htmlFor="regiao">Região <code>*</code></label>
-                        <Select
-                           id="regiao"
-                           value={ regiao }
-                           styles={ selectDefault }
-                           options={ optionRegiao }
-                           onChange={ e => setRegiao(e) }
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col sm="6">
-                      <FormGroup>
-                        <label htmlFor="estado">Estado <code>*</code></label>
-                        <Select
-                          id="estado"
-                          value={ estado }
-                          styles={ selectDefault }
-                          options={ optionEstado }
-                          onChange={ e => setEstado(e) }
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col sm="6">
-                      <FormGroup>
-                        <label htmlFor="regionalSaude">Regional de saúde <code>*</code></label>
-                        <Select
-                           id="regionalSaude"
-                           value={ regionalSaude }
-                           styles={ selectDefault }
-                           options={ optionRegionalSaude }
-                           onChange={ e => setRegionalSaude(e) }
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col sm='6'>
-                      <FormGroup>
-                        <label htmlFor="up_codigo">Código <code>*</code></label>
-                        <input id="up_codigo" value={codigo ? codigo : ""} className="form-control" onChange={ e => setCodigo(e.target.value) } required />
-                      </FormGroup>
-                    </Col>
-                    <Col sm='6'>
-                      <FormGroup>
-                        <label htmlFor="up_ativo">Ativo <code>*</code></label>
-                        <Select
-                          value={ ativo }
-                          styles={ selectDefault }
-                          options={ optionAtivo }
-                          onChange={ e => setAtivo(e) }
-                          required />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <FormGroup>
-                        <label htmlFor="up_nome">Nome <code>*</code></label>
-                        <input id="up_nome" value={nome} className="form-control" onChange={ e => setNome(e.target.value) } required />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <ContainerFixed>
-                    <ButtonSave
-                      title="Salvar"
-                      className="bg-info text-white"
-                      type="submit" />
-                  </ContainerFixed>
-                </form>
-              </Col>
+          {/* Formulário básico */}
+          <article className="col-md-12 stretch-card">
+            <div className="card">
+              <h4 className="title">{ municipio.nome }</h4>
+              <p className="text-description">
+                Atenção os campos com <code>*</code> são obrigatórios
+              </p>
+              <Row>
+                <Col sm='6'>
+                  <form onSubmit={ handleSubmit }>
+                  <h4 className="title">Informações do município</h4>
+                    <Row>
+                      <Col sm="6">
+                        <FormGroup>
+                          <label htmlFor="pais">Páis <code>*</code></label>
+                          <Select
+                            id="pais"
+                            value={ pais }
+                            styles={ selectDefault }
+                            options={ optionPais }
+                            onChange={ e => setPais(e) }
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col sm="6">
+                        <FormGroup>
+                          <label htmlFor="regiao">Região <code>*</code></label>
+                          <Select
+                            id="regiao"
+                            value={ regiao }
+                            styles={ selectDefault }
+                            options={ optionRegiao }
+                            onChange={ e => setRegiao(e) }
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col sm="6">
+                        <FormGroup>
+                          <label htmlFor="estado">Estado <code>*</code></label>
+                          <Select
+                            id="estado"
+                            value={ estado }
+                            styles={ selectDefault }
+                            options={ optionEstado }
+                            onChange={ e => setEstado(e) }
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col sm="6">
+                        <FormGroup>
+                          <label htmlFor="regionalSaude">Regional de saúde <code>*</code></label>
+                          <Select
+                            id="regionalSaude"
+                            value={ regionalSaude }
+                            styles={ selectDefault }
+                            options={ optionRegionalSaude }
+                            onChange={ e => setRegionalSaude(e) }
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col sm='6'>
+                        <FormGroup>
+                          <label htmlFor="up_codigo">Código <code>*</code></label>
+                          <input id="up_codigo" value={codigo ? codigo : ""} className="form-control" onChange={ e => setCodigo(e.target.value) } required />
+                        </FormGroup>
+                      </Col>
+                      <Col sm='6'>
+                        <FormGroup>
+                          <label htmlFor="up_ativo">Ativo <code>*</code></label>
+                          <Select
+                            value={ ativo }
+                            styles={ selectDefault }
+                            options={ optionAtivo }
+                            onChange={ e => setAtivo(e) }
+                            required />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        <FormGroup>
+                          <label htmlFor="up_nome">Nome <code>*</code></label>
+                          <input id="up_nome" value={nome} className="form-control" onChange={ e => setNome(e.target.value) } required />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <ContainerFixed>
+                      <ButtonSave
+                        title="Salvar"
+                        className="bg-info text-white"
+                        type="submit" />
+                    </ContainerFixed>
+                  </form>
+                </Col>
 
-              <Col sm='6'>
-                <h4 className="title">Bairro/Localidade</h4>
-              </Col>
-            </Row>
-          </div>
-        </article>
-      </div>
-    </section>
+                <Col sm='6'>
+                  <h4 className="title">Bairro/Localidade</h4>
+                </Col>
+              </Row>
+            </div>
+          </article>
+        </div>
+      </section>
+    </>
   );
 }
 

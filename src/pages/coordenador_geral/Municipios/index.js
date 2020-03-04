@@ -8,6 +8,7 @@ import ModalUpdate from './ModalUpdate';
 import ModalDisabled from './ModalDisabled';
 import Table, { ButtonAdd, ButtonDesabled } from '../../../components/Table';
 import Typography from "@material-ui/core/Typography";
+import { FaCity } from 'react-icons/fa';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -21,6 +22,7 @@ import { getMunicipiosRequest, changeCityEditIndex } from '../../../store/action
 
 // STYLES
 import { GlobalStyle } from './styles';
+import { PageIcon, PageHeader } from '../../../styles/util';
 
 const columns = [
   {
@@ -110,28 +112,35 @@ function Municipios({ municipios, ...props }) {
   }
 
   return (
-    <section className="card-list">
-      <GlobalStyle />
-      <div className="row">
+    <>
+      <PageHeader>
+        <h3 className="page-title">
+          <PageIcon><FaCity /></PageIcon>
+          Municípios
+        </h3>
+      </PageHeader>
+      <section className="card-list">
+        <GlobalStyle />
+        <div className="row">
 
-        {/* Formulário básico */}
-        <article className="col-md-12 stretch-card">
-          <div className="card">
+          {/* Formulário básico */}
+          <article className="col-md-12 stretch-card">
             <Table
               title="Municípios"
               columns={ columns }
               data={ rows }
-              options={ options } />
-          </div>
-        </article>
-      </div>
-      <ModalAdd />
-      <ModalUpdate />
-      <ModalDisabled />
+              options={ options }
+            />
+          </article>
+        </div>
+        <ModalAdd />
+        <ModalUpdate />
+        <ModalDisabled />
 
-      <ToastContainer />
-      { props.toast.message && notify() }
-    </section>
+        <ToastContainer />
+        { props.toast.message && notify() }
+      </section>
+    </>
   );
 }
 

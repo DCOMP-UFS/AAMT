@@ -4,6 +4,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Doughnut from '../../../components/Charts/Doughnut';
 import { Card, Row, Col } from 'react-bootstrap';
+import Select from 'react-select';
+import { FaSyncAlt } from 'react-icons/fa';
 
 
 // ACTIONS
@@ -12,7 +14,8 @@ import { getCyclesForYearRequest } from '../../../store/actions/CicloActions';
 
 // STYLES
 import { Container } from './styles';
-import { Color } from '../../../styles/global';
+import { Color, FormGroup, selectDefault } from '../../../styles/global';
+import { PagePopUp, PageIcon, PageHeader } from '../../../styles/util';
 
 function DashBoardCiclo({ ciclos, regional_id, ...props }) {
   useEffect(() => {
@@ -24,11 +27,37 @@ function DashBoardCiclo({ ciclos, regional_id, ...props }) {
   }, [ ciclos ]);
 
   return (
-    <section className="card-list">
-      <Container>
-        <ListCycle ciclos={ ciclos } />
-      </Container>
-    </section>
+    <>
+      <PageHeader>
+        <h3 className="page-title">
+          <PageIcon><FaSyncAlt /></PageIcon>
+          Dashboard Ciclos
+        </h3>
+      </PageHeader>
+      <section className="card-list">
+        <Row>
+          <PagePopUp className="w-100">
+            <div className="card">
+              <div className="d-flex align-content">
+                <FormGroup className="w-25 m-0 inline">
+                  <label htmlFor="ano">Ano</label>
+                  <Select
+                    id="ano"
+                    styles={ selectDefault }
+                  />
+                </FormGroup>
+              </div>
+            </div>
+          </PagePopUp>
+        </Row>
+
+        <Row>
+          <Container>
+            <ListCycle ciclos={ ciclos } />
+          </Container>
+        </Row>
+      </section>
+    </>
   );
 }
 

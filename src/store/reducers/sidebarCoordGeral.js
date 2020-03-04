@@ -1,5 +1,5 @@
 import { IoIosPaper } from 'react-icons/io';
-import { FaUsers, FaCity, FaSyncAlt, FaBuilding } from 'react-icons/fa';
+import { FaUsers, FaCity, FaSyncAlt } from 'react-icons/fa';
 
 import { ActionTypes } from '../actions/sidebarCoordGeral';
 
@@ -36,7 +36,7 @@ const INITIAL_STATE = {
     ]),
     createLink( 3, "Usuários", false, FaUsers, "/cg/usuarios" ),
     createCategory( "Região" ),
-    createLink( 5, "Regionais de Saúde", false, FaBuilding, "/cg/regionaisSaude"),
+    // createLink( 5, "Regionais de Saúde", false, FaBuilding, "/cg/regionaisSaude"),
     createLink( 4, "Municípios", false, FaCity, "/cg/municipios"),
   ]
 }

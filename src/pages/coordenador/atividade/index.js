@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Row, Col } from 'react-bootstrap';
+import { IoIosPaper } from 'react-icons/io';
+import { Row } from 'react-bootstrap';
 import Select from 'react-select';
 
 // ACTIONS
@@ -11,12 +12,13 @@ import { getAllowedCyclesRequest } from '../../../store/actions/CicloActions';
 import { getActivitiesByCityRequest } from '../../../store/actions/AtividadeActions';
 
 // STYLES
-import { ContainerAtividade } from './styles';
+import { ContainerAtividade, ContainerCiclo } from './styles';
 import { FormGroup, selectDefault } from '../../../styles/global';
-import { InfoGroup } from '../../../styles/util';
+import { InfoGroup, PagePopUp, PageIcon, PageHeader } from '../../../styles/util';
 
 function PlanejarAtividade({ ciclos, atividades, ...props }) {
   const [ ciclo, setCiclo ] = useState({});
+  const [ situacaoCiclo, setSituacaoCiclo ] = useState({});
   const [ optionCiclo, setOptionCiclo ] = useState({});
 
   useEffect(() => {
@@ -37,7 +39,7 @@ function PlanejarAtividade({ ciclos, atividades, ...props }) {
         setCiclo({ value: ciclo.id, label: `${ ciclo.ano }.${ ciclo.sequencia }` });
 
       return (
-        { value: ciclo.id, label: `${ ciclo.ano }.${ ciclo.sequencia }` }
+        { value: ciclo.id, label: `${ ciclo.ano }.${ ciclo.sequencia }`, dataInicio, dataFim }
       );
     });
 
@@ -46,60 +48,79 @@ function PlanejarAtividade({ ciclos, atividades, ...props }) {
 
   useEffect(() => {
     props.getActivitiesByCityRequest( ciclo.value, props.municipio_id );
+
+    let current_date = new Date();
+    current_date.setHours(0,0,0,0);
+
+    if( ciclo.dataInicio > current_date )
+      setSituacaoCiclo({ situacao: "Planejado", class: "bg-warning text-white ml-3" });
+    else if( ciclo.dataFim < current_date )
+      setSituacaoCiclo({ situacao: "Finalizado", class: "bg-info text-white ml-3" });
+    else
+      setSituacaoCiclo({ situacao: "Em aberto", class: "bg-info text-white ml-3" });
   }, [ ciclo ]);
 
-  // useEffect(() => {
-  //   console.log(atividades);
-  // }, [ atividades ]);
-
   return (
-    <section className="card-list">
-      <Row>
-        <Col>
-          <FormGroup className="col-3">
-            <label>Ciclo <code>*</code></label>
-            <Select
-              id="ciclo"
-              value={ ciclo }
-              styles={ selectDefault }
-              options={ optionCiclo }
-              onChange={ e => setCiclo( e ) }
-            />
-          </FormGroup>
-        </Col>
-      </Row>
+    <>
+      <PageHeader>
+        <h3 className="page-title">
+          <PageIcon><IoIosPaper /></PageIcon>
+          Atividades
+        </h3>
+      </PageHeader>
+      <section className="card-list">
+        <Row>
+          <PagePopUp className="w-100">
+            <div className="card">
+              <ContainerCiclo>
+                <FormGroup className="w-25 m-0 inline">
+                  <label htmlFor="ciclo">Ciclo</label>
+                  <Select
+                    id="ciclo"
+                    value={ ciclo }
+                    styles={ selectDefault }
+                    options={ optionCiclo }
+                    onChange={ e => setCiclo( e ) }
+                  />
+                </FormGroup>
+                <mark className={ situacaoCiclo.class }>{ situacaoCiclo.situacao }</mark>
+              </ContainerCiclo>
+            </div>
+          </PagePopUp>
+        </Row>
 
-      <Row>
-        {
-          atividades.map( (atv, index) => {
-            return (
-              <ContainerAtividade key={ index } className="theme-article col-md-4 stretch-card" >
-                <div className="card">
-                  <h4 className="title mb-4">
-                    Atividade <mark className="bg-primary text-white">{ atv.id }</mark>
-                  </h4>
+        <Row>
+          {
+            atividades.map( (atv, index) => {
+              return (
+                <ContainerAtividade key={ index } className="theme-article col-md-4 stretch-card" >
+                  <div className="card">
+                    <h4 className="title mb-4">
+                      Atividade <mark className="bg-primary text-white">{ atv.id }</mark>
+                    </h4>
 
-                  <InfoGroup>
-                    <label>Metodologia</label>
-                    <p>{ atv.metodologia.sigla }</p>
-                  </InfoGroup>
+                    <InfoGroup>
+                      <label>Metodologia</label>
+                      <p>{ atv.metodologia.sigla }</p>
+                    </InfoGroup>
 
-                  <InfoGroup>
-                    <label>Objetivo</label>
-                    <p>{ atv.objetivo.descricao }</p>
-                  </InfoGroup>
+                    <InfoGroup>
+                      <label>Objetivo</label>
+                      <p>{ atv.objetivo.descricao }</p>
+                    </InfoGroup>
 
-                  <InfoGroup>
-                    <label>Responsabilidade</label>
-                    <p>{ atv.responsabilidade === 1 ? "Regional" : "Municipal" }</p>
-                  </InfoGroup>
-                </div>
-              </ContainerAtividade>
-            );
-          })
-        }
-      </Row>
-    </section>
+                    <InfoGroup>
+                      <label>Responsabilidade</label>
+                      <p>{ atv.responsabilidade === 1 ? "Regional" : "Municipal" }</p>
+                    </InfoGroup>
+                  </div>
+                </ContainerAtividade>
+              );
+            })
+          }
+        </Row>
+      </section>
+    </>
   );
 }
 

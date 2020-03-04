@@ -122,3 +122,41 @@ export const Span = styled.span`
     display: none;
   }
 `;
+
+export const PagePopUp = styled.div`
+  padding: 15px 20px;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+
+  .card {
+    background: #fff;
+    border-radius: 5px;
+    padding: 15px 20px;
+    width: 100%;
+    box-shadow: 2px 2px 8px #c5baba;
+  }
+`;
+
+export const PageHeader = styled.div`
+  margin: 0 0 1.5rem 0;
+  padding: 0 5px;
+
+  .page-title {
+    color: ${ Color.dark };
+    font-size: 1.125rem;
+    margin-bottom: 0;
+  }
+`;
+
+export const PageIcon = styled.span`
+  color: ${ Color.success };
+  /* border-radius: .25rem; */
+  margin-right: 0.875rem;
+  background: ${ Color.success };
+  color: #fff;
+  padding: 10px;
+  border-radius: 4px;
+  text-align: center;
+  box-shadow: 2px 2px 8px #c5baba;
+`;

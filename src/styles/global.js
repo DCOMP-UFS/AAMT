@@ -33,6 +33,7 @@ export const Color = {
   bgLight: "#FCFCFC",
   border_light: "#ebedf2",
   border_input: "#cccccc",
+  icon_page: "#31373B",
   chartColor: [
     [ 'rgba(182, 109, 255, 0.2)', 'rgba(182, 109, 255, 1)' ],
     [ 'rgba(255, 197, 66, 0.2)', 'rgba(255, 197, 66, 1)' ],
@@ -101,6 +102,8 @@ export const ContainerBody = styled.div`
 `;
 
 export const BodyPanel = styled.div`
+  padding: 40px 30px;
+
   @media (max-width: 990px) {
     width: 100%;
   }
@@ -501,6 +504,21 @@ export const CardDark = styled.div`
 
 export const FormGroup = styled.div`
   margin-bottom: 1.5rem;
+
+  &.inline {
+    display: flex;
+    align-items: center;
+  }
+
+  &.inline label {
+    flex: 1;
+    max-width: 125px;
+    margin: 0;
+  }
+
+  &.inline .form-control, &.inline div[class$="container"] {
+    flex: 3;
+  }
 
   &.form-dark label {
     color: #fff;

@@ -49,7 +49,7 @@ function Atividades({ metodologias, ciclos, ...props }) {
   useEffect(() => {
     props.changeSidebar(2, 2);
     props.getMethodologiesRequest();
-    props.getAllowedCyclesRequest();
+    props.getAllowedCyclesRequest( props.regionalSaude_id );
     props.getCityByRegionalHealthRequest( props.regionalSaude_id );
   }, []);
 

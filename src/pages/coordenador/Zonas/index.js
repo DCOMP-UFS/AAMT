@@ -5,6 +5,7 @@ import Table, { ButtonAdd, ButtonDesabled } from '../../../components/Table';
 import Typography from "@material-ui/core/Typography";
 import ModalAdd from "./ModalAdd";
 import ModalDisabled from "./ModalDisabled";
+import ViewCompactIcon from '@material-ui/icons/ViewCompact';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -17,6 +18,7 @@ import { getZoneByCityRequest } from '../../../store/actions/ZonaActions';
 
 // STYLES
 import { GlobalStyle } from './styles';
+import { PageHeader, PageIcon } from '../../../styles/util';
 
 const columns = [
   {
@@ -119,25 +121,31 @@ function Zonas({ zonas, municipio, ...props }) {
   }
 
   return (
-    <section className="card-list">
-      <GlobalStyle />
-      <div className="row">
-        {/* Formulário básico */}
-        <article className="col-md-12 stretch-card">
-          <div className="card">
+    <>
+      <PageHeader>
+        <h3 className="page-title">
+          <PageIcon><ViewCompactIcon /></PageIcon>
+          Zona
+        </h3>
+      </PageHeader>
+      <section className="card-list">
+        <GlobalStyle />
+        <div className="row">
+          {/* Formulário básico */}
+          <article className="col-md-12 stretch-card">
             <Table
               title="Zona(s)"
               columns={ columns }
               data={ rows }
               options={ options }
               turnRed={ "ativo" } />
-          </div>
-        </article>
-      </div>
+          </article>
+        </div>
 
-      <ModalAdd />
-      <ModalDisabled />
-    </section>
+        <ModalAdd />
+        <ModalDisabled />
+      </section>
+    </>
   );
 }
 

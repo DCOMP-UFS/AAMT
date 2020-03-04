@@ -7,6 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import Table, { ButtonAdd, ButtonDesabled } from '../../../components/Table';
 import ModalAdd from './ModalAdd';
 import ModalDisabled from './ModalDisabled';
+import { FaMapSigns } from 'react-icons/fa';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -20,6 +21,7 @@ import { getLocationRequest, changeIndex } from '../../../store/actions/Localida
 
 // STYLES
 import { GlobalStyle } from './styles';
+import { PageHeader, PageIcon } from '../../../styles/util';
 
 const columns = [
   {
@@ -158,28 +160,34 @@ function Localidades({ localidades, municipio, ...props }) {
   }
 
   return (
-    <section className="card-list">
-      <GlobalStyle />
-      <div className="row">
+    <>
+      <PageHeader>
+        <h3 className="page-title">
+          <PageIcon><FaMapSigns /></PageIcon>
+          Localidade/Bairro
+        </h3>
+      </PageHeader>
+      <section className="card-list">
+        <GlobalStyle />
+        <div className="row">
 
-        {/* Formulário básico */}
-        <article className="col-md-12 stretch-card">
-          <div className="card">
+          {/* Formulário básico */}
+          <article className="col-md-12 stretch-card">
             <Table
               title={ `Bairro(s)/Localidade(s) de ${ municipio.nome }` }
               columns={ columns }
               data={ rows }
               options={ options }
               turnRed={ "ativo" } />
-          </div>
-        </article>
-      </div>
-      <ModalAdd />
-      <ModalDisabled />
+          </article>
+        </div>
+        <ModalAdd />
+        <ModalDisabled />
 
-      <ToastContainer />
-      { props.toast.message && notify() }
-    </section>
+        <ToastContainer />
+        { props.toast.message && notify() }
+      </section>
+    </>
   );
 }
 

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Typography from "@material-ui/core/Typography";
 import 'react-toastify/dist/ReactToastify.css';
 import Table, { ButtonAdd, ButtonDesabled } from '../../../components/Table';
+import { FaSyncAlt } from 'react-icons/fa';
 
 
 // REDUX
@@ -16,6 +17,7 @@ import { getCyclesRequest } from '../../../store/actions/CicloActions';
 
 // STYLES
 // import { GlobalStyle } from './styles';
+import { PageIcon, PageHeader } from '../../../styles/util';
 
 const columns = [
   {
@@ -114,20 +116,27 @@ function Ciclos({ ciclos, regionalSaude_id, usuarios, ...props }) {
   }
 
   return (
+    <>
+      <PageHeader>
+        <h3 className="page-title">
+          <PageIcon><FaSyncAlt /></PageIcon>
+          Ciclos
+        </h3>
+      </PageHeader>
       <section className="card-list">
         <div className="row">
           {/* Formulário básico */}
           <article className="col-md-12 stretch-card">
-            <div className="card">
-              <Table
-                title="Ciclos"
-                columns={ columns }
-                data={ rows }
-                options={ options } />
-            </div>
+            <Table
+              title="Ciclos"
+              columns={ columns }
+              data={ rows }
+              options={ options }
+            />
           </article>
         </div>
       </section>
+    </>
   );
 }
 

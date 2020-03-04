@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
+import { IoIosPaper } from 'react-icons/io';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebarCoordGeral';
@@ -15,7 +16,9 @@ import {
   UlIcon,
   LiIcon,
   ContainerUl,
-  LiEmpty
+  LiEmpty,
+  PageIcon,
+  PageHeader
 } from '../../../styles/util';
 
 function PlanejarAtividade({ atividades, ...props }) {
@@ -24,39 +27,48 @@ function PlanejarAtividade({ atividades, ...props }) {
     props.getActivitiesOfCityRequest( props.regionalSaude_id );
   }, []);
 
+  useEffect(() => {
+    console.log(atividades);
+
+  }, [atividades]);
+
   return (
-    <section className="card-list">
-      <Row>
-        {
-          atividades.map( (municipio, index) => (
-            <CardAtividades key={ index } municipio={ municipio } />
-          ))
-        }
-      </Row>
-    </section>
+    <>
+      <PageHeader>
+        <h3 className="page-title">
+          <PageIcon><IoIosPaper /></PageIcon>
+          Atividades por Municípios
+        </h3>
+      </PageHeader>
+      <section className="card-list">
+        <Row>
+          {
+            atividades.map( (municipio, index) => (
+              <CardAtividades key={ index } municipio={ municipio } />
+            ))
+          }
+        </Row>
+      </section>
+    </>
   );
 }
 
 function CardAtividades({ municipio }) {
   let list = municipio.atividades.map( (atv, index) => {
-    let situacao = "";
     let responsabilidade = "";
-    let classMark = "";
+    let classLi = "";
 
     switch ( atv.situacao ) {
       case 1:
-        situacao = "Em berto";
-        classMark = "ml-2 bg-warning";
+        classLi = "";
         break;
 
       case 2:
-        situacao = "Concluída";
-        classMark = "ml-2 bg-success text-white";
+        classLi = "bg-success text-white";
         break;
 
       default:
-        situacao = "Não concluída";
-        classMark = "ml-2 bg-danger text-white";
+        classLi = "bg-danger text-white";
         break;
     }
 
@@ -71,7 +83,7 @@ function CardAtividades({ municipio }) {
     }
 
     return (
-      <LiIcon key={ index } >
+      <LiIcon key={ index } className={ classLi } >
         <ContainerUl>
           <DescricaoAtividade>
             <div style={{ flex: "3" }}>
@@ -79,7 +91,6 @@ function CardAtividades({ municipio }) {
               <ObjetivoAtividade>{ atv.objetivo.descricao }</ObjetivoAtividade>
             </div>
             <div>
-              <mark className={ classMark }>{ situacao }</mark>
               <mark className="ml-2 bg-info text-white">{ responsabilidade }</mark>
             </div>
           </DescricaoAtividade>
@@ -93,7 +104,7 @@ function CardAtividades({ municipio }) {
   }
 
   return(
-    <Col sm="6" className="p-0">
+    <Col sm="4" className="p-0">
       <article>
         <div className="card">
           <h4 className="title mb-4">

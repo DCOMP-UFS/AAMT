@@ -74,7 +74,7 @@ export default function Table({ title, data, columns, options: optionsProps }) {
   })
 
   return (
-    <Container>
+    <Container className="w-100">
       <MuiThemeProvider theme={getMuiTheme()}>
         <MUIDataTable
           title={title || "Employee List"}

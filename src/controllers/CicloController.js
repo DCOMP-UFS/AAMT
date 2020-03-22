@@ -26,32 +26,31 @@ index = async ( req, res ) => {
       }
     ],
     order: [[ 'ano', 'desc' ], [ 'sequencia', 'asc' ]]
-  }).then(( ciclos ) => {
-    let current_date = new Date();
-    current_date.setHours(0,0,0,0);
-    
-    const cycles = ciclos.map(( data ) => {
-      const { dataValues: ciclo } = data;
-      let dataInicio = ciclo.dataInicio;
-      let dataFim = ciclo.dataFim;
-
-      dataInicio.setHours(0,0,0,0);
-      dataFim.setHours(0,0,0,0);
-
-      if( dataInicio <= current_date && dataFim >= current_date )
-        ciclo.situacao = "Em aberto";
-      else if( dataFim < current_date )
-        ciclo.situacao = "Finalizado";
-      else
-        ciclo.situacao = "Planejado";
-
-      return ciclo;
-    });
-
-    return cycles
   });
 
   return res.json( ciclos );
+}
+
+getCycle = async ( req, res ) => {
+  const { id } = req.params;
+
+  const ciclo = await Ciclo.findByPk( id, {
+    include: {
+      association: 'atividades',
+      attributes:{ exclude: [ 'createdAt', 'updatedAd' ] },
+      where: {
+        responsabilidade: 1
+      },
+      include: [
+        { association: 'metodologia', attributes:{ exclude: [ 'createdAt', 'updatedAd' ] } },
+        { association: 'objetivo', attributes:{ exclude: [ 'createdAt', 'updatedAd' ] } }
+      ]
+    }
+  });
+  if( !ciclo )
+    return res.status(400).json({ error: 'Ciclo não existe' });
+
+  return res.json( ciclo );
 }
 
 getOpenCycles = async ( req, res ) => {
@@ -158,8 +157,7 @@ store = async ( req, res ) => {
 }
 
 update = async ( req, res ) => {
-  const { id } = req.params;
-  const { atividades, ...body } = req.body;
+  const { id } = req.params
   const current_date = new Date();
 
   const allow = await allowFunction( req.userId, 'definir_ciclo' );
@@ -178,7 +176,7 @@ update = async ( req, res ) => {
   req.body.updatedAt = undefined;
 
   const { isRejected } = await Ciclo.update(
-    body,
+    req.body,
     {
       where: {
         id
@@ -188,45 +186,6 @@ update = async ( req, res ) => {
 
   if( isRejected ){
     return res.status(400).json({ error: 'Não foi possível atualizar o ciclo' });
-  }
-
-  await Atividade.destroy({
-    where: {
-      ciclo_id: id
-    }
-  });
-
-  if( atividades ) {
-    for (const atividade of atividades) {
-      const { 
-        abrangencia, 
-        metodologia_id, 
-        objetivo_id, 
-        objetivoAtividade,
-        flTodosImoveis 
-      } = atividade;
-      const municipios = await Municipio.findAll({
-        where: {
-          regional_saude_id: ciclo.regional_saude_id
-        }
-      });
-
-      for (const municipio of municipios) {
-        const { id: municipio_id } = municipio.dataValues;
-
-        await Atividade.create({
-          abrangencia,
-          objetivoAtividade,
-          flTodosImoveis,
-          situacao: 1,
-          responsabilidade: 1,
-          ciclo_id: ciclo.id,
-          municipio_id,
-          metodologia_id, 
-          objetivo_id
-        });
-      }
-    }
   }
 
   ciclo = await Ciclo.findByPk( id );
@@ -241,6 +200,12 @@ destroy = async ( req, res ) => {
   const allow = await allowFunction( req.userId, 'definir_ciclo' );
   if( !allow )
     return res.status(403).json({ error: 'Acesso negado' });
+
+  await Atividade.destroy({
+    where: {
+      ciclo_id: id
+    }
+  });
 
   const deleted = await Ciclo.destroy({
     where: {
@@ -273,6 +238,7 @@ router.get('/:regionalSaude_id/regionaisSaude', index);
 router.get('/open/:regionalSaude_id/regionaisSaude', getOpenCycles);
 router.get('/allowedCycles/:regionalSaude_id/regionaisSaude', getAllowedCycles);
 router.get('/:ano/:regionalSaude_id/regionaisSaude', getCyclesForYear);
+router.get('/:id', getCycle);
 router.put('/:id', update);
 router.post('/', store);
 router.delete('/:id', destroy);

@@ -21,6 +21,10 @@ const Metodologia = require('../models/Metodologia');
 const Objetivo = require('../models/Objetivo');
 const Ciclo = require('../models/Ciclo');
 const Atividade = require('../models/Atividade');
+const Local = require('../models/Local');
+const Estrato = require('../models/Estrato');
+const Equipe = require('../models/Equipe');
+const Membro = require('../models/Membro');
 
 const connection = new Sequelize(dbConfig);
 
@@ -44,6 +48,10 @@ Metodologia.init( connection );
 Objetivo.init( connection );
 Ciclo.init( connection );
 Atividade.init( connection );
+Local.init( connection );
+Estrato.init( connection );
+Equipe.init( connection );
+Membro.init( connection );
 
 Usuario.associate( connection.models );
 Municipio.associate( connection.models );
@@ -65,5 +73,9 @@ Metodologia.associate( connection.models );
 Objetivo.associate( connection.models );
 Ciclo.associate( connection.models );
 Atividade.associate( connection.models );
+Local.associate( connection.models );
+Estrato.associate( connection.models );
+Equipe.associate( connection.models );
+Membro.associate( connection.models );
 
 module.exports = connection;

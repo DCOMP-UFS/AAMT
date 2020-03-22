@@ -15,7 +15,7 @@ module.exports = {
           allowNull: false,
         },
         abrangencia: {
-          type: Sequelize.STRING,
+          type: Sequelize.INTEGER,
           allowNull: false,
         },
         situacao: {

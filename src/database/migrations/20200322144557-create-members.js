@@ -3,42 +3,30 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable(
-      'quarteiroes', { 
+      'membros', { 
         id: {
           type: Sequelize.INTEGER,
           primaryKey: true,
           autoIncrement: true,
           allowNull: false,
         },
-        numero: {
+        tipo_perfil: {
+          type: Sequelize.INTEGER,
+          allowNull: false
+        },
+        equipe_id: {
           type: Sequelize.INTEGER,
           allowNull: false,
-        },
-        ativo: {
-          type: Sequelize.INTEGER,
-          allowNull: false,
-          defaultValue: 1
-        },
-        localidade_id: {
-          type: Sequelize.INTEGER,
-          allowNull: true,
-          references: { model: 'localidades', key: 'id' },
+          references: { model: 'equipes', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE'
         },
-        zona_id: {
+        usuario_id: {
           type: Sequelize.INTEGER,
-          allowNull: true,
-          references: { model: 'zonas', key: 'id' },
+          allowNull: false,
+          references: { model: 'usuarios', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE'
-        },
-        quarteirao_id: {
-          type: Sequelize.INTEGER,
-          allowNull: true,
-          references: { model: 'quarteiroes', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'RESTRICT'
         },
         created_at: {
           type: Sequelize.DATE,
@@ -48,10 +36,11 @@ module.exports = {
           type: Sequelize.DATE,
           allowNull: false,
         }
-      });
+      }
+    );
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('quarteiroes');
+    return queryInterface.dropTable('membros');
   }
 };

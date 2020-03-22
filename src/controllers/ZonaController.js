@@ -1,6 +1,5 @@
 const express = require('express');
 const authMiddleware = require('../middlewares/auth');
-const Localidade = require('../models/Localidade');
 const Municipio = require('../models/Municipio');
 const Zona = require('../models/Zona');
 
@@ -17,39 +16,11 @@ getByCityId = async (req, res) => {
   }
 
   const zonas = await Zona.findAll({
-    include: { 
-      association: 'localidade', attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-      where: {
-        municipio_id
-      } 
-    },
-    attributes: {
-      exclude: [ 'localidade_id', 'municipio_id' ]
-    },
-    order: [['ativo', 'desc'], ['nome', 'asc'], ['createdAt', 'asc']]
-  });
-
-  return res.json( zonas );
-}
-
-getByLocationId = async (req, res) => {
-  const { localidade_id } = req.params;
-
-  const localidade = await Localidade.findByPk( localidade_id );
-
-  if( !localidade ) {
-    return res.status(400).json({ error: "Localidade não existe" });
-  }
-
-  const zonas = await Zona.findAll({
     where: {
-      localidade_id
+      municipio_id
     },
-    include: [
-      { association: 'localidade', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }
-    ],
     attributes: {
-      exclude: [ 'localidade_id' ]
+      exclude: [ 'municipio_id' ]
     },
     order: [['ativo', 'desc'], ['nome', 'asc'], ['createdAt', 'asc']]
   });
@@ -62,10 +33,10 @@ getById = async (req, res) => {
 
   const zona = await Zona.findByPk( id, {
     include: [
-      { association: 'localidade', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }
+      { association: 'municipio', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }
     ],
     attributes: {
-      exclude: [ 'localidade_id', 'municipio_id' ]
+      exclude: [ 'municipio_id' ]
     }
   });
 
@@ -77,7 +48,7 @@ getById = async (req, res) => {
 }
 
 store = async (req, res) => {
-  const { localidade_id } = req.body;
+  const { municipio_id } = req.body;
   const userId = req.userId;
   let nome = 'a';
 
@@ -86,15 +57,15 @@ store = async (req, res) => {
     return res.status(403).json({ error: 'Acesso negado' });
   }
 
-  const localidade = await Localidade.findByPk(localidade_id);
+  const municipio = await Municipio.findByPk(municipio_id);
 
-  if(!localidade) {
-    return res.status(400).json({ error: 'Localidade não encontrada' });
+  if(!municipio) {
+    return res.status(400).json({ error: 'Município não encontrada' });
   }
 
   const zonas = await Zona.findAll({
     where: {
-      localidade_id
+      municipio_id
     },
     order: [['createdAt', 'desc']]
   });
@@ -123,14 +94,14 @@ store = async (req, res) => {
 
   const zona = await Zona.create({ 
     nome,
-    localidade_id,
+    municipio_id,
     ativo: 1
   });
 
   const result = await Zona.findByPk( zona.id, {
-    include: { association: 'localidade', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } },
+    include: { association: 'municipio', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } },
     attributes: {
-      exclude: [ 'localidade_id' ]
+      exclude: [ 'municipio_id' ]
     }
   });
 
@@ -140,7 +111,7 @@ store = async (req, res) => {
 update = async (req, res) => {
   const { id } = req.params;
   const userId = req.userId;
-  const { localidade_id } = req.body;
+  const { municipio_id } = req.body;
 
   const allow = await allowFunction( userId, 'manter_zona' );
   if( !allow ) {
@@ -152,10 +123,10 @@ update = async (req, res) => {
     return res.status(400).json({ error: 'Zona não encontrada' });
   }
 
-  if( localidade_id ) {
-    const localidade = await Localidade.findByPk( id );
-    if( !localidade ) {
-      return res.status(400).json({ error: 'Localidade não encontrada' });
+  if( municipio_id ) {
+    const municipio = await Municipio.findByPk( id );
+    if( !municipio ) {
+      return res.status(400).json({ error: 'Município não encontrada' });
     }
   }
 
@@ -168,12 +139,6 @@ update = async (req, res) => {
     {
       where: {
         id
-      },
-      include: [
-        { association: 'localidade', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }
-      ],
-      attributes: {
-        exclude: [ 'localidade_id', 'municipio_id' ]
       }
     }
   );
@@ -184,10 +149,10 @@ update = async (req, res) => {
 
   const result = await Zona.findByPk( id,  {
     include: [
-      { association: 'localidade', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }
+      { association: 'municipio', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }
     ],
     attributes: {
-      exclude: [ 'localidade_id' ]
+      exclude: [ 'municipio_id' ]
     }
   });
 
@@ -199,7 +164,6 @@ router.use(authMiddleware);
 
 router.get('/:id', getById);
 router.get('/:municipio_id/municipios', getByCityId);
-router.get('/:localidade_id/localidades', getByLocationId);
 router.post('/', store);
 router.put('/:id', update);
 

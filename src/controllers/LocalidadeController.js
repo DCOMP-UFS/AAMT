@@ -28,7 +28,8 @@ getById = async (req, res) => {
   const localidade = await Localidade.findByPk( id, {
     include: [
       { association: 'categoria', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }, 
-      { association: 'municipio', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }
+      { association: 'municipio', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } },
+      { association: 'zonas', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }
     ],
     attributes: {
       exclude: [ 'categoria_id', 'municipio_id' ]

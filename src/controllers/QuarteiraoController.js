@@ -2,6 +2,7 @@ const express = require('express');
 const authMiddleware = require('../middlewares/auth');
 const Municipio = require('../models/Municipio');
 const Zona = require('../models/Zona');
+const Localidade = require('../models/Localidade');
 const Quarteirao = require('../models/Quarteirao');
 const Rua = require('../models/Rua');
 const Lado = require('../models/Lado');
@@ -60,74 +61,25 @@ getBlockByCity = async (req, res) => {
     return res.status(400).json({ error: "Município não existe" });
   }
 
-  const quarteiroes = await Quarteirao.sequelize.query(
-    'SELECT ' +
-      '"Quarteirao"."id", ' +
-      '"Quarteirao"."numero", ' +
-      '"Quarteirao"."ativo", ' +
-      '"Quarteirao"."created_at" AS "createdAt", ' +
-      '"Quarteirao"."updated_at" AS "updatedAt", ' +
-      '"Quarteirao"."zona_id", ' +
-      '"Quarteirao"."quarteirao_id", ' +
-      '"zona"."nome" AS "zona.nome", ' +
-      '"zona"."ativo" AS "zona.ativo", ' +
-      '"zona->localidade"."id" AS "zona.localidade.id", ' +
-      '"zona->localidade"."nome" AS "zona.localidade.nome", ' +
-      '"zona->localidade"."codigo" AS "zona.localidade.codigo", ' +
-      '"zona->localidade"."ativo" AS "zona.localidade.ativo", ' +
-      '"zona->localidade->municipio"."id" AS "zona.localidade.municipio.id", ' +
-      '"zona->localidade->municipio"."codigo" AS "zona.localidade.municipio.codigo", ' +
-      '"zona->localidade->municipio"."nome" AS "zona.localidade.municipio.nome", ' +
-      '"zona->localidade->municipio"."ativo" AS "zona.localidade.municipio.ativo", ' +
-      '"zona->localidade->municipio"."regional_saude_id" AS "zona.localidade.municipio.regionalSaude_id" ' +
-    'FROM ' +
-      '"quarteiroes" AS "Quarteirao" ' +
-      'LEFT OUTER JOIN "zonas" AS "zona" ON "Quarteirao"."zona_id" = "zona"."id"' +
-      'LEFT OUTER JOIN "localidades" AS "zona->localidade" ON "zona"."localidade_id" = "zona->localidade"."id" ' +
-      'LEFT OUTER JOIN "municipios" AS "zona->localidade->municipio" ON "zona->localidade"."municipio_id" = "zona->localidade->municipio"."id" ' +
-    'WHERE' +
-      '"zona->localidade->municipio".id = $1 ' + 
-      'ORDER BY ' +
-        '"Quarteirao"."ativo" DESC, ' +
-        '"Quarteirao"."numero" ASC,  ' +
-        '"Quarteirao"."created_at" ASC;',
-    {
-      bind: [ municipio_id ],
-      logging: console.log,
-      plain: false,
-      model: Quarteirao,
-      mapToModel: true,
-    }
-  );
+  const quarteiroes = await Quarteirao.findAll({
+    include: [
+      {
+        association: 'localidade',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+        include: {
+          where: { id: municipio_id },
+          association: 'municipio',
+          attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+        }
+      },
+      {
+        association: 'zona',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+      }
+    ]
+  });
 
-  const quarteiroesMap = quarteiroes.map( q => ({
-    id: q.id,
-    numero: q.numero,
-    ativo: q.ativo,
-    createdAt: q.createdAt,
-    updatedAt: q.updatedAt,
-    quarteirao_id: q.quarteirao_id,
-    zona: {
-      id: q.zona_id,
-      nome: q.dataValues["zona.nome"],
-      ativo: q.dataValues["zona.ativo"],
-    },
-    localidade: {
-      id: q.dataValues["zona.localidade.id"],
-      nome: q.dataValues["zona.localidade.nome"],
-      codigo: q.dataValues["zona.localidade.codigo"],
-      ativo: q.dataValues["zona.localidade.ativo"],
-    },
-    municipio: {
-      id: q.dataValues["zona.localidade.municipio.id"],
-      codigo: q.dataValues["zona.localidade.municipio.codigo"],
-      nome: q.dataValues["zona.localidade.municipio.nome"],
-      ativo: q.dataValues["zona.localidade.municipio.ativo"],
-      regionalSaude_id: q.dataValues["zona.localidade.municipio.regionalSaude_id"],
-    }
-  }));
-
-  return res.json( quarteiroesMap );
+  return res.json( quarteiroes );
 }
 
 const createSide = async (numero, quarteirao_id, rua_id) => {
@@ -171,7 +123,7 @@ const updateSide = async ( id, numero, quarteirao_id, rua_id ) => {
 }
 
 store = async ( req, res ) => {
-  const { numero, zona_id, quarteirao_id, lados } = req.body;
+  const { numero, localidade_id, zona_id, quarteirao_id, lados } = req.body;
   const userId = req.userId;
 
   const allow = await allowFunction( userId, 'manter_quarteirao' );
@@ -189,13 +141,21 @@ store = async ( req, res ) => {
     }
   }
 
-  const zona = await Zona.findByPk( zona_id );
-  if( !zona ) {
-    return res.status(400).json({ error: 'Zona não existe' });
+  if( zona_id ) {
+    const zona = await Zona.findByPk( zona_id );
+    if( !zona ) {
+      return res.status(400).json({ error: 'Zona não existe' });
+    }
+  }
+
+  const localidade = await Localidade.findByPk( localidade_id );
+  if( !localidade ) {
+    return res.status(400).json({ error: 'Localidade não existe' });
   }
 
   const quarteirao = await Quarteirao.create({
     numero,
+    localidade_id,
     zona_id,
     quarteirao_id
   });
@@ -213,9 +173,10 @@ store = async ( req, res ) => {
   const quarteiraoFind = await Quarteirao.findByPk( quarteirao.id, {
     include: [
       { association: 'zona', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } },
+      { association: 'localidade', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } },
     ],
     attributes: {
-      exclude: [ 'zona_id' ]
+      exclude: [ 'zona_id', 'localidade_id' ]
     }
   });
 

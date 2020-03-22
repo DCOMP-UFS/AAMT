@@ -4,6 +4,9 @@ const { Op } = require('sequelize');
 const Atividade = require('../models/Atividade');
 const Ciclo = require('../models/Ciclo');
 const Municipio = require('../models/Municipio');
+const Localidade = require('../models/Localidade');
+const Zona = require('../models/Zona');
+const Quarteirao = require('../models/Quarteirao');
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
@@ -33,6 +36,25 @@ index = async ( req, res ) => {
   });
 
   return res.json( atividades );
+}
+
+getById = async ( req, res ) => {
+  const { id } = req.params;
+
+  const atividade = await Atividade.findByPk( id, {
+    include: [
+      {
+        association: 'metodologia',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+      },
+      {
+        association: 'objetivo',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+      }
+    ]
+  });
+  
+  return res.json( atividade );
 }
 
 getActivitiesOfCity = async ( req, res ) => {
@@ -87,6 +109,41 @@ getActivitiesOfCity = async ( req, res ) => {
   return res.json( municipios );
 }
 
+getLocations = async ( req, res ) => {
+  const { abrangencia_id, municipio_id } = req.params;
+  let locais = [];
+
+  switch ( abrangencia_id ) {
+    case "1": //Localidade/bairro
+      locais = await Localidade.findAll({
+        where: {
+          municipio_id
+        }
+      }).map( l => ({ id: l.id, nome: l.nome, tipo: "localidade" }));
+      break;
+    case "2"://Zona
+      locais = await Zona.findAll({
+        where: {
+          municipio_id
+        }
+      }).map( z => ({ id: z.id, nome: z.nome, tipo: "zona" }));
+      break;
+  
+    default://Quarteirão
+      locais = await Quarteirao.findAll({
+        include: {
+          association: "localidade",
+          where: {
+            municipio_id
+          }
+        }
+      }).map( q => ({ id: q.id, nome: q.numero, tipo: "quarteirao" }));
+      break;
+  }
+
+  return res.json( locais );
+}
+
 store = async ( req, res ) => {
   const { 
     abrangencia, 
@@ -134,14 +191,24 @@ update = async ( req, res ) => {
 destroy = async ( req, res ) => {
 }
 
+plan = async ( req, res ) => {
+  const { id } = req.params;
+  const { estratos, equipes, abrangencia_id } = req.body;
+
+  return res.json({ estratos, equipes, abrangencia_id });
+}
+
 const router = express.Router();
 router.use(authMiddleware);
 
+router.get('/:id', getById);
 router.get('/:ciclo_id/ciclos/:municipio_id/municipios', index);
 router.get('/:regionalSaude_id/regionaisSaude', getActivitiesOfCity);
+router.get('/locais/:abrangencia_id/abrangencia/:municipio_id/municipios', getLocations);
 // router.get('/open', getOpenCycles);
 router.put('/:id', update);
 router.post('/', store);
+router.post('/planejar/:id', plan);
 router.delete('/:id', destroy);
 
 module.exports = app => app.use('/atividades', router);

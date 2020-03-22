@@ -3,26 +3,17 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable(
-      'zonas', { 
+      'estratos', { 
         id: {
           type: Sequelize.INTEGER,
           primaryKey: true,
           autoIncrement: true,
           allowNull: false,
         },
-        nome: {
-          type: Sequelize.STRING,
-          allowNull: false,
-        },
-        ativo: {
+        atividade_id: {
           type: Sequelize.INTEGER,
           allowNull: false,
-          defaultValue: 1
-        },
-        municipio_id: {
-          type: Sequelize.INTEGER,
-          allowNull: true,
-          references: { model: 'municipios', key: 'id' },
+          references: { model: 'atividades', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE'
         },
@@ -34,10 +25,11 @@ module.exports = {
           type: Sequelize.DATE,
           allowNull: false,
         }
-      });
+      }
+    );
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('zonas');
+    return queryInterface.dropTable('estratos');
   }
 };

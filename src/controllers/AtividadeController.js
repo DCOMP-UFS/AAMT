@@ -7,6 +7,8 @@ const Municipio = require('../models/Municipio');
 const Localidade = require('../models/Localidade');
 const Zona = require('../models/Zona');
 const Quarteirao = require('../models/Quarteirao');
+const Estrato = require('../models/Estrato');
+const SituacaoQuarteirao = require('../models/SituacaoQuarteirao');
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
@@ -16,7 +18,7 @@ index = async ( req, res ) => {
 
   const municipio = await Municipio.findByPk( municipio_id );
   if( !municipio )
-    return res.status(200).json({ message: "Município não existe" });
+    return res.status(400).json({ message: "Município não existe" });
 
   const atividades = await Atividade.findAll({
     where: {
@@ -195,7 +197,75 @@ plan = async ( req, res ) => {
   const { id } = req.params;
   const { estratos, equipes, abrangencia_id } = req.body;
 
-  return res.json({ estratos, equipes, abrangencia_id });
+  const allow = await allowFunction( req.userId, 'manter_atividade' );
+  if( !allow )
+    return res.status(403).json({ error: 'Acesso negado' });
+
+  const atividade = await Atividade.findByPk( id );
+  if( !atividade )
+    return res.status(400).json({ message: "Atividade não existe" });
+
+  estratos.forEach( async e => {
+    const est = await Estrato.create({
+      atividade_id: id
+    });
+
+    switch ( abrangencia_id ) {
+      case 1: // Localidade
+        e.locais.forEach( async l => {
+          await Quarteirao.findAll({
+            include: {
+              association: 'localidade',
+              where: {
+                id: l.id
+              }
+            }
+          }).then( quarteiroes => {
+            quarteiroes.forEach( async q => {
+              await SituacaoQuarteirao.create({
+                situacaoQuarteiraoId: 1,
+                estrato_id: est.id,
+                quarteirao_id: q.id
+              });
+            });
+          });
+        });
+      
+        break;
+      case 2: // Zona
+        e.locais.forEach( async l => {
+          await Quarteirao.findAll({
+            include: {
+              association: 'zona',
+              where: {
+                id: l.id
+              }
+            }
+          }).then( quarteiroes => {
+            quarteiroes.forEach( async q => {
+              await SituacaoQuarteirao.create({
+                situacaoQuarteiraoId: 1,
+                estrato_id: est.id,
+                quarteirao_id: q.id
+              });
+            });
+          });
+        });
+        break;
+    
+      default: // Quarteirão
+        e.locais.forEach( async l => {
+          await SituacaoQuarteirao.create({
+            situacaoQuarteiraoId: 1,
+            estrato_id: est.id,
+            quarteirao_id: l.id
+          });
+        });
+        break;
+    }
+  });
+
+  return res.json( atividade );
 }
 
 const router = express.Router();

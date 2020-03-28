@@ -23,6 +23,7 @@ const Ciclo = require('../models/Ciclo');
 const Atividade = require('../models/Atividade');
 const Local = require('../models/Local');
 const Estrato = require('../models/Estrato');
+const SituacaoQuarteirao = require('../models/SituacaoQuarteirao');
 const Equipe = require('../models/Equipe');
 const Membro = require('../models/Membro');
 
@@ -50,6 +51,7 @@ Ciclo.init( connection );
 Atividade.init( connection );
 Local.init( connection );
 Estrato.init( connection );
+SituacaoQuarteirao.init( connection );
 Equipe.init( connection );
 Membro.init( connection );
 
@@ -75,6 +77,7 @@ Ciclo.associate( connection.models );
 Atividade.associate( connection.models );
 Local.associate( connection.models );
 Estrato.associate( connection.models );
+SituacaoQuarteirao.associate( connection.models );
 Equipe.associate( connection.models );
 Membro.associate( connection.models );
 

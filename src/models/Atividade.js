@@ -19,6 +19,7 @@ class Atividade extends Model {
     this.belongsTo( models.Ciclo, { foreignKey: 'ciclo_id', as: 'ciclo', onDelete: 'CASCADE' } );
     this.belongsTo( models.Ciclo, { foreignKey: 'municipio_id', as: 'municipio' } );
     this.hasMany( models.Local, { foreignKey: 'atividade_id', as: 'locais' } );
+    this.hasMany( models.Estrato, { foreignKey: 'atividade_id', as: 'estratos' } );
   }
 }
 

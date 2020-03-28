@@ -12,7 +12,7 @@ module.exports = {
         },
         data_conclusao: {
           type: Sequelize.DATE,
-          allowNull: false,
+          allowNull: true,
         },
         situacao_quarteirao_id: {
           type: Sequelize.INTEGER,

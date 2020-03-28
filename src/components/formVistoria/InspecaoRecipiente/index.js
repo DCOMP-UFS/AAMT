@@ -57,17 +57,18 @@ function ListRecipiente( props ) {
 
   let li = recipiente.map(( recipiente, index ) =>
     <LiIcon
-      key={ index } >
-    <ContainerIcon className="ContainerIcon" >
-      <FaVial />
-    </ContainerIcon>
-    <DivDescription>
-      <div>
-        <span className="mr-2">Cód.: { recipiente.idRecipiente }</span>
-      </div>
-      <span>Nº amostra(s): { recipiente.unidade.length }</span>
-    </DivDescription>
-  </LiIcon>
+      key={ index }
+    >
+      <ContainerIcon className="ContainerIcon" >
+        <FaVial />
+      </ContainerIcon>
+      <DivDescription>
+        <div>
+          <span className="mr-2">Cód.: { recipiente.idRecipiente }</span>
+        </div>
+        <span>Nº amostra(s): { recipiente.unidade.length }</span>
+      </DivDescription>
+    </LiIcon>
   );
 
   if( recipiente.length === 0 ) {

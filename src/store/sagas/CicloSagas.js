@@ -1,13 +1,31 @@
 import { call, put } from 'redux-saga/effects';
 import {
+  getCycleRequest,
   getCyclesForYearRequest,
   getCyclesRequest,
   createCycleRequest,
-  getAllowedCyclesRequest
+  getAllowedCyclesRequest,
+  updateCycleRequest,
+  destroyCycleRequest
 } from '../../services/requests/Ciclo';
 
 import * as CicloActions from '../actions/CicloActions';
 import * as AppConfigActions from '../actions/appConfig';
+
+export function* getCycle(action) {
+  try {
+    const { data, status } = yield call( getCycleRequest, action.payload );
+
+    if( status === 200 ) {
+      yield put( CicloActions.getCycle( data ) );
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Falha ao consultar ciclo: " + status, "error" ) );
+    }
+
+  } catch (error) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar ciclo, favor verifique a conexão", "error" ) );
+  }
+}
 
 export function* getCyclesForYear(action) {
   try {
@@ -68,5 +86,35 @@ export function* createCycle( action ) {
     }
   } catch (error) {
     yield put( AppConfigActions.showNotifyToast( "Erro ao criar um novo ciclo, favor verifique a conexão", "error" ) );
+  }
+}
+
+export function* updateCycle( action ) {
+  try {
+    const { data, status } = yield call( updateCycleRequest, action.payload );
+
+    if( status === 200 ) {
+      yield put( CicloActions.updateCycle( data ) );
+      yield put( AppConfigActions.showNotifyToast( "Ciclo editado com sucesso", "success" ) );
+    }
+    else
+      yield put( AppConfigActions.showNotifyToast( "Falha ao editar ciclo: " + status, "error" ) );
+  } catch (error) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao editar ciclo, favor verifique a conexão", "error" ) );
+  }
+}
+
+export function* destroyCycle( action ) {
+  try {
+    const { status } = yield call( destroyCycleRequest, action.payload );
+
+    if( status === 200 ) {
+      yield put( CicloActions.destroyCycle( action.payload.id ) );
+      yield put( AppConfigActions.showNotifyToast( "Ciclo excluido com sucesso", "success" ) );
+    }
+    else
+      yield put( AppConfigActions.showNotifyToast( "Falha ao excluir ciclo: " + status, "error" ) );
+  } catch (error) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao excluir ciclo, favor verifique a conexão", "error" ) );
   }
 }

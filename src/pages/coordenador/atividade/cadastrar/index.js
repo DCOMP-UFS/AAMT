@@ -37,7 +37,7 @@ function Atividades({ metodologias, ciclos, ...props }) {
   const [ optionObjetivo, setoptionObjetivo ] = useState([]);
 
   useEffect(() => {
-    props.changeSidebar(2, 2);
+    props.changeSidebar(1, 2);
     props.getMethodologiesRequest();
     props.getAllowedCyclesRequest( props.regionalSaude_id );
   }, []);

@@ -14,10 +14,10 @@ export const getZoneByLocalityRequest = data => {
 }
 
 export const createZoneRequest = data => {
-  const { localidade_id } = data;
+  const { municipio_id } = data;
 
   return api.post(`/zonas`, {
-    localidade_id
+    municipio_id
   },
   {
     ...headerAuthorization()

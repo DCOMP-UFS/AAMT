@@ -32,6 +32,9 @@ const columns = [
     }
   },
   "Número",
+  "Cód. Localidade",
+  "Localidade",
+  "Número",
   "Zona",
   "Ativo",
   "Criado em",
@@ -84,6 +87,8 @@ function Quarteiroes({ quarteiroes, ...props }) {
       [
         { index: (index + 1), id: quarteirao.id },
         quarteirao.numero,
+        quarteirao.localidade.codigo,
+        quarteirao.localidade.nome,
         quarteirao.zona.nome,
         quarteirao.ativo ? "Sim" : "Não",
         getDateBr( quarteirao.createdAt ),

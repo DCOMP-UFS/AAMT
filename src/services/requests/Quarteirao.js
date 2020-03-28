@@ -15,10 +15,11 @@ export const getByIdRequest = data => {
 }
 
 export const createCityBlockRequest = data => {
-  const { numero, zona_id, lados } = data;
+  const { numero, localidade_id, zona_id, lados } = data;
 
   return api.post(`/quarteiroes/`, {
     numero,
+    localidade_id,
     zona_id,
     lados
   },

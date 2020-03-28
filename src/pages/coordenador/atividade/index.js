@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { IoIosPaper } from 'react-icons/io';
 import { Row } from 'react-bootstrap';
 import Select from 'react-select';
+import { situacaoAtividade } from '../../../config/enumerate';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebar';
@@ -93,7 +94,21 @@ function PlanejarAtividade({ ciclos, atividades, ...props }) {
           {
             atividades.map( (atv, index) => {
               return (
-                <ContainerAtividade key={ index } className="theme-article col-md-4 stretch-card" >
+                <ContainerAtividade
+                  key={ index }
+                  className="theme-article col-md-4 stretch-card"
+                  onClick={
+                    () => {
+                      switch( atv.situacao ) {
+                        case situacaoAtividade.aberta.id:
+                          window.location = `${ window.location.origin.toString() }/coord/atividades/planejamento/${ atv.id }`;
+                          break;
+                        default:
+                          break;
+                      }
+                    }
+                  }
+                >
                   <div className="card">
                     <h4 className="title mb-4">
                       Atividade <mark className="bg-primary text-white">{ atv.id }</mark>

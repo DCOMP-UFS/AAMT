@@ -54,8 +54,8 @@ const columns = [
      filter: false
     }
   },
+  "Cod. Município",
   "Município",
-  "Localidade",
   "Ativo"
 ];
 
@@ -104,15 +104,13 @@ function Zonas({ zonas, municipio, ...props }) {
 
   function createRows() {
     const list = zonas.map( (z, index) => {
-      const localidade = z.localidade ? z.localidade.nome : "";
-
       return ([
         { index: (index + 1), id: z.id },
         z.nome === 'unica' ? "Única" : z.nome,
         getDateBr( z.createdAt ),
         getDateBr( z.updatedAt ),
+        municipio.codigo,
         municipio.nome,
-        localidade,
         z.ativo ? "Sim" : "Não"
       ])
     });

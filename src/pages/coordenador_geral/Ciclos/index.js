@@ -4,7 +4,9 @@ import Typography from "@material-ui/core/Typography";
 import 'react-toastify/dist/ReactToastify.css';
 import Table, { ButtonAdd, ButtonDesabled } from '../../../components/Table';
 import { FaSyncAlt } from 'react-icons/fa';
-
+import ModalDestroy from './ModalDestroy';
+import ModalUpdateCycle from './ModalUpdateCycle';
+import $ from 'jquery';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -13,10 +15,11 @@ import { connect } from 'react-redux';
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebarCoordGeral';
 import { changeTableSelected } from '../../../store/actions/supportInfo';
-import { getCyclesRequest } from '../../../store/actions/CicloActions';
+import { getCyclesRequest, setIndexArray } from '../../../store/actions/CicloActions';
+import { showNotifyToast } from '../../../store/actions/appConfig';
 
 // STYLES
-// import { GlobalStyle } from './styles';
+import { GlobalStyle } from './styles';
 import { PageIcon, PageHeader } from '../../../styles/util';
 
 const columns = [
@@ -56,7 +59,7 @@ const columns = [
   "Situação"
 ];
 
-function Ciclos({ ciclos, regionalSaude_id, usuarios, ...props }) {
+function Ciclos({ ciclos, regionalSaude_id, ...props }) {
   const [ rows, setRows ] = useState([]);
   const options = {
     customToolbar: props => {
@@ -69,7 +72,7 @@ function Ciclos({ ciclos, regionalSaude_id, usuarios, ...props }) {
       );
     },
     customToolbarSelect: ({ data }) => {
-      props.changeTableSelected('tableUser', data);
+      props.changeTableSelected('tableCycle', data);
       return (
         <ButtonDesabled
           title="Excluir ciclo"
@@ -78,10 +81,15 @@ function Ciclos({ ciclos, regionalSaude_id, usuarios, ...props }) {
           data={ data } />
       );
     },
-    onRowClick: (row, ...props) => {
-      const id = row[0].props['data-id'];
+    onRowClick: (row, index, ...args) => {
+      const situacao = row[4];
 
-      window.location = `${ window.location.origin.toString() }/cg/ciclos/${ id }`;
+      if( situacao === "Finalizado" )
+        props.showNotifyToast( "Não é permitido editar ciclos finalizados", "warning" );
+      else {
+        props.setIndexArray( index.dataIndex );
+        $('#modal-editar-ciclo').modal('show');
+      }
     }
   };
 
@@ -95,18 +103,34 @@ function Ciclos({ ciclos, regionalSaude_id, usuarios, ...props }) {
   }, [ ciclos, props.reload ]);
 
   function createRows() {
+    let current_date = new Date();
+    current_date.setHours(0,0,0,0);
+
     const cycles = ciclos.map( (ciclo, index) => {
       let [ ano, mes, dia ] = ciclo.dataInicio.split('T')[0].split('-');
-      const dataInicio = `${ dia }/${ mes }/${ ano }`;
+      const dataInicioBr = `${ dia }/${ mes }/${ ano }`;
       [ ano, mes, dia ] = ciclo.dataFim.split('T')[0].split('-');
-      const dataFim = `${ dia }/${ mes }/${ ano }`;
+      const dataFimBr = `${ dia }/${ mes }/${ ano }`;
+
+      let dataInicio = new Date( ciclo.dataInicio );
+      let dataFim = new Date( ciclo.dataFim );
+
+      dataInicio.setHours(0,0,0,0);
+      dataFim.setHours(0,0,0,0);
+
+      if( dataInicio <= current_date && dataFim >= current_date )
+        ciclo.situacao = "Em aberto";
+      else if( dataFim < current_date )
+        ciclo.situacao = "Finalizado";
+      else
+        ciclo.situacao = "Planejado";
 
       return (
         [
           { index: (index + 1), id: ciclo.id },
           `${ ciclo.ano }.${ ciclo.sequencia }`,
-          dataInicio,
-          dataFim,
+          dataInicioBr,
+          dataFimBr,
           ciclo.situacao
         ]
       )
@@ -124,6 +148,7 @@ function Ciclos({ ciclos, regionalSaude_id, usuarios, ...props }) {
         </h3>
       </PageHeader>
       <section className="card-list">
+        <GlobalStyle />
         <div className="row">
           {/* Formulário básico */}
           <article className="col-md-12 stretch-card">
@@ -133,6 +158,9 @@ function Ciclos({ ciclos, regionalSaude_id, usuarios, ...props }) {
               data={ rows }
               options={ options }
             />
+
+            <ModalUpdateCycle />
+            <ModalDestroy />
           </article>
         </div>
       </section>
@@ -143,8 +171,7 @@ function Ciclos({ ciclos, regionalSaude_id, usuarios, ...props }) {
 const mapStateToProps = state => ({
   regionalSaude_id: state.appConfig.usuario.regionalSaude.id,
   ciclos: state.ciclo.ciclos,
-  usuarios: state.usuario.usuarios,
-  reload: state.usuario.reload,
+  reload: state.ciclo.reload,
   toast: state.appConfig.toast
 });
 
@@ -152,7 +179,9 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators({
     changeSidebar,
     changeTableSelected,
-    getCyclesRequest
+    getCyclesRequest,
+    showNotifyToast,
+    setIndexArray
   }, dispatch);
 
 export default connect(

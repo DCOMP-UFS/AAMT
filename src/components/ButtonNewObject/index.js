@@ -10,7 +10,8 @@ const ButtonNewObject = (props) => (
     title={ props.title }
     data-toggle={ props["data-toggle"] }
     data-target={ props["data-target"] }
-    onClick={ props.onClick }>
+    onClick={ props.onClick }
+    disabled={ props.disabled ? props.disabled : false }>
     <IconButton aria-label="more" className="text-success">
       <AddBoxIcon />
     </IconButton>

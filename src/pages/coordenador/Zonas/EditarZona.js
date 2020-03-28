@@ -12,36 +12,23 @@ import { connect } from 'react-redux';
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebar';
 import { updateZoneRequest, getZoneByIdRequest } from '../../../store/actions/ZonaActions';
-import { getLocationByCityRequest } from '../../../store/actions/LocalidadeActions';
 
 // STYLES
 import { FormGroup, selectDefault } from '../../../styles/global';
 import { ContainerFixed, PageHeader, PageIcon } from '../../../styles/util';
 
-function EditarZona({ zona, getLocationByCityRequest, getZoneByIdRequest, municipio_id, ...props }) {
+function EditarZona({ zona, getZoneByIdRequest, municipio_id, ...props }) {
   const [ id ] = useState(props.match.params.id);
-  const [ localidade, setLocalidade ] = useState({});
   const [ ativo, setAtivo ] = useState({});
-  const [ optionLocalidade, setOptionLocalidade ] = useState([]);
   const [ optionAtivo ] = useState([ { value: 1, label: 'Sim' }, { value: 0, label: 'Não' } ]);
 
   useEffect(() => {
     props.changeSidebar(4, 0);
-    getLocationByCityRequest( municipio_id );
     getZoneByIdRequest( id );
   }, []);
 
   useEffect(() => {
-    const options = props.localidades.map(( l ) => ({ value: l.id, label: l.nome }));
-
-    setOptionLocalidade( options );
-  }, [ props.localidades ]);
-
-  useEffect(() => {
     if( Object.entries( zona ).length > 0 ) {
-      if( zona.localidade ){
-        setLocalidade({ value: zona.localidade.id, label: zona.localidade.nome });
-      }
       setAtivo( { value: zona.ativo, label: zona.ativo ? 'Sim' : 'Não' } );
     }
   }, [ zona ]);
@@ -50,7 +37,6 @@ function EditarZona({ zona, getLocationByCityRequest, getZoneByIdRequest, munici
     e.preventDefault();
 
     props.updateZoneRequest( id, {
-      localidade_id: localidade.value,
       ativo: ativo.value
     });
   }
@@ -77,20 +63,6 @@ function EditarZona({ zona, getLocationByCityRequest, getZoneByIdRequest, munici
                 <Col sm='6'>
                   <form onSubmit={ handleSubmit } >
                     <h4 className="title">Informações da localidade</h4>
-                    <Row>
-                      <Col>
-                        <FormGroup>
-                          <label htmlFor="categoria">Localidade</label>
-                          <Select
-                            id="localidade"
-                            value={ localidade }
-                            styles={ selectDefault }
-                            options={ optionLocalidade }
-                            onChange={ e => setLocalidade(e) }
-                            required />
-                        </FormGroup>
-                      </Col>
-                    </Row>
                     <Row>
                       <Col>
                         <FormGroup>
@@ -136,7 +108,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
     changeSidebar,
-    getLocationByCityRequest,
     updateZoneRequest,
     getZoneByIdRequest
   }, dispatch);

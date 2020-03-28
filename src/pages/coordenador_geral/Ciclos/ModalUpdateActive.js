@@ -41,7 +41,9 @@ function ModalUpdateActive({ atividade, updateAtividade, metodologias, ...props 
       setObjetivoAtividade( atividade.objetivoAtividade );
       setFlTodosImoveis( atividade.selectFlTodosImoveis );
       setAbrangencia( atividade.selectAbrangencia );
-      setMetodologia( atividade.selectMetodologia );
+
+      const mtd = optionMetodologia.find( m => m.value === atividade.selectMetodologia.value );
+      setMetodologia( mtd );
     }
   }, [ atividade ]);
 

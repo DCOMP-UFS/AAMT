@@ -110,17 +110,23 @@ export default function* rootSaga() {
     takeLatest( RuaActions.DELETE_STREET_REQUEST, deleteStreet ),
 
     // Gerir Ciclo
+    takeLatest( CicloActions.GET_CYCLE_REQUEST, CicloSagas.getCycle ),
     takeLatest( CicloActions.GET_CYCLES_FOR_YEAR_REQUEST, CicloSagas.getCyclesForYear ),
     takeLatest( CicloActions.GET_CYCLES_REQUEST, CicloSagas.getCycles ),
     takeLatest( CicloActions.GET_ALLOWED_CYCLES_REQUEST, CicloSagas.getAllowedCycles ),
     takeLatest( CicloActions.CREATE_CYCLE_REQUEST, CicloSagas.createCycle ),
+    takeLatest( CicloActions.UPDATE_CYCLE_REQUEST, CicloSagas.updateCycle ),
+    takeLatest( CicloActions.DESTROY_CYCLE_REQUEST, CicloSagas.destroyCycle ),
 
     // Gerir Metodologia
     takeLatest( MetodologiaActions.GET_METHODOLOGIES_REQUEST, MetodologiaSagas.getMethodologies ),
 
     // Gerir Atividade
+    takeLatest( AtividadeActions.GET_ACTIVITIE_BY_ID_REQUEST, AtividadeSagas.getActivitieById ),
     takeLatest( AtividadeActions.GET_ACTIVITIES_OF_CITY_REQUEST, AtividadeSagas.getActivitiesOfCity ),
     takeLatest( AtividadeActions.GET_ACTIVITIES_BY_CITY_REQUEST, AtividadeSagas.getActivitiesByCity ),
-    takeLatest( AtividadeActions.CREATE_ACTIVE_REQUEST, AtividadeSagas.createActive )
+    takeLatest( AtividadeActions.GET_LOCATIONS_REQUEST, AtividadeSagas.getLocations ),
+    takeLatest( AtividadeActions.CREATE_ACTIVE_REQUEST, AtividadeSagas.createActive ),
+    takeLatest( AtividadeActions.PLAN_ACTIVITY_REQUEST, AtividadeSagas.planActivity )
   ]);
 }

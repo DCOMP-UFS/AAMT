@@ -51,11 +51,12 @@ export const getById = quarteirao => {
   }
 }
 
-export const createCityBlockRequest = ( numero, zona_id, lados ) => {
+export const createCityBlockRequest = ( numero, localidade_id, zona_id, lados ) => {
   return {
     type: ActionTypes.CREATE_CITY_BLOCK_REQUEST,
     payload: {
       numero,
+      localidade_id,
       zona_id,
       lados
     }

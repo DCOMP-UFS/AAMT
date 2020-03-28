@@ -93,6 +93,16 @@ export const GlobalStyle = createGlobalStyle`
   .Toastify__progress-bar--default {
     background: ${ Color.dark }!important;
   }
+
+  .expansion {
+    border: 1px solid #cccccc;
+    border-radius: 0.1875rem!important;
+    box-shadow: none!important;
+  }
+
+  .expansion::before {
+    display: none;
+  }
 `;
 
 export const ContainerBody = styled.div`
@@ -414,7 +424,7 @@ export const selectSm = {
 }
 
 export const UlIcon = styled.ul`
-  border: 1px solid ${ Color.border_light };
+  border: 1px solid ${ Color.border_input };
   list-style: none;
   padding: 0;
   max-height: 484px;
@@ -429,7 +439,7 @@ export const LiIcon = styled.li`
   /* flex-direction: column; */
 
   &:not(:last-child) {
-    border-bottom: 1px solid #ebedf2;
+    border-bottom: 1px solid #ccc;
   }
 
   &:hover {

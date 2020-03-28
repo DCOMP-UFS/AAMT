@@ -1,4 +1,6 @@
 export const ActionTypes = {
+  GET_CYCLE_REQUEST: "GET_CYCLE_REQUEST",
+  GET_CYCLE_SUCCESS: "GET_CYCLE_SUCCESS",
   GET_CYCLES_FOR_YEAR_REQUEST: "GET_CYCLES_FOR_YEAR_REQUEST",
   GET_CYCLES_FOR_YEAR_SUCCESS: "GET_CYCLES_FOR_YEAR_SUCCESS",
   GET_CYCLES_REQUEST: "GET_CYCLES_REQUEST",
@@ -6,7 +8,30 @@ export const ActionTypes = {
   GET_ALLOWED_CYCLES_REQUEST: "GET_ALLOWED_CYCLES_REQUEST",
   GET_ALLOWED_CYCLES_SUCCESS: "GET_ALLOWED_CYCLES_SUCCESS",
   CREATE_CYCLE_REQUEST: "CREATE_CYCLE_REQUEST",
-  CREATE_CYCLE_SUCCESS: "CREATE_CYCLE_REQUEST"
+  CREATE_CYCLE_SUCCESS: "CREATE_CYCLE_REQUEST",
+  UPDATE_CYCLE_REQUEST: "UPDATE_CYCLE_REQUEST",
+  UPDATE_CYCLE_SUCCESS: "UPDATE_CYCLE_SUCCESS",
+  DESTROY_CYCLE_REQUEST: "DESTROY_CYCLE_REQUEST",
+  DESTROY_CYCLE_SUCCESS: "DESTROY_CYCLE_SUCCESS",
+  SET_INDEX_ARRAY: "SET_INDEX_ARRAY"
+}
+
+export const getCycleRequest = id => {
+  return {
+    type: ActionTypes.GET_CYCLE_REQUEST,
+    payload: {
+      id
+    }
+  }
+}
+
+export const getCycle = ciclo => {
+  return {
+    type: ActionTypes.GET_CYCLE_SUCCESS,
+    payload: {
+      ciclo
+    }
+  }
 }
 
 export const getCyclesForYearRequest = (regionalSaude_id, ano) => {
@@ -81,6 +106,52 @@ export const createCycleRequest = (
       dataFim,
       regionalSaude_id,
       atividades
+    }
+  }
+}
+
+export const updateCycleRequest = ( id, body ) => {
+  return {
+    type: ActionTypes.UPDATE_CYCLE_REQUEST,
+    payload: {
+      id,
+      body
+    }
+  }
+}
+
+export const updateCycle = ciclo => {
+  return {
+    type: ActionTypes.UPDATE_CYCLE_SUCCESS,
+    payload: {
+      ciclo
+    }
+  }
+}
+
+export const destroyCycleRequest = id => {
+  return {
+    type: ActionTypes.DESTROY_CYCLE_REQUEST,
+    payload: {
+      id
+    }
+  }
+}
+
+export const destroyCycle = id => {
+  return {
+    type: ActionTypes.DESTROY_CYCLE_SUCCESS,
+    payload: {
+      id
+    }
+  }
+}
+
+export const setIndexArray = index => {
+  return {
+    type: ActionTypes.SET_INDEX_ARRAY,
+    payload: {
+      index
     }
   }
 }

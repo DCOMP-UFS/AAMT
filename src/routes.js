@@ -140,7 +140,7 @@ const Routes = props => {
         {/* Rotas de coordenador geral */}
         <PrivateCoordenadorGeral path="/cg/home" component={ Home } tipoPerfil={ perfil } />
         <PrivateCoordenadorGeral exact path="/cg/ciclos" component={ DashBoardCiclo } tipoPerfil={ perfil } />
-        <PrivateCoordenadorGeral path="/cg/ciclos/consultar" component={ CGCicloConsultar } tipoPerfil={ perfil } />
+        <PrivateCoordenadorGeral exact path="/cg/ciclos/consultar" component={ CGCicloConsultar } tipoPerfil={ perfil } />
         <PrivateCoordenadorGeral path="/cg/ciclos/cadastrar" component={ CGCicloCadastrar } tipoPerfil={ perfil } />
         <PrivateCoordenadorGeral exact path="/cg/atividades" component={ CGAtividadesConsultar } tipoPerfil={ perfil } />
         <PrivateCoordenadorGeral path="/cg/atividades/cadastrar" component={ CGAtividades } tipoPerfil={ perfil } />

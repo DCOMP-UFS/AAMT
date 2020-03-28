@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
 import { IoIosPaper } from 'react-icons/io';
+import Select from 'react-select';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebarCoordGeral';
@@ -11,6 +12,7 @@ import { getActivitiesOfCityRequest } from '../../../store/actions/AtividadeActi
 
 // STYLES
 import { DescricaoAtividade, ObjetivoAtividade } from './styles';
+import { FormGroup, selectDefault } from '../../../styles/global';
 import {
   InfoGroup,
   UlIcon,
@@ -18,7 +20,8 @@ import {
   ContainerUl,
   LiEmpty,
   PageIcon,
-  PageHeader
+  PageHeader,
+  PagePopUp
 } from '../../../styles/util';
 
 function PlanejarAtividade({ atividades, ...props }) {
@@ -26,11 +29,6 @@ function PlanejarAtividade({ atividades, ...props }) {
     props.changeSidebar(2, 1);
     props.getActivitiesOfCityRequest( props.regionalSaude_id );
   }, []);
-
-  useEffect(() => {
-    console.log(atividades);
-
-  }, [atividades]);
 
   return (
     <>
@@ -41,6 +39,22 @@ function PlanejarAtividade({ atividades, ...props }) {
         </h3>
       </PageHeader>
       <section className="card-list">
+        <Row>
+          <PagePopUp className="w-100">
+            <div className="card">
+              <div className="d-flex align-content">
+                <FormGroup className="w-25 m-0 inline">
+                  <label htmlFor="ciclo">Ciclo</label>
+                  <Select
+                    id="ciclo"
+                    styles={ selectDefault }
+                  />
+                </FormGroup>
+              </div>
+            </div>
+          </PagePopUp>
+        </Row>
+
         <Row>
           {
             atividades.map( (municipio, index) => (
@@ -83,7 +97,15 @@ function CardAtividades({ municipio }) {
     }
 
     return (
-      <LiIcon key={ index } className={ classLi } >
+      <LiIcon
+        key={ index }
+        className={ classLi }
+        onClick={
+          () => {
+            window.location = `${ window.location.origin.toString() }/cg/atividades/${ atv.id }`
+          }
+        }
+      >
         <ContainerUl>
           <DescricaoAtividade>
             <div style={{ flex: "3" }}>

@@ -1,5 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ButtonClose from '../ButtonClose';
+import $ from 'jquery';
+
+// STYLES
+import { Button } from '../../styles/global';
 
 export default function Modal({ id, title, ...props }) {
   const centered = props.centered ? 'modal-dialog-centered' : '';
@@ -36,5 +40,26 @@ export function ModalFooter({ children }) {
       <Button type="submit">Iniciar</Button> */}
       {children}
     </div>
+  );
+}
+
+export function ModalConfirm( props ) {
+  const [ id ] = useState( props.id ? props.id : "modal-confirm" );
+
+  function confirm() {
+    props.confirm();
+    $(`#${ id }`).modal('hide');
+  }
+
+  return(
+    <Modal id={ id } title={ props.title } centered={ true }>
+      <ModalBody>
+        { props.children }
+      </ModalBody>
+      <ModalFooter>
+        <Button className="secondary" data-dismiss="modal">Cancelar</Button>
+        <Button className="danger" onClick={ confirm }>Confirmar</Button>
+      </ModalFooter>
+    </Modal>
   );
 }

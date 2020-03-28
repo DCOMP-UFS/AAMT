@@ -15,7 +15,7 @@ import { connect } from 'react-redux';
 // ACTIONS
 import { createCityBlockRequest, clearCreate } from '../../../store/actions/QuarteiraoActions';
 import { getLocationByCityRequest } from '../../../store/actions/LocalidadeActions';
-import { getZoneByLocalityRequest } from '../../../store/actions/ZonaActions';
+import { getZoneByCityRequest } from '../../../store/actions/ZonaActions';
 import { getStreetByLocalityRequest } from '../../../store/actions/RuaActions';
 
 // STYLES
@@ -47,6 +47,7 @@ function ModalAdd({ createCityBlockRequest, municipio_id, created, ...props }) {
   useEffect(() => {
     props.clearCreate();
     props.getLocationByCityRequest( municipio_id );
+    props.getZoneByCityRequest( municipio_id );
   }, []);
 
   useEffect(() => {
@@ -70,7 +71,6 @@ function ModalAdd({ createCityBlockRequest, municipio_id, created, ...props }) {
 
   useEffect(() => {
     setLado({ ...lado, localidade_id: localidade.value });
-    props.getZoneByLocalityRequest( localidade.value );
     props.getStreetByLocalityRequest( localidade.value );
 
     setZona({});
@@ -117,7 +117,7 @@ function ModalAdd({ createCityBlockRequest, municipio_id, created, ...props }) {
   function handleCadastrar( e ) {
     e.preventDefault();
 
-    createCityBlockRequest( numero, zona.value, lados );
+    createCityBlockRequest( numero, localidade.value, zona.value, lados );
   }
 
   return(
@@ -139,7 +139,7 @@ function ModalAdd({ createCityBlockRequest, municipio_id, created, ...props }) {
             </Col>
             <Col sm='6'>
               <FormGroup>
-                <label htmlFor="zona">Zona <code>*</code></label>
+                <label htmlFor="zona">Zona</label>
                 <Select
                   id="zona"
                   value={ zona }
@@ -292,7 +292,7 @@ const mapDispatchToProps = dispatch =>
     createCityBlockRequest,
     clearCreate,
     getLocationByCityRequest,
-    getZoneByLocalityRequest,
+    getZoneByCityRequest,
     getStreetByLocalityRequest
   }, dispatch);
 

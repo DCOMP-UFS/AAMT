@@ -9,6 +9,9 @@ const Zona = require('../models/Zona');
 const Quarteirao = require('../models/Quarteirao');
 const Estrato = require('../models/Estrato');
 const SituacaoQuarteirao = require('../models/SituacaoQuarteirao');
+const Equipe = require('../models/Equipe');
+const EquipeQuarteirao = require('../models/EquipeQuarteirao');
+const Membro = require('../models/Membro');
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
@@ -222,6 +225,7 @@ plan = async ( req, res ) => {
             }
           }).then( quarteiroes => {
             quarteiroes.forEach( async q => {
+              // Vinculando os quarteirões aos estratos
               await SituacaoQuarteirao.create({
                 situacaoQuarteiraoId: 1,
                 estrato_id: est.id,
@@ -263,6 +267,73 @@ plan = async ( req, res ) => {
         });
         break;
     }
+  });
+
+  equipes.forEach( async equipe => {
+    const e = await Equipe.create({
+      atividade_id: id
+    });
+  
+    // Vinculando os quarteirões de responsabilidade da equipe
+    equipe.locais.forEach( async l => {
+      switch ( abrangencia_id ) {
+        case 1:// Localidade
+          await Quarteirao.findAll({
+            include: {
+              association: 'localidade',
+              where: {
+                id: l.id
+              }
+            }
+          }).then( quarteiroes => {
+            quarteiroes.forEach( async q => {
+              await EquipeQuarteirao.create({
+                equipe_id: e.id,
+                quarteirao_id: q.id
+              });
+            });
+          });
+          break;
+  
+        case 2:// Zona
+          await Quarteirao.findAll({
+            include: {
+              association: 'zona',
+              where: {
+                id: l.id
+              }
+            }
+          }).then( quarteiroes => {
+            quarteiroes.forEach( async q => {
+              await EquipeQuarteirao.create({
+                equipe_id: e.id,
+                quarteirao_id: q.id
+              });
+            });
+          });
+          break;
+      
+        default:// Quarteirão
+          await EquipeQuarteirao.create({
+            equipe_id: e.id,
+            quarteirao_id: l.id
+          });
+          break;
+      }
+    });
+
+    equipe.membros.forEach( async membro => {
+      let tipoPerfil_id = 4;// Agente
+      if( membro.id === equipe.supervisor.id ) {
+        tipoPerfil_id = 3;
+      }
+
+      await Membro.create({
+        tipoPerfil: tipoPerfil_id,
+        equipe_id: e.id,
+        usuario_id: membro.id
+      });
+    });
   });
 
   return res.json( atividade );

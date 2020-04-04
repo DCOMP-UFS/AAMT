@@ -26,6 +26,7 @@ const Estrato = require('../models/Estrato');
 const SituacaoQuarteirao = require('../models/SituacaoQuarteirao');
 const Equipe = require('../models/Equipe');
 const Membro = require('../models/Membro');
+const EquipeQuarteirao = require('../models/EquipeQuarteirao');
 
 const connection = new Sequelize(dbConfig);
 
@@ -54,6 +55,7 @@ Estrato.init( connection );
 SituacaoQuarteirao.init( connection );
 Equipe.init( connection );
 Membro.init( connection );
+EquipeQuarteirao.init( connection );
 
 Usuario.associate( connection.models );
 Municipio.associate( connection.models );
@@ -80,5 +82,6 @@ Estrato.associate( connection.models );
 SituacaoQuarteirao.associate( connection.models );
 Equipe.associate( connection.models );
 Membro.associate( connection.models );
+EquipeQuarteirao.associate( connection.models );
 
 module.exports = connection;

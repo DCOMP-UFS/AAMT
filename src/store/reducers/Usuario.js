@@ -81,7 +81,8 @@ export default function Usuario(state = INITIAL_STATE, action) {
       return {
         ...state,
         usuarios,
-        reload: !state.reload
+        reload: !state.reload,
+        updateUser: true
       }
     }
 

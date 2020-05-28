@@ -45,6 +45,7 @@ function Atividades({ metodologias, ciclos, ...props }) {
   const [ objetivo, setObjetivo ] = useState({});
   const [ optionObjetivo, setoptionObjetivo ] = useState([]);
   const [ listaMunicipios, setListaMunicipios ] = useState([]);
+  const [ flBtnLoading, setFlBtnLoading ] = useState( false );
 
   useEffect(() => {
     props.changeSidebar(2, 2);
@@ -97,6 +98,7 @@ function Atividades({ metodologias, ciclos, ...props }) {
 
   function handleSubmit( e ) {
     e.preventDefault();
+    setFlBtnLoading( true );
 
     const mun = listaMunicipios
       .filter( l => l.checked )
@@ -133,7 +135,10 @@ function Atividades({ metodologias, ciclos, ...props }) {
                 <ButtonSave
                   title="Salvar"
                   className="bg-info text-white"
-                  type="submit" />
+                  loading={ flBtnLoading }
+                  disabled={ flBtnLoading }
+                  type="submit"
+                />
               </ContainerFixed>
               <Row>
                 <Col sm='6'>

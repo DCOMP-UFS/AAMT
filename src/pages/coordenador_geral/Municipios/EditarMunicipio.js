@@ -4,6 +4,8 @@ import { Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
 import ButtonSave from '../../../components/ButtonSave';
 import { FaCity } from 'react-icons/fa';
+import LoadginGif from '../../../assets/loading.gif';
+import { FaMapSigns } from 'react-icons/fa';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -11,7 +13,8 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebarCoordGeral';
-import { updateCityRequest, getCityByIdRequest } from '../../../store/actions/MunicipioActions';
+import { updateCityRequest, getCityByIdRequest, clearUpdateCity } from '../../../store/actions/MunicipioActions';
+import { getLocationByCityRequest } from '../../../store/actions/LocalidadeActions';
 import { getNationsRequest } from '../../../store/actions/PaisActions';
 import { GetRegionsByNationRequest } from '../../../store/actions/RegiaoActions';
 import { GetStatesByRegionRequest } from '../../../store/actions/EstadoActions';
@@ -19,9 +22,19 @@ import { getRegionalHealthByStateRequest } from '../../../store/actions/Regional
 
 // STYLES
 import { FormGroup, selectDefault } from '../../../styles/global';
-import { ContainerFixed, PageIcon, PageHeader } from '../../../styles/util';
+import {
+  ContainerFixed,
+  PageIcon,
+  PageHeader,
+  UlIcon,
+  LiIcon,
+  LiEmpty,
+  ContainerIcon,
+  DivDescription,
+  ContainerUl
+} from '../../../styles/util';
 
-function EditarMunicipio({ municipio, updateCityRequest, getCityByIdRequest, ...props }) {
+function EditarMunicipio({ municipio, localidades, ...props }) {
   const [ id ] = useState(props.match.params.id);
   const [ codigo, setCodigo ] = useState(null);
   const [ nome, setNome ] = useState("");
@@ -34,12 +47,14 @@ function EditarMunicipio({ municipio, updateCityRequest, getCityByIdRequest, ...
   const [ optionEstado, setOptionEstado ] = useState([]);
   const [ regionalSaude, setRegionalSaude ] = useState({});
   const [ optionRegionalSaude, setOptionRegionalSaude ] = useState([]);
+  const [ flLoading, setFlLoading ] = useState( false );
 
   const optionAtivo = [ { value: 1, label: 'Sim' }, { value: 0, label: 'Não' } ];
 
   useEffect(() => {
     props.changeSidebar(4, 0);
-    getCityByIdRequest( id );
+    props.getCityByIdRequest( id );
+    props.getLocationByCityRequest( id );
   }, []);
 
   useEffect(() => {
@@ -123,10 +138,18 @@ function EditarMunicipio({ municipio, updateCityRequest, getCityByIdRequest, ...
     }
   }, [ municipio ]);
 
+  useEffect(() => {
+    if( props.updatedCity ) {
+      setFlLoading( false );
+      props.clearUpdateCity();
+    }
+  }, [ props.updatedCity ]);
+
   function handleSubmit( e ) {
     e.preventDefault();
+    setFlLoading( true );
 
-    updateCityRequest( id, {
+    props.updateCityRequest( id, {
       codigo,
       nome,
       regionalSaude_id: regionalSaude.value,
@@ -239,13 +262,20 @@ function EditarMunicipio({ municipio, updateCityRequest, getCityByIdRequest, ...
                       <ButtonSave
                         title="Salvar"
                         className="bg-info text-white"
-                        type="submit" />
+                        loading={ flLoading }
+                        disabled={ flLoading }
+                        type="submit"
+                      />
                     </ContainerFixed>
                   </form>
                 </Col>
 
                 <Col sm='6'>
-                  <h4 className="title">Bairro/Localidade</h4>
+                  <h4 className="title">Bairro(s)/Localidade(s)</h4>
+
+                  <ListLocation
+                    localidades={ localidades }
+                  />
                 </Col>
               </Row>
             </div>
@@ -256,12 +286,46 @@ function EditarMunicipio({ municipio, updateCityRequest, getCityByIdRequest, ...
   );
 }
 
+function ListLocation( props ) {
+  let li = props.localidades.map(( localidade, index ) =>
+    <LiIcon
+      key={ index }
+    >
+      <ContainerUl onClick={ () => props.openModalUpdate( index ) }>
+        <ContainerIcon className="ContainerIcon" >
+          <FaMapSigns />
+        </ContainerIcon>
+        <DivDescription>
+          <div>
+            <mark className="mr-2 bg-info text-white">Cód.: { localidade.codigo }</mark>
+            <span>{ localidade.nome }</span>
+          </div>
+        </DivDescription>
+      </ContainerUl>
+    </LiIcon>
+  );
+
+  if( props.localidades.length === 0 ) {
+    li = <LiEmpty>
+      <h4>Nenhuma localidade cadastrada</h4>
+    </LiEmpty>;
+  }
+
+  return (
+    <UlIcon>
+      { li }
+    </UlIcon>
+  )
+}
+
 const mapStateToProps = state => ({
   municipio: state.municipio.municipio,
   paises: state.pais.paises,
   regioes: state.regiao.regioes,
   estados: state.estado.estados,
-  regionaisSaude: state.regionalSaude.regionaisSaude
+  regionaisSaude: state.regionalSaude.regionaisSaude,
+  updatedCity: state.municipio.updatedCity,
+  localidades: state.localidade.localidades
 });
 
 const mapDispatchToProps = dispatch =>
@@ -272,7 +336,9 @@ const mapDispatchToProps = dispatch =>
     getNationsRequest,
     GetRegionsByNationRequest,
     GetStatesByRegionRequest,
-    getRegionalHealthByStateRequest
+    getRegionalHealthByStateRequest,
+    clearUpdateCity,
+    getLocationByCityRequest
   }, dispatch);
 
 export default connect(

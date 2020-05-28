@@ -24,9 +24,6 @@ import { getStreetByLocalityRequest, changeStreetSelect } from '../../../store/a
 
 // STYLES
 import {
-  ContainerInfo,
-  DivZone,
-  DivStreet,
   UlStreet,
   Street,
   ContainerIcon,
@@ -34,7 +31,7 @@ import {
   Span,
   Container
 } from './styles';
-import { FormGroup, selectDefault } from '../../../styles/global';
+import { FormGroup, selectDefault, LiEmpty } from '../../../styles/global';
 import { ContainerFixed, PageHeader, PageIcon } from '../../../styles/util';
 
 function EditarLocalidades({ localidade, ruas, getLocationByIdRequest, ...props }) {
@@ -165,60 +162,24 @@ function EditarLocalidades({ localidade, ruas, getLocationByIdRequest, ...props 
                 </Col>
 
                 <Col sm='6'>
-                  <ContainerInfo>
-                    <DivZone className="col-12">
-                      <h4 className="title">
-                        Zonas
-                        <ButtonNewObject
-                          title="Cadastrar Zona"
-                          data-toggle="modal"
-                          data-target="#modal-novo-zona"
-                        />
-                      </h4>
+                  <h4 className="title">
+                    Ruas
+                    <ButtonNewObject
+                      title="Cadastrar Rua"
+                      data-toggle="modal"
+                      data-target="#modal-novo-rua"
+                    />
+                  </h4>
 
-                    </DivZone>
-                    <DivStreet className="col-12">
-                      <h4 className="title">
-                        Ruas
-                        <ButtonNewObject
-                          title="Cadastrar Rua"
-                          data-toggle="modal"
-                          data-target="#modal-novo-rua"
-                        />
-                      </h4>
+                  <ListStreet
+                    ruas={ ruas }
+                    openModalUpdate={ openModalUpdate }
+                    openModalDelete={ openModalDelete }
+                  />
 
-                      <UlStreet>
-                        {
-                          ruas.map( (rua, index) => (
-                            <Street key={ index } >
-                              <Container onClick={ () => openModalUpdate( index ) }>
-                                <ContainerIcon>
-                                  <FaRoad />
-                                </ContainerIcon>
-                                <DivDescription>
-                                  <div>
-                                    <mark className="mr-2 bg-info text-white">{ rua.nome }</mark>
-                                    <span>CEP: { rua.cep }</span>
-                                  </div>
-
-                                  <Span></Span>
-                                </DivDescription>
-                              </Container>
-                              <ButtonClose
-                                title="Excluir Rua"
-                                onClick={ () => openModalDelete( index ) }
-                                className="ml-2 text-danger"
-                              />
-                            </Street>
-                          ))
-                        }
-                      </UlStreet>
-
-                      <ModalAddStreet data-localidade-id={ id } />
-                      <ModalUpdateStreet />
-                      <ModalDeleteStreet />
-                    </DivStreet>
-                  </ContainerInfo>
+                  <ModalAddStreet data-localidade-id={ id } />
+                  <ModalUpdateStreet />
+                  <ModalDeleteStreet />
                 </Col>
               </Row>
             </div>
@@ -227,6 +188,45 @@ function EditarLocalidades({ localidade, ruas, getLocationByIdRequest, ...props 
       </section>
     </>
   );
+}
+
+function ListStreet( props ) {
+  let li = props.ruas.map( (rua, index) => (
+    <Street key={ index } >
+      <Container onClick={ () => props.openModalUpdate( index ) }>
+        <ContainerIcon>
+          <FaRoad />
+        </ContainerIcon>
+        <DivDescription>
+          <div>
+            <mark className="mr-2 bg-info text-white">{ rua.nome }</mark>
+            <span>CEP: { rua.cep }</span>
+          </div>
+
+          <Span></Span>
+        </DivDescription>
+      </Container>
+      <ButtonClose
+        title="Excluir Rua"
+        onClick={ () => props.openModalDelete( index ) }
+        className="ml-2 text-danger"
+      />
+    </Street>
+  ));
+
+  if( props.ruas.length === 0 ) {
+    li = (
+      <LiEmpty>
+        <h4>Nenhum imóvel encontrado</h4>
+      </LiEmpty>
+    );
+  }
+
+  return (
+    <UlStreet>
+      { li }
+    </UlStreet>
+  )
 }
 
 const mapStateToProps = state => ({

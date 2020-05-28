@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebar';
-import { updateUsuarioRequest, getUsuarioByIdRequest } from '../../../store/actions/UsuarioActions';
+import { updateUsuarioRequest, getUsuarioByIdRequest, clearUpdateUser } from '../../../store/actions/UsuarioActions';
 import { getNationsRequest } from '../../../store/actions/PaisActions';
 import { GetRegionsByNationRequest } from '../../../store/actions/RegiaoActions';
 import { GetStatesByRegionRequest } from '../../../store/actions/EstadoActions';
@@ -43,11 +43,11 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
   const [ optionRegionalSaude, setOptionRegionalSaude ] = useState([]);
   const [ municipio, setMunicipio ] = useState({});
   const [ optionMunicipio, setOptionMunicipio ] = useState([]);
-
   const [ userRegiao, setUserRegiao ] = useState({});
   const [ userEstado, setUserEstado ] = useState({});
   const [ userRegionalSaude, setUserRegionalSaude ] = useState({});
   const [ userMunicipio, setUserMunicipio ] = useState({});
+  const [ flBtnLoading, setFlBtnLoading ] = useState( false );
 
   const optionPerfil = Object.entries(perfil)
     .filter( ([ key, value ]) => {
@@ -193,8 +193,17 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
     }
   }, [ usuarioUpdate ]);
 
+  useEffect(() => {
+    if( props.update ) {
+      setFlBtnLoading( false );
+      props.clearUpdateUser();
+    }
+  }, [ props.update ]);
+
   function handleSubmit( e ) {
     e.preventDefault();
+    setFlBtnLoading( true );
+
     let at = {
         tipoPerfil: null,
         local_id: null
@@ -399,6 +408,8 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
                   <ButtonSave
                     title="Salvar"
                     className="bg-info text-white"
+                    loading={ flBtnLoading }
+                    disabled={ flBtnLoading }
                     type="submit" />
                 </ContainerFixed>
               </form>
@@ -417,7 +428,8 @@ const mapStateToProps = state => ({
   regioes: state.regiao.regioes,
   estados: state.estado.estados,
   regionaisSaude: state.regionalSaude.regionaisSaude,
-  municipiosList: state.municipio.municipiosList
+  municipiosList: state.municipio.municipiosList,
+  update: state.usuario.updateUser
 });
 
 const mapDispatchToProps = dispatch =>
@@ -429,7 +441,8 @@ const mapDispatchToProps = dispatch =>
     GetRegionsByNationRequest,
     GetStatesByRegionRequest,
     getRegionalHealthByStateRequest,
-    getCityByRegionalHealthRequest
+    getCityByRegionalHealthRequest,
+    clearUpdateUser
   }, dispatch);
 
 export default connect(

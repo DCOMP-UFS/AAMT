@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebarCoordGeral';
-import { createCycleRequest } from '../../../store/actions/CicloActions';
+import { createCycleRequest, changeFlAddActive } from '../../../store/actions/CicloActions';
 
 // STYLES
 import { FormGroup, selectDefault } from '../../../styles/global';
@@ -51,6 +51,7 @@ function CadastrarCiclo({ ...props }) {
     { value: 6, label: "6" },
   ]);
   const [ optionAno, setOptionAno ] = useState([]);
+  const [ flBtnLoading, setFlBtnLoading ] = useState( false );
 
   useEffect(() => {
     props.changeSidebar(1, 2);
@@ -67,6 +68,7 @@ function CadastrarCiclo({ ...props }) {
 
   function addAtividade( atividade ) {
     setAtividades( [...atividades, atividade] );
+    props.changeFlAddActive( true );
 
     $("#modal-novo-atividade").modal('hide');
   }
@@ -89,6 +91,7 @@ function CadastrarCiclo({ ...props }) {
 
   function handleSubmit( e ) {
     e.preventDefault();
+    setFlBtnLoading( true );
 
     props.createCycleRequest(
       ano.value,
@@ -125,6 +128,8 @@ function CadastrarCiclo({ ...props }) {
                       <ButtonSave
                         title="Salvar"
                         className="bg-info text-white"
+                        loading={ flBtnLoading }
+                        disabled={ flBtnLoading }
                         type="submit" />
                     </ContainerFixed>
 
@@ -275,7 +280,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
     changeSidebar,
-    createCycleRequest
+    createCycleRequest,
+    changeFlAddActive
   }, dispatch);
 
 export default connect(

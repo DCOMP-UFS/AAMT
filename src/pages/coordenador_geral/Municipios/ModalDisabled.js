@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal, { ModalBody, ModalFooter } from '../../../components/Modal';
 import $ from 'jquery';
+import LoadginGif from '../../../assets/loading.gif';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -14,7 +15,18 @@ import { updateCityRequest, clearUpdateCity } from '../../../store/actions/Munic
 import { Button } from '../../../styles/global';
 
 function ModalDisabled( props ) {
+  const [ flLoading, setFlLoading ] = useState( false );
+
+  useEffect(() => {
+    if( props.updatedCity ) {
+      $('#modal-desativar-municipio').modal('hide');
+      setFlLoading( false );
+      props.clearUpdateCity();
+    }
+  }, [ props.updatedCity ]);
+
   function handleClick() {
+    setFlLoading( true );
     props.tableSelected.forEach( row => {
       const { id } = props.municipios[ row.index ];
 
@@ -24,16 +36,6 @@ function ModalDisabled( props ) {
     props.clearUpdateCity();
   }
 
-  useEffect(() => {
-    props.clearUpdateCity();
-  }, []);
-
-  useEffect(() => {
-    if( props.updatedCity ) {
-      $('#modal-desativar-municipio').modal('hide');
-    }
-  }, [ props.updatedCity ]);
-
   return(
     <Modal id="modal-desativar-municipio" title="Desativar Município(s)" centered={ true }>
       <ModalBody>
@@ -41,7 +43,28 @@ function ModalDisabled( props ) {
       </ModalBody>
       <ModalFooter>
         <Button className="secondary" data-dismiss="modal">Cancelar</Button>
-        <Button className="danger" onClick={ handleClick }>Confirmar</Button>
+        <Button
+          className="danger"
+          onClick={ handleClick }
+          loading={ flLoading }
+          disabled={ flLoading }
+        >
+          {
+            flLoading ?
+              (
+                <>
+                  <img
+                    src={ LoadginGif }
+                    width="25"
+                    style={{ marginRight: 10 }}
+                    alt="Carregando"
+                  />
+                  Desativando...
+                </>
+              ) :
+              "Confirmar"
+          }
+        </Button>
       </ModalFooter>
     </Modal>
   );

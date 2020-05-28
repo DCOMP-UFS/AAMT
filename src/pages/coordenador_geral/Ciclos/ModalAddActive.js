@@ -4,6 +4,7 @@ import Select from 'react-select'
 import Modal, { ModalBody, ModalFooter } from '../../../components/Modal';
 import { Row, Col } from 'react-bootstrap';
 import { abrangencia as abrangenciaEnum }  from '../../../config/enumerate';
+import LoadginGif from '../../../assets/loading.gif';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -11,6 +12,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { getMethodologiesRequest } from '../../../store/actions/MetodologiaActions';
+import { changeFlAddActive } from '../../../store/actions/CicloActions';
 
 // STYLES
 import { ContainerArrow } from '../../../styles/util';
@@ -31,6 +33,7 @@ function ModalAddActive({ addAtividade, metodologias, ...props }) {
   const optionAbrangencia = Object.entries(abrangenciaEnum).map(([key, value]) => {
     return { value: value.id, label: value.label };
   });
+  const [ flLoading, setFlLoading ] = useState( false );
 
   useEffect(() => {
     props.getMethodologiesRequest();
@@ -64,8 +67,16 @@ function ModalAddActive({ addAtividade, metodologias, ...props }) {
     setObjetivo({});
   }
 
+  useEffect(() => {
+    if( props.flAddActive ) {
+      setFlLoading( false );
+      props.changeFlAddActive( null );
+    }
+  }, [ props.flAddActive ]);
+
   function handleSubmit( e ) {
     e.preventDefault();
+    setFlLoading( true );
 
     addAtividade({
       objetivoAtividade,
@@ -166,7 +177,23 @@ function ModalAddActive({ addAtividade, metodologias, ...props }) {
             </div>
             <div>
               <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
-              <Button type="submit">Salvar</Button>
+              <Button type="submit" loading={ flLoading } disabled={ flLoading } >
+                {
+                  flLoading ?
+                    (
+                      <>
+                        <img
+                          src={ LoadginGif }
+                          width="25"
+                          style={{ marginRight: 10 }}
+                          alt="Carregando"
+                        />
+                        Salvando...
+                      </>
+                    ) :
+                    "Salvar"
+                }
+              </Button>
             </div>
           </ContainerArrow>
         </ModalFooter>
@@ -176,12 +203,14 @@ function ModalAddActive({ addAtividade, metodologias, ...props }) {
 }
 
 const mapStateToProps = state => ({
-  metodologias: state.metodologia.metodologias
+  metodologias: state.metodologia.metodologias,
+  flAddActive: state.ciclo.flAddActive
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
-    getMethodologiesRequest
+    getMethodologiesRequest,
+    changeFlAddActive
   }, dispatch);
 
 export default connect(

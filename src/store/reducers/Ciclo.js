@@ -6,7 +6,9 @@ const INITIAL_STATE = {
   index: -1,
   created: null,
   updated: null,
-  reload: false
+  destroyed: null,
+  reload: false,
+  flAddActive: null,
 }
 
 export default function Ciclo(state = INITIAL_STATE, action) {
@@ -50,6 +52,7 @@ export default function Ciclo(state = INITIAL_STATE, action) {
       return {
         ...state,
         ciclos,
+        updated: true,
         reload: !state.reload
       }
     }
@@ -63,6 +66,7 @@ export default function Ciclo(state = INITIAL_STATE, action) {
       return {
         ...state,
         ciclos,
+        destroyed: true,
         reload: !state.reload
       }
     }
@@ -71,6 +75,27 @@ export default function Ciclo(state = INITIAL_STATE, action) {
       return {
         ...state,
         index: action.payload.index
+      }
+    }
+
+    case ActionTypes.CHANGE_FL_ADD_ACTIVE: {
+      return {
+        ...state,
+        flAddActive: action.payload.flag
+      }
+    }
+
+    case ActionTypes.CHANGE_FL_UPDATE: {
+      return {
+        ...state,
+        updated: action.payload.flag
+      }
+    }
+
+    case ActionTypes.CHANGE_FL_DESTROYED: {
+      return {
+        ...state,
+        destroyed: action.payload.flag
       }
     }
 

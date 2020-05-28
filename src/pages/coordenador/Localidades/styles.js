@@ -7,34 +7,12 @@ export const GlobalStyle = createGlobalStyle`
     cursor: pointer;
   }
 `
-export const ContainerInfo = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  height: 100%;
-`;
-
-export const DivZone = styled.div`
-  display: flex;
-  align-items: stretch;
-  justify-content: stretch;
-  flex-direction: column;
-  height: 235px;
-`;
-
-export const DivStreet = styled.div`
-  display: flex;
-  align-items: stretch;
-  justify-content: stretch;
-  flex-direction: column;
-  height: 235px;
-`;
 
 export const UlStreet = styled.ul`
   border: 1px solid ${ Color.border_input };
   list-style: none;
   padding: 0;
-  max-height: 484px;
+  max-height: 232px;
   overflow-y: auto;
 `;
 

@@ -11,7 +11,14 @@ import { changeSidebar } from '../../../store/actions/sidebarCoordGeral';
 import { getActivitiesOfCityRequest } from '../../../store/actions/AtividadeActions';
 
 // STYLES
-import { DescricaoAtividade, ObjetivoAtividade } from './styles';
+import {
+  DescricaoAtividade,
+  ObjetivoAtividade,
+  Nomenclatura,
+  UlHorizontal,
+  LiH,
+  CardBodyInfo
+} from './styles';
 import { FormGroup, selectDefault } from '../../../styles/global';
 import {
   InfoGroup,
@@ -24,7 +31,7 @@ import {
   PagePopUp
 } from '../../../styles/util';
 
-function PlanejarAtividade({ atividades, ...props }) {
+function ConsultarAtividades({ atividades, ...props }) {
   useEffect(() => {
     props.changeSidebar(2, 1);
     props.getActivitiesOfCityRequest( props.regionalSaude_id );
@@ -42,7 +49,7 @@ function PlanejarAtividade({ atividades, ...props }) {
         <Row>
           <PagePopUp className="w-100">
             <div className="card">
-              <div className="d-flex align-content">
+              <CardBodyInfo>
                 <FormGroup className="w-25 m-0 inline">
                   <label htmlFor="ciclo">Ciclo</label>
                   <Select
@@ -50,7 +57,45 @@ function PlanejarAtividade({ atividades, ...props }) {
                     styles={ selectDefault }
                   />
                 </FormGroup>
-              </div>
+
+                <Nomenclatura>
+                  <div>
+                    <label>Responsabilidade</label>
+                    <UlHorizontal>
+                      <LiH>
+                        <span>
+                          <mark className="bg-info text-white">R</mark> - Regional
+                        </span>
+                      </LiH>
+                      <LiH>
+                        <span>
+                          <mark className="ml-2 bg-info text-white">M</mark> - Municipal
+                        </span>
+                      </LiH>
+                    </UlHorizontal>
+                  </div>
+                  <div>
+                    <label>Situação da atividade</label>
+                    <UlHorizontal>
+                      <LiH>
+                        <span>
+                          <mark className="bg-info text-white">A</mark> - Em aberto
+                        </span>
+                      </LiH>
+                      <LiH>
+                        <span>
+                          <mark className="ml-2 bg-success text-white">C</mark> - Concluída
+                        </span>
+                      </LiH>
+                      <LiH>
+                        <span>
+                          <mark className="ml-2 bg-danger text-white">N</mark> - Não Concluída
+                        </span>
+                      </LiH>
+                    </UlHorizontal>
+                  </div>
+                </Nomenclatura>
+              </CardBodyInfo>
             </div>
           </PagePopUp>
         </Row>
@@ -70,36 +115,39 @@ function PlanejarAtividade({ atividades, ...props }) {
 function CardAtividades({ municipio }) {
   let list = municipio.atividades.map( (atv, index) => {
     let responsabilidade = "";
-    let classLi = "";
+    let situacao = "";
+    let classMark = "";
 
     switch ( atv.situacao ) {
-      case 1:
-        classLi = "";
+      case 1: // Em aberto
+        classMark = "bg-info text-white";
+        situacao = "A";
         break;
 
-      case 2:
-        classLi = "bg-success text-white";
+      case 2: // Concluída
+        classMark = "bg-success text-white";
+        situacao = "C";
         break;
 
-      default:
-        classLi = "bg-danger text-white";
+      default: // Não concluída
+        classMark = "bg-danger text-white";
+        situacao = "N";
         break;
     }
 
     switch ( atv.responsabilidade ) {
       case 1:
-        responsabilidade = "Regional";
+        responsabilidade = "R";
         break;
 
       default:
-        responsabilidade = "Municipal";
+        responsabilidade = "M";
         break;
     }
 
     return (
       <LiIcon
         key={ index }
-        className={ classLi }
         onClick={
           () => {
             window.location = `${ window.location.origin.toString() }/cg/atividades/${ atv.id }`
@@ -114,6 +162,7 @@ function CardAtividades({ municipio }) {
             </div>
             <div>
               <mark className="ml-2 bg-info text-white">{ responsabilidade }</mark>
+              <mark className={`ml-2 ${ classMark }`}>{ situacao }</mark>
             </div>
           </DescricaoAtividade>
         </ContainerUl>
@@ -135,7 +184,7 @@ function CardAtividades({ municipio }) {
 
           <InfoGroup>
             <label>Atividades</label>
-            <UlIcon style={{ maxHeight: "250px" }}>
+            <UlIcon style={{ maxHeight: "200px", minHeight: "200px" }}>
               { list }
             </UlIcon>
           </InfoGroup>
@@ -156,4 +205,4 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)( PlanejarAtividade )
+)( ConsultarAtividades )

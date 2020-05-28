@@ -35,3 +35,28 @@ export const ObjetivoAtividade = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
 `;
+
+export const CardBodyInfo = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+export const Nomenclatura = styled.div`
+  display: flex;
+  flex-direction: row;
+
+  div:not(:last-child) {
+    margin-right: 1.5rem;
+  }
+`;
+
+export const UlHorizontal = styled.ul`
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+`;
+
+export const LiH = styled.li`
+  float: left;
+`;

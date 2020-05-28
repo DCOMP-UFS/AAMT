@@ -12,7 +12,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ButtonNewObject from '../../../../components/ButtonNewObject';
-import { FaThumbtack, FaUser, FaTrash } from 'react-icons/fa';
+import { FaThumbtack, FaUser, FaTrash, FaMapSigns } from 'react-icons/fa';
 import { abrangencia as abrangenciaEnum, responsabilidadeAtividade } from '../../../../config/enumerate';
 import ModalEstrato from './ModalEstrato';
 import ModalEquipe from './ModalEquipe';
@@ -57,6 +57,10 @@ function PlanejarAtividade({ atividade, estratos, equipes, ...props }) {
     props.getActivitieByIdRequest( id );
     props.getUsersByCityRequest( props.municipio_id );
   }, []);
+
+  useEffect(() => {
+    console.log(equipes);
+  }, [ equipes ]);
 
   useEffect(() => {
     if( Object.entries( atividade ).length > 0 ) {
@@ -191,7 +195,6 @@ function PlanejarAtividade({ atividade, estratos, equipes, ...props }) {
                         title="Planejar Estrato"
                         data-toggle="modal"
                         data-target="#modal-novo-estrato"
-                        disabled={ props.locais.length > 0 ? false : true }
                       />
                       <span className="text-danger">{ mensageEstrato }</span>
                     </h4>
@@ -303,23 +306,61 @@ function ListEquipe( props ) {
             Equipe <mark className="bg-info text-white">{ e.supervisor.nome }</mark>
           </p>
         </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
-          <UlIcon style={{ width: '100%' }}>
-            {
-              e.membros.map( m => (
-                <LiIcon key={ m.id } >
-                  <ContainerIcon className="ContainerIcon" >
-                    <FaUser />
-                  </ContainerIcon>
-                  <DivDescription>
-                    <div>
-                      <span className="mr-2">{ m.nome }</span>
-                    </div>
-                  </DivDescription>
-                </LiIcon>
-              ))
-            }
-          </UlIcon>
+        <ExpansionPanelDetails className="flex-column">
+          <Row>
+            <Col>
+              <FormGroup>
+                <label>Membro(s)</label>
+                <UlIcon style={{ width: '100%' }}>
+                  {
+                    e.membros.map( m => (
+                      <LiIcon key={ m.id } >
+                        <ContainerIcon className="ContainerIcon" >
+                          <FaUser />
+                        </ContainerIcon>
+                        <DivDescription>
+                          <div>
+                            <span className="mr-2">{ m.nome }</span>
+                          </div>
+                        </DivDescription>
+                      </LiIcon>
+                    ))
+                  }
+                </UlIcon>
+              </FormGroup>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <FormGroup>
+                <label>Locai(s)</label>
+                <UlIcon style={{ width: '100%' }}>
+                  {
+                    e.locais.map( l => (
+                      <LiIcon key={ l.id } >
+                        <ContainerIcon className="ContainerIcon" >
+                          <FaMapSigns />
+                        </ContainerIcon>
+                        <DivDescription>
+                          <div>
+                            <span className="mr-2">
+                            {
+                              l.tipo === "quarteirao" ?
+                                `Quarteirão nº ${ l.nome }` :
+                              l.tipo === "zona" ?
+                                `Zona ${ l.nome }` :
+                                `Localidade/Bairro: ${ l.nome }`
+                            }
+                            </span>
+                          </div>
+                        </DivDescription>
+                      </LiIcon>
+                    ))
+                  }
+                </UlIcon>
+              </FormGroup>
+            </Col>
+          </Row>
         </ExpansionPanelDetails>
         <Divider />
         <ExpansionPanelActions>

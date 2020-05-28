@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal, { ModalBody, ModalFooter } from '../../../components/Modal';
 import $ from 'jquery';
+import LoadginGif from '../../../assets/loading.gif';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -12,21 +13,26 @@ import { updateAllUsuarioRequest, clearUpdateUser } from '../../../store/actions
 // STYLES
 import { Button } from '../../../styles/global';
 
-function ModalDesativar( props ) {
+function ModalDesativar({ updateUser, tableSelected, ...props }) {
+  const [ flLoading, setFlLoading ] = useState( false );
+
+  useEffect(() => {
+    if( updateUser ) {
+      $('#modal-desativar-usuario').modal('hide');
+      setFlLoading( false );
+      props.clearUpdateUser();
+    }
+  }, [ updateUser ]);
+
   function handleClick() {
-    props.tableSelected.forEach( row => {
+    setFlLoading( true );
+    tableSelected.forEach( row => {
       const { id } = props.usuarios[ row.dataIndex ];
       props.updateAllUsuarioRequest( id, { ativo: 0 } );
     });
 
     props.clearUpdateUser();
   }
-
-  useEffect(() => {
-    if( props.updateUser ) {
-      $('#modal-desativar-usuario').modal('hide');
-    }
-  }, [ props.updateUser ]);
 
   return(
     <Modal id="modal-desativar-usuario" title="Desativar Usuário(s)" centered={ true }>
@@ -35,7 +41,28 @@ function ModalDesativar( props ) {
       </ModalBody>
       <ModalFooter>
         <Button className="secondary" data-dismiss="modal">Cancelar</Button>
-        <Button className="danger" onClick={ handleClick }>Confirmar</Button>
+        <Button
+          className="danger"
+          onClick={ handleClick }
+          loading={ flLoading }
+          disabled={ flLoading }
+        >
+          {
+            flLoading ?
+              (
+                <>
+                  <img
+                    src={ LoadginGif }
+                    width="25"
+                    style={{ marginRight: 10 }}
+                    alt="Carregando"
+                  />
+                  Desativando...
+                </>
+              ) :
+              "Confirmar"
+          }
+        </Button>
       </ModalFooter>
     </Modal>
   );

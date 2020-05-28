@@ -4,6 +4,7 @@ import Select from 'react-select'
 import Modal, { ModalBody, ModalFooter } from '../../../components/Modal';
 import { Row, Col } from 'react-bootstrap';
 import { abrangencia as abrangenciaEnum }  from '../../../config/enumerate';
+import LoadginGif from '../../../assets/loading.gif';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -31,6 +32,7 @@ function ModalUpdateActive({ atividade, updateAtividade, metodologias, ...props 
   const optionAbrangencia = Object.entries(abrangenciaEnum).map(([key, value]) => {
     return { value: value.id, label: value.label };
   });
+  const [ flLoading, setFlLoading ] = useState( false );
 
   useEffect(() => {
     props.getMethodologiesRequest();
@@ -78,6 +80,7 @@ function ModalUpdateActive({ atividade, updateAtividade, metodologias, ...props 
 
   function handleSubmit( e ) {
     e.preventDefault();
+    setFlLoading( true );
 
     updateAtividade({
       objetivoAtividade,
@@ -178,7 +181,23 @@ function ModalUpdateActive({ atividade, updateAtividade, metodologias, ...props 
             </div>
             <div>
               <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
-              <Button type="submit">Salvar</Button>
+              <Button type="submit" loading={ flLoading } disabled={ flLoading } >
+                {
+                  flLoading ?
+                    (
+                      <>
+                        <img
+                          src={ LoadginGif }
+                          width="25"
+                          style={{ marginRight: 10 }}
+                          alt="Carregando"
+                        />
+                        Salvando...
+                      </>
+                    ) :
+                    "Salvar"
+                }
+              </Button>
             </div>
           </ContainerArrow>
         </ModalFooter>

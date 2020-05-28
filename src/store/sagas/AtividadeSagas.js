@@ -89,13 +89,11 @@ export function* planActivity( action ) {
     const { status } = yield call( planActivityRequest, action.payload );
 
     if( status === 200 ) {
-      window.location = window.location.origin() + '/coord/atividades';
-      // yield put( AtividadeActions.createActive( data ) );
-      // yield put( AppConfigActions.showNotifyToast( "Atividade criada com sucesso", "success" ) );
+      window.location = window.location.origin.toString() + '/coord/atividades';
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao criar atividade: " + status, "error" ) );
     }
   } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao criar atividade, favor verifique a conexão", "error" ) );
+    yield put( AppConfigActions.showNotifyToast( "Erro ao salvar planejamento", "error" ) );
   }
 }

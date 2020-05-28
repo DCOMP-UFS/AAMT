@@ -134,12 +134,13 @@ export const addEstrato = ( locais, locaisSelecionados ) => {
   }
 }
 
-export const addEquipe = ( membros, supervisor ) => {
+export const addEquipe = ( membros, supervisor, locais ) => {
   return {
     type: ActionTypes.ADD_EQUIPE,
     payload: {
       membros,
-      supervisor
+      supervisor,
+      locais
     }
   }
 }

@@ -13,7 +13,10 @@ export const ActionTypes = {
   UPDATE_CYCLE_SUCCESS: "UPDATE_CYCLE_SUCCESS",
   DESTROY_CYCLE_REQUEST: "DESTROY_CYCLE_REQUEST",
   DESTROY_CYCLE_SUCCESS: "DESTROY_CYCLE_SUCCESS",
-  SET_INDEX_ARRAY: "SET_INDEX_ARRAY"
+  SET_INDEX_ARRAY: "SET_INDEX_ARRAY",
+  CHANGE_FL_ADD_ACTIVE: "CHANGE_FL_ADD_ACTIVE",
+  CHANGE_FL_UPDATE: "CHANGE_FL_UPDATE",
+  CHANGE_FL_DESTROYED: "CHANGE_FL_DESTROYED"
 }
 
 export const getCycleRequest = id => {
@@ -152,6 +155,33 @@ export const setIndexArray = index => {
     type: ActionTypes.SET_INDEX_ARRAY,
     payload: {
       index
+    }
+  }
+}
+
+export const changeFlAddActive = flag => {
+  return {
+    type: ActionTypes.CHANGE_FL_ADD_ACTIVE,
+    payload: {
+      flag
+    }
+  }
+}
+
+export const changeFlUpdate = flag => {
+  return {
+    type: ActionTypes.CHANGE_FL_UPDATE,
+    payload: {
+      flag
+    }
+  }
+}
+
+export const changeFlDestroyed = flag => {
+  return {
+    type: ActionTypes.CHANGE_FL_DESTROYED,
+    payload: {
+      flag
     }
   }
 }

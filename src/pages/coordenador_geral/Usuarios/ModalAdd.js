@@ -5,6 +5,7 @@ import Modal, { ModalBody, ModalFooter } from '../../../components/Modal';
 import { Row, Col } from 'react-bootstrap';
 import { perfil } from '../../../config/enumerate';
 import $ from 'jquery';
+import LoadginGif from '../../../assets/loading.gif';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -42,13 +43,13 @@ function ModalAdd({ createUsuarioRequest, createUser, ...props }) {
   const [ municipio, setMunicipio ] = useState({});
   const [ optionMunicipio, setOptionMunicipio ] = useState([]);
   const [ flMunicipio, setFlMunicipio] = useState( true );
+  const [ flLoading, setFlLoading ] = useState( false );
 
   const optionPerfil = Object.entries(perfil).map(([key, value]) => {
     return { value: value.id, label: value.label };
   });
 
   useEffect(() => {
-    props.clearCreateUser();
     props.getNationsRequest();
   }, []);
 
@@ -125,14 +126,9 @@ function ModalAdd({ createUsuarioRequest, createUser, ...props }) {
   useEffect(() => {
     if( createUser ) {
       $('#modal-novo-usuario').modal('hide');
-      setNome("");
-      setCpf("");
-      setRg("");
-      setEmail("");
-      setCelular("");
-      setUsuario("");
-      setSenha("");
-      setTipoPerfil({});
+      setFlLoading( false );
+      props.clearCreateUser();
+      clearInput();
     }
   }, [ createUser ]);
 
@@ -149,6 +145,7 @@ function ModalAdd({ createUsuarioRequest, createUser, ...props }) {
 
   function handleCadastrar( e ) {
     e.preventDefault();
+    setFlLoading( true );
 
     createUsuarioRequest(
       nome,
@@ -319,7 +316,23 @@ function ModalAdd({ createUsuarioRequest, createUser, ...props }) {
             </div>
             <div>
               <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
-              <Button type="submit">Salvar</Button>
+              <Button type="submit" loading={ flLoading } disabled={ flLoading } >
+                {
+                  flLoading ?
+                    (
+                      <>
+                        <img
+                          src={ LoadginGif }
+                          width="25"
+                          style={{ marginRight: 10 }}
+                          alt="Carregando"
+                        />
+                        Salvando...
+                      </>
+                    ) :
+                    "Salvar"
+                }
+              </Button>
             </div>
           </ContainerArrow>
         </ModalFooter>

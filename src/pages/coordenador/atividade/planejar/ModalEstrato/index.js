@@ -33,8 +33,12 @@ function ModalEstrato ({ atividade, ...props }) {
   }, [ atividade ]);
 
   useEffect(() => {
-    setLocais( props.locais );
-  }, [ props.locais ]);
+    const l = props.locais
+      .map( ( loc, index ) => ({ ...loc, dataIndex: index }))
+      .filter( loc => loc.flEstrato ? !loc.flEstrato : true );
+
+    setLocais( l );
+  }, [ props.locais, props.externalReload ]);
 
   function handleLocal( index ) {
     let l = locais;
@@ -219,7 +223,8 @@ function ListLocaly( props ) {
 
 const mapStateToProps = state => ({
   atividade: state.atividade.atividade,
-  locais: state.atividade.locais
+  locais: state.atividade.locais,
+  externalReload: state.atividade.reload
 });
 
 const mapDispatchToProps = dispatch =>

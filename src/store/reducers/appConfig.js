@@ -28,6 +28,17 @@ export default function quarteirao(state = INITIAL_STATE, action){
       }
     }
 
+    case ActionTypes.SIGN_OUT: {
+      return {
+        ...state,
+        usuario: INITIAL_STATE.usuario,
+        navToggleLab: INITIAL_STATE.navToggleLab,
+        navToggle: INITIAL_STATE.navToggle,
+        token: INITIAL_STATE.token,
+        toast: INITIAL_STATE.toast,
+      }
+    }
+
     case ActionTypes.NAV_TOGGLE: {
       return {
         ...state,

@@ -4,6 +4,7 @@ import Select from 'react-select'
 import Modal, { ModalBody, ModalFooter } from '../../../components/Modal';
 import { Row, Col } from 'react-bootstrap';
 import $ from 'jquery';
+import LoadginGif from '../../../assets/loading.gif';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -32,6 +33,7 @@ function ModalAdd({ createCityRequest, createdCity, ...props }) {
   const [ optionEstado, setOptionEstado ] = useState([]);
   const [ regionalSaude, setRegionalSaude ] = useState({});
   const [ optionRegionalSaude, setOptionRegionalSaude ] = useState([]);
+  const [ flLoading, setFlLoading ] = useState( false );
 
   useEffect(() => {
     props.clearCreateCity();
@@ -92,8 +94,8 @@ function ModalAdd({ createCityRequest, createdCity, ...props }) {
   useEffect(() => {
     if( createdCity ) {
       $('#modal-novo-municipio').modal('hide');
-      setCodigo(null);
-      setNome("");
+      clearInput();
+      setFlLoading( false );
     }
   }, [ createdCity ]);
 
@@ -104,6 +106,7 @@ function ModalAdd({ createCityRequest, createdCity, ...props }) {
 
   function handleCadastrar( e ) {
     e.preventDefault();
+    setFlLoading( true );
 
     createCityRequest( codigo, nome, regionalSaude.value );
   }
@@ -192,7 +195,23 @@ function ModalAdd({ createCityRequest, createdCity, ...props }) {
             </div>
             <div>
               <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
-              <Button type="submit">Salvar</Button>
+              <Button type="submit" loading={ flLoading } disabled={ flLoading } >
+                {
+                  flLoading ?
+                    (
+                      <>
+                        <img
+                          src={ LoadginGif }
+                          width="25"
+                          style={{ marginRight: 10 }}
+                          alt="Carregando"
+                        />
+                        Salvando...
+                      </>
+                    ) :
+                    "Salvar"
+                }
+              </Button>
             </div>
           </ContainerArrow>
         </ModalFooter>

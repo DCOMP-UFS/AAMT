@@ -152,6 +152,8 @@ export const Button = styled(basicButton)`
   color: #FFF;
   background-color: ${ Color.primary };
   border-color: ${ Color.primary }!important;
+  /* padding: 8.35px 0; */
+  ${ props => props.loading ? 'padding: 8.35px;' : '' }
 
   &:hover {
     background-color: #9D3AFF!important;
@@ -452,7 +454,7 @@ export const ContainerIcon = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  border-radius: 50px;
   width: 25px;
   height: 25px;
   padding: 0.375rem 0.375rem;

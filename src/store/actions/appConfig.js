@@ -5,7 +5,8 @@ export const ActionTypes = {
   SHOW_NOTIFY_TOAST: "SHOW_NOTIFY_TOAST",
   CLEAR_TOAST: "CLEAR_TOAST",
   AUTHENTICATE_REQUEST: "AUTHENTICATE_REQUEST",
-  AUTHENTICATE_SUCCESS: "AUTHENTICATE_SUCCESS"
+  AUTHENTICATE_SUCCESS: "AUTHENTICATE_SUCCESS",
+  SIGN_OUT: "SIGN_OUT"
 };
 
 export const authenticateRequest = (usuario, senha, redirectUser) => {
@@ -25,6 +26,13 @@ export const authenticate = user => {
     payload: {
       user,
     }
+  }
+}
+
+export const signOut = () => {
+  return {
+    type: ActionTypes.SIGN_OUT,
+    payload: {}
   }
 }
 

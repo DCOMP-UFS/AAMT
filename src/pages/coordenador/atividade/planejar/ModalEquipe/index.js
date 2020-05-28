@@ -13,18 +13,28 @@ import Modal, { ModalBody, ModalFooter } from '../../../../../components/Modal';
 import { addEquipe } from '../../../../../store/actions/AtividadeActions';
 
 // STYLES
-import { UlEquipe, LiEquipe, ContainerCheck, DivDescription, LiEmpty, Arrows } from './styles';
+import {
+  UlEquipe,
+  LiEquipe,
+  ContainerCheck,
+  DivDescription,
+  LiEmpty,
+  Arrows,
+  UlLocal,
+  LiLocal
+} from './styles';
 import { ContainerArrow } from '../../../../../styles/util';
-import { Button, FormGroup, selectDefault } from '../../../../../styles/global';
+import { Button, FormGroup, selectDefault, Separator } from '../../../../../styles/global';
 
-function ModalEquipe({ ...props }) {
+function ModalEquipe({ equipes, ...props }) {
   const [ membros, setMembros ] = useState([]);
   const [ membrosSelecionados, setMembrosSelecionados ] = useState([]);
-  const [ reload, setReload ] = useState( false );
+  const [ internalReload, setInternalReload ] = useState( false );
   const [ supervisor, setSupervisor ] = useState({});
   const [ optionSupervisor, setOptionSupervisor ] = useState([]);
   const [ message, setMessage ] = useState("");
   const [ messageMembro, setMessageMembro ] = useState("");
+  const [ locais, setLocais ] = useState([]);
 
   useEffect(() => {
     const m = props.membros.map( m => ({
@@ -43,6 +53,14 @@ function ModalEquipe({ ...props }) {
       }))
     );
   }, [ membrosSelecionados ]);
+
+  useEffect(() => {
+    const l = props.locais
+      .filter( loc => loc.flEstrato ? !loc.flEquipe : false )
+      .map( loc => ({ ...loc, checked: false }));
+
+    setLocais( l );
+  }, [ props.locais, props.reload ]);
 
   function addMembro() {
     let mSelecionado = membros
@@ -79,7 +97,7 @@ function ModalEquipe({ ...props }) {
     }
 
     setMembros( m );
-    setReload( !reload );
+    setInternalReload( !internalReload );
   }
 
   function handleMembroSelecionado( index ) {
@@ -92,7 +110,7 @@ function ModalEquipe({ ...props }) {
     }
 
     setMembrosSelecionados( m );
-    setReload( !reload );
+    setInternalReload( !internalReload );
   }
 
   function dbClickMembro( index ) {
@@ -110,6 +128,19 @@ function ModalEquipe({ ...props }) {
 
     if( membrosSelecionados[ index ].id === supervisor.value )
       setSupervisor({});
+  }
+
+  function handleLocal( index ) {
+    let l = locais;
+
+    if( l[ index ].checked ) {
+      l[ index ].checked = !l[ index ].checked;
+    }else {
+      l[ index ].checked = true;
+    }
+
+    setLocais( l );
+    setInternalReload( !internalReload );
   }
 
   function clearInput() {
@@ -134,20 +165,16 @@ function ModalEquipe({ ...props }) {
       setMessage("Escolha o supervisor da equipe");
       setTimeout(() => setMessage("") , 3000);
     } else {
-      props.addEquipe( membrosSelecionados, {
-        id: supervisor.value,
-        nome: supervisor.label
-      });
+      props.addEquipe(
+        membrosSelecionados,
+        {
+          id: supervisor.value,
+          nome: supervisor.label
+        },
+        locais.filter( l => l.checked )
+      );
 
-      const m = props.membros.map( m => ({
-        id: m.id,
-        nome: m.nome,
-        checked: false
-      }));
-
-      setMembros( m );
-      setMembrosSelecionados([]);
-      setSupervisor({});
+      clearInput();
       $('#modal-novo-equipe').modal('hide');
     }
   }
@@ -161,9 +188,21 @@ function ModalEquipe({ ...props }) {
       <form onSubmit={ handleSubmit }>
         <ModalBody>
           <Row>
+            <Col>
+              <FormGroup>
+                <label>Locai(s) de responsabilidade da equipe <code>*</code></label>
+                <ListLocaly
+                  locais={ locais }
+                  onClick={ handleLocal }
+                />
+              </FormGroup>
+            </Col>
+          </Row>
+          <Separator />
+          <Row>
             <Col sm="5">
               <FormGroup>
-                <label>Membro(s)</label>
+                <label>Membro(s) <code>*</code></label>
                 <ListMembros
                   membros={ membros }
                   onClick={ handleMembro }
@@ -174,6 +213,7 @@ function ModalEquipe({ ...props }) {
             <Col sm="2">
               <Arrows>
                 <IconButton
+                  title="Adicionar"
                   className="text-success"
                   aria-label="cart"
                   onClick={ addMembro }
@@ -181,6 +221,7 @@ function ModalEquipe({ ...props }) {
                   <FaLongArrowAltRight />
                 </IconButton>
                 <IconButton
+                  title="Remover"
                   className="text-danger"
                   aria-label="cart"
                   onClick={ removeMembro }
@@ -192,7 +233,7 @@ function ModalEquipe({ ...props }) {
             <Col sm="5">
               <FormGroup>
                 <label>
-                  Supervisor <span className="text-danger">{ message }</span>
+                  Supervisor <code>*</code><span className="text-danger">{ message }</span>
                 </label>
                 <Select
                   id="supervisor"
@@ -205,7 +246,7 @@ function ModalEquipe({ ...props }) {
               </FormGroup>
               <FormGroup>
                 <label>
-                  Selecionado(s) <span className="text-danger">{ messageMembro }</span>
+                  Selecionado(s) <code>*</code><span className="text-danger">{ messageMembro }</span>
                 </label>
                 <ListMembros
                   membros={ membrosSelecionados }
@@ -277,8 +318,62 @@ function ListMembros( props ) {
   );
 }
 
+function ListLocaly( props ) {
+  const locais = props.locais;
+  const handleLocal = props.onClick;
+  const dbClickLocal = props.onDoubleClick;
+  let li = [];
+
+  if( locais ) {
+    li = locais.map( (l, index) => (
+      <LiLocal
+        key={ l.id }
+        onClick={ () => handleLocal( index ) }
+        onDoubleClick={ () => dbClickLocal( index ) }
+      >
+        <ContainerCheck>
+          <Checkbox
+            checked={ l.checked ? l.checked : false }
+            inputProps={{ 'aria-label': 'primary checkbox' }}
+          />
+        </ContainerCheck>
+        <DivDescription>
+          <div>
+            <span className="mr-2">
+              {
+                l.tipo === "quarteirao" ?
+                  `Quarteirão nº ${ l.nome }` :
+                l.tipo === "zona" ?
+                  `Zona ${ l.nome }` :
+                  `Localidade/Bairro ${ l.nome }`
+              }
+            </span>
+          </div>
+        </DivDescription>
+      </LiLocal>
+    ));
+  }
+
+  if( locais.length === 0) {
+    li = [
+      <LiEmpty key={ 0 }>
+        <h4>Nenhum local disponivél para equipe</h4>
+      </LiEmpty>
+    ]
+  }
+
+  return (
+    <UlLocal>
+      { li }
+    </UlLocal>
+  );
+}
+
 const mapStateToProps = state => ({
-  membros: state.usuario.usuarios
+  membros: state.usuario.usuarios,
+  locais: state.atividade.locais,
+  equipes: state.atividade.equipes,
+  reload: state.atividade.reload
 });
 
 const mapDispatchToProps = dispatch =>

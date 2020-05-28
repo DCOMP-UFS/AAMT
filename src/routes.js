@@ -17,7 +17,7 @@ import LoginScreen from './pages/LoginScreen';
 
 // Páginas de coordenador Geral
 import Home from './pages/coordenador_geral';
-import CGAtividadesConsultar from './pages/coordenador_geral/atividade';
+import CGAConsultarAtividades from './pages/coordenador_geral/atividade';
 import DashBoardCiclo from './pages/coordenador_geral/Ciclos/dashboard';
 import CGCicloConsultar from './pages/coordenador_geral/Ciclos';
 import CGCicloCadastrar from './pages/coordenador_geral/Ciclos/cadastrar';
@@ -142,7 +142,7 @@ const Routes = props => {
         <PrivateCoordenadorGeral exact path="/cg/ciclos" component={ DashBoardCiclo } tipoPerfil={ perfil } />
         <PrivateCoordenadorGeral exact path="/cg/ciclos/consultar" component={ CGCicloConsultar } tipoPerfil={ perfil } />
         <PrivateCoordenadorGeral path="/cg/ciclos/cadastrar" component={ CGCicloCadastrar } tipoPerfil={ perfil } />
-        <PrivateCoordenadorGeral exact path="/cg/atividades" component={ CGAtividadesConsultar } tipoPerfil={ perfil } />
+        <PrivateCoordenadorGeral exact path="/cg/atividades" component={ CGAConsultarAtividades } tipoPerfil={ perfil } />
         <PrivateCoordenadorGeral path="/cg/atividades/cadastrar" component={ CGAtividades } tipoPerfil={ perfil } />
         <PrivateCoordenadorGeral path="/cg/atividades/planejamento/:id" component={ CGPlanejarAtividade } tipoPerfil={ perfil } />
         <PrivateCoordenadorGeral exact path="/cg/municipios" component={ CGMunicipios } tipoPerfil={ perfil } />

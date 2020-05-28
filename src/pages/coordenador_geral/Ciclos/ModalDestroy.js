@@ -1,22 +1,36 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal, { ModalBody, ModalFooter } from '../../../components/Modal';
 import $ from 'jquery';
-
+import LoadginGif from '../../../assets/loading.gif';
 
 // REDUX
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { destroyCycleRequest } from '../../../store/actions/CicloActions';
+import { destroyCycleRequest, changeFlDestroyed } from '../../../store/actions/CicloActions';
 import { showNotifyToast } from '../../../store/actions/appConfig';
 
 // STYLES
 import { Button } from '../../../styles/global';
 
 function ModalDestroy( props ) {
+  const [ flLoading, setFlLoading ] = useState( false );
+
+  useEffect(() => {
+    if( props.destroyed ) {
+      setFlLoading( false );
+      props.changeFlDestroyed( null );
+      $('#modal-excluir-ciclo').modal('hide');
+    }else if( props.destroyed === false ) {
+      setFlLoading( false );
+      props.changeFlDestroyed( null );
+    }
+  }, [ props.destroyed ]);
+
   function handleClick() {
+    setFlLoading( true );
     props.tableSelected.forEach( row => {
       const { id, situacao } = props.ciclos[ row.dataIndex ];
 
@@ -25,8 +39,6 @@ function ModalDestroy( props ) {
       else
         props.destroyCycleRequest( id );
     });
-
-    $('#modal-excluir-ciclo').modal('hide');
   }
 
   return(
@@ -36,7 +48,28 @@ function ModalDestroy( props ) {
       </ModalBody>
       <ModalFooter>
         <Button className="secondary" data-dismiss="modal">Cancelar</Button>
-        <Button className="danger" onClick={ handleClick }>Confirmar</Button>
+        <Button
+          className="danger"
+          onClick={ handleClick }
+          loading={ flLoading }
+          disabled={ flLoading }
+        >
+          {
+            flLoading ?
+              (
+                <>
+                  <img
+                    src={ LoadginGif }
+                    width="25"
+                    style={{ marginRight: 10 }}
+                    alt="Carregando"
+                  />
+                  Excluindo...
+                </>
+              ) :
+              "Confirmar"
+          }
+        </Button>
       </ModalFooter>
     </Modal>
   );
@@ -44,11 +77,12 @@ function ModalDestroy( props ) {
 
 const mapStateToProps = state => ({
   tableSelected: state.supportInfo.tableSelection.tableCycle,
-  ciclos: state.ciclo.ciclos
+  ciclos: state.ciclo.ciclos,
+  destroyed: state.ciclo.destroyed
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ destroyCycleRequest, showNotifyToast }, dispatch);
+  bindActionCreators({ destroyCycleRequest, showNotifyToast, changeFlDestroyed }, dispatch);
 
 export default connect(
   mapStateToProps,

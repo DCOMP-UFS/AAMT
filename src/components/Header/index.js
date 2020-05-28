@@ -1,8 +1,15 @@
-import React, { Component, useState } from 'react';
+import React, { useEffect } from 'react';
 import { IoIosMenu, IoIosSearch } from 'react-icons/io';
-import { FaRegEnvelope, FaRegBell } from 'react-icons/fa';
-import { Dropdown } from 'react-bootstrap';
+import { FaRegEnvelope, FaRegBell, FaSignOutAlt } from 'react-icons/fa';
 import Avatar from '@material-ui/core/Avatar';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+// import DraftsIcon from '@material-ui/icons/Drafts';
+// import SendIcon from '@material-ui/icons/Send';
 import { IoIosArrowDown } from 'react-icons/io';
 
 // REDUX
@@ -10,107 +17,155 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 // ACTIONS
-import { navToggle } from '../../store/actions/appConfig';
+import { navToggle, signOut } from '../../store/actions/appConfig';
 
+// STYLES
 import './style.css';
-import { UserNav, UserName } from './styles';
+import { UserName, buttonMenu, avatarSmall } from './styles';
+import { Color } from '../../styles/global';
 
-const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-  <UserNav
-    ref={ref}
-    onClick={e => {
-      e.preventDefault();
-      onClick(e);
+const PerfilMenu = withStyles({
+  paper: {
+    border: '1px solid #d3d4d5',
+    minWidth: '180px'
+  },
+})((props) => (
+  <Menu
+    elevation={ 0 }
+    getContentAnchorEl={null}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'center',
     }}
-  >
-    {children}
-    <IoIosArrowDown className="menu-arrow ml-2" />
-  </UserNav>
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'center',
+    }}
+    {...props}
+  />
 ));
 
-// forwardRef again here!
-// Dropdown needs access to the DOM of the Menu to measure it
-const CustomMenu = React.forwardRef(
-  ({ children, style, className, 'aria-labelledby': labeledBy }, ref) => {
-    const [value] = useState('');
-
-    return (
-      <div
-        ref={ref}
-        style={style}
-        className={className}
-        aria-labelledby={labeledBy}
-      >
-        <ul className="list-unstyled">
-          {React.Children.toArray(children).filter(
-            child =>
-              !value || child.props.children.toLowerCase().startsWith(value),
-          )}
-        </ul>
-      </div>
-    );
+const PerfilItem = withStyles((theme) => ({
+  root: {
+    '&.active': {
+      backgroundColor: `${ Color.info }!important`,
+      '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
+        color: theme.palette.common.white,
+      },
+    },
+    '&:hover': {
+      backgroundColor: `${ Color.info }!important`,
+      '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
+        color: theme.palette.common.white,
+      },
+    },
   },
-);
+}))(MenuItem);
 
-class Header extends Component{
-  render () {
-    return (
-      <nav className="header fixed-top">
-        <div className="header-logo">
-          <a href="localhost:3000/" className="text-white brand font-weight-bold">
-            <mark className="rounded text-white bg-info p-1">AAMT</mark>
-          </a>
+function Header({ usuario, ...props }) {
+  const [ anchorEl, setAnchorEl ] = React.useState( null );
+
+  useEffect(() => {
+    if( !usuario.atuacoes[0].tipoPerfil ){
+      window.location = window.location.origin.toString();
+    }
+  }, [ usuario ]);
+
+  const handleClick = ( event ) => {
+    setAnchorEl( event.currentTarget );
+  };
+
+  const handleClose = () => {
+    setAnchorEl( null );
+  };
+
+  const handleSignOut = () => {
+    props.signOut();
+  };
+
+  return (
+    <nav className="header fixed-top">
+      <div className="header-logo">
+        <a href="localhost:3000/" className="text-white brand font-weight-bold">
+          <mark className="rounded text-white bg-info p-1">AaMT</mark>
+        </a>
+      </div>
+
+      <div className="header-body">
+        <div className="container-search">
+          <button className="toggler toggle-collapse" onClick={ props.navToggle } >
+            <IoIosMenu />
+          </button>
+
+          <form className="h-100">
+            <div className="search-field">
+              <div className="content-prepend"><IoIosSearch className="icon-search" /></div>
+              <input type="text" className="border-0 bg-transparent" placeholder="Procurar consulta" />
+            </div>
+          </form>
         </div>
 
-        <div className="header-body">
-          <div className="container-search">
-            <button className="toggler toggle-collapse" onClick={ this.props.navToggle } >
-              <IoIosMenu />
-            </button>
+        <div>
+          <ul className="navbar list-header" ref={ props.container }>
+            <li>
+              <Button
+                aria-controls="perfil-menu"
+                aria-haspopup="true"
+                variant="contained"
+                className="nav-link"
+                style={ buttonMenu }
+                onClick={ handleClick }
+              >
+                <Avatar style={ avatarSmall } >{ usuario.nome[0] }</Avatar>
+                <UserName>{ usuario.nome }</UserName>
+                <IoIosArrowDown className="menu-arrow ml-2" />
+              </Button>
+              <PerfilMenu
+                id="perfil-menu"
+                anchorEl={ anchorEl }
+                keepMounted
+                open={ Boolean( anchorEl ) }
+                onClose={ handleClose }
+              >
+                {/* <PerfilItem className="active">
+                  <ListItemIcon>
+                    <SendIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText primary="Sent mail" />
+                </PerfilItem>
+                <PerfilItem>
+                  <ListItemIcon>
+                    <DraftsIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText primary="Drafts" />
+                </PerfilItem> */}
+                <PerfilItem
+                  onClick={ handleSignOut }
+                >
+                  <ListItemIcon>
+                    <FaSignOutAlt fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText primary="Sair" />
+                </PerfilItem>
+              </PerfilMenu>
+            </li>
+            <li>
+              <button className="nav-link"><FaRegEnvelope className="icon-sm"/></button>
+            </li>
+            <li className="navbar-item dropdown">
+              <button className="nav-link"><FaRegBell className="icon-sm"/></button>
+            </li>
 
-            <form className="h-100">
-              <div className="search-field">
-                <div className="content-prepend"><IoIosSearch className="icon-search" /></div>
-                <input type="text" className="border-0 bg-transparent" placeholder="Procurar consulta" />
-              </div>
-            </form>
-          </div>
-
-          <div>
-            <ul className="navbar list-header" ref={this.container}>
-              <li>
-                <Dropdown>
-                  <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                    <Avatar>H</Avatar>
-                    <UserName>{ this.props.usuario.nome }</UserName>
-                  </Dropdown.Toggle>
-
-                  {/* <Dropdown.Menu as={CustomMenu}> */}
-                    {/* <Dropdown.Item>Sair</Dropdown.Item> */}
-                    {/* <Dropdown.Item eventKey="3" active>
-                      Orange
-                    </Dropdown.Item> */}
-                  {/* </Dropdown.Menu> */}
-                </Dropdown>
-              </li>
-              <li>
-                <button className="nav-link"><FaRegEnvelope className="icon-sm"/></button>
-              </li>
-              <li className="navbar-item dropdown">
-                <button className="nav-link"><FaRegBell className="icon-sm"/></button>
-              </li>
-
-              <li className="navbar-item dropdown">
-                <button className="toggler toggle-sidebar-left" onClick={ this.props.navToggle } >
-                  <IoIosMenu />
-                </button>
-              </li>
-            </ul>
-          </div>
+            <li className="navbar-item dropdown">
+              <button className="toggler toggle-sidebar-left" onClick={ props.navToggle } >
+                <IoIosMenu />
+              </button>
+            </li>
+          </ul>
         </div>
-      </nav>
-    )
-  }
+      </div>
+    </nav>
+  );
 }
 
 const mapStateToProps = state => ({
@@ -118,7 +173,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ navToggle }, dispatch);
+  bindActionCreators({ navToggle, signOut }, dispatch);
 
 export default connect(
   mapStateToProps,

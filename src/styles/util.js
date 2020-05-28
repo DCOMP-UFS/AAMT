@@ -90,7 +90,7 @@ export const ContainerIcon = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  border-radius: 50px;
   width: 35px;
   height: 35px;
   padding: 0.375rem 0.375rem;
@@ -160,3 +160,9 @@ export const PageIcon = styled.span`
   text-align: center;
   box-shadow: 2px 2px 8px #c5baba;
 `;
+
+export const btnLoading = {
+  minWidth: 150,
+  borderRadius: '50px',
+  fontSize: '1rem'
+}

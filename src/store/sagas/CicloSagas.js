@@ -97,10 +97,13 @@ export function* updateCycle( action ) {
       yield put( CicloActions.updateCycle( data ) );
       yield put( AppConfigActions.showNotifyToast( "Ciclo editado com sucesso", "success" ) );
     }
-    else
+    else {
+      yield put( CicloActions.changeFlUpdate( false ) );
       yield put( AppConfigActions.showNotifyToast( "Falha ao editar ciclo: " + status, "error" ) );
+    }
   } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao editar ciclo, favor verifique a conexão", "error" ) );
+    yield put( CicloActions.changeFlUpdate( false ) );
+    yield put( AppConfigActions.showNotifyToast( "Erro ao editar ciclo! Verifique a internet caso problema persista, consulte a equipe de TI", "error" ) );
   }
 }
 
@@ -112,9 +115,12 @@ export function* destroyCycle( action ) {
       yield put( CicloActions.destroyCycle( action.payload.id ) );
       yield put( AppConfigActions.showNotifyToast( "Ciclo excluido com sucesso", "success" ) );
     }
-    else
+    else {
+      yield put( CicloActions.changeFlDestroyed( false ) );
       yield put( AppConfigActions.showNotifyToast( "Falha ao excluir ciclo: " + status, "error" ) );
+    }
   } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao excluir ciclo, favor verifique a conexão", "error" ) );
+    yield put( CicloActions.changeFlDestroyed( false ) );
+    yield put( AppConfigActions.showNotifyToast( "Erro ao excluir ciclo! Verifique a internet caso problema persista, consulte a equipe de TI", "error" ) );
   }
 }

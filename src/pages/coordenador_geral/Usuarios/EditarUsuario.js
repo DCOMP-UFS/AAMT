@@ -5,6 +5,7 @@ import Select from 'react-select';
 import ButtonSave from '../../../components/ButtonSave';
 import { perfil } from '../../../config/enumerate';
 import { FaUsers } from 'react-icons/fa';
+import LoadginGif from '../../../assets/loading.gif';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -12,7 +13,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebar';
-import { updateUsuarioRequest, getUsuarioByIdRequest } from '../../../store/actions/UsuarioActions';
+import { updateUsuarioRequest, getUsuarioByIdRequest, clearUpdateUser } from '../../../store/actions/UsuarioActions';
 import { getNationsRequest } from '../../../store/actions/PaisActions';
 import { GetRegionsByNationRequest } from '../../../store/actions/RegiaoActions';
 import { GetStatesByRegionRequest } from '../../../store/actions/EstadoActions';
@@ -44,6 +45,7 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
   const [ municipio, setMunicipio ] = useState({});
   const [ optionMunicipio, setOptionMunicipio ] = useState([]);
   const [ flMunicipio, setFlMunicipio] = useState( true );
+  const [ flLoading, setFlLoading ] = useState( false );
 
   const [ userRegiao, setUserRegiao ] = useState({});
   const [ userEstado, setUserEstado ] = useState({});
@@ -191,8 +193,17 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
     }
   }, [ usuarioUpdate ]);
 
+  useEffect(() => {
+    if( props.updateUser ) {
+      setFlLoading( false );
+      props.clearUpdateUser();
+    }
+  }, [ props.updateUser ]);
+
   function handleSubmit( e ) {
     e.preventDefault();
+    setFlLoading( true );
+
     let at = {
         tipoPerfil: null,
         local_id: null
@@ -400,7 +411,10 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
                   <ButtonSave
                     title="Salvar"
                     className="bg-info text-white"
-                    type="submit" />
+                    loading={ flLoading }
+                    disabled={ flLoading }
+                    type="submit"
+                  />
                 </ContainerFixed>
               </form>
             </div>
@@ -414,6 +428,7 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
 const mapStateToProps = state => ({
   municipios: state.municipio.municipios,
   usuarioUpdate: state.usuario.usuarioUpdate,
+  updateUser: state.usuario.updateUser,
   paises: state.pais.paises,
   regioes: state.regiao.regioes,
   estados: state.estado.estados,
@@ -430,7 +445,8 @@ const mapDispatchToProps = dispatch =>
     GetRegionsByNationRequest,
     GetStatesByRegionRequest,
     getRegionalHealthByStateRequest,
-    getCityByRegionalHealthRequest
+    getCityByRegionalHealthRequest,
+    clearUpdateUser
   }, dispatch);
 
 export default connect(

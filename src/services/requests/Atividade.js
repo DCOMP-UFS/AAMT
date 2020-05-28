@@ -16,6 +16,7 @@ export const getActivitieByIdRequest = data => {
 
 export const getActivitiesByCityRequest = data => {
   const { ciclo_id, municipio_id } = data;
+
   return api.get(`/atividades/${ ciclo_id }/ciclos/${ municipio_id }/municipios`, {
     ...headerAuthorization()
   });

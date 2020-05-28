@@ -75,3 +75,27 @@ export const Arrows = styled.div`
   align-items: center;
   justify-content: center;
 `;
+
+export const UlLocal = styled.ul`
+  border: 1px solid ${ Color.border_input };
+  list-style: none;
+  padding: 0;
+  max-height: 484px;
+  overflow-y: auto;
+`;
+
+export const LiLocal = styled.li`
+  display: flex;
+  cursor: pointer;
+  padding: 0.375rem 0 0.375rem 1.375rem;
+  align-items: center;
+  /* flex-direction: column; */
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #ccc;
+  }
+
+  &:hover {
+    background: ${ Color.bgLight };
+  }
+`;

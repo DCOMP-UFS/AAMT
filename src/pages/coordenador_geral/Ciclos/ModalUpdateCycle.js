@@ -4,13 +4,14 @@ import Select from 'react-select'
 import Modal, { ModalBody, ModalFooter } from '../../../components/Modal';
 import { Row, Col } from 'react-bootstrap';
 import $ from 'jquery';
+import LoadginGif from '../../../assets/loading.gif';
 
 // REDUX
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { updateCycleRequest } from '../../../store/actions/CicloActions';
+import { updateCycleRequest, changeFlUpdate } from '../../../store/actions/CicloActions';
 
 // STYLES
 import { ContainerArrow } from '../../../styles/util';
@@ -30,6 +31,7 @@ function ModalUpdateCycle({ ciclos, index, ...props }) {
     { value: 6, label: "6" },
   ]);
   const [ optionAno, setOptionAno ] = useState([]);
+  const [ flLoading, setFlLoading ] = useState( false );
 
   useEffect(() => {
     const current_year = new Date().getFullYear();
@@ -53,6 +55,18 @@ function ModalUpdateCycle({ ciclos, index, ...props }) {
     }
   }, [ index ]);
 
+  useEffect(() => {
+    if( props.updated ) {
+      setFlLoading( false );
+      props.changeFlUpdate( null );
+      $('#modal-editar-ciclo').modal('hide');
+    }else if( props.updated === false ) {
+      // Essa condição é necessária pois updated pode conter o valor NULL e que não deve entrar nessa condicional
+      setFlLoading( false );
+      props.changeFlUpdate( null );
+    }
+  }, [ props.updated ]);
+
   function clearInput() {
     setAno({});
     setSequencia({});
@@ -62,6 +76,7 @@ function ModalUpdateCycle({ ciclos, index, ...props }) {
 
   function handleSubmit( e ) {
     e.preventDefault();
+    setFlLoading( true );
 
     props.updateCycleRequest( ciclos[ index ].id, {
       ano: ano.value,
@@ -69,8 +84,6 @@ function ModalUpdateCycle({ ciclos, index, ...props }) {
       dataInicio: dataInicio,
       dataFim: dataFim
     });
-
-    $('#modal-editar-ciclo').modal('hide');
   }
 
   return(
@@ -142,7 +155,23 @@ function ModalUpdateCycle({ ciclos, index, ...props }) {
             </div>
             <div>
               <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
-              <Button type="submit">Salvar</Button>
+              <Button type="submit" loading={ flLoading } disabled={ flLoading } >
+                {
+                  flLoading ?
+                    (
+                      <>
+                        <img
+                          src={ LoadginGif }
+                          width="25"
+                          style={{ marginRight: 10 }}
+                          alt="Carregando"
+                        />
+                        Salvando...
+                      </>
+                    ) :
+                    "Salvar"
+                }
+              </Button>
             </div>
           </ContainerArrow>
         </ModalFooter>
@@ -153,12 +182,14 @@ function ModalUpdateCycle({ ciclos, index, ...props }) {
 
 const mapStateToProps = state => ({
   ciclos: state.ciclo.ciclos,
-  index: state.ciclo.index
+  index: state.ciclo.index,
+  updated: state.ciclo.updated
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
-    updateCycleRequest
+    updateCycleRequest,
+    changeFlUpdate
   }, dispatch);
 
 export default connect(

@@ -29,7 +29,7 @@ getById = async (req, res) => {
     include: [
       { association: 'categoria', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }, 
       { association: 'municipio', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } },
-      { association: 'zonas', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }
+      { association: 'ruas', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }
     ],
     attributes: {
       exclude: [ 'categoria_id', 'municipio_id' ]

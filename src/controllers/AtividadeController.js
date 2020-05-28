@@ -12,6 +12,7 @@ const SituacaoQuarteirao = require('../models/SituacaoQuarteirao');
 const Equipe = require('../models/Equipe');
 const EquipeQuarteirao = require('../models/EquipeQuarteirao');
 const Membro = require('../models/Membro');
+const Usuario = require('../models/Usuario');
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
@@ -112,6 +113,114 @@ getActivitiesOfCity = async ( req, res ) => {
   });
 
   return res.json( municipios );
+}
+
+
+getUserActivities = async ( req, res ) => {
+  const { usuario_id } = req.params;
+
+  const usuario = await Usuario.findByPk( usuario_id, {
+    include: {
+      association: "atuacoes"
+    }
+  });
+  if( !usuario )
+    return res.status(400).json({ error: "Usuário não existe" });
+
+  let regionalSaude_id = -1;
+  const escopo = usuario.atuacoes[0].escopo;
+
+  if( escopo === 1 ) { // Regional
+    regionalSaude_id = usuario.atuacoes[0].local_id;
+  } else if( escopo === 2 ) { // Municipal
+    const regional = await Municipio.findByPk( usuario.atuacoes[0].local_id, {
+      include: { association: "regional" }
+    });
+    
+    regionalSaude_id = regional.id;
+  } else { // Laboratório
+
+  }
+
+  // Pegando o ciclo em aberto
+  let current_date = new Date();
+  current_date.setHours(0,0,0,0);
+
+  const ciclo = await Ciclo.findOne({
+    where: {
+      regional_saude_id: regionalSaude_id,
+      [Op.and]: [
+        {
+          dataInicio: {
+            [Op.lt]: current_date
+          }
+        },
+        {
+          dataFim: {
+            [Op.gt]: current_date
+          }
+        }
+      ]
+    }
+  });
+
+  if( !ciclo ) {
+    return res.json([]);
+  }
+
+  let atividades = await Atividade.findAll({
+    where: {
+      ciclo_id: ciclo.id
+    },
+    include: [
+      {
+        association: "equipes",
+        include: [
+          {
+            association: "membros",
+            attributes: [ "tipo_perfil" ],
+            include: { 
+              association: "usuario",
+              attributes: [ "id", "nome", "usuario" ], 
+            }
+          },
+          {
+            association: "quarteiroes"
+          }
+        ]
+      },
+      {
+        association: "estratos",
+        include: { association: "quarteiroes", attributes: [ "id", "numero" ] },
+        attributes: [ 'id' ]
+      },
+      {
+        association: 'metodologia',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+      },
+      {
+        association: 'objetivo',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+      }
+    ]
+  });
+
+  atividades = atividades.filter( a => {
+    const atividade = a.dataValues;
+    let isActivity = false;
+    
+    atividade.equipes.forEach( e => {
+      e.membros.forEach( m => {
+        const usuario = m.dataValues.usuario.dataValues;
+        if( usuario.id === parseInt( usuario_id ) )
+          isActivity = true;
+      });
+    });
+
+    return isActivity;
+  });
+
+  return res.json( atividades );
 }
 
 getLocations = async ( req, res ) => {
@@ -345,6 +454,7 @@ router.use(authMiddleware);
 router.get('/:id', getById);
 router.get('/:ciclo_id/ciclos/:municipio_id/municipios', index);
 router.get('/:regionalSaude_id/regionaisSaude', getActivitiesOfCity);
+router.get('/abertas/:usuario_id/usuarios', getUserActivities);
 router.get('/locais/:abrangencia_id/abrangencia/:municipio_id/municipios', getLocations);
 // router.get('/open', getOpenCycles);
 router.put('/:id', update);

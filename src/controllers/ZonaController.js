@@ -71,7 +71,7 @@ store = async (req, res) => {
   });
 
   if( zonas.length > 0 ) {
-    if( zonas[0].nome !== 'unica' ) {
+    if( zonas[0].nome !== 'única' ) {
       let lastNome = zonas[0].nome;
   
       let lastChar = lastNome[lastNome.length - 1];
@@ -89,7 +89,7 @@ store = async (req, res) => {
       nome = lastNome + lastChar;
     }
   }else {
-    nome = 'unica';
+    nome = 'única';
   }
 
   const zona = await Zona.create({ 

@@ -17,6 +17,8 @@ class Usuario extends Model {
 
   static associate( models ) {
     this.hasMany( models.Atuacao, { foreignKey: 'usuario_id', as: 'atuacoes' } );
+    this.hasMany( models.TrabalhoDiario, { foreignKey: 'usuario_id', as: 'trabalhosDiarios' } );
+    this.hasMany( models.TrabalhoDiario, { foreignKey: 'supervisor_id', as: 'planejamentos' } );
   }
 }
 

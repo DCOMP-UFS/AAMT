@@ -17,6 +17,7 @@ class Quarteirao extends Model {
     this.belongsTo( models.Zona, { foreignKey: 'zona_id', as: 'zona' } );
     this.belongsTo( models.Localidade, { foreignKey: 'localidade_id', as: 'localidade' } );
     this.hasMany( models.Lado, { foreignKey: 'quarteirao_id', as: 'lados' } );
+    this.hasMany( models.SituacaoQuarteirao, { foreignKey: 'quarteirao_id', as: 'situacoes' } );
     this.belongsToMany( models.Estrato, {
       through: 'situacao_quarteiroes',
       as: 'estrato',

@@ -20,9 +20,10 @@ module.exports = {
       createPermission( 9, 3 ),
       createPermission( 10, 3 ),
       createPermission( 11, 3 ),
-      createPermission( 12, 4 ),
+      createPermission( 12, 3 ),
       createPermission( 13, 4 ),
-      createPermission( 14, 5 ),
+      createPermission( 14, 4 ),
+      createPermission( 15, 5 ),
     ]);
   },
 

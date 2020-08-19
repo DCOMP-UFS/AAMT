@@ -305,7 +305,7 @@ update = async ( req, res ) => {
 destroy = async ( req, res ) => {
 }
 
-plan = async ( req, res ) => {
+plain = async ( req, res ) => {
   const { id } = req.params;
   const { estratos, equipes, abrangencia_id } = req.body;
 
@@ -459,7 +459,7 @@ router.get('/locais/:abrangencia_id/abrangencia/:municipio_id/municipios', getLo
 // router.get('/open', getOpenCycles);
 router.put('/:id', update);
 router.post('/', store);
-router.post('/planejar/:id', plan);
+router.post('/planejar/:id', plain);
 router.delete('/:id', destroy);
 
 module.exports = app => app.use('/atividades', router);

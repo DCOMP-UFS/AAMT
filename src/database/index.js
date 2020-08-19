@@ -27,6 +27,8 @@ const SituacaoQuarteirao = require('../models/SituacaoQuarteirao');
 const Equipe = require('../models/Equipe');
 const Membro = require('../models/Membro');
 const EquipeQuarteirao = require('../models/EquipeQuarteirao');
+const TrabalhoDiario = require('../models/TrabalhoDiario');
+const Rota = require('../models/Rota');
 
 const connection = new Sequelize(dbConfig);
 
@@ -56,6 +58,8 @@ SituacaoQuarteirao.init( connection );
 Equipe.init( connection );
 Membro.init( connection );
 EquipeQuarteirao.init( connection );
+TrabalhoDiario.init( connection );
+Rota.init( connection );
 
 Usuario.associate( connection.models );
 Municipio.associate( connection.models );
@@ -83,5 +87,7 @@ SituacaoQuarteirao.associate( connection.models );
 Equipe.associate( connection.models );
 Membro.associate( connection.models );
 EquipeQuarteirao.associate( connection.models );
+TrabalhoDiario.associate( connection.models );
+Rota.associate( connection.models );
 
 module.exports = connection;

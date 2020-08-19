@@ -60,6 +60,11 @@ module.exports = {
         updated_at: new Date()
       },
       {
+        nome: 'definir_trabalho_diario',
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
         nome: 'trabalho_diario',
         created_at: new Date(),
         updated_at: new Date()
@@ -73,7 +78,7 @@ module.exports = {
         nome: 'realizar_exame',
         created_at: new Date(),
         updated_at: new Date()
-      },
+      }
     ]);
   },
 

@@ -1,4 +1,5 @@
 import BorderAllIcon from '@material-ui/icons/BorderAll';
+import { FaMapSigns } from 'react-icons/fa';
 
 import { ActionTypes } from '../actions/sidebarSupervisor';
 
@@ -24,9 +25,10 @@ const INITIAL_STATE = {
   // Menu ativo currenteNav: [ menu, submenu ]
   currentNav: [ 1, 0 ],
   menu: [
-
     createCategory( "Região" ),
-    createLink( 1, "Quarteirão", false, BorderAllIcon, "/sup/quarteiroes"),
+    createLink( 1, "Quarteirões", false, BorderAllIcon, "/sup/quarteiroes"),
+    createCategory( "Operacional" ),
+    createLink( 2, "Rotas de Trabalho", false, FaMapSigns, "/sup/rotas"),
     // createCategory( "Recursos de Interface" ),
     // createNav( 8, "Elementos Básicos", false, IoIosCode, [
     //   createSubmenu( 1, false, "Botões", "/elementos/botoes" ),

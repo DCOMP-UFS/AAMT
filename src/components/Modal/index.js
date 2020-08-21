@@ -11,7 +11,7 @@ export default function Modal({ id, title, ...props }) {
   const size = props.size ? `modal-${ props.size }` : '';
 
   return(
-    <div id={ id } className="modal fade show" role="dialog">
+    <div id={ id } className="modal fade show" role="dialog" data-backdrop={ props.backdrop } >
         <div className={`modal-dialog ${ centered } ${ size }`} role="document">
           <div className="modal-content">
             <div className="modal-header">
@@ -52,7 +52,7 @@ export function ModalConfirm( props ) {
   }
 
   return(
-    <Modal id={ id } title={ props.title } centered={ true }>
+    <Modal id={ id } title={ props.title } centered={ true } backdrop={ props.backdrop }>
       <ModalBody>
         { props.children }
       </ModalBody>

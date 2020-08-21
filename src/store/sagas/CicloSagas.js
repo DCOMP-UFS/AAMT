@@ -6,7 +6,8 @@ import {
   createCycleRequest,
   getAllowedCyclesRequest,
   updateCycleRequest,
-  destroyCycleRequest
+  destroyCycleRequest,
+  getOpenCyleRequest
 } from '../../services/requests/Ciclo';
 
 import * as CicloActions from '../actions/CicloActions';
@@ -69,6 +70,21 @@ export function* getAllowedCycles(action) {
 
   } catch (error) {
     yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os ciclos, favor verifique a conexão", "error" ) );
+  }
+}
+
+export function* getOpenCyle(action) {
+  try {
+    const { data, status } = yield call( getOpenCyleRequest, action.payload );
+
+    if( status === 200 ) {
+      yield put( CicloActions.getOpenCycle( data ) );
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Falha ao consultar o ciclo em aberto: " + status, "error" ) );
+    }
+
+  } catch (error) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar o ciclo em aberto, favor verifique a conexão", "error" ) );
   }
 }
 

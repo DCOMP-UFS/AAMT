@@ -33,6 +33,7 @@ export const Color = {
   bgLight: "#FCFCFC",
   border_light: "#ebedf2",
   border_input: "#cccccc",
+  shadow_light: "#c5baba",
   icon_page: "#31373B",
   chartColor: [
     [ 'rgba(182, 109, 255, 0.2)', 'rgba(182, 109, 255, 1)' ],
@@ -102,6 +103,45 @@ export const GlobalStyle = createGlobalStyle`
 
   .expansion::before {
     display: none;
+  }
+
+  .pt-40 {
+    padding-top: 40px!important;
+  }
+  .pr-40 {
+    padding-right: 40px!important;
+  }
+  .pb-40 {
+    padding-bottom: 40px!important;
+  }
+  .pl-20 {
+    padding-left: 20px!important;
+  }
+
+  .pt-20 {
+    padding-top: 20px!important;
+  }
+  .pr-20 {
+    padding-right: 20px!important;
+  }
+  .pb-20 {
+    padding-bottom: 20px!important;
+  }
+  .pl-20 {
+    padding-left: 20px!important;
+  }
+
+  .border-top-temp {
+    border-top: 1px solid ${ Color.border_input }!important;
+  }
+  .border-right-temp {
+    border-right: 1px solid ${ Color.border_input }!important;
+  }
+  .border-bottom-temp {
+    border-bottom: 1px solid ${ Color.border_input }!important;
+  }
+  .border-left-temp {
+    border-left: 1px solid ${ Color.border_input }!important;
   }
 `;
 

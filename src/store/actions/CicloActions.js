@@ -7,6 +7,8 @@ export const ActionTypes = {
   GET_CYCLES_SUCCESS: "GET_CYCLES_SUCCESS",
   GET_ALLOWED_CYCLES_REQUEST: "GET_ALLOWED_CYCLES_REQUEST",
   GET_ALLOWED_CYCLES_SUCCESS: "GET_ALLOWED_CYCLES_SUCCESS",
+  GET_OPEN_CYCLE_REQUEST: "GET_OPEN_CYCLE_REQUEST",
+  GET_OPEN_CYCLE_SUCCESS: "GET_OPEN_CYCLE_SUCCESS",
   CREATE_CYCLE_REQUEST: "CREATE_CYCLE_REQUEST",
   CREATE_CYCLE_SUCCESS: "CREATE_CYCLE_REQUEST",
   UPDATE_CYCLE_REQUEST: "UPDATE_CYCLE_REQUEST",
@@ -88,6 +90,24 @@ export const getAllowedCycles = ciclos => {
     type: ActionTypes.GET_ALLOWED_CYCLES_SUCCESS,
     payload: {
       ciclos
+    }
+  }
+}
+
+export const getOpenCycleRequest = regionalSaude_id => {
+  return {
+    type: ActionTypes.GET_OPEN_CYCLE_REQUEST,
+    payload: {
+      regionalSaude_id
+    }
+  }
+}
+
+export const getOpenCycle = ciclo => {
+  return {
+    type: ActionTypes.GET_OPEN_CYCLE_SUCCESS,
+    payload: {
+      ciclo
     }
   }
 }

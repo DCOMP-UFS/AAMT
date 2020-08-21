@@ -28,6 +28,13 @@ export const getAllowedCyclesRequest = data => {
   });
 }
 
+export const getOpenCyleRequest = data => {
+  const { regionalSaude_id } = data;
+  return api.get(`/ciclos/open/${ regionalSaude_id }/regionaisSaude`, {
+    ...headerAuthorization()
+  });
+}
+
 export const createCycleRequest = data => {
   const {
     ano,

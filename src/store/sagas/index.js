@@ -15,6 +15,8 @@ import { ActionTypes as RuaActions } from '../actions/RuaActions';
 import { ActionTypes as CicloActions } from '../actions/CicloActions';
 import { ActionTypes as MetodologiaActions } from '../actions/MetodologiaActions';
 import { ActionTypes as AtividadeActions } from '../actions/AtividadeActions';
+import { ActionTypes as DefinirRotaActions } from '../actions/DefinirRotaActions';
+import { ActionTypes as DefinirRotaCacheActions } from '../actions/DefinirRotaCacheActions';
 
 import {
   authenticate,
@@ -45,6 +47,8 @@ import { getStreetByLocality, createStreet, updateStreet, deleteStreet } from '.
 import * as CicloSagas from './CicloSagas';
 import * as MetodologiaSagas from './MetodologiaSagas';
 import * as AtividadeSagas from './AtividadeSagas';
+import * as DefinirRotaSagas from './DefinirRotaSagas';
+import * as DefinirRotaCacheSagas from './DefinirRotaCacheSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -114,6 +118,7 @@ export default function* rootSaga() {
     takeLatest( CicloActions.GET_CYCLES_FOR_YEAR_REQUEST, CicloSagas.getCyclesForYear ),
     takeLatest( CicloActions.GET_CYCLES_REQUEST, CicloSagas.getCycles ),
     takeLatest( CicloActions.GET_ALLOWED_CYCLES_REQUEST, CicloSagas.getAllowedCycles ),
+    takeLatest( CicloActions.GET_OPEN_CYCLE_REQUEST, CicloSagas.getOpenCyle ),
     takeLatest( CicloActions.CREATE_CYCLE_REQUEST, CicloSagas.createCycle ),
     takeLatest( CicloActions.UPDATE_CYCLE_REQUEST, CicloSagas.updateCycle ),
     takeLatest( CicloActions.DESTROY_CYCLE_REQUEST, CicloSagas.destroyCycle ),
@@ -127,6 +132,12 @@ export default function* rootSaga() {
     takeLatest( AtividadeActions.GET_ACTIVITIES_BY_CITY_REQUEST, AtividadeSagas.getActivitiesByCity ),
     takeLatest( AtividadeActions.GET_LOCATIONS_REQUEST, AtividadeSagas.getLocations ),
     takeLatest( AtividadeActions.CREATE_ACTIVE_REQUEST, AtividadeSagas.createActive ),
-    takeLatest( AtividadeActions.PLAN_ACTIVITY_REQUEST, AtividadeSagas.planActivity )
+    takeLatest( AtividadeActions.PLAN_ACTIVITY_REQUEST, AtividadeSagas.planActivity ),
+
+    // Gerir Equipes
+    takeLatest( DefinirRotaActions.GET_ACTIVITIES_SUPERVISED_REQUEST, DefinirRotaSagas.getActivitiesSup ),
+    takeLatest( DefinirRotaActions.GET_TEAMS_SUP_REQUEST, DefinirRotaSagas.getTeamsSup ),
+    takeLatest( DefinirRotaActions.ARMAZENAR_PLANEJAMENTO_REQUEST, DefinirRotaSagas.savePlain ),
+    takeLatest( DefinirRotaCacheActions.CONSULTAR_PLANEJAMENTO_REQUEST, DefinirRotaCacheSagas.getPlanning )
   ]);
 }

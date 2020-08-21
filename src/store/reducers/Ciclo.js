@@ -2,6 +2,7 @@ import { ActionTypes } from '../actions/CicloActions';
 
 const INITIAL_STATE = {
   ciclo: {},
+  cicloAberto: {},
   ciclos: [],
   index: -1,
   created: null,
@@ -38,6 +39,13 @@ export default function Ciclo(state = INITIAL_STATE, action) {
       return {
         ...state,
         ciclos: action.payload.ciclos
+      }
+    }
+
+    case ActionTypes.GET_OPEN_CYCLE_SUCCESS: {
+      return {
+        ...state,
+        cicloAberto: action.payload.ciclo
       }
     }
 

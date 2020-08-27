@@ -65,4 +65,4 @@ export default GoogleApiWrapper({
 })(connect(
   mapStateToProps,
   // mapDispatchToProps
-)(HomeLaboratorio))
+)(HomeLaboratorio));

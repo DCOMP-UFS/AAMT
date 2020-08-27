@@ -24,6 +24,9 @@ import ciclo from './Ciclo';
 import metodologia from './Metodologia';
 import definirRota from './DefinirRota';
 import definirRotaCache from './DefinirRotaCache';
+import sidebarAgente from './sidebarAgente';
+import rota from './Rota';
+import vistoria from './Vistoria';
 
 export default combineReducers({
   sidebarCoordGeral,
@@ -49,5 +52,8 @@ export default combineReducers({
   ciclo,
   metodologia,
   definirRota,
-  definirRotaCache
+  definirRotaCache,
+  sidebarAgente,
+  rota,
+  vistoria
 });

@@ -40,7 +40,7 @@ class ModalCadastrarInspecao extends Component {
     ],
     optionsTipoColetor: tipoColetor.map( tipo => (
       { value: tipo, label: tipo, name: "tipoColetor" }
-    ) ),
+    )),
 
     tipoColetor: { value: null, label: null, name: "tipoColetor" },
     tipoRecipiente: { value: null, label: null, name: "tipoRecipiente" },

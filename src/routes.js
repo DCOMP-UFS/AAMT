@@ -5,6 +5,7 @@ import Sidebar from './components/Sidebar';
 import SidebarCoordGeral from './components/Sidebar/SidebarCoordGeral';
 import SidebarLab from './components/Sidebar/SidebarLab';
 import SidebarSupervisor from './components/Sidebar/SidebarSupervisor';
+import SidebarAgente from './components/Sidebar/SidebarAgente';
 import ButtonMenu from './components/Sidebar/ButtonMenu';
 import { BodyPanel, ContainerBody } from './styles/global';
 import { connect } from 'react-redux';
@@ -45,6 +46,9 @@ import Quarteiroes from './pages/supervisor/Quarteiroes';
 import EditarQuarteirao from './pages/supervisor/Quarteiroes/EditarQuarteirao';
 
 // Páginas do agente
+import HomeAgente from './pages/agente/home';
+import Vistoria from './pages/agente/vistoria';
+import VisualizarVistoria from './pages/agente/vistoria/visualizar/visualizar';
 import CDT_Trabalho_diario from './pages/trabalho_diario/Iniciar';
 import ListaVistoria from './pages/trabalho_diario/ListaVistoria';
 import FormVistoria from './pages/trabalho_diario/Form';
@@ -131,6 +135,26 @@ const PrivateSupervisor = ({ component: Component, tipoPerfil: perfilUser, ...re
   )} />
 );
 
+const PrivateAgente = ({ component: Component, tipoPerfil: perfilUser, ...rest }) => (
+  <Route { ...rest } render={ props => (
+    isAuthenticated() && perfilUser === perfil.agente.id ? (
+      <Fragment>
+        <Header />
+
+        <ContainerBody>
+          <SidebarAgente />
+
+          <BodyPanel className={ props.navToggle ? "body-collapse" : "" }>
+            <Component { ...props } />
+          </BodyPanel>
+        </ContainerBody>
+      </Fragment>
+    ) : (
+      <Redirect to={{ pathname: '/', state: { from: props.location } }} />
+    )
+  )} />
+);
+
 const Routes = props => {
   const perfil = props.usuario.atuacoes[0].tipoPerfil;
   return (
@@ -169,6 +193,9 @@ const Routes = props => {
         <PrivateSupervisor path="/sup/quarteiroes/:id" component={ EditarQuarteirao } tipoPerfil={ perfil } />
 
         {/* Rotas de agentes */}
+        <PrivateAgente path="/agente/home" component={ HomeAgente } tipoPerfil={ perfil } />
+        <PrivateAgente exact path="/agente/vistoria" component={ Vistoria } tipoPerfil={ perfil } />
+        <PrivateAgente path="/agente/vistoria/cadastrar" component={ VisualizarVistoria } tipoPerfil={ perfil } />
         <PrivateCoordenador path="/trabalho_diario/iniciar" component={CDT_Trabalho_diario} tipoPerfil={ perfil } />
         <PrivateCoordenador path="/trabalho_diario/vistoria/lista" component={ListaVistoria} tipoPerfil={ perfil } />
         <PrivateCoordenador path="/trabalho_diario/vistoria/formulario" component={FormVistoria} tipoPerfil={ perfil } />

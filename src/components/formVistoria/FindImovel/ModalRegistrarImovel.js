@@ -27,7 +27,11 @@ class ModalRegistrarImovel extends Component {
       return { value: index, label: quarteirao.idQuarteirao, name: "indexQuarteirao" };
     }),
 
-    optionTipoImovel: tipoImovel.map(tipo => ({ value: tipo, label: tipo, name: "tipoImovel" })),
+
+    // optionTipoImovel: tipoImovel.map(tipo => ({ value: tipo, label: tipo, name: "tipoImovel" })),
+    optionTipoImovel: Object.entries(tipoImovel).map(([key, value]) => {
+      return { value: value.id, label: value.label, name: "tipoImovel" };
+    }),
     tipoImovel: { value: "", label: ""},
 
     indexQuarteirao: { value: "", label: ""},

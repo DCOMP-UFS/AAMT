@@ -17,6 +17,7 @@ import { ActionTypes as MetodologiaActions } from '../actions/MetodologiaActions
 import { ActionTypes as AtividadeActions } from '../actions/AtividadeActions';
 import { ActionTypes as DefinirRotaActions } from '../actions/DefinirRotaActions';
 import { ActionTypes as DefinirRotaCacheActions } from '../actions/DefinirRotaCacheActions';
+import { ActionTypes as RotaActions } from '../actions/RotaActions';
 
 import {
   authenticate,
@@ -49,6 +50,7 @@ import * as MetodologiaSagas from './MetodologiaSagas';
 import * as AtividadeSagas from './AtividadeSagas';
 import * as DefinirRotaSagas from './DefinirRotaSagas';
 import * as DefinirRotaCacheSagas from './DefinirRotaCacheSagas';
+import * as RotaSagas from './RotaSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -138,6 +140,11 @@ export default function* rootSaga() {
     takeLatest( DefinirRotaActions.GET_ACTIVITIES_SUPERVISED_REQUEST, DefinirRotaSagas.getActivitiesSup ),
     takeLatest( DefinirRotaActions.GET_TEAMS_SUP_REQUEST, DefinirRotaSagas.getTeamsSup ),
     takeLatest( DefinirRotaActions.ARMAZENAR_PLANEJAMENTO_REQUEST, DefinirRotaSagas.savePlain ),
-    takeLatest( DefinirRotaCacheActions.CONSULTAR_PLANEJAMENTO_REQUEST, DefinirRotaCacheSagas.getPlanning )
+    takeLatest( DefinirRotaCacheActions.CONSULTAR_PLANEJAMENTO_REQUEST, DefinirRotaCacheSagas.getPlanning ),
+
+    // Gerir Rotas
+    takeLatest( RotaActions.GET_ROUTE_REQUEST, RotaSagas.getRoute ),
+    takeLatest( RotaActions.CHECK_ROTA_INICIADA_REQUEST, RotaSagas.isStarted ),
+    takeLatest( RotaActions.INICIAR_ROTA_REQUEST, RotaSagas.startRoute ),
   ]);
 }

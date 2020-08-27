@@ -47,12 +47,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators({ clearToast }, dispatch);
 
-export default GoogleApiWrapper({
-  apiKey: ("AIzaSyCYow9L-l0V_XA6kzpt-62S4-VGKwLy65w"),
-  LoadingContainer: LoadingContainer
-})(
-connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(App)
-)

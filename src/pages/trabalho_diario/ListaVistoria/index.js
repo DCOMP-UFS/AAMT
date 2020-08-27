@@ -331,14 +331,6 @@ class ListaVistoria extends Component {
       table.rowsPerPage, table.rows.length - table.page * table.rowsPerPage
     );
 
-    // const form_vistoria = this.props.form_vistoria;
-
-    // if( form_vistoria.imovel.index !== -1 ) {
-    //   this.setState({
-    //     imovel: this.props.quarteirao[ this.state.selectQuarteirao ].imovel[ form_vistoria.imovel.index ]
-    //   });
-    // }
-
     return (
       <section className="card-list">
         <CardBody className="col-md-12">

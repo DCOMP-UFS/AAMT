@@ -301,6 +301,16 @@ export const Button = styled(basicButton)`
     border-color: ${ Color.danger }!important;
   }
   /* </WARNING> */
+
+  & .btn-icon {
+    margin-right: 10px;
+  }
+
+  &.btn-small {
+    padding: 8px 15px;
+    min-width: auto;
+    display: flex;
+  }
 `;
 
 export const ButtonInverse = styled(basicButton)`

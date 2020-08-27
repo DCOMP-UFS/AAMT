@@ -24,6 +24,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import { stableSort, getSorting } from '../../../config/function';
+require('dotenv').config();
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -33,7 +34,7 @@ import { connect } from 'react-redux';
 import { changeSidebar } from '../../../store/actions/sidebarAgente';
 
 // STYLES
-import { PageIcon, PageHeader } from '../../../styles/util';
+import { PageIcon, PageHeader, PagePopUp } from '../../../styles/util';
 import { Container } from './styles';
 
 function EnhancedTableHead(props) {
@@ -306,6 +307,14 @@ function Vistoria({ ...props }) {
 
       <section className="card-list">
         <Row>
+          <PagePopUp className="w-100">
+            <div className="card">
+              <label className="m-0">Você não possui uma rota planejada para hoje!</label>
+            </div>
+          </PagePopUp>
+        </Row>
+
+        <Row>
           <article className="col-md-12 stretch-card mb-0" style={{ paddingTop: 15 }}>
             <div style={{ height: '300px', width: '100%', backgroundColor: '#ccc' }}>
               {/* <Map
@@ -434,7 +443,7 @@ const LoadingContainer = (props) => (
 )
 
 export default GoogleApiWrapper({
-  apiKey: ("AIzaSyCcGVRUPNmGoC39Ff4e4CBzfPFPoYFnixs"),
+  apiKey: ( process.env.REACT_APP_API_URL ),
   LoadingContainer: LoadingContainer,
 })(connect(
   mapStateToProps,

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
 import Avatar from '@material-ui/core/Avatar';
+require('dotenv').config();
 
 // import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -60,7 +61,7 @@ const LoadingContainer = (props) => (
 )
 
 export default GoogleApiWrapper({
-  apiKey: ("AIzaSyCYow9L-l0V_XA6kzpt-62S4-VGKwLy65w"),
+  apiKey: ( process.env.REACT_APP_API_URL ),
   LoadingContainer: LoadingContainer,
 })(connect(
   mapStateToProps,

@@ -16,6 +16,7 @@ class Imovel extends Model {
 
   static associate( models ) {
     this.belongsTo( models.Lado, { foreignKey: 'lado_id', as: 'lado' } );
+    this.hasMany( models.Vistoria, { foreignKey: 'imovel_id', as: 'vistorias' } );
   }
 }
 

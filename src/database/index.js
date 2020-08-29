@@ -29,6 +29,14 @@ const Membro = require('../models/Membro');
 const EquipeQuarteirao = require('../models/EquipeQuarteirao');
 const TrabalhoDiario = require('../models/TrabalhoDiario');
 const Rota = require('../models/Rota');
+const Vistoria = require('../models/Vistoria');
+const Deposito = require('../models/Deposito');
+const Inseticida = require('../models/Inseticida');
+const Tratamento = require('../models/Tratamento');
+const Laboratorio = require('../models/Laboratorio');
+const Amostra = require('../models/Amostra');
+const Mosquito = require('../models/Mosquito');
+const Exemplar = require('../models/Exemplar');
 
 const connection = new Sequelize(dbConfig);
 
@@ -60,6 +68,14 @@ Membro.init( connection );
 EquipeQuarteirao.init( connection );
 TrabalhoDiario.init( connection );
 Rota.init( connection );
+Vistoria.init( connection );
+Deposito.init( connection );
+Inseticida.init( connection );
+Tratamento.init( connection );
+Laboratorio.init( connection );
+Amostra.init( connection );
+Mosquito.init( connection );
+Exemplar.init( connection );
 
 Usuario.associate( connection.models );
 Municipio.associate( connection.models );
@@ -89,5 +105,13 @@ Membro.associate( connection.models );
 EquipeQuarteirao.associate( connection.models );
 TrabalhoDiario.associate( connection.models );
 Rota.associate( connection.models );
+Vistoria.associate( connection.models );
+Deposito.associate( connection.models );
+Inseticida.associate( connection.models );
+Tratamento.associate( connection.models );
+Laboratorio.associate( connection.models );
+Amostra.associate( connection.models );
+Mosquito.associate( connection.models );
+Exemplar.associate( connection.models );
 
 module.exports = connection;

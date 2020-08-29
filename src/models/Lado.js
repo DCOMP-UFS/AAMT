@@ -13,6 +13,11 @@ class Lado extends Model {
     this.belongsTo( models.Rua, { foreignKey: 'rua_id', as: 'rua' } );
     this.belongsTo( models.Quarteirao, { foreignKey: 'quarteirao_id', as: 'quarteirao' } );
     this.hasMany( models.Imovel, { foreignKey: 'lado_id', as: 'imoveis' } );
+    this.belongsToMany( models.TrabalhoDiario, {
+      through: 'rotas',
+      as: 'rota',
+      foreignKey: 'lado_id'
+    });
   }
 }
 

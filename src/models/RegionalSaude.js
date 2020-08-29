@@ -13,8 +13,8 @@ class RegionalSaude extends Model {
   }
 
   static associate( models ) {
-    this.hasMany( models.Municipio, { foreignKey: 'regional_saude_id', as: 'municipios' } )
-    this.belongsTo( models.Estado, { foreignKey: 'estado_id', as: 'estado' } )
+    this.hasMany( models.Municipio, { foreignKey: 'regional_saude_id', as: 'municipios' } );
+    this.belongsTo( models.Estado, { foreignKey: 'estado_id', as: 'estado' } );
   }
 }
 

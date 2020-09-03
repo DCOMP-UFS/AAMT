@@ -7,6 +7,7 @@ class Deposito extends Model {
       fl_tratado: DataTypes.BOOLEAN,
       fl_eliminado: DataTypes.BOOLEAN,
       tipoRecipiente: DataTypes.STRING,
+      sequencia: DataTypes.INTEGER
     }, {
       sequelize,
       tableName: 'depositos'

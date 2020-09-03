@@ -3,7 +3,8 @@ const { Model, DataTypes } = require('sequelize');
 class Amostra extends Model {
   static init(sequelize) {
     super.init({
-      situacaoAmostra: DataTypes.INTEGER
+      situacaoAmostra: DataTypes.INTEGER,
+      sequencia: DataTypes.INTEGER
     }, {
       sequelize,
       tableName: 'amostras'

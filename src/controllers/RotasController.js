@@ -6,6 +6,10 @@ const TrabalhoDiario = require('../models/TrabalhoDiario');
 const Rota = require('../models/Rota');
 const Lado = require('../models/Lado');
 const Quarteirao = require('../models/Quarteirao');
+const Vistoria = require('../models/Vistoria');
+const Deposito = require('../models/Deposito');
+const Tratamento = require('../models/Tratamento');
+const Amostra = require('../models/Amostra');
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
@@ -68,6 +72,9 @@ getRoute = async ( req, res ) => {
     include: {
       association: 'lados',
       include: [
+        {
+          association: 'imoveis'
+        },
         {
           association: 'rota',
           where: {
@@ -417,6 +424,61 @@ endRoute = async ( req, res ) => {
     });
   // Validando
 
+  // Salvando as vistorias  
+  let vists = [];
+  vistorias.forEach(async v => {
+    let vistoria = { ...v }
+    await Vistoria.create({
+      situacaoVistoria: v.situacaoVistoria,
+      horaEntrada: v.horaEntrada,
+      pendencia: v.pendencia,
+      sequencia: v.sequencia,
+      imovel_id: v.imovel.id,
+      trabalho_diario_id: v.trabalhoDiario_id
+    })
+    .then(function( result ) {
+      vistoria.id = result.dataValues.id;
+    });
+
+    vists.push( vistoria );
+
+    vistoria.recipientes.forEach(async r => {
+      let recipiente = { ...r };
+      await Deposito.create({
+        fl_comFoco: recipiente.fl_comFoco,
+        fl_tratado: recipiente.fl_tratado,
+        fl_eliminado: recipiente.fl_eliminado,
+        tipoRecipiente: recipiente.tipoRecipiente,
+        sequencia: recipiente.sequencia,
+        vistoria_id: vistoria.id
+      })
+      .then(function( result ) {
+        recipiente.id = result.dataValues.id;
+      });
+
+      if( recipiente.fl_tratado ) {
+        await Tratamento.create({
+          quantidade: recipiente.tratamento.quantidade,
+          tecnica: recipiente.tratamento.tecnica,
+          deposito_id: recipiente.id,
+          inseticida_id: 2
+        });
+      }
+
+      if( recipiente.fl_comFoco ) {
+        recipiente.amostras.forEach(async a => {
+          await Amostra.create({
+            situacaoAmostra: a.situacao,
+            sequencia: a.sequencia,
+            deposito_id: recipiente.id,
+            laboratorio_id: null
+          });
+        });
+      }
+    });
+  });
+  // Salvando as vistorias
+
   // Finalizar rota
   const [ result ] = await TrabalhoDiario.update(
     {
@@ -441,7 +503,8 @@ endRoute = async ( req, res ) => {
 
   return res.json({ 
     status: 'success',
-    mensage: 'Vistorias registradas com sucesso!' 
+    mensage: 'Vistorias registradas com sucesso!',
+    vistorias: vists
   })
 }
 

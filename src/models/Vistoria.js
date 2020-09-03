@@ -5,7 +5,8 @@ class Vistoria extends Model {
     super.init({
       situacaoVistoria: DataTypes.STRING,
       horaEntrada: DataTypes.TIME,
-      pendencia: DataTypes.STRING
+      pendencia: DataTypes.STRING,
+      sequencia: DataTypes.INTEGER
     }, {
       sequelize,
       tableName: 'vistorias'

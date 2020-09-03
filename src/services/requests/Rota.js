@@ -22,3 +22,12 @@ export const startRouteRequest = data => {
     ...headerAuthorization()
   });
 }
+
+export const closeRouteRequest = data => {
+  const { trabalhoDiario_id, horaFim, vistorias } = data;
+
+  return api.post('rotas/finalizar', { trabalhoDiario_id, horaFim, vistorias },
+  {
+    ...headerAuthorization()
+  });
+}

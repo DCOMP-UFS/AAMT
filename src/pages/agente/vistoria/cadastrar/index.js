@@ -4,6 +4,7 @@ import { Row, Col } from 'react-bootstrap';
 import PNCD from '../components/PNCD';
 import ProcurarImovel from '../components/ProcurarImovel';
 import InspecionarRecipiente from '../components/InspecionarRecipiente';
+import ButtonSave from '../../../../components/ButtonSave';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -13,16 +14,15 @@ import { connect } from 'react-redux';
 import { changeSidebar } from '../../../../store/actions/sidebarAgente';
 
 // STYLES
-import { PageIcon, PageHeader } from '../../../../styles/util';
+import { PageIcon, PageHeader, ContainerFixed } from '../../../../styles/util';
 import { Container } from './styles';
 
-function VisualizarVistoria({ ...props }) {
+function CadastrarVistoria({ ...props }) {
   const [ indexVistoria, setIndexVistoria ] = useState( 0 );
   useEffect(() => {
     setIndexVistoria( props.match.params.index );
     props.changeSidebar(2, 1);
   }, []);
-
 
   function getForm() {
     switch ('PNCD') {
@@ -67,4 +67,4 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(VisualizarVistoria);
+)(CadastrarVistoria);

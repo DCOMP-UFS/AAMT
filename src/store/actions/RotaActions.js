@@ -4,7 +4,7 @@ export const ActionTypes = {
   CHECK_ROTA_INICIADA_REQUEST: "CHECK_ROTA_INICIADA_REQUEST",
   CHECK_ROTA_INICIADA_SUCCESS: "CHECK_ROTA_INICIADA_SUCCESS",
   INICIAR_ROTA_REQUEST: "INICIAR_ROTA_REQUEST",
-  INICIAR_ROTA_SUCCESS: "INICIAR_ROTA_SUCCESS"
+  ENCERRAR_ROTA_REQUEST: "ENCERRAR_ROTA_REQUEST",
 }
 
 export const getRouteRequest = ( usuario_id, dia ) => {
@@ -50,6 +50,17 @@ export const startRouteRequest = ( trabalhoDiario_id, horaInicio ) => {
     payload: {
       trabalhoDiario_id,
       horaInicio
+    }
+  }
+}
+
+export const closeRouteRequest = ( trabalhoDiario_id, horaFim, vistorias ) => {
+  return {
+    type: ActionTypes.ENCERRAR_ROTA_REQUEST,
+    payload: {
+      trabalhoDiario_id,
+      horaFim,
+      vistorias
     }
   }
 }

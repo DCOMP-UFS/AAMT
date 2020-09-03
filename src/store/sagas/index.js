@@ -146,5 +146,6 @@ export default function* rootSaga() {
     takeLatest( RotaActions.GET_ROUTE_REQUEST, RotaSagas.getRoute ),
     takeLatest( RotaActions.CHECK_ROTA_INICIADA_REQUEST, RotaSagas.isStarted ),
     takeLatest( RotaActions.INICIAR_ROTA_REQUEST, RotaSagas.startRoute ),
+    takeLatest( RotaActions.ENCERRAR_ROTA_REQUEST, RotaSagas.closeRoute ),
   ]);
 }

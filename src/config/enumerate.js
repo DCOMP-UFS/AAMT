@@ -19,11 +19,17 @@ export const situacaoUnidade = [
   "examinado",
 ]
 
+export const situacaoAmostraEnum = {
+  coletada: { id: 1, label: "Coletada" },
+  pendente: { id: 2, label: "Pendente" },
+  examinada: { id: 3, label: "Examinada" },
+}
+
 export const tipoImovel = {
-  comercial: { value: "C", label: "Comercial" },
-  pontoEstrategico: { value: "PE", label: "Ponto estratégico" },
-  residencial: { value: "R", label: "Residencial" },
-  terrenoBaldio: { value: "TB", label: "Terreno Baldio" }
+  residencial: { id: 1, sigla: "R", label: "Residencial" },
+  terrenoBaldio: { id: 2, sigla: "TB", label: "Terreno Baldio" },
+  comercial: { id: 3, sigla: "C", label: "Comercial" },
+  pontoEstrategico: { id: 4, sigla: "PE", label: "Ponto estratégico" }
 }
 
 export const perfil = {
@@ -51,4 +57,9 @@ export const situacaoAtividade = {
 export const responsabilidadeAtividade = {
   regional: { id: 1, label: "Regional" },
   municipal: { id: 2, label: "Municipal" },
+}
+
+export const tecnicaTratamentoEnum = {
+  focal: { id: 1, label: "Focal" },
+  perifocal: { id: 2, label: "Perifocal" },
 }

@@ -20,6 +20,7 @@ export const Street = styled.li`
   display: flex;
   align-items: center;
   cursor: pointer;
+
   &:not(:last-child) {
     border-bottom: 1px solid ${ Color.border_input };
   }

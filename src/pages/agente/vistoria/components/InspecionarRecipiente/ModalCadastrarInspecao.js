@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { FaVial } from 'react-icons/fa';
 import { validInputIsNull } from '../../../../../config/function';
 import $ from 'jquery';
 import ButtonNewObject from '../../../../../components/ButtonNewObject';
 import ButtonClose from '../../../../../components/ButtonClose';
+import { Row, Col } from 'react-bootstrap';
 import {
   tipoRecipiente as tipoRecipienteEnum,
-  tipoColetor as tipoColetorEnum,
-  situacaoUnidade as situacaoUnidadeEnum
+  situacaoAmostraEnum,
+  tecnicaTratamentoEnum
 } from '../../../../../config/enumerate';
 
 // REDUX
@@ -16,69 +17,74 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { addInspecao, addUnidade } from '../../../../../store/actions/supportInfo';
+import { addUnidade } from '../../../../../store/actions/supportInfo';
+import { addRecipiente } from '../../../../../store/actions/VistoriaActions';
 
 // STYLES
-import { ContainerUnidade } from './styles';
+import {
+  ContainerUnidade,
+  ContainerTratamento,
+  UlIcon,
+  LiIcon,
+  ContainerIcon,
+  DivDescription,
+  ListContainer
+} from './styles';
 import {
   Button,
   selectDefault,
   Separator,
-  UlIcon,
-  LiIcon,
-  LiEmpty,
-  ContainerIcon,
-  DivDescription
+  LiEmpty
 } from '../../../../../styles/global';
 
-function InspecionarRecipiente({ objetivo, ...props }) {
-  const [ tipoColetor, setTipoColetor ] = useState({ value: null, label: null, name: "tipoColetor" });
-  const [ tipoRecipiente, setTipoRecipiente ] = useState({ value: null, label: null, name: "tipoRecipiente" });
-  const [ fl_eliminado, setFl_eliminado ] = useState({ value: null, label: null, name: "fl_eliminado" });
-  const [ fl_tratado, setFl_tratado ] = useState({ value: null, label: null, name: "fl_tratado" });
-  const [ fl_foco, setFl_foco ] = useState({ value: null, label: null, name: "fl_foco" });
+function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, trabalhoDiario_id, objetivo, ...props }) {
+  const [ tipoRecipiente, setTipoRecipiente ] = useState({ value: null, label: null });
+  const [ fl_eliminado, setFl_eliminado ] = useState({ value: null, label: null });
+  const [ fl_tratado, setFl_tratado ] = useState({ value: null, label: null });
+  const [ fl_foco, setFl_foco ] = useState({ value: null, label: null });
+  const [ tecnicaTratamento, setTecnicaTratamento ] = useState({ value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label });
   const [ numUnidade, setNumUnidade ] = useState(0);
+  const [ qtdRepeticao, setQtdRepeticao ] = useState(1);
+  const [ qtdTratamento, setQtdTratamento ] = useState(0);
   const [ unidade, setUnidade ] = useState([]);
+  const [ reload, setReload ] = useState( false );
   const [ optionsTipoRecipiente, setOptionsTipoRecipiente ] = useState(tipoRecipienteEnum.map( tipo => (
-    { value: tipo, label: tipo, name: "tipoRecipiente" }
+    { value: tipo, label: tipo }
   ) ));
   const [ optionsSimNao, setOptionsSimNao ] = useState([
     { value: true, label: "Sim" },
     { value: false, label: "Não" }
   ]);
-  const [ optionsTipoColetor, setOptionsTipoColetor ] = useState(tipoColetorEnum.map( tipo => (
-    { value: tipo, label: tipo, name: "tipoColetor" }
-  )));
+  const [ optionsTecnicaTratamento, setOptionsTecnicaTratamento ] = useState(
+    Object.entries( tecnicaTratamentoEnum ).map(([ key, value ]) => ({ value: value.id, label: value.label }))
+  );
 
   function addUnidade() {
-    let fl_valido = true;// true -> válido | false -> inválido
-    const tipoColetor = tipoColetor.value;
+    let nu = numUnidade + 1;
+    let listUnidade = unidade;
 
-    if( !validInputIsNull( "#tipoColetor", tipoColetor ) ) fl_valido = false;
-
-    if( fl_valido ) {
-      let numUnidade = numUnidade + 1;
-      let listUnidade = unidade;
-
-      const unidade = {
-        idUnidade: props.idRecipiente + "." + numUnidade,
-        tipoColetor,
-        situacao: situacaoUnidadeEnum[0]
-      }
-
-      listUnidade.push( unidade );
-
-      setNumUnidade( numUnidade );
-      setUnidade( listUnidade );
+    const amostra = {
+      idUnidade:
+        trabalhoDiario_id + '.' +
+        ( vistorias.length + 1) + '.' +
+        sequenciaRecipiente + '.' +
+        nu,
+      sequencia: nu,
+      situacao: situacaoAmostraEnum.coletada.id
     }
+
+    listUnidade.push( amostra );
+
+    setNumUnidade( nu );
+    setUnidade( listUnidade );
   }
 
   function removeUnidade( index ) {
-    let unidade = unidade;
+    let u = unidade;
+    u.splice( index, 1 );
 
-    unidade.splice( index, 1 );
-
-    setUnidade( unidade );
+    setUnidade( u );
+    setReload( !reload );
   }
 
   function submit() {
@@ -90,20 +96,31 @@ function InspecionarRecipiente({ objetivo, ...props }) {
     if( !validInputIsNull( "#fl_foco", fl_foco.value ) ) fl_valido = false;
 
     if( fl_valido ) {
-      props.addInspecao( props.idRecipiente, tipoRecipiente.value, fl_eliminado.value, fl_tratado.value, fl_foco.value );
+      const recipiente = {
+        fl_comFoco: fl_foco.value,
+        fl_tratado: fl_tratado.value,
+        fl_eliminado: fl_eliminado.value,
+        tipoRecipiente: tipoRecipiente.value,
+        sequencia: sequenciaRecipiente,
+        tratamento: {
+          quantidade: qtdTratamento,
+          tecnica: tecnicaTratamento.value
+        },
+        amostras: unidade
+      };
 
-      unidade.forEach( u => {
-        props.addUnidade( u.idUnidade, u.tipoColetor, u.situacao );
-      });
+      props.addRecipiente( recipiente, qtdRepeticao );
 
       // Reset state
-      setTipoColetor({ value: null, label: null, name: "tipoColetor" });
       setTipoRecipiente({ value: null, label: null, name: "tipoRecipiente" });
       setFl_eliminado({ value: null, label: null, name: "fl_eliminado" });
       setFl_tratado({ value: null, label: null, name: "fl_tratado" });
       setFl_foco({ value: null, label: null, name: "fl_foco" });
       setNumUnidade( 0 );
       setUnidade( [] );
+      setQtdRepeticao( 1 );
+      setQtdTratamento( 0 );
+      setTecnicaTratamento({ value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label });
 
       $('#modalCadastrarInspecao').modal('hide');
     }
@@ -139,10 +156,14 @@ function InspecionarRecipiente({ objetivo, ...props }) {
 
               <Select
                 id="fl_eliminado"
-                options={ optionsSimNao.map( option => ({ ...option, name: "fl_eliminado" }) ) }
+                options={ optionsSimNao }
                 value={ fl_eliminado }
                 styles={ selectDefault }
-                onChange={ option => setFl_eliminado( option ) } />
+                onChange={ option => {
+                  setFl_eliminado( option );
+                  if( option.value )
+                    setFl_tratado({ value: false, label: "Não" });
+                }} />
             </div>
 
             <div className="form-group">
@@ -150,10 +171,54 @@ function InspecionarRecipiente({ objetivo, ...props }) {
 
               <Select
                 id="fl_tratado"
-                options={ optionsSimNao.map( option => ({ ...option, name: "fl_tratado" }) ) }
+                options={ optionsSimNao }
                 value={ fl_tratado }
                 styles={ selectDefault }
-                onChange={ option => setFl_tratado( option ) } />
+                onChange={ option => {
+                  setFl_tratado( option );
+                  if( option.value )
+                    setFl_eliminado({ value: false, label: "Não" });
+                } } />
+            </div>
+
+            <ContainerTratamento className={ fl_tratado.value === true ? "" : "d-none" }>
+              <Row>
+                <Col md="6" className="form-group">
+                  <label htmlFor="qtdTratamento">Quantidade aplicada? (g) <code>*</code></label>
+
+                  <input
+                    id="qtdTratamento"
+                    type="number"
+                    step="0.01"
+                    min={ 0 }
+                    className="form-control"
+                    value={ qtdTratamento }
+                    onChange={ e => setQtdTratamento( e.target.value === "" ? 0 : parseFloat( e.target.value ) ) } />
+                </Col>
+
+                <Col md="6" className="form-group">
+                  <label htmlFor="tecnicaTratamento">Técnica? <code>*</code></label>
+
+                  <Select
+                    id="tecnicaTratamento"
+                    options={ optionsTecnicaTratamento }
+                    value={ tecnicaTratamento }
+                    styles={ selectDefault }
+                    onChange={ option => setTecnicaTratamento( option ) } />
+                </Col>
+              </Row>
+            </ContainerTratamento>
+
+            <div className={ "form-group " + ( fl_foco.value === true ? "d-none" : "" ) }>
+              <label htmlFor="qtdRepeticao">Repetir inspeção? <code>*</code></label>
+
+              <input
+                id="qtdRepeticao"
+                type="number"
+                min={ 1 }
+                className="form-control"
+                value={ qtdRepeticao }
+                onChange={ e => setQtdRepeticao( e.target.value ) } />
             </div>
 
             <div className="form-group">
@@ -161,7 +226,7 @@ function InspecionarRecipiente({ objetivo, ...props }) {
 
               <Select
                 id="fl_foco"
-                options={ optionsSimNao.map( option => ({ ...option, name: "fl_foco" }) ) }
+                options={ optionsSimNao }
                 value={ fl_foco }
                 styles={ selectDefault }
                 onChange={ option => setFl_foco( option ) } />
@@ -176,16 +241,6 @@ function InspecionarRecipiente({ objetivo, ...props }) {
                   title="Cadastrar Amostra"
                   onClick={ addUnidade } />
               </h4>
-
-              <div className="form-group">
-                <label htmlFor="tipoColetor">Coletor <code>*</code></label>
-                <Select
-                  id="tipoColetor"
-                  options={ optionsTipoColetor }
-                  value={ tipoColetor }
-                  styles={ selectDefault }
-                  onChange={ option => setTipoColetor( option ) } />
-              </div>
 
               <ListUnidade unidade={ unidade } remove={ removeUnidade } />
             </ContainerUnidade>
@@ -205,22 +260,23 @@ function ListUnidade( props ) {
   const remove = props.remove;
 
   let li = unidade.map(( unidade, index ) =>
-    <LiIcon
-      key={ index } >
-    <ContainerIcon className="ContainerIcon" >
-      <FaVial />
-    </ContainerIcon>
-    <DivDescription>
-      <div>
-        <span className="mr-2">Cód.: { unidade.idUnidade }</span>
-        <span>Coletor: { unidade.tipoColetor }</span>
-      </div>
-
+    <LiIcon key={ index } >
+      <ListContainer>
+        <ContainerIcon>
+          <FaVial />
+        </ContainerIcon>
+        <DivDescription>
+          <div>
+            <span className="mr-2">Cód. da amostra: { unidade.idUnidade }</span>
+          </div>
+        </DivDescription>
+      </ListContainer>
       <ButtonClose
         title="Remover amostra"
-        onClick={ () => remove( index ) } />
-    </DivDescription>
-  </LiIcon>
+        className="ml-2 text-danger"
+        onClick={ () => remove( index ) }
+      />
+    </LiIcon>
   );
 
   if( unidade.length === 0 ) {
@@ -236,10 +292,15 @@ function ListUnidade( props ) {
   )
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  trabalhoDiario_id: state.rota.trabalhoDiario.id,
+  vistorias: state.vistoriaCache.vistorias,
+  recipientes: state.vistoria.recipientes,
+  sequenciaRecipiente: state.vistoria.sequenciaRecipiente,
+});
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ addInspecao, addUnidade }, dispatch);
+  bindActionCreators({ addUnidade, addRecipiente }, dispatch);
 
 export default connect(
   mapStateToProps,

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { IoIosHome } from 'react-icons/io';
 import Select from 'react-select';
-import ButtonNewObject from '../../../../../components/ButtonNewObject';
 import { Row, Col } from 'react-bootstrap';
 
 // REDUX
@@ -9,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTION
-import { setVistoriaImovel, setImovelSelect, handleQuarteirao } from '../../../../../store/actions/supportInfo';
+import { setQuarteiraoSelect, setImovelSelected } from '../../../../../store/actions/VistoriaActions';
 
 // ENUMERATE
 import { tipoImovel as tipoImovelEnum } from '../../../../../config/enumerate';
@@ -18,49 +17,40 @@ import { tipoImovel as tipoImovelEnum } from '../../../../../config/enumerate';
 import { selectDefault } from '../../../../../styles/global';
 import { Container, UlImovel, LiImovel, ContainerIcon, DivDescription, LiEmpty, Span } from './styles';
 
-function ProcurarImovel({ imovelSelect, findImovel, quarteirao, ...props }) {
-  const [ optionQuarteirao, setOptionQuarteirao ] = useState(quarteirao.map( (quarteirao, index) => {
-    return { value: index, label: quarteirao.idQuarteirao };
+function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }) {
+  const [ optionQuarteirao, setOptionQuarteirao ] = useState( rota.map(( quarteirao, index ) => {
+    return { value: index, label: quarteirao.numero, id: quarteirao.id };
   }));
   const [ numero, setNumero ] = useState("");
   const [ sequencia, setSequencia ] = useState("");
   const [ optionTipoImovel, setOptionTipoImovel ] = useState(Object.entries( tipoImovelEnum ).map(([key, value]) => {
     return { value: value.id, label: value.label };
   }));
-  const [ tipoImovel, setTipoImovel ] = useState({ value: "", label: "" });
 
-  function handleList(index) {
-    const quarteirao = quarteirao[ findImovel.indexQuarteirao ];
-    const imovel = quarteirao.imovel[ index ];
+  useEffect(() => {
+    props.setQuarteiraoSelect({ value: 0, label: rota[0].numero, id: rota[0].id });
+  }, []);
 
-    props.setVistoriaImovel( index, imovel );
+  function handleImovel( imovel ) {
+    props.setImovelSelected( imovel );
   };
-
-  function handleQuarteirao( event ) {
-    const indexQuarteirao = event.value;
-    const idQuarteirao = optionQuarteirao[ indexQuarteirao ].label;
-
-    props.handleQuarteirao( idQuarteirao, indexQuarteirao );
-  }
 
   function handleInputImovel(event) {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
 
-    let imovel = props.imovelSelect;
-    imovel[name] = value;
+    let i = imovel;
+    i[name] = value;
 
-    props.setImovelSelect( imovel );
+    props.setImovelSelected( imovel );
   }
 
-  function handleTipoImovel( event ) {
-    const tipoImovel = event.value;
+  function handleTipoImovel( option ) {
+    let i = imovel;
+    i.tipoImovel = option.value;
 
-    let imovel = props.imovelSelect;
-    imovel.tipoImovel = tipoImovel;
-
-    props.setImovelSelect(imovel);
+    props.setImovelSelected( imovel );
   }
 
   return (
@@ -75,7 +65,8 @@ function ProcurarImovel({ imovelSelect, findImovel, quarteirao, ...props }) {
                 <Select
                   styles={ selectDefault }
                   options={ optionQuarteirao }
-                  onChange={ handleQuarteirao } />
+                  onChange={ option => props.setQuarteiraoSelect( option ) }
+                  value={ selectQuarteirao } />
               </div>
             </Col>
 
@@ -108,9 +99,9 @@ function ProcurarImovel({ imovelSelect, findImovel, quarteirao, ...props }) {
             <Col md="12">
               <h4 className="title">Imóvel selecionado</h4>
               {
-                imovelSelect.idImovel === -1 ?
-                  <p className="description">Nenhum imóvel selecionado</p> :
-                  <p className="description">Registro do imóvel: <mark className="bg-success text-white">{imovelSelect.idImovel}</mark></p>
+                imovel ?
+                  <p className="description">Registro do imóvel: <mark className="bg-success text-white">{ imovel.id }</mark></p> :
+                  <p className="description">Nenhum imóvel selecionado</p>
               }
             </Col>
 
@@ -122,8 +113,8 @@ function ProcurarImovel({ imovelSelect, findImovel, quarteirao, ...props }) {
                   className="form-control"
                   type="number"
                   min="0"
-                  disabled={ findImovel.selectImovel ? "" : "disabled" }
-                  value={ imovelSelect.numero === -1 ? "" : imovelSelect.numero }
+                  disabled={ imovel ? "" : "disabled" }
+                  value={ imovel ?  imovel.numero : "" }
                   onChange={ handleInputImovel } />
               </div>
             </Col>
@@ -136,8 +127,8 @@ function ProcurarImovel({ imovelSelect, findImovel, quarteirao, ...props }) {
                   type="number"
                   min="0"
                   className="form-control"
-                  disabled={ findImovel.selectImovel ? "" : "disabled" }
-                  value={ imovelSelect.sequencia === -1 ? "" : imovelSelect.sequencia }
+                  disabled={ imovel ? "" : "disabled" }
+                  value={ imovel ? ( imovel.sequencia !== null ? imovel.sequencia : "" ) : "" }
                   onChange={ handleInputImovel } />
               </div>
             </Col>
@@ -149,8 +140,8 @@ function ProcurarImovel({ imovelSelect, findImovel, quarteirao, ...props }) {
                   name="responsavel"
                   type="text"
                   className="form-control"
-                  disabled={ findImovel.selectImovel ? "" : "disabled" }
-                  value={ imovelSelect.responsavel }
+                  disabled={ imovel ? "" : "disabled" }
+                  value={ imovel ? imovel.responsavel : "" }
                   onChange={ handleInputImovel } />
               </div>
             </Col>
@@ -161,8 +152,12 @@ function ProcurarImovel({ imovelSelect, findImovel, quarteirao, ...props }) {
                 <Select
                   name="tipoImovel"
                   styles={ selectDefault }
-                  isDisabled={ !findImovel.selectImovel }
-                  value={{ value: imovelSelect.tipoImovel, label: imovelSelect.tipoImovel }}
+                  isDisabled={ imovel ? false : true }
+                  value={
+                    imovel ?
+                      optionTipoImovel.find( ti => ti.value === imovel.tipoImovel ) :
+                      {}
+                  }
                   options={ optionTipoImovel }
                   onChange={ handleTipoImovel } />
               </div>
@@ -175,8 +170,8 @@ function ProcurarImovel({ imovelSelect, findImovel, quarteirao, ...props }) {
                   name="complemento"
                   type="text"
                   className="form-control"
-                  disabled={ findImovel.selectImovel ? "" : "disabled" }
-                  value={ imovelSelect.complemento }
+                  disabled={ imovel ? "" : "disabled" }
+                  value={ imovel ? imovel.complemento : "" }
                   onChange={ handleInputImovel } />
               </div>
             </Col>
@@ -187,13 +182,10 @@ function ProcurarImovel({ imovelSelect, findImovel, quarteirao, ...props }) {
           <h4>Imóveis</h4>
 
           <ListImovel
-            imovelSelect={ imovelSelect.idImovel }
-            imovel={
-              findImovel.indexQuarteirao === -1 ?
-                [] :
-                quarteirao[findImovel.indexQuarteirao].imovel
-            }
-            handleList={ handleList }
+            idImovelSelect={ imovel ? imovel.id : undefined }
+            quarteirao={ selectQuarteirao ? rota[ selectQuarteirao.value ] : undefined }
+            rotaIndex={ selectQuarteirao ? selectQuarteirao.value : undefined }
+            handleImovel={ handleImovel }
             numero={ numero === "" ? "-1" : numero }
             sequencia={ sequencia === "" ? "-1" : sequencia } />
         </Col>
@@ -202,14 +194,17 @@ function ProcurarImovel({ imovelSelect, findImovel, quarteirao, ...props }) {
   );
 }
 
-function ListImovel( props ) {
-  const imovel = props.imovel;
-  const handleList = props.handleList;
-  const imovelSelect = props.imovelSelect;
-  const numero = parseInt(props.numero);
-  const sequencia = parseInt(props.sequencia);
+function ListImovel({ rotaIndex, idImovelSelect, quarteirao, ...props }) {
+  const imoveis = quarteirao ?
+    quarteirao.lados.reduce(( imoveis, l ) => {
+      l.imoveis = l.imoveis.map( i => ({ ...i, numeroQuarteirao: quarteirao.numero, logradouro: l.rua.nome }));
+      return [ ...imoveis, ...l.imoveis ];
+    }, []) :
+    [];
+  const numero = parseInt( props.numero );
+  const sequencia = parseInt( props.sequencia );
 
-  const filterImovel = imovel.filter(
+  const filterImovel = imoveis.filter(
     imovel => {
       return (
         numero === -1 ||
@@ -223,20 +218,20 @@ function ListImovel( props ) {
 
   let li = filterImovel.map(( imovel, index ) =>
     <LiImovel
-      key={ imovel.idImovel }
-      className={ imovelSelect === imovel.idImovel ? "active" : "" }
-      onClick={ () => handleList( index ) }>
-    <ContainerIcon className="ContainerIcon" >
-      <IoIosHome />
-    </ContainerIcon>
-    <DivDescription>
-      <div>
-        <span className="mr-2">Nº: { imovel.numero }</span>
-        <span>Seq.: { imovel.sequencia === -1 ? "" : imovel.sequencia }</span>
-      </div>
-      <Span>Responsável: { imovel.responsavel }</Span>
-    </DivDescription>
-  </LiImovel>
+      key={ index}
+      className={ idImovelSelect === imovel.id ? "active" : "" }
+      onClick={ () => props.handleImovel( imovel ) }>
+      <ContainerIcon className="ContainerIcon" >
+        <IoIosHome />
+      </ContainerIcon>
+      <DivDescription>
+        <div>
+          <span className="mr-2">Nº: { imovel.numero }</span>
+          <span>Seq.: { imovel.sequencia === -1 ? "" : imovel.sequencia }</span>
+        </div>
+        <Span>Responsável: { imovel.responsavel }</Span>
+      </DivDescription>
+    </LiImovel>
   );
 
   if(filterImovel.length === 0) {
@@ -253,25 +248,18 @@ function ListImovel( props ) {
 }
 
 const mapStateToProps = state => ({
-  findImovel: {
-    idQuarteirao: state.supportInfo.form_vistoria.findImovel.idQuarteirao,
-    indexQuarteirao: state.supportInfo.form_vistoria.findImovel.indexQuarteirao,
-    selectImovel: state.supportInfo.form_vistoria.findImovel.selectImovel,
-  },
-  imovelSelect: {
-    index: state.supportInfo.form_vistoria.imovel.index,
-    idImovel: state.supportInfo.form_vistoria.imovel.idImovel,
-    numero: state.supportInfo.form_vistoria.imovel.numero,
-    sequencia: state.supportInfo.form_vistoria.imovel.sequencia,
-    tipoImovel: state.supportInfo.form_vistoria.imovel.tipoImovel,
-    complemento: state.supportInfo.form_vistoria.imovel.complemento,
-    responsavel: state.supportInfo.form_vistoria.imovel.responsavel,
-  },
-  quarteirao: state.supportInfo.quarteirao
+  rota: state.rota.rota,
+  quarteirao: state.supportInfo.quarteirao,
+  selectQuarteirao: state.vistoria.selectQuarteirao,
+  imovel: state.vistoria.imovel,
+  reload: state.vistoria.reload
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ setVistoriaImovel, setImovelSelect, handleQuarteirao }, dispatch);
+  bindActionCreators({
+    setQuarteiraoSelect,
+    setImovelSelected,
+  }, dispatch);
 
 export default connect(
   mapStateToProps,

@@ -48,7 +48,7 @@ import EditarQuarteirao from './pages/supervisor/Quarteiroes/EditarQuarteirao';
 // Páginas do agente
 import HomeAgente from './pages/agente/home';
 import Vistoria from './pages/agente/vistoria';
-import VisualizarVistoria from './pages/agente/vistoria/visualizar/visualizar';
+import CadastrarVistoria from './pages/agente/vistoria/cadastrar';
 import CDT_Trabalho_diario from './pages/trabalho_diario/Iniciar';
 import ListaVistoria from './pages/trabalho_diario/ListaVistoria';
 import FormVistoria from './pages/trabalho_diario/Form';
@@ -195,7 +195,7 @@ const Routes = props => {
         {/* Rotas de agentes */}
         <PrivateAgente path="/agente/home" component={ HomeAgente } tipoPerfil={ perfil } />
         <PrivateAgente exact path="/agente/vistoria" component={ Vistoria } tipoPerfil={ perfil } />
-        <PrivateAgente path="/agente/vistoria/cadastrar" component={ VisualizarVistoria } tipoPerfil={ perfil } />
+        <PrivateAgente path="/agente/vistoria/cadastrar" component={ CadastrarVistoria } tipoPerfil={ perfil } />
         <PrivateCoordenador path="/trabalho_diario/iniciar" component={CDT_Trabalho_diario} tipoPerfil={ perfil } />
         <PrivateCoordenador path="/trabalho_diario/vistoria/lista" component={ListaVistoria} tipoPerfil={ perfil } />
         <PrivateCoordenador path="/trabalho_diario/vistoria/formulario" component={FormVistoria} tipoPerfil={ perfil } />

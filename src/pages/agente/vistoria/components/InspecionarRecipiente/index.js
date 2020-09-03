@@ -1,23 +1,27 @@
 import React from 'react';
-import { FaVial } from 'react-icons/fa';
 import ButtonNewObject from '../../../../../components/ButtonNewObject';
 import ModalCadastrarInspecao from './ModalCadastrarInspecao';
+import ButtonClose from '../../../../../components/ButtonClose';
 
 // REDUX
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+// ACTIONS
+import { removerRecipiente } from '../../../../../store/actions/VistoriaActions';
+
 // STYLES
-import { Container } from './styles';
 import {
+  Container,
   UlIcon,
   LiIcon,
-  LiEmpty,
   ContainerIcon,
-  DivDescription
-} from '../../../../../styles/global';
+  DivDescription,
+  ListContainer
+} from './styles';
+import { LiEmpty } from '../../../../../styles/global';
 
-function InspecionarRecipiente({ recipiente, objetivo, ...props }) {
+function InspecionarRecipiente({ sequenciaRecipiente, vistorias, trabalhoDiario_id, recipientes, objetivo, ...props }) {
   function getNextIdRecipiente( lastId ) {
     const arrayId = lastId.split(".");
 
@@ -40,40 +44,40 @@ function InspecionarRecipiente({ recipiente, objetivo, ...props }) {
             data-target="#modalCadastrarInspecao" />
         </h4>
 
-        <ListRecipiente recipiente={recipiente} />
+        <ListRecipiente
+          recipientes={ recipientes }
+          trabalhoDiario_id={ trabalhoDiario_id }
+          vistoriaSequencia={ vistorias.length + 1 }
+          removerRecipiente={ props.removerRecipiente } />
 
-        <ModalCadastrarInspecao
-          objetivo={ objetivo }
-          idRecipiente={
-            getNextIdRecipiente(
-              recipiente.length === 0 ? "1.5.0" : recipiente[ recipiente.length - 1 ].idRecipiente
-            )
-          } />
+        <ModalCadastrarInspecao objetivo={ objetivo } />
       </div>
     </Container>
   );
 }
 
-function ListRecipiente( props ) {
-  const recipiente = props.recipiente;
-
-  let li = recipiente.map(( recipiente, index ) =>
-    <LiIcon
-      key={ index }
-    >
-      <ContainerIcon className="ContainerIcon" >
-        <FaVial />
-      </ContainerIcon>
-      <DivDescription>
-        <div>
-          <span className="mr-2">Cód.: { recipiente.idRecipiente }</span>
-        </div>
-        <span>Nº amostra(s): { recipiente.unidade.length }</span>
-      </DivDescription>
+function ListRecipiente({ recipientes, trabalhoDiario_id, vistoriaSequencia, ...props }) {
+  let li = recipientes.map(( recipiente, index ) =>
+    <LiIcon key={ index }>
+      <ListContainer>
+        <ContainerIcon className="ContainerIcon" >
+          { recipiente.tipoRecipiente }
+        </ContainerIcon>
+        <DivDescription>
+          <div>
+            <span className="mr-2">Cód. do recipiente: { `${ trabalhoDiario_id }.${ vistoriaSequencia }.${ recipiente.sequencia }` }</span>
+          </div>
+          <span>Nº amostra(s): { recipiente.amostras.length }</span>
+        </DivDescription>
+      </ListContainer>
+      <ButtonClose
+        className="ml-2 text-danger"
+        title="Remover recipiente"
+        onClick={ () => props.removerRecipiente( index ) } />
     </LiIcon>
   );
 
-  if( recipiente.length === 0 ) {
+  if( recipientes.length === 0 ) {
     li = <LiEmpty>
       <h4>Nenhum recipiente cadastrado</h4>
     </LiEmpty>;
@@ -87,14 +91,16 @@ function ListRecipiente( props ) {
 }
 
 const mapStateToProps = state => ({
-  recipiente: state.supportInfo.form_vistoria.recipienteInspecionado,
-  numRecipiente: state.supportInfo.form_vistoria.numRecipiente,
+  recipientes: state.vistoria.recipientes,
+  reload: state.vistoria.reload,
+  trabalhoDiario_id: state.rota.trabalhoDiario.id,
+  vistorias: state.vistoriaCache.vistorias,
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({}, dispatch);
+  bindActionCreators({ removerRecipiente }, dispatch);
 
 export default connect(
   mapStateToProps,
-  // mapDispatchToProps
+  mapDispatchToProps
 )(InspecionarRecipiente);

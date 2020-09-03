@@ -27,6 +27,7 @@ import definirRotaCache from './DefinirRotaCache';
 import sidebarAgente from './sidebarAgente';
 import rota from './Rota';
 import vistoria from './Vistoria';
+import vistoriaCache from './VistoriaCache';
 
 export default combineReducers({
   sidebarCoordGeral,
@@ -55,5 +56,6 @@ export default combineReducers({
   definirRotaCache,
   sidebarAgente,
   rota,
-  vistoria
+  vistoria,
+  vistoriaCache
 });

@@ -53,6 +53,11 @@ export const DivDescription = styled.div`
   display: flex;
   justify-content: space-between;
 
+  span {
+    min-width: 50px;
+    display: inline-block;
+  }
+
   strong {
     color: #343a40;
   }

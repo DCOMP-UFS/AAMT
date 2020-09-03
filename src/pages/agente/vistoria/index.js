@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
-import { FaClipboardCheck } from 'react-icons/fa';
+import { FaClipboardCheck, FaCheckDouble } from 'react-icons/fa';
 import { Row, Col } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -24,7 +24,10 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import { stableSort, getSorting } from '../../../config/function';
-require('dotenv').config();
+import dotenv from 'dotenv';
+import ModalFinalizarTrabalho from '../components/ModalFinalizarTrabalho';
+import $ from 'jquery';
+import { tipoImovel as tipoImovelEnum } from '../../../config/enumerate';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -32,10 +35,15 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebarAgente';
+import { getRouteRequest } from '../../../store/actions/RotaActions';
+import { resetHandleSave } from '../../../store/actions/VistoriaCacheActions';
 
 // STYLES
+import { Button } from '../../../styles/global';
 import { PageIcon, PageHeader, PagePopUp } from '../../../styles/util';
 import { Container } from './styles';
+
+dotenv.config();
 
 function EnhancedTableHead(props) {
   const {
@@ -205,34 +213,42 @@ const location = {
   lng: -122.08427,
 }
 
-function createData(id, numQuarteirao, logradouro, numero, sequencia, tipoImovel, horaInicio) {
-  return { id, numQuarteirao, logradouro, numero, sequencia, tipoImovel, horaInicio }
+function createData(id, numQuarteirao, logradouro, numero, sequencia, tipoImovel, situacaoVistoria, pendencia, horaInicio) {
+  return { id, numQuarteirao, logradouro, numero, sequencia, tipoImovel, visita: situacaoVistoria, pendencia, horaInicio }
 }
 
-function Vistoria({ ...props }) {
+function Vistoria({ vistorias, usuario, trabalhoDiario, rota, ...props }) {
   const [ prefix_id_rows, setPrefix_id_rows ] = useState('v_');
   const [ order, setOrder ] = useState('desc');
   const [ orderBy, setOrderBy ] = useState('horaInicio');
   const [ selected, setSelected ] = useState([]);
   const [ page, setPage ] = useState(0);
   const [ dense, setDense ] = useState(true);
-  const [ rowsPerPage, setRowsPerPage ] = useState(5);
+  const [ rowsPerPage, setRowsPerPage ] = useState(10);
   const [ emptyRows, setEmptyRows ] = useState(0);
-  const [ rows, setRows ] = useState([
-    createData( (prefix_id_rows + 1), 1, "Rua A", 1, null, "R", "14:15" ),
-    createData( (prefix_id_rows + 2), 1, "Rua A", 1, 1, "R", "14:15" ),
-    createData( (prefix_id_rows + 3), 1, "Rua A", 2, null, "R", "14:30" ),
-    createData( (prefix_id_rows + 4), 1, "Rua A", 3, null, "C", "14:37" ),
-    createData( (prefix_id_rows + 5), 2, "Rua B", 4, null, "TB", "14:50" ),
-    createData( (prefix_id_rows + 6), 2, "Rua B", 5, null, "R", "15:30" ),
-    createData( (prefix_id_rows + 7), 2, "Rua B", 6, null, "R", "15:45" ),
-  ]);
+  const [ rows, setRows ] = useState(
+    vistorias.map(( v, index ) => createData(
+      (prefix_id_rows + index),
+      v.imovel.numeroQuarteirao,
+      v.imovel.logradouro,
+      v.imovel.numero,
+      v.imovel.sequencia,
+      tipoImovelEnum[
+        Object.entries( tipoImovelEnum ).find(([ key, value ]) => value.id === v.imovel.tipoImovel )[0]
+      ].sigla,
+      v.situacaoVistoria === "N" ? "Normal" : "Recuperada",
+      v.pendencia ? ( v.pendencia === "F" ? "Fechada" : "Recusada" ) : "",
+      v.horaEntrada
+    ))
+  );
   const [ headCells, setHeadCells ] = useState([
     { id: 'numQuarteirao', align: "left", disablePadding: false, label: 'Nº do Quart.' },
-    { id: 'logradouro', align: "left", disablePadding: false, label: 'Nome do Logradouro' },
+    { id: 'logradouro', align: "left", disablePadding: false, label: 'Logradouro' },
     { id: 'numero', align: "left", disablePadding: false, label: 'Nº' },
-    { id: 'sequencia', align: "left", disablePadding: false, label: 'Sequncia' },
+    { id: 'sequencia', align: "left", disablePadding: false, label: 'Sequência' },
     { id: 'tipoImovel', align: "left", disablePadding: false, label: 'Tipo do Imóvel' },
+    { id: 'visita', align: "left", disablePadding: false, label: 'Visita' },
+    { id: 'pendencia', align: "left", disablePadding: false, label: 'Pendência' },
     { id: 'horaInicio', align: "left", disablePadding: false, label: 'Hora de entrada' },
   ]);
 
@@ -241,6 +257,12 @@ function Vistoria({ ...props }) {
     setEmptyRows(rowsPerPage - Math.min(
       rowsPerPage, rows.length - page * rowsPerPage
     ));
+
+    const [ d, m, Y ]  = new Date().toLocaleDateString('en-GB').split('/');
+    const current_date = `${Y}-${m}-${d}`;
+
+    props.getRouteRequest( usuario.id, current_date );
+    props.resetHandleSave();
   }, []);
 
   function handleRequestSort(event, property) {
@@ -296,6 +318,10 @@ function Vistoria({ ...props }) {
 
   function isSelected( id ) { return selected.indexOf( id ) !== -1; }
 
+  function openModalFinalizarRota() {
+    $('#modal-finalizar-rota').modal('show');
+  }
+
   return (
     <Container>
       <PageHeader>
@@ -306,10 +332,25 @@ function Vistoria({ ...props }) {
       </PageHeader>
 
       <section className="card-list">
+        <ModalFinalizarTrabalho id="modal-finalizar-rota" />
         <Row>
           <PagePopUp className="w-100">
             <div className="card">
-              <label className="m-0">Você não possui uma rota planejada para hoje!</label>
+              <Row>
+                <Col className="d-flex align-items-center">
+                  <Button
+                    type="button"
+                    className="success btn-small mr-2"
+                    onClick={ openModalFinalizarRota }>
+                    <FaCheckDouble className="btn-icon" />
+                    Encerrar Rota
+                  </Button>
+
+                  <label className="m-0">
+                    Após finalizar a rota não será mais possível modificar os dados das vistorias!
+                  </label>
+                </Col>
+              </Row>
             </div>
           </PagePopUp>
         </Row>
@@ -381,6 +422,8 @@ function Vistoria({ ...props }) {
                               <TableCell align="left">{row.numero}</TableCell>
                               <TableCell align="left">{row.sequencia}</TableCell>
                               <TableCell align="left">{row.tipoImovel}</TableCell>
+                              <TableCell align="left">{row.visita}</TableCell>
+                              <TableCell align="left">{row.pendencia}</TableCell>
                               <TableCell align="left">{row.horaInicio}</TableCell>
                             </TableRow>
                           );
@@ -429,13 +472,19 @@ function Vistoria({ ...props }) {
 }
 
 const mapStateToProps = state => ({
+  usuario: state.appConfig.usuario,
+  trabalhoDiario: state.rota.trabalhoDiario,
+  rota: state.rota.rota,
   quarteirao: state.quarteirao.quarteirao,
-  form_vistoria: state.supportInfo.form_vistoria
+  form_vistoria: state.supportInfo.form_vistoria,
+  vistorias: state.vistoriaCache.vistorias
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
     changeSidebar,
+    getRouteRequest,
+    resetHandleSave
   }, dispatch);
 
 const LoadingContainer = (props) => (
@@ -443,7 +492,7 @@ const LoadingContainer = (props) => (
 )
 
 export default GoogleApiWrapper({
-  apiKey: ( process.env.REACT_APP_API_URL ),
+  apiKey: ( process.env.REACT_API_MAP_KEY ),
   LoadingContainer: LoadingContainer,
 })(connect(
   mapStateToProps,

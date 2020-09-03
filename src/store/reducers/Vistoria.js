@@ -1,20 +1,72 @@
 import { ActionTypes } from '../actions/VistoriaActions';
 
 const INITIAL_STATE = {
-  rota: [],
-  vistorias: []
+  selectQuarteirao: undefined,
+  imovel: undefined,
+  indexRota: -1,
+  sequenciaRecipiente: 1,
+  recipientes: [],
+  reload: false
 }
 
 export default function Vistoria(state = INITIAL_STATE, action) {
   switch (action.type) {
-    case ActionTypes.SALVAR_ROTA: {
+    case ActionTypes.SET_QUARTEIRAO_SELECT: {
       return {
         ...state,
-        rota: action.payload.rota
+        selectQuarteirao: action.payload.option
+      }
+    }
+
+    case ActionTypes.SET_IMOVEL_SELECTED: {
+      return {
+        ...state,
+        imovel: action.payload.imovel,
+        reload: !state.reload
+      }
+    }
+
+    case ActionTypes.ADD_RECIPIENTE: {
+      const qtdRepeticao = action.payload.qtdRepeticao;
+      let recipiente = action.payload.recipiente;
+      let seq = state.sequenciaRecipiente;
+      let recips = [];
+
+      if( !recipiente.fl_comFoco && qtdRepeticao > 1 ) {
+        for( let index = 0; index < qtdRepeticao; index++ ) {
+          recipiente = {
+            ...recipiente,
+            sequencia: seq++
+          }
+
+          recips = [ ...recips, recipiente ];
+        }
+      }else {
+        seq++;
+        recips = [ ...recips, recipiente ];
+      }
+
+      return {
+        ...state,
+        sequenciaRecipiente: seq,
+        recipientes: [ ...state.recipientes, ...recips ],
+        reload: !state.reload
+      }
+    }
+
+    case ActionTypes.REMOVER_RECIPIENTE: {
+      let recipientes = state.recipientes;
+      let index = action.payload.index;
+      recipientes.splice( index, 1 );
+
+      return {
+        ...state,
+        recipientes,
+        reload: !state.reload
       }
     }
 
     default:
-      return state;
+      return { ...state };
   }
 }

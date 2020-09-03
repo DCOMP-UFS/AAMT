@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
 import Avatar from '@material-ui/core/Avatar';
-require('dotenv').config();
+import dotenv from 'dotenv';
 
 // import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -9,6 +9,8 @@ import { connect } from 'react-redux';
 // COMPONENTS
 import { Container, ListCard, CardInfo } from './styles';
 // import { CardBody } from '../../../styles/global';
+
+dotenv.config();
 
 class HomeLaboratorio extends Component {
   render() {

@@ -1,18 +1,25 @@
 import { ActionTypes } from '../actions/VistoriaCacheActions';
 
 const INITIAL_STATE = {
-  rota: [],
   vistorias: [],
   sequenciaVistoria: 1,
   handleSave: false,
+  showNotStarted: false,
 }
 
 export default function VistoriaCache(state = INITIAL_STATE, action) {
   switch (action.type) {
-    case ActionTypes.SALVAR_ROTA: {
+    case ActionTypes.RESETAR_SHOWNOTSTARTED: {
       return {
         ...state,
-        rota: action.payload.rota
+        showNotStarted: false
+      }
+    }
+
+    case ActionTypes.ROTA_NAO_INICIADA: {
+      return {
+        ...state,
+        showNotStarted: true
       }
     }
 

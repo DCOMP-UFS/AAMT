@@ -1,4 +1,4 @@
-import { ActionTypes } from '../actions/RotaActions';
+import { ActionTypes } from '../actions/RotaCacheActions';
 
 const INITIAL_STATE = {
   fl_iniciada: false,
@@ -54,6 +54,6 @@ export default function Rota(state = INITIAL_STATE, action) {
     }
 
     default:
-      return { ...state }
+      return state
   }
 }

@@ -26,7 +26,7 @@ import { connect } from 'react-redux';
 import { changeSidebar } from '../../../store/actions/sidebarSupervisor';
 import { getByIdRequest } from '../../../store/actions/QuarteiraoActions';
 import { getLocationByCityRequest } from '../../../store/actions/LocalidadeActions';
-import { getZoneByLocalityRequest } from '../../../store/actions/ZonaActions';
+import { getZoneByLocalityRequest, getZoneByCityRequest } from '../../../store/actions/ZonaActions';
 import { getStreetByLocalityRequest } from '../../../store/actions/RuaActions';
 import { changeImovelSelect } from '../../../store/actions/supportInfo';
 
@@ -44,7 +44,7 @@ import {
 import { FormGroup, selectDefault } from '../../../styles/global';
 import { ContainerFixed, PageIcon, PageHeader } from '../../../styles/util';
 
-function EditarQuarteirao({ quarteirao, municipio_id, ...props }) {
+function EditarQuarteirao({ usuario, quarteirao, municipio_id, ...props }) {
   const [ id ] = useState(props.match.params.id);
   const [ numero, setNumero ] = useState( null );
   const [ lado, setLado ] = useState({
@@ -80,14 +80,14 @@ function EditarQuarteirao({ quarteirao, municipio_id, ...props }) {
     if( Object.entries( quarteirao ).length > 0 ) {
       setNumero( quarteirao.numero );
       setLocalidade({
-        value: quarteirao.zona.localidade.id,
-        label: quarteirao.zona.localidade.nome
+        value: quarteirao.localidade.id,
+        label: quarteirao.localidade.nome
       });
       setLados(
         quarteirao.lados.map( l => ({
           id: l.id,
           numero: l.numero,
-          localidade_id: quarteirao.zona.localidade.id,
+          localidade_id: quarteirao.localidade.id,
           rua_id: l.rua.id,
           logradouro: l.rua.nome,
           cep: l.rua.cep,
@@ -125,7 +125,7 @@ function EditarQuarteirao({ quarteirao, municipio_id, ...props }) {
   useEffect(() => {
     if( Object.entries( localidade ).length > 0 ) {
       setLado({ ...lado, localidade_id: localidade.value });
-      props.getZoneByLocalityRequest( localidade.value );
+      props.getZoneByCityRequest( usuario.municipio.id );
       props.getStreetByLocalityRequest( localidade.value );
 
       setZona({});
@@ -254,7 +254,7 @@ function EditarQuarteirao({ quarteirao, municipio_id, ...props }) {
                     <Row>
                       <Col>
                         <FormGroup>
-                          <label>Lados <code>*</code></label>
+                          <label>Cadastrar um novo lados</label>
                           <ContainerSide>
                             <Row>
                               <Col>
@@ -446,6 +446,7 @@ function ListHouse({ lado, update: updateAction, delete: deleteAction }) {
 }
 
 const mapStateToProps = state => ({
+  usuario: state.appConfig.usuario,
   municipio_id: state.appConfig.usuario.municipio.id,
   quarteirao: state.quarteirao.quarteirao,
   localidades: state.localidade.localidades,
@@ -460,6 +461,7 @@ const mapDispatchToProps = dispatch =>
     getByIdRequest,
     getLocationByCityRequest,
     getZoneByLocalityRequest,
+    getZoneByCityRequest,
     getStreetByLocalityRequest,
     changeImovelSelect
   }, dispatch);

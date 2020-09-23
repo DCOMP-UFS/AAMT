@@ -1,14 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
 import { IoIosPaper } from 'react-icons/io';
 import Select from 'react-select';
+import cityIcon from '../../../assets/city-icon.png';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebarCoordGeral';
 import { getActivitiesOfCityRequest } from '../../../store/actions/AtividadeActions';
+import { getAllowedCyclesRequest } from '../../../store/actions/CicloActions';
 
 // STYLES
 import {
@@ -17,7 +19,10 @@ import {
   Nomenclatura,
   UlHorizontal,
   LiH,
-  CardBodyInfo
+  CardBodyInfo,
+  ContainerAtividade,
+  Header,
+  Body
 } from './styles';
 import { FormGroup, selectDefault } from '../../../styles/global';
 import {
@@ -31,11 +36,50 @@ import {
   PagePopUp
 } from '../../../styles/util';
 
-function ConsultarAtividades({ atividades, ...props }) {
+function ConsultarAtividades({ ciclos, atividades, regionalSaude_id, ...props }) {
+  const [ ciclo, setCiclo ] = useState({});
+  const [ situacaoCiclo, setSituacaoCiclo ] = useState({});
+  const [ optionCiclo, setOptionCiclo ] = useState({});
+
   useEffect(() => {
     props.changeSidebar(2, 1);
-    props.getActivitiesOfCityRequest( props.regionalSaude_id );
+    props.getActivitiesOfCityRequest( regionalSaude_id );
+    props.getAllowedCyclesRequest( regionalSaude_id );
   }, []);
+
+  useEffect(() => {
+    const options = ciclos.map( (ciclo) => {
+      let current_date = new Date();
+      let dataInicio = new Date( ciclo.dataInicio );
+      let dataFim = new Date( ciclo.dataFim );
+      current_date.setHours(0,0,0,0);
+      dataInicio.setHours(0,0,0,0);
+      dataFim.setHours(0,0,0,0);
+
+      if( dataInicio <= current_date && dataFim >= current_date )
+        setCiclo({ value: ciclo.id, label: `${ ciclo.ano }.${ ciclo.sequencia }`, dataInicio, dataFim });
+
+      return (
+        { value: ciclo.id, label: `${ ciclo.ano }.${ ciclo.sequencia }`, dataInicio, dataFim }
+      );
+    });
+
+    setOptionCiclo(options);
+  }, [ ciclos ]);
+
+  useEffect(() => {
+    // props.getActivitiesByCityRequest( ciclo.value, props.municipio_id );
+
+    let current_date = new Date();
+    current_date.setHours(0,0,0,0);
+
+    if( ciclo.dataInicio > current_date )
+      setSituacaoCiclo({ situacao: "Planejado", class: "bg-warning text-white ml-3" });
+    else if( ciclo.dataFim < current_date )
+      setSituacaoCiclo({ situacao: "Finalizado", class: "bg-info text-white ml-3" });
+    else
+      setSituacaoCiclo({ situacao: "Em aberto", class: "bg-info text-white ml-3" });
+  }, [ ciclo ]);
 
   return (
     <>
@@ -47,16 +91,22 @@ function ConsultarAtividades({ atividades, ...props }) {
       </PageHeader>
       <section className="card-list">
         <Row>
-          <PagePopUp className="w-100">
+          <PagePopUp className="w-100" style={{ paddingTop: 15, paddingBottom: 40, paddingRight: 15, paddingLeft: 15 }}>
             <div className="card">
               <CardBodyInfo>
-                <FormGroup className="w-25 m-0 inline">
-                  <label htmlFor="ciclo">Ciclo</label>
-                  <Select
-                    id="ciclo"
-                    styles={ selectDefault }
-                  />
-                </FormGroup>
+                <div className="d-flex flex-grow-1 align-items-center">
+                  <FormGroup className="w-50 m-0 mr-2 inline">
+                    <label htmlFor="ciclo">Ciclo</label>
+                    <Select
+                      id="ciclo"
+                      value={ ciclo }
+                      styles={ selectDefault }
+                      options={ optionCiclo }
+                      onChange={ e => setCiclo( e ) }
+                    />
+                  </FormGroup>
+                  <mark className={ situacaoCiclo.class }>{ situacaoCiclo.situacao }</mark>
+                </div>
 
                 <Nomenclatura>
                   <div>
@@ -64,7 +114,7 @@ function ConsultarAtividades({ atividades, ...props }) {
                     <UlHorizontal>
                       <LiH>
                         <span>
-                          <mark className="bg-info text-white">R</mark> - Regional
+                          <mark className="bg-primary text-white">R</mark> - Regional
                         </span>
                       </LiH>
                       <LiH>
@@ -79,7 +129,7 @@ function ConsultarAtividades({ atividades, ...props }) {
                     <UlHorizontal>
                       <LiH>
                         <span>
-                          <mark className="bg-info text-white">A</mark> - Em aberto
+                          <mark className="bg-warning text-white">A</mark> - Em aberto
                         </span>
                       </LiH>
                       <LiH>
@@ -114,13 +164,14 @@ function ConsultarAtividades({ atividades, ...props }) {
 
 function CardAtividades({ municipio }) {
   let list = municipio.atividades.map( (atv, index) => {
+    let classMarkResp = "";
     let responsabilidade = "";
     let situacao = "";
     let classMark = "";
 
     switch ( atv.situacao ) {
       case 1: // Em aberto
-        classMark = "bg-info text-white";
+        classMark = "bg-warning text-white";
         situacao = "A";
         break;
 
@@ -137,10 +188,12 @@ function CardAtividades({ municipio }) {
 
     switch ( atv.responsabilidade ) {
       case 1:
+        classMarkResp = "bg-primary";
         responsabilidade = "R";
         break;
 
       default:
+        classMarkResp = "bg-info";
         responsabilidade = "M";
         break;
     }
@@ -161,7 +214,7 @@ function CardAtividades({ municipio }) {
               <ObjetivoAtividade>{ atv.objetivo.descricao }</ObjetivoAtividade>
             </div>
             <div>
-              <mark className="ml-2 bg-info text-white">{ responsabilidade }</mark>
+              <mark className={`ml-2 ${ classMarkResp } text-white`}>{ responsabilidade }</mark>
               <mark className={`ml-2 ${ classMark }`}>{ situacao }</mark>
             </div>
           </DescricaoAtividade>
@@ -175,32 +228,41 @@ function CardAtividades({ municipio }) {
   }
 
   return(
-    <Col sm="4" className="p-0">
-      <article>
-        <div className="card">
-          <h4 className="title mb-4">
-            { municipio.nome } <mark className="bg-primary text-white">{ municipio.codigo }</mark>
-          </h4>
-
+    <ContainerAtividade className="theme-article col-md-4 stretch-card">
+      <div className="card-atividade">
+        <Header>
+          <div className="icon">
+            <img src={ cityIcon } width="35" alt=""/>
+          </div>
+          <div className="info">
+            <h4 className="title">{ municipio.nome }</h4>
+          </div>
+        </Header>
+        <Body>
           <InfoGroup>
             <label>Atividades</label>
-            <UlIcon style={{ maxHeight: "200px", minHeight: "200px" }}>
+            <UlIcon className="list-hover" style={{ maxHeight: "200px", minHeight: "200px" }}>
               { list }
             </UlIcon>
           </InfoGroup>
-        </div>
-      </article>
-    </Col>
+        </Body>
+      </div>
+    </ContainerAtividade>
   );
 }
 
 const mapStateToProps = state => ({
   regionalSaude_id: state.appConfig.usuario.regionalSaude.id,
-  atividades: state.atividade.atividades
+  atividades: state.atividade.atividades,
+  ciclos: state.ciclo.ciclos,
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ changeSidebar, getActivitiesOfCityRequest }, dispatch);
+  bindActionCreators({
+    changeSidebar,
+    getActivitiesOfCityRequest,
+    getAllowedCyclesRequest
+  }, dispatch);
 
 export default connect(
   mapStateToProps,

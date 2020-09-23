@@ -181,7 +181,7 @@ function ModalUpdateActive({ atividade, updateAtividade, metodologias, ...props 
             </div>
             <div>
               <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
-              <Button type="submit" loading={ flLoading } disabled={ flLoading } >
+              <Button type="submit" disabled={ flLoading } >
                 {
                   flLoading ?
                     (

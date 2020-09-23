@@ -18,7 +18,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { addUnidade } from '../../../../../store/actions/supportInfo';
-import { addRecipiente } from '../../../../../store/actions/VistoriaActions';
+import { atualizarRecipiente } from '../../../../../store/actions/VistoriaActions';
 
 // STYLES
 import {
@@ -37,14 +37,13 @@ import {
   LiEmpty
 } from '../../../../../styles/global';
 
-function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, trabalhoDiario_id, objetivo, ...props }) {
+function InspecionarRecipiente({ updatedIndex, sequenciaRecipiente, recipientes, vistorias, trabalhoDiario_id, objetivo, ...props }) {
   const [ tipoRecipiente, setTipoRecipiente ] = useState({ value: null, label: null });
   const [ fl_eliminado, setFl_eliminado ] = useState({ value: null, label: null });
   const [ fl_tratado, setFl_tratado ] = useState({ value: null, label: null });
   const [ fl_foco, setFl_foco ] = useState({ value: null, label: null });
   const [ tecnicaTratamento, setTecnicaTratamento ] = useState({ value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label });
   const [ numUnidade, setNumUnidade ] = useState(0);
-  const [ qtdRepeticao, setQtdRepeticao ] = useState(1);
   const [ qtdTratamento, setQtdTratamento ] = useState(0);
   const [ unidade, setUnidade ] = useState([]);
   const [ reload, setReload ] = useState( false );
@@ -58,6 +57,23 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
   const [ optionsTecnicaTratamento, setOptionsTecnicaTratamento ] = useState(
     Object.entries( tecnicaTratamentoEnum ).map(([ key, value ]) => ({ value: value.id, label: value.label }))
   );
+
+  useEffect(() => {
+    if( updatedIndex > -1 ) {
+      const recipiente = recipientes[ updatedIndex ];
+      console.log( recipiente );
+      setTipoRecipiente({ value: recipiente.tipoRecipiente, label: recipiente.tipoRecipiente });
+      setFl_eliminado({ value: recipiente.fl_eliminado, label: recipiente.fl_eliminado ? "Sim" : "Não" });
+      setFl_tratado({ value: recipiente.fl_tratado, label: recipiente.fl_tratado ? "Sim" : "Não" });
+      setFl_foco({ value: recipiente.fl_comFoco, label: recipiente.fl_comFoco ? "Sim" : "Não" });
+      setTecnicaTratamento( recipiente.tratamento.tecnica === 1 ?
+        { value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label } :
+        { value: tecnicaTratamentoEnum.perifocal.id, label: tecnicaTratamentoEnum.perifocal.label }
+      );
+      setNumUnidade( recipiente.amostras[ recipiente.amostras.length - 1 ].sequencia );
+      setUnidade( recipiente.amostras );
+    }
+  }, [ updatedIndex ]);
 
   function addUnidade() {
     let nu = numUnidade + 1;
@@ -109,30 +125,26 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
         amostras: unidade
       };
 
-      props.addRecipiente( recipiente, qtdRepeticao );
+      props.atualizarRecipiente( updatedIndex, recipiente );
 
-      // Reset state
-      setTipoRecipiente({ value: null, label: null, name: "tipoRecipiente" });
-      setFl_eliminado({ value: null, label: null, name: "fl_eliminado" });
-      setFl_tratado({ value: null, label: null, name: "fl_tratado" });
-      setFl_foco({ value: null, label: null, name: "fl_foco" });
-      setNumUnidade( 0 );
-      setUnidade( [] );
-      setQtdRepeticao( 1 );
-      setQtdTratamento( 0 );
-      setTecnicaTratamento({ value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label });
-
-      $('#modalCadastrarInspecao').modal('hide');
+      $('#modalEditarInspecao').modal('hide');
     }
   }
 
   return (
-    <div id="modalCadastrarInspecao" className="modal fade show" role="dialog">
+    <div id="modalEditarInspecao" className="modal fade show" role="dialog">
       <div className="modal-dialog" role="document">
         <div className="modal-content">
 
           <div className="modal-header">
-            <h5 className="modal-title">Cadastrar Inspeção</h5>
+            <h5 className="modal-title">
+              Inspeção cód.:
+              {
+                updatedIndex > -1 ?
+                  (`${ trabalhoDiario_id }.${ ( vistorias.length + 1) }.${ recipientes[ updatedIndex ].sequencia }`):
+                  ''
+              }
+            </h5>
             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -209,18 +221,6 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
               </Row>
             </ContainerTratamento>
 
-            <div className={ "form-group " + ( fl_foco.value === true ? "d-none" : "" ) }>
-              <label htmlFor="qtdRepeticao">Repetir inspeção? <code>*</code></label>
-
-              <input
-                id="qtdRepeticao"
-                type="number"
-                min={ 1 }
-                className="form-control"
-                value={ qtdRepeticao }
-                onChange={ e => setQtdRepeticao( e.target.value ) } />
-            </div>
-
             <div className="form-group">
               <label htmlFor="fl_foco">Com foco? <code>*</code></label>
 
@@ -247,7 +247,7 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
           </div>
           <div className="modal-footer">
             <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
-            <Button type="button" onClick={ submit } >Cadastrar</Button>
+            <Button type="button" onClick={ submit } >Salvar</Button>
           </div>
         </div>
       </div>
@@ -297,10 +297,11 @@ const mapStateToProps = state => ({
   vistorias: state.vistoriaCache.vistorias,
   recipientes: state.vistoria.recipientes,
   sequenciaRecipiente: state.vistoria.sequenciaRecipiente,
+  updatedIndex: state.vistoria.updatedIndex
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ addUnidade, addRecipiente }, dispatch);
+  bindActionCreators({ addUnidade, atualizarRecipiente }, dispatch);
 
 export default connect(
   mapStateToProps,

@@ -6,11 +6,30 @@ const INITIAL_STATE = {
   indexRota: -1,
   sequenciaRecipiente: 1,
   recipientes: [],
-  reload: false
+  reload: false,
+  updatedIndex: -1
 }
 
 export default function Vistoria(state = INITIAL_STATE, action) {
   switch (action.type) {
+    case ActionTypes.ATUALIZAR_RECIPIENTE: {
+      let recipientes = state.recipientes;
+      recipientes[ action.payload.index ] = action.payload.recipiente;
+
+      return {
+        ...state,
+        recipientes,
+        reload: !state.reload
+      }
+    }
+
+    case ActionTypes.ALTERAR_UPDATEDINDEX: {
+      return {
+        ...state,
+        updatedIndex: action.payload.index
+      }
+    }
+
     case ActionTypes.SET_QUARTEIRAO_SELECT: {
       return {
         ...state,

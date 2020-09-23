@@ -6,8 +6,8 @@ import {
   closeRouteRequest
 } from '../../services/requests/Rota';
 
-import * as RotaActions from '../actions/RotaActions';
-import * as VistoriaCacheActions from '../actions/VistoriaCacheActions';
+import * as RotaActions from '../actions/RotaCacheActions';
+import * as RotaCacheActions from '../actions/RotaCacheActions';
 import * as AppConfigActions from '../actions/appConfig';
 
 export function* getRoute(action) {
@@ -15,7 +15,7 @@ export function* getRoute(action) {
     const { data, status } = yield call( getRouteRequest, action.payload );
 
     if( status === 200 ) {
-      yield put( RotaActions.getRoute( data ) );
+      yield put( RotaCacheActions.getRoute( data ) );
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar a rota: " + status, "error" ) );
     }
@@ -45,7 +45,7 @@ export function* startRoute(action) {
     const { data, status } = yield call( startRouteRequest, action.payload );
 
     if( status === 200 ) {
-      yield put( VistoriaCacheActions.saveRoute( data ) );
+      yield put( RotaCacheActions.saveRoute( data, action.payload.horaInicio ) );
       window.location = window.location.origin.toString() + '/agente/vistoria';
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao iniciar rota: " + status, "error" ) );
@@ -62,6 +62,11 @@ export function* closeRoute(action) {
 
     if( status === 200 ) {
       if( data.status === "success" ) {
+        const [ d, m, Y ]  = new Date().toLocaleDateString('en-GB').split('/');
+        const current_date = `${Y}-${m}-${d}`;
+        const { data, status } = yield call( getRouteRequest, { usuario_id: action.payload.usuario_id, dia: current_date } );
+
+        yield put( RotaCacheActions.getRoute( data ) );
         yield put( AppConfigActions.showNotifyToast( "Rota finalizada e vistorias registradas com sucesso!", "success" ) );
 
         window.location = window.location.origin.toString() + '/agente/home';

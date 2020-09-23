@@ -6,6 +6,7 @@ import { IoIosPaper } from 'react-icons/io';
 import { Row } from 'react-bootstrap';
 import Select from 'react-select';
 import { situacaoAtividade } from '../../../config/enumerate';
+import tasksIcon from '../../../assets/tasks-icons.png';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebar';
@@ -13,7 +14,7 @@ import { getAllowedCyclesRequest } from '../../../store/actions/CicloActions';
 import { getActivitiesByCityRequest } from '../../../store/actions/AtividadeActions';
 
 // STYLES
-import { ContainerAtividade, ContainerCiclo } from './styles';
+import { ContainerAtividade, ContainerCiclo, Header, Body } from './styles';
 import { FormGroup, selectDefault } from '../../../styles/global';
 import { InfoGroup, PagePopUp, PageIcon, PageHeader } from '../../../styles/util';
 
@@ -37,7 +38,7 @@ function PlanejarAtividade({ ciclos, atividades, ...props }) {
       dataFim.setHours(0,0,0,0);
 
       if( dataInicio <= current_date && dataFim >= current_date )
-        setCiclo({ value: ciclo.id, label: `${ ciclo.ano }.${ ciclo.sequencia }` });
+        setCiclo({ value: ciclo.id, label: `${ ciclo.ano }.${ ciclo.sequencia }`, dataInicio, dataFim });
 
       return (
         { value: ciclo.id, label: `${ ciclo.ano }.${ ciclo.sequencia }`, dataInicio, dataFim }
@@ -107,27 +108,31 @@ function PlanejarAtividade({ ciclos, atividades, ...props }) {
                           break;
                       }
                     }
-                  }
-                >
-                  <div className="card">
-                    <h4 className="title mb-4">
-                      Atividade <mark className="bg-primary text-white">{ atv.id }</mark>
-                    </h4>
-
-                    <InfoGroup>
-                      <label>Metodologia</label>
-                      <p>{ atv.metodologia.sigla }</p>
-                    </InfoGroup>
-
-                    <InfoGroup>
-                      <label>Objetivo</label>
-                      <p>{ atv.objetivo.descricao }</p>
-                    </InfoGroup>
-
-                    <InfoGroup>
-                      <label>Responsabilidade</label>
-                      <p>{ atv.responsabilidade === 1 ? "Regional" : "Municipal" }</p>
-                    </InfoGroup>
+                  }>
+                  <div className="card-atividade">
+                    <Header>
+                      <div className="icon">
+                        <img src={ tasksIcon } width="55" alt=""/>
+                      </div>
+                      <div className="info">
+                        <h4 className="title">Atividade</h4>
+                        <span>De: { ciclo.dataInicio ? ciclo.dataInicio.toLocaleDateString('en-GB') : '' } até { ciclo.dataFim ? ciclo.dataFim.toLocaleDateString('en-GB') : '' }</span>
+                      </div>
+                    </Header>
+                    <Body>
+                      <div className="info-group">
+                        <label>Metodologia: </label>
+                        <p>{ atv.metodologia.sigla }</p>
+                      </div>
+                      <div className="info-group">
+                        <label>Objetivo: </label>
+                        <p>{ atv.objetivo.descricao }</p>
+                      </div>
+                      <div className="info-group">
+                        <label>Responsabilidade: </label>
+                        <p>{ atv.responsabilidade === 1 ? "Regional" : "Municipal" }</p>
+                      </div>
+                    </Body>
                   </div>
                 </ContainerAtividade>
               );

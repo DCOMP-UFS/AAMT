@@ -18,12 +18,17 @@ export function* authenticate(action) {
     const { redirectUser } = action.payload;
 
     if( status === 200 ) {
-      const { token, user } = data;
+      const { token, user, status, mensage } = data;
 
-      redirectUser( user.atuacoes );
+      if( status === "error" ) {
+        yield put( AppConfigActions.showNotifyToast( mensage, "error" ) );
+      } else {
+        redirectUser( user.atuacoes );
 
-      yield put( AppConfigActions.authenticate( user ) );
-      yield put( setToken( token ) );
+        yield put( AppConfigActions.authenticate( user ) );
+        yield put( setToken( token ) );
+      }
+
     }
   } catch (error) {
     yield put( AppConfigActions.showNotifyToast( "Usuário ou senha inválidos", "error" ) );

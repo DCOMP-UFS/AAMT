@@ -107,16 +107,13 @@ function Ciclos({ ciclos, regionalSaude_id, ...props }) {
     current_date.setHours(0,0,0,0);
 
     const cycles = ciclos.map( (ciclo, index) => {
-      let [ ano, mes, dia ] = ciclo.dataInicio.split('T')[0].split('-');
+      let [ ano, mes, dia ] = ciclo.dataInicio.split('-');
       const dataInicioBr = `${ dia }/${ mes }/${ ano }`;
-      [ ano, mes, dia ] = ciclo.dataFim.split('T')[0].split('-');
+      let dataInicio = new Date( ano, mes - 1, dia, 0, 0, 0, 0 );
+
+      [ ano, mes, dia ] = ciclo.dataFim.split('-');
       const dataFimBr = `${ dia }/${ mes }/${ ano }`;
-
-      let dataInicio = new Date( ciclo.dataInicio );
-      let dataFim = new Date( ciclo.dataFim );
-
-      dataInicio.setHours(0,0,0,0);
-      dataFim.setHours(0,0,0,0);
+      let dataFim = new Date( ano, mes - 1, dia, 0, 0, 0, 0 );
 
       if( dataInicio <= current_date && dataFim >= current_date )
         ciclo.situacao = "Em aberto";

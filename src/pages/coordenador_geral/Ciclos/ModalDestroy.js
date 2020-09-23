@@ -51,7 +51,6 @@ function ModalDestroy( props ) {
         <Button
           className="danger"
           onClick={ handleClick }
-          loading={ flLoading }
           disabled={ flLoading }
         >
           {

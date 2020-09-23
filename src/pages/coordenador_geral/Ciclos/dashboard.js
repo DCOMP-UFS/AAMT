@@ -87,7 +87,7 @@ function ListCycle( props ) {
     }, [ 0, 0, 0 ]);
 
     const data = {
-      labels: ['Atividades', 'Concluídas', 'Não Concluídas'],
+      labels: ['Em aberto', 'Concluídas', 'Não Concluídas'],
       datasets: [{
         data: atividade,
         backgroundColor: [

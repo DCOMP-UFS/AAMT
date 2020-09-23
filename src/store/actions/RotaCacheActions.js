@@ -72,11 +72,10 @@ export const startRouteRequest = ( trabalhoDiario_id, horaInicio ) => {
   }
 }
 
-export const closeRouteRequest = ( usuario_id, trabalhoDiario_id, horaFim, vistorias ) => {
+export const closeRouteRequest = ( trabalhoDiario_id, horaFim, vistorias ) => {
   return {
     type: ActionTypes.ENCERRAR_ROTA_REQUEST,
     payload: {
-      usuario_id,
       trabalhoDiario_id,
       horaFim,
       vistorias

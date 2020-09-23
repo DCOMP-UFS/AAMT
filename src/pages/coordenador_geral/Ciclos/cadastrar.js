@@ -52,6 +52,7 @@ function CadastrarCiclo({ ...props }) {
   ]);
   const [ optionAno, setOptionAno ] = useState([]);
   const [ flBtnLoading, setFlBtnLoading ] = useState( false );
+  const [ minDate, setMinDate ] = useState( "" );
 
   useEffect(() => {
     props.changeSidebar(1, 2);
@@ -62,8 +63,10 @@ function CadastrarCiclo({ ...props }) {
       optionYear.push({ value: current_year + index, label: current_year + index });
     }
 
+    let today = new Date();
+    today.setDate( today.getDate() - 1 );
+    setMinDate( today.toISOString().split("T")[0] );
     setOptionAno( optionYear );
-
   }, []);
 
   function addAtividade( atividade ) {
@@ -174,7 +177,7 @@ function CadastrarCiclo({ ...props }) {
                             type="date"
                             className="form-control"
                             value={ dataInicio }
-                            min={ new Date().toISOString().split("T")[0] }
+                            min={ minDate }
                             onChange={ e => setDataInicio( e.target.value ) }
                             required
                           />
@@ -187,7 +190,7 @@ function CadastrarCiclo({ ...props }) {
                             type="date"
                             className="form-control"
                             value={ dataFim }
-                            min={ new Date().toISOString().split("T")[0] }
+                            min={ minDate }
                             onChange={ e => setDataFim( e.target.value ) }
                             required
                           />

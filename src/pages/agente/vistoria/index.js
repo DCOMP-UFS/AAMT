@@ -36,7 +36,7 @@ import { connect } from 'react-redux';
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebarAgente';
 import { getRouteRequest } from '../../../store/actions/RotaActions';
-import { resetHandleSave } from '../../../store/actions/VistoriaCacheActions';
+import { resetHandleSave, routeNotStarted } from '../../../store/actions/VistoriaCacheActions';
 
 // STYLES
 import { Button } from '../../../styles/global';
@@ -217,7 +217,7 @@ function createData(id, numQuarteirao, logradouro, numero, sequencia, tipoImovel
   return { id, numQuarteirao, logradouro, numero, sequencia, tipoImovel, visita: situacaoVistoria, pendencia, horaInicio }
 }
 
-function Vistoria({ vistorias, usuario, trabalhoDiario, rota, ...props }) {
+function Vistoria({ vistorias, routeNotStarted, usuario, trabalhoDiario, rota, showNotStarted, ...props }) {
   const [ prefix_id_rows, setPrefix_id_rows ] = useState('v_');
   const [ order, setOrder ] = useState('desc');
   const [ orderBy, setOrderBy ] = useState('horaInicio');
@@ -227,18 +227,20 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, ...props }) {
   const [ rowsPerPage, setRowsPerPage ] = useState(10);
   const [ emptyRows, setEmptyRows ] = useState(0);
   const [ rows, setRows ] = useState(
-    vistorias.map(( v, index ) => createData(
-      (prefix_id_rows + index),
-      v.imovel.numeroQuarteirao,
-      v.imovel.logradouro,
-      v.imovel.numero,
-      v.imovel.sequencia,
-      tipoImovelEnum[
-        Object.entries( tipoImovelEnum ).find(([ key, value ]) => value.id === v.imovel.tipoImovel )[0]
-      ].sigla,
-      v.situacaoVistoria === "N" ? "Normal" : "Recuperada",
-      v.pendencia ? ( v.pendencia === "F" ? "Fechada" : "Recusada" ) : "",
-      v.horaEntrada
+    vistorias.map(( v, index ) => (
+      createData(
+        (prefix_id_rows + index),
+        v.imovel.numeroQuarteirao,
+        v.imovel.logradouro,
+        v.imovel.numero,
+        v.imovel.sequencia,
+        tipoImovelEnum[
+          Object.entries( tipoImovelEnum ).find(([ key, value ]) => value.id === v.imovel.tipoImovel )[0]
+        ].sigla,
+        v.situacaoVistoria === "N" ? "Normal" : "Recuperada",
+        v.pendencia ? ( v.pendencia === "F" ? "Fechada" : "Recusada" ) : "",
+        v.horaEntrada
+      )
     ))
   );
   const [ headCells, setHeadCells ] = useState([
@@ -253,6 +255,17 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, ...props }) {
   ]);
 
   useEffect(() => {
+    if( showNotStarted )
+      setTimeout(() => { window.location = window.location.origin + '/agente/home'; }, 300);
+  }, [ showNotStarted ]);
+
+  useEffect(() => {
+    if( !trabalhoDiario.id ) {
+      props.routeNotStarted();
+    } else if( !trabalhoDiario.horaInicio ) {
+      props.routeNotStarted();
+    }
+
     props.changeSidebar(2, 1);
     setEmptyRows(rowsPerPage - Math.min(
       rowsPerPage, rows.length - page * rowsPerPage
@@ -473,18 +486,20 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, ...props }) {
 
 const mapStateToProps = state => ({
   usuario: state.appConfig.usuario,
-  trabalhoDiario: state.rota.trabalhoDiario,
-  rota: state.rota.rota,
+  trabalhoDiario: state.rotaCache.trabalhoDiario,
+  rota: state.rotaCache.rota,
   quarteirao: state.quarteirao.quarteirao,
   form_vistoria: state.supportInfo.form_vistoria,
-  vistorias: state.vistoriaCache.vistorias
+  vistorias: state.vistoriaCache.vistorias,
+  showNotStarted: state.vistoriaCache.showNotStarted
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
     changeSidebar,
     getRouteRequest,
-    resetHandleSave
+    resetHandleSave,
+    routeNotStarted
   }, dispatch);
 
 const LoadingContainer = (props) => (

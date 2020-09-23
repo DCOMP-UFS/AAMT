@@ -2,7 +2,18 @@ export const ActionTypes = {
   SET_QUARTEIRAO_SELECT: "SET_QUARTEIRAO_SELECT",
   SET_IMOVEL_SELECTED: "SET_IMOVEL_SELECTED",
   ADD_RECIPIENTE: "ADD_RECIPIENTE",
+  ATUALIZAR_RECIPIENTE: "ATUALIZAR_RECIPIENTE",
   REMOVER_RECIPIENTE: "REMOVER_RECIPIENTE",
+  ALTERAR_UPDATEDINDEX: "ALTERAR_UPDATEDINDEX"
+}
+
+export const changeUpdatedIndex = index => {
+  return {
+    type: ActionTypes.ALTERAR_UPDATEDINDEX,
+    payload: {
+      index
+    }
+  }
 }
 
 export const setQuarteiraoSelect = option => {
@@ -19,6 +30,16 @@ export const setImovelSelected = imovel => {
     type: ActionTypes.SET_IMOVEL_SELECTED,
     payload: {
       imovel
+    }
+  }
+}
+
+export const atualizarRecipiente = ( index, recipiente ) => {
+  return {
+    type: ActionTypes.ATUALIZAR_RECIPIENTE,
+    payload: {
+      index,
+      recipiente
     }
   }
 }

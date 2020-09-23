@@ -1,14 +1,16 @@
 import React from 'react';
 import ButtonNewObject from '../../../../../components/ButtonNewObject';
 import ModalCadastrarInspecao from './ModalCadastrarInspecao';
+import ModalEditarInspecao from './ModalEditarInspecao';
 import ButtonClose from '../../../../../components/ButtonClose';
+import $ from 'jquery';
 
 // REDUX
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { removerRecipiente } from '../../../../../store/actions/VistoriaActions';
+import { removerRecipiente, changeUpdatedIndex } from '../../../../../store/actions/VistoriaActions';
 
 // STYLES
 import {
@@ -22,15 +24,9 @@ import {
 import { LiEmpty } from '../../../../../styles/global';
 
 function InspecionarRecipiente({ sequenciaRecipiente, vistorias, trabalhoDiario_id, recipientes, objetivo, ...props }) {
-  function getNextIdRecipiente( lastId ) {
-    const arrayId = lastId.split(".");
-
-    let count = arrayId[ arrayId.length - 1 ];
-    arrayId.pop();
-
-    let str = arrayId.reduce( ( accumulator, value ) => accumulator + "." + value );
-
-    return str + "." + (parseInt( count ) + 1);
+  function openModalEdit( index ) {
+    props.changeUpdatedIndex( index );
+    $('#modalEditarInspecao').modal('show');
   }
 
   return (
@@ -48,9 +44,11 @@ function InspecionarRecipiente({ sequenciaRecipiente, vistorias, trabalhoDiario_
           recipientes={ recipientes }
           trabalhoDiario_id={ trabalhoDiario_id }
           vistoriaSequencia={ vistorias.length + 1 }
-          removerRecipiente={ props.removerRecipiente } />
+          removerRecipiente={ props.removerRecipiente }
+          openModalEdit={ openModalEdit } />
 
         <ModalCadastrarInspecao objetivo={ objetivo } />
+        <ModalEditarInspecao objetivo={ objetivo } />
       </div>
     </Container>
   );
@@ -59,7 +57,7 @@ function InspecionarRecipiente({ sequenciaRecipiente, vistorias, trabalhoDiario_
 function ListRecipiente({ recipientes, trabalhoDiario_id, vistoriaSequencia, ...props }) {
   let li = recipientes.map(( recipiente, index ) =>
     <LiIcon key={ index }>
-      <ListContainer>
+      <ListContainer onClick={ () => props.openModalEdit( index ) }>
         <ContainerIcon className="ContainerIcon" >
           { recipiente.tipoRecipiente }
         </ContainerIcon>
@@ -93,12 +91,12 @@ function ListRecipiente({ recipientes, trabalhoDiario_id, vistoriaSequencia, ...
 const mapStateToProps = state => ({
   recipientes: state.vistoria.recipientes,
   reload: state.vistoria.reload,
-  trabalhoDiario_id: state.rota.trabalhoDiario.id,
+  trabalhoDiario_id: state.rotaCache.trabalhoDiario.id,
   vistorias: state.vistoriaCache.vistorias,
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ removerRecipiente }, dispatch);
+  bindActionCreators({ removerRecipiente, changeUpdatedIndex }, dispatch);
 
 export default connect(
   mapStateToProps,

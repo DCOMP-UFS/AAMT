@@ -31,8 +31,8 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
     props.setQuarteiraoSelect({ value: 0, label: rota[0].numero, id: rota[0].id });
   }, []);
 
-  function handleImovel( imovel ) {
-    props.setImovelSelected( imovel );
+  function handleImovel( i ) {
+    props.setImovelSelected( i );
   };
 
   function handleInputImovel(event) {
@@ -43,14 +43,14 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
     let i = imovel;
     i[name] = value;
 
-    props.setImovelSelected( imovel );
+    props.setImovelSelected( i );
   }
 
   function handleTipoImovel( option ) {
     let i = imovel;
     i.tipoImovel = option.value;
 
-    props.setImovelSelected( imovel );
+    props.setImovelSelected( i );
   }
 
   return (
@@ -248,7 +248,7 @@ function ListImovel({ rotaIndex, idImovelSelect, quarteirao, ...props }) {
 }
 
 const mapStateToProps = state => ({
-  rota: state.rota.rota,
+  rota: state.rotaCache.rota,
   quarteirao: state.supportInfo.quarteirao,
   selectQuarteirao: state.vistoria.selectQuarteirao,
   imovel: state.vistoria.imovel,

@@ -1,15 +1,19 @@
 export const ActionTypes = {
-  SALVAR_ROTA: "SALVAR_ROTA",
   ADD_VISTORIA: "ADD_VISTORIA",
-  RESET_HANDLE_SAVE: "RESET_HANDLE_SAVE"
+  RESET_HANDLE_SAVE: "RESET_HANDLE_SAVE",
+  ROTA_NAO_INICIADA: "ROTA_NAO_INICIADA",
+  RESETAR_SHOWNOTSTARTED: "RESETAR_SHOWNOTSTARTED"
 }
 
-export const saveRoute = rota => {
+export const resetShowNotStarted = () => {
   return {
-    type: ActionTypes.SALVAR_ROTA,
-    payload: {
-      rota
-    }
+    type: ActionTypes.RESETAR_SHOWNOTSTARTED
+  }
+}
+
+export const routeNotStarted = () => {
+  return {
+    type: ActionTypes.ROTA_NAO_INICIADA
   }
 }
 

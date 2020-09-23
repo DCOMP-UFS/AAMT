@@ -47,7 +47,7 @@ function PNCD({ handleSave, trabalhoDiario_id, sequenciaVistoria, recipientes, i
 
   useEffect(() => {
     if( handleSave )
-      window.location = window.location.origin + '/agente/vistoria';
+      setTimeout(() => { window.location = window.location.origin + '/agente/vistoria'; }, 300);
   }, [ handleSave ]);
 
   function submit() {
@@ -157,7 +157,7 @@ const mapStateToProps = state => ({
   recipientes: state.vistoria.recipientes,
   sequenciaVistoria: state.vistoriaCache.sequenciaVistoria,
   handleSave: state.vistoriaCache.handleSave,
-  trabalhoDiario_id: state.rota.trabalhoDiario.id,
+  trabalhoDiario_id: state.rotaCache.trabalhoDiario.id,
 });
 
 const mapDispatchToProps = dispatch =>

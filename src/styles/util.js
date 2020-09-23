@@ -43,6 +43,12 @@ export const UlIcon = styled.ul`
   padding: 0;
   max-height: 484px;
   overflow-y: auto;
+
+  &.list-hover {
+    li:hover {
+      background-color: ${ Color.border_light };
+    }
+  }
 `;
 
 export const LiIcon = styled.li`

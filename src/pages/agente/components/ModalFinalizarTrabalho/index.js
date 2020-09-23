@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { closeRouteRequest } from '../../../../store/actions/RotaActions';
+import { closeRouteRequest, getRouteRequest } from '../../../../store/actions/RotaActions';
 
 // import { Container } from './styles';
 // COMPONENTS
@@ -29,7 +29,7 @@ const getDate = () => {
   return today;
 }
 
-function ModalFinalizarTrabalho({ vistorias, trabalhoDiario, atividade, ...props }) {
+function ModalFinalizarTrabalho({ usuario, vistorias, trabalhoDiario, atividade, ...props }) {
   const [ horaFim, setHoraFim ] = useState( getDate() );
   const [ dataRota, setDataRota ] = useState('');
 
@@ -41,7 +41,7 @@ function ModalFinalizarTrabalho({ vistorias, trabalhoDiario, atividade, ...props
 
   function handleSubmit( e ) {
     e.preventDefault();
-    props.closeRouteRequest( trabalhoDiario.id, horaFim, vistorias );
+    props.closeRouteRequest( usuario.id, trabalhoDiario.id, horaFim, vistorias );
   }
 
   return (
@@ -104,13 +104,14 @@ function ModalFinalizarTrabalho({ vistorias, trabalhoDiario, atividade, ...props
 }
 
 const mapStateToProps = state => ({
+  usuario: state.appConfig.usuario,
   atividade: state.atividade,
-  trabalhoDiario: state.rota.trabalhoDiario,
+  trabalhoDiario: state.rotaCache.trabalhoDiario,
   vistorias: state.vistoriaCache.vistorias,
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ closeRouteRequest }, dispatch);
+  bindActionCreators({ closeRouteRequest, getRouteRequest }, dispatch);
 
 export default connect(
   mapStateToProps,

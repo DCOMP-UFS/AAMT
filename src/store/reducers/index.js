@@ -26,6 +26,7 @@ import definirRota from './DefinirRota';
 import definirRotaCache from './DefinirRotaCache';
 import sidebarAgente from './sidebarAgente';
 import rota from './Rota';
+import rotaCache from './RotaCache';
 import vistoria from './Vistoria';
 import vistoriaCache from './VistoriaCache';
 
@@ -56,6 +57,7 @@ export default combineReducers({
   definirRotaCache,
   sidebarAgente,
   rota,
+  rotaCache,
   vistoria,
   vistoriaCache
 });

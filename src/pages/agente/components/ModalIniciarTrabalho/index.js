@@ -105,7 +105,7 @@ function ModalIniciarTrabalho({ trabalhoDiario, atividade, ...props }) {
 
 const mapStateToProps = state => ({
   atividade: state.atividade,
-  trabalhoDiario: state.rota.trabalhoDiario,
+  trabalhoDiario: state.rotaCache.trabalhoDiario,
 });
 
 const mapDispatchToProps = dispatch =>

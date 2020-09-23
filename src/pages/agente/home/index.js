@@ -11,7 +11,9 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebarAgente';
-import { getRouteRequest, isStartedRequest } from '../../../store/actions/RotaActions';
+import { getRouteRequest, isStartedRequest, resetOpenModal } from '../../../store/actions/RotaActions';
+import { showNotifyToast } from '../../../store/actions/appConfig';
+import { resetShowNotStarted } from '../../../store/actions/VistoriaCacheActions';
 
 // STYLES
 import { Button } from '../../../styles/global';
@@ -27,9 +29,14 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
     props.getRouteRequest( usuario.id, current_date );
   }, []);
 
-  // useEffect(() => {
-  //   console.log(trabalhoDiario, rota);
-  // }, [ trabalhoDiario ]);
+  useEffect(() => {
+    if( props.showNotStarted ) {
+      if( !trabalhoDiario.id ) props.showNotifyToast( "Você não possui uma rota planejada para hoje!", "warning" );
+      if( !trabalhoDiario.horaInicio ) props.showNotifyToast( "Você deve iniciar a rota antes de registrar as vistorias!", "warning" );
+
+      setTimeout(() => { props.resetShowNotStarted() }, 500);
+    }
+  }, [ props.showNotStarted ]);
 
   useEffect(() => {
     if( fl_iniciada ) // consultando os dados da rota, a rota back end já faz verificação se está iniciado ou n.
@@ -37,8 +44,10 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
   }, [ fl_iniciada ]);
 
   useEffect(() => {
-    if( openModal )
+    if( openModal && trabalhoDiario.id ) {
       $('#modal-iniciar-rota').modal('show');
+      props.resetOpenModal();
+    }
   }, [ openModal ]);
 
   function checkRota() {
@@ -109,17 +118,21 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
 
 const mapStateToProps = state => ({
   usuario: state.appConfig.usuario,
-  trabalhoDiario: state.rota.trabalhoDiario,
-  rota: state.rota.rota,
+  trabalhoDiario: state.rotaCache.trabalhoDiario,
+  rota: state.rotaCache.rota,
   fl_iniciada: state.rota.fl_iniciada,
   openModal: state.rota.openModal,
+  showNotStarted: state.vistoriaCache.showNotStarted
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
     changeSidebar,
     getRouteRequest,
-    isStartedRequest
+    isStartedRequest,
+    showNotifyToast,
+    resetShowNotStarted,
+    resetOpenModal
   }, dispatch);
 
 export default connect(

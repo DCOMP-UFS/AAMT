@@ -7,6 +7,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { makeStyles } from '@material-ui/core/styles';
+import Checkbox from '@material-ui/core/Checkbox';
 import $ from 'jquery';
 
 // REDUX
@@ -186,7 +187,21 @@ function ModalPlanejarRota({ planejamento, planejamentoIndex, usuario, ...props 
                                       "disabled":
                                       ""
                                   }
-                                onClick={ e => toggleSide( e, lIndex, qIndex ) }>{ l.rua.nome }</li>
+                                onClick={ e => toggleSide( e, lIndex, qIndex ) }>
+                                  <Checkbox
+                                    defaultChecked
+                                    color="default"
+                                    className="p-0 pr-2"
+                                    checked={
+                                      l.rotaIndex > -1 && l.rotaIndex === routerIndex ?
+                                        true :
+                                        l.rotaIndex > -1 ?
+                                          true : false
+                                    }
+                                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                                  />
+                                { l.rua.nome }
+                              </li>
                             ))
                           }
                         </ul>

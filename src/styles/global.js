@@ -143,6 +143,32 @@ export const GlobalStyle = createGlobalStyle`
   .border-left-temp {
     border-left: 1px solid ${ Color.border_input }!important;
   }
+
+  .nav-page {
+    margin-bottom: 20px!important;
+    border-bottom: 0!important;
+
+    .nav-item {
+      color: ${ Color.secondary };
+      padding: 10px 20px;
+      font-weight: bold;
+      background: transparent!important;
+      border-top-color: transparent!important;
+      border-right-color: transparent!important;
+      border-left-color: transparent!important;
+      border-bottom: 2px solid #e3e5ef!important;
+
+      &.active {
+        border-bottom: 2px solid ${ Color.success }!important;
+      }
+
+      &.disabled {
+        color: ${ Color.secondary }!important;
+        cursor: not-allowed;
+        pointer-events: auto;
+      }
+    }
+  }
 `;
 
 export const ContainerBody = styled.div`
@@ -193,7 +219,7 @@ export const Button = styled(basicButton)`
   background-color: ${ Color.primary };
   border-color: ${ Color.primary }!important;
   /* padding: 8.35px 0; */
-  ${ props => props.loading ? 'padding: 8.35px;' : '' }
+  ${ props => props.loading === 'true' ? 'padding: 8.35px;' : '' }
 
   &:hover {
     background-color: #9D3AFF!important;

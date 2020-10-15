@@ -172,3 +172,19 @@ export const btnLoading = {
   borderRadius: '50px',
   fontSize: '1rem'
 }
+
+export const NumberDash = styled.div`
+  text-align: center;
+
+  &.border-r {
+    border-right: 1px solid rgba(151, 151, 151, 0.3);
+  }
+
+  &.margin-b {
+    margin-bottom: 20px;
+  }
+
+  .legend {
+    color: #a7afb7;
+  }
+`;

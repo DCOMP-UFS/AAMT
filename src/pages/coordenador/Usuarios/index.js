@@ -85,8 +85,9 @@ function Usuarios({ municipio_id, usuarios, ...props }) {
     customToolbar: () => {
       return (
         <ButtonAdd
-          toggle="modal"
-          target="#modal-novo-usuario" />
+          title="Adicionar"
+          data-toggle="modal"
+          data-target="#modal-novo-usuario" />
       );
     },
     customToolbarSelect: ({ data }) => {
@@ -94,8 +95,8 @@ function Usuarios({ municipio_id, usuarios, ...props }) {
       return (
         <ButtonDesabled
           title="Desabilitar usuário"
-          toggle="modal"
-          target="#modal-desativar-usuario"
+          data-toggle="modal"
+          data-target="#modal-desativar-usuario"
           data={ data } />
       );
     },

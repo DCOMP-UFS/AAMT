@@ -2,7 +2,15 @@ export const ActionTypes = {
   ADD_VISTORIA: "ADD_VISTORIA",
   RESET_HANDLE_SAVE: "RESET_HANDLE_SAVE",
   ROTA_NAO_INICIADA: "ROTA_NAO_INICIADA",
-  RESETAR_SHOWNOTSTARTED: "RESETAR_SHOWNOTSTARTED"
+  RESETAR_SHOWNOTSTARTED: "RESETAR_SHOWNOTSTARTED",
+  LIMPAR_VISTORIAS: "LIMPAR_VISTORIAS",
+  DELETAR_VISTORIA: "DELETAR_VISTORIA"
+}
+
+export const clearInspection = () => {
+  return {
+    type: ActionTypes.LIMPAR_VISTORIAS
+  }
 }
 
 export const resetShowNotStarted = () => {
@@ -29,5 +37,14 @@ export const addVistoria = vistoria => {
 export const resetHandleSave = () => {
   return {
     type: ActionTypes.RESET_HANDLE_SAVE
+  }
+}
+
+export const deletarVistoria = rowSelected => {
+  return {
+    type: ActionTypes.DELETAR_VISTORIA,
+    payload: {
+      rowSelected
+    }
   }
 }

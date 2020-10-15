@@ -110,7 +110,6 @@ export const ContainerBlock = styled.div`
         border: 1px solid ${ Color.border_input };
         border-radius: 4px;
         margin-right: 10px;
-        height: 30px;
         text-align: center;
         line-height: 20px;
         cursor: pointer;

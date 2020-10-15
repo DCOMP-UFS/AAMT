@@ -18,6 +18,7 @@ import { ActionTypes as AtividadeActions } from '../actions/AtividadeActions';
 import { ActionTypes as DefinirRotaActions } from '../actions/DefinirRotaActions';
 import { ActionTypes as DefinirRotaCacheActions } from '../actions/DefinirRotaCacheActions';
 import { ActionTypes as RotaActions } from '../actions/RotaActions';
+import { ActionTypes as VistoriaActions } from '../actions/VistoriaActions';
 
 import {
   authenticate,
@@ -51,6 +52,7 @@ import * as AtividadeSagas from './AtividadeSagas';
 import * as DefinirRotaSagas from './DefinirRotaSagas';
 import * as DefinirRotaCacheSagas from './DefinirRotaCacheSagas';
 import * as RotaSagas from './RotaSagas';
+import * as VistoriaSagas from './VistoriaSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -147,5 +149,8 @@ export default function* rootSaga() {
     takeLatest( RotaActions.CHECK_ROTA_INICIADA_REQUEST, RotaSagas.isStarted ),
     takeLatest( RotaActions.INICIAR_ROTA_REQUEST, RotaSagas.startRoute ),
     takeLatest( RotaActions.ENCERRAR_ROTA_REQUEST, RotaSagas.closeRoute ),
+
+    // Gerir Vistoria
+    takeLatest( VistoriaActions.CONSULTAR_VISTORIAS_REQUEST, VistoriaSagas.getInspects ),
   ]);
 }

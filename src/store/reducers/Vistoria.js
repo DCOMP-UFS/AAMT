@@ -7,11 +7,20 @@ const INITIAL_STATE = {
   sequenciaRecipiente: 1,
   recipientes: [],
   reload: false,
-  updatedIndex: -1
+  updatedIndex: -1,
+  vistorias: []
 }
 
 export default function Vistoria(state = INITIAL_STATE, action) {
   switch (action.type) {
+    case ActionTypes.CONSULTAR_VISTORIAS_SUCCESS: {
+      return {
+        ...state,
+        vistorias: action.payload.vistorias,
+        reload: !state.reload
+      }
+    }
+
     case ActionTypes.ATUALIZAR_RECIPIENTE: {
       let recipientes = state.recipientes;
       recipientes[ action.payload.index ] = action.payload.recipiente;

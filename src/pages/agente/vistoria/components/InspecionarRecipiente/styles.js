@@ -13,11 +13,19 @@ export const ContainerUnidade = styled.div`
   }
 `;
 
+export const Tratamento = styled.div`
+  display: none;
+
+  &.active {
+    display: block;
+  }
+`;
+
 export const ContainerTratamento = styled.div`
-    width: calc(100% - 40px);
-    padding: 10px;
-    margin: auto;
-    border-top: 1px solid ${ Color.dark };
+  width: calc(100% - 40px);
+  padding: 10px;
+  margin: auto;
+  border-top: 1px solid ${ Color.dark };
 `;
 
 export const UlIcon = styled.ul`

@@ -5,6 +5,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Edit from '@material-ui/icons/Edit';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import Block from '@material-ui/icons/Block';
+import Delete from '@material-ui/icons/Delete';
 import $ from 'jquery';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 
@@ -52,7 +53,7 @@ const optionsDefault = {
   }
 };
 
-export default function Table({ title, data, columns, options: optionsProps }) {
+export default function Table({ title, data, columns, options: optionsProps, size, ...props }) {
   const options = { ...optionsDefault, ...optionsProps }
 
   const getMuiTheme = () => createMuiTheme({
@@ -77,10 +78,11 @@ export default function Table({ title, data, columns, options: optionsProps }) {
     <Container className="w-100">
       <MuiThemeProvider theme={getMuiTheme()}>
         <MUIDataTable
-          title={title || "Employee List"}
-          data={data}
-          columns={columns}
-          options={options}
+          title={ title || "Employee List" }
+          data={ data }
+          columns={ columns }
+          options={ options }
+          { ...props }
         />
       </MuiThemeProvider>
     </Container>
@@ -105,26 +107,31 @@ export function ButtonEdit({ index, idModal, changeIndex }) {
   );
 }
 
-export function ButtonAdd({ handleClick, toggle, target }) {
+export function ButtonAdd({ onClick, className, ...props }) {
   return (
-    <Tooltip className="text-success" title={"Cadastrar"} data-toggle={ toggle } data-target={ target } >
-      <IconButton onClick={ handleClick }>
-        <AddBoxIcon />
+    <Tooltip className={ "text-success " + className } { ...props } >
+      <IconButton onClick={ onClick }>
+        <AddBoxIcon/>
       </IconButton>
     </Tooltip>
   );
 }
 
-export function ButtonDesabled({ title, handleClick, toggle, target, ...props }) {
+export function ButtonDesabled({ className, ...props }) {
   return (
-    <Tooltip
-      title={ title }
-      className="bg-light text-dark"
-      data-toggle={ toggle }
-      data-target={ target }
-      onChange={ handleClick } >
+    <Tooltip className={ "text-danger " + className } { ...props } >
       <IconButton aria-label="desativar">
         <Block />
+      </IconButton>
+    </Tooltip>
+  );
+}
+
+export function ButtonDelete({ className, ...props }) {
+  return (
+    <Tooltip className={ "text-danger " + className } { ...props } >
+      <IconButton>
+        <Delete />
       </IconButton>
     </Tooltip>
   );

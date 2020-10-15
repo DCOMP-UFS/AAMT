@@ -1,16 +1,16 @@
-import { FaRoute, FaClipboardCheck } from 'react-icons/fa';
+import { FaRoute, FaClipboardCheck, FaChartPie } from 'react-icons/fa';
 
 import { ActionTypes } from '../actions/sidebarAgente';
 
 const location = window.location.origin.toString();
 
-// function createNav( id, description, active, icon, submenu ){
-//   return { id, description, type: "nav", active, icon, submenu }
-// }
+function createNav( id, description, active, icon, submenu ){
+  return { id, description, type: "nav", active, icon, submenu }
+}
 
-// function createSubmenu( id, active, description, url ) {
-//   return { id, active, description, url: location + url }
-// }
+function createSubmenu( id, active, description, url ) {
+  return { id, active, description, url: location + url }
+}
 
 function createCategory( description ) {
   return { description, type: "category" }
@@ -25,8 +25,12 @@ const INITIAL_STATE = {
   currentNav: [ 1, 0 ],
   menu: [
     createCategory( "Operacional" ),
-    createLink( 1, "Rota", false, FaRoute, "/agente/home"),
+    createLink( 1, "Rota", true, FaRoute, "/agente/home"),
     createLink( 2, "Vistorias", false, FaClipboardCheck, "/agente/vistoria"),
+    createNav( 3, "Relatórios", false, FaChartPie, [
+      createSubmenu( 1, false, "Dashboard", "/agente/relatorio" ),
+      createSubmenu( 2, false, "Resumo de Campo", "/agente/trabalho_diario" ),
+    ])
     // createLink( 2, "Rotas de Trabalho", false, FaMapSigns, "/sup/rotas"),
     // createCategory( "Recursos de Interface" ),
     // createNav( 8, "Elementos Básicos", false, IoIosCode, [
@@ -50,9 +54,13 @@ export default function sidebarAgente(state = INITIAL_STATE, action) {
 
       let indexSup = 0;
       if( menu[ index ].type === 'nav' ) {
-        menu[currentNav[0]].submenu[currentNav[1]].active = false;
+        if( menu[ currentNav[ 0 ] ].type === 'nav' )
+          menu[ currentNav[ 0 ] ].submenu[ currentNav[ 1 ] ].active = false;
+        else
+          menu[ currentNav[ 0 ] ].active = false;
+
         indexSup = menu[ index ].submenu.map( sub => sub.id ).indexOf( subId );
-        menu[index].submenu[ indexSup ].active = true;
+        menu[ index ].submenu[ indexSup ].active = true;
       }
 
       currentNav = [ index, indexSup ];

@@ -4,7 +4,9 @@ export const ActionTypes = {
   ADD_RECIPIENTE: "ADD_RECIPIENTE",
   ATUALIZAR_RECIPIENTE: "ATUALIZAR_RECIPIENTE",
   REMOVER_RECIPIENTE: "REMOVER_RECIPIENTE",
-  ALTERAR_UPDATEDINDEX: "ALTERAR_UPDATEDINDEX"
+  ALTERAR_UPDATEDINDEX: "ALTERAR_UPDATEDINDEX",
+  CONSULTAR_VISTORIAS_REQUEST: "CONSULTAR_VISTORIAS_REQUEST",
+  CONSULTAR_VISTORIAS_SUCCESS: "CONSULTAR_VISTORIAS_SUCCESS"
 }
 
 export const changeUpdatedIndex = index => {
@@ -59,6 +61,24 @@ export const removerRecipiente = index => {
     type: ActionTypes.REMOVER_RECIPIENTE,
     payload: {
       index
+    }
+  }
+}
+
+export const getInspectsRequest = usuario_id => {
+  return {
+    type: ActionTypes.CONSULTAR_VISTORIAS_REQUEST,
+    payload: {
+      usuario_id
+    }
+  }
+}
+
+export const getInspects = vistorias => {
+  return {
+    type: ActionTypes.CONSULTAR_VISTORIAS_SUCCESS,
+    payload: {
+      vistorias
     }
   }
 }

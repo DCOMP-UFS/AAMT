@@ -2,9 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FaClipboardCheck } from 'react-icons/fa';
 import { Row, Col } from 'react-bootstrap';
 import PNCD from '../components/PNCD';
-import ProcurarImovel from '../components/ProcurarImovel';
-import InspecionarRecipiente from '../components/InspecionarRecipiente';
-import ButtonSave from '../../../../components/ButtonSave';
+import LIRAa from '../components/LIRAa';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -17,7 +15,7 @@ import { changeSidebar } from '../../../../store/actions/sidebarAgente';
 import { PageIcon, PageHeader, ContainerFixed } from '../../../../styles/util';
 import { Container } from './styles';
 
-function CadastrarVistoria({ ...props }) {
+function CadastrarVistoria({ trabalhoDiario, rota, ...props }) {
   const [ indexVistoria, setIndexVistoria ] = useState( 0 );
   useEffect(() => {
     setIndexVistoria( props.match.params.index );
@@ -25,12 +23,15 @@ function CadastrarVistoria({ ...props }) {
   }, []);
 
   function getForm() {
-    switch ('PNCD') {
+    // console.log( trabalhoDiario );
+    // console.log( rota );
+    // return "Calma";
+    switch ( trabalhoDiario.atividade.metodologia.sigla ) {
       case 'PNCD':
         return <PNCD objetivo="LI+T" />
 
-      default:
-        return <div />
+      default: // LIRAa
+      return <LIRAa objetivo="LI" />
     }
   }
 
@@ -57,6 +58,8 @@ function CadastrarVistoria({ ...props }) {
 }
 
 const mapStateToProps = state => ({
+  trabalhoDiario: state.rotaCache.trabalhoDiario,
+  rota: state.rotaCache.rota,
 });
 
 const mapDispatchToProps = dispatch =>

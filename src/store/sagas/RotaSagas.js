@@ -8,6 +8,7 @@ import {
 
 import * as RotaActions from '../actions/RotaCacheActions';
 import * as RotaCacheActions from '../actions/RotaCacheActions';
+import * as VistoriaCacheActions from '../actions/VistoriaCacheActions';
 import * as AppConfigActions from '../actions/appConfig';
 
 export function* getRoute(action) {
@@ -46,6 +47,7 @@ export function* startRoute(action) {
 
     if( status === 200 ) {
       yield put( RotaCacheActions.saveRoute( data, action.payload.horaInicio ) );
+      yield put( VistoriaCacheActions.clearInspection() );
       window.location = window.location.origin.toString() + '/agente/vistoria';
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao iniciar rota: " + status, "error" ) );

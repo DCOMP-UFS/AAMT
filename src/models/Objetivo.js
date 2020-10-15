@@ -3,6 +3,7 @@ const { Model, DataTypes } = require('sequelize');
 class Objetivo extends Model {
   static init(sequelize) {
     super.init({
+      sigla: DataTypes.STRING,
       descricao: DataTypes.STRING,
       numero: DataTypes.INTEGER,
     }, {

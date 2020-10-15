@@ -1,6 +1,6 @@
 const authMiddleware = require('../middlewares/auth');
 const express = require('express');
-const { Op } = require('sequelize');
+const Sequelize = require('sequelize');
 const Usuario = require('../models/Usuario');
 const Municipio = require('../models/Municipio');
 const Ciclo = require('../models/Ciclo');
@@ -49,21 +49,17 @@ getTeamsSupervised = async ( req, res ) => {
   current_date.setHours(0,0,0,0);
 
   const ciclo = await Ciclo.findOne({
-    where: {
-      regional_saude_id: regionalSaude_id,
-      [Op.and]: [
-        {
-          dataInicio: {
-            [Op.lt]: current_date
-          }
-        },
-        {
-          dataFim: {
-            [Op.gt]: current_date
-          }
-        }
-      ]
-    }
+    where: Sequelize.and(
+      { regional_saude_id: regionalSaude_id } ,
+      Sequelize.where(
+        Sequelize.fn( 'date', Sequelize.col( 'data_inicio' ) ),
+        '<=', current_date
+      ),
+      Sequelize.where(
+        Sequelize.fn( 'date', Sequelize.col( 'data_fim' ) ),
+        '>=', current_date
+      )
+    )
   });
 
   if( !ciclo ) {

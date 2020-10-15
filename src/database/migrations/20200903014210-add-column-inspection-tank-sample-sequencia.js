@@ -20,9 +20,9 @@ module.exports = {
 
   down: (queryInterface, Sequelize) => {
     return Promise.all([ 
-      queryInterface.addColumn('vistorias', 'sequencia'),
-      queryInterface.addColumn('depositos', 'sequencia'),
-      queryInterface.addColumn('amostras', 'sequencia')
+      queryInterface.removeColumn('vistorias', 'sequencia'),
+      queryInterface.removeColumn('depositos', 'sequencia'),
+      queryInterface.removeColumn('amostras', 'sequencia')
     ]);
   }
 };

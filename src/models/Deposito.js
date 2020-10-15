@@ -17,7 +17,7 @@ class Deposito extends Model {
   static associate( models ) {
     this.belongsTo( models.Vistoria, { foreignKey: 'vistoria_id', as: 'vistoria' } );
     this.hasMany( models.Tratamento, { foreignKey: 'deposito_id', as: 'tratamentos' } );
-    this.hasMany( models.Amostra, { foreignKey: 'amostra_id', as: 'amostras' } );
+    this.hasMany( models.Amostra, { foreignKey: 'deposito_id', as: 'amostras' } );
   }
 }
 

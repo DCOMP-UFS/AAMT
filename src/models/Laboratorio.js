@@ -13,7 +13,7 @@ class Laboratorio extends Model {
 
   static associate( models ) {
     this.belongsTo( models.Localidade, { foreignKey: 'localidade_id', as: 'localidade' } );
-    this.hasMany( models.Amostra, { foreignKey: 'amostra_id', as: 'amostras' } );
+    this.hasMany( models.Amostra, { foreignKey: 'laboratorio_id', as: 'amostras' } );
   }
 }
 

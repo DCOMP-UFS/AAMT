@@ -17,11 +17,11 @@ index = async ( req, res ) => {
     include: [
       { 
         association: 'zona', 
-        attributes: { exclude: [ 'localidade_id', 'createdAt', 'updatedAt' ] },
-        include: {
-          association: 'localidade',
-          attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
-        } 
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+      },
+      { 
+        association: 'localidade', 
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
       },
       { 
         association: 'lados',

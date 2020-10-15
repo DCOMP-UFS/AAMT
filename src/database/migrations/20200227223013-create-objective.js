@@ -10,6 +10,10 @@ module.exports = {
           autoIncrement: true,
           allowNull: false,
         },
+        sigla: {
+          type: Sequelize.STRING,
+          allawNull: false,
+        },
         descricao: {
           type: Sequelize.STRING,
           allowNull: false,

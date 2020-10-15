@@ -456,7 +456,6 @@ router.get('/:ciclo_id/ciclos/:municipio_id/municipios', index);
 router.get('/:regionalSaude_id/regionaisSaude', getActivitiesOfCity);
 router.get('/abertas/:usuario_id/usuarios', getUserActivities);
 router.get('/locais/:abrangencia_id/abrangencia/:municipio_id/municipios', getLocations);
-// router.get('/open', getOpenCycles);
 router.put('/:id', update);
 router.post('/', store);
 router.post('/planejar/:id', plain);

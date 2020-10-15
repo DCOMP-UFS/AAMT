@@ -10,6 +10,7 @@ const Vistoria = require('../models/Vistoria');
 const Deposito = require('../models/Deposito');
 const Tratamento = require('../models/Tratamento');
 const Amostra = require('../models/Amostra');
+const Imovel = require('../models/Imovel');
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
@@ -424,6 +425,14 @@ endRoute = async ( req, res ) => {
     });
   // Validando
 
+  // Apagando dados desatualizados
+  await Vistoria.destroy({
+    where: {
+      trabalho_diario_id: trabalhoDiario_id
+    }
+  });
+  // Apagando dados desatualizados
+
   // Salvando as vistorias  
   let vists = [];
   vistorias.forEach(async v => {
@@ -440,7 +449,13 @@ endRoute = async ( req, res ) => {
       vistoria.id = result.dataValues.id;
     });
 
-    vists.push( vistoria );
+    await Imovel.update({
+      numero: vistoria.imovel.numero,
+      sequencia: vistoria.imovel.sequencia,
+      responsavel: vistoria.imovel.responsavel,
+      complemento: vistoria.imovel.complemento,
+      tipoImovel: vistoria.imovel.tipoImovel
+    }, { where: { id: vistoria.imovel.id } } );
 
     vistoria.recipientes.forEach(async r => {
       let recipiente = { ...r };
@@ -503,8 +518,7 @@ endRoute = async ( req, res ) => {
 
   return res.json({ 
     status: 'success',
-    mensage: 'Vistorias registradas com sucesso!',
-    vistorias: vists
+    mensage: 'Vistorias registradas com sucesso!'
   })
 }
 

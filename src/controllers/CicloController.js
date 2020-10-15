@@ -1,6 +1,6 @@
 const authMiddleware = require('../middlewares/auth');
 const express = require('express');
-const { Op } = require('sequelize');
+const Sequelize = require('sequelize')
 const Atividade = require('../models/Atividade');
 const Ciclo = require('../models/Ciclo');
 const Municipio = require('../models/Municipio');
@@ -55,24 +55,23 @@ getCycle = async ( req, res ) => {
 
 getOpenCycles = async ( req, res ) => {
   const { regionalSaude_id } = req.params;
-  const current_date = new Date();
+  const [ d, m, Y ]  = new Date().toLocaleDateString('en-GB').split('/');
+  const current_date = `${Y}-${m}-${d}`;
+
+  console.log(current_date);
 
   const ciclos = await Ciclo.findOne({
-    where: {
-      regional_saude_id: regionalSaude_id,
-      [Op.and]: [
-        {
-          dataInicio: {
-            [Op.lt]: current_date
-          }
-        },
-        {
-          dataFim: {
-            [Op.gt]: current_date
-          }
-        }
-      ]
-    }
+    where: Sequelize.and(
+      { regional_saude_id: regionalSaude_id } ,
+      Sequelize.where(
+        Sequelize.fn( 'date', Sequelize.col( 'data_inicio' ) ),
+        '<=', current_date
+      ),
+      Sequelize.where(
+        Sequelize.fn( 'date', Sequelize.col( 'data_fim' ) ),
+        '>=', current_date
+      )
+    )
   });
 
   return res.json( ciclos );
@@ -103,7 +102,7 @@ getAllowedCycles = async ( req, res ) => {
     where: {
       regional_saude_id: regionalSaude_id,
       dataFim: {
-        [Op.gt]: current_date
+        [Sequelize.Op.gt]: current_date
       }
     }
   });
@@ -210,15 +209,15 @@ destroy = async ( req, res ) => {
   const deleted = await Ciclo.destroy({
     where: {
       id,
-      [Op.or]: [
+      [Sequelize.Op.or]: [
         {
           dataInicio: {
-            [Op.gt]: current_date
+            [Sequelize.Op.gt]: current_date
           }
         },
         {
           dataFim: {
-            [Op.lt]: current_date
+            [Sequelize.Op.lt]: current_date
           }
         }
       ]

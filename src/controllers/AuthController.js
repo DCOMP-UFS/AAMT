@@ -22,7 +22,8 @@ authenticate = async (req, res) => {
   
   const user = await Usuario.findOne({ 
     where: {
-      usuario
+      usuario,
+      ativo: 1
     },
     include: { 
       association: 'atuacoes',
@@ -31,7 +32,10 @@ authenticate = async (req, res) => {
   });
   
   if(!user) 
-    return res.status(400).send({ error: 'Usuário ou senha incorreta' });
+    return res.send({ 
+      status: 'error',
+      mensage: 'Acesso negado'
+    });
   
   if( !bcrypt.compareSync(senha, user.senha) )
     return res.status(400).send({ error: 'Usuário ou senha incorreta' });

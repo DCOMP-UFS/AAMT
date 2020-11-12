@@ -94,8 +94,9 @@ function Localidades({ localidades, municipio, ...props }) {
     customToolbar: () => {
       return (
         <ButtonAdd
-          toggle="modal"
-          target="#modal-novo-localidade" />
+          title="Adicionar"
+          data-toggle="modal"
+          data-target="#modal-novo-localidade" />
       );
     },
     customToolbarSelect: ({ data }) => {

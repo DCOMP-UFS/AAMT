@@ -19,7 +19,7 @@ function generateToken(params = {}) {
 
 authenticate = async (req, res) => {
   const { usuario, senha } = req.body;
-  
+
   const user = await Usuario.findOne({ 
     where: {
       usuario,
@@ -32,13 +32,17 @@ authenticate = async (req, res) => {
   });
   
   if(!user) 
-    return res.send({ 
+    return res.status( 400 ).send({ 
       status: 'error',
-      mensage: 'Acesso negado'
+      mensage: 'Usuário ou senha incorreta'
     });
   
   if( !bcrypt.compareSync(senha, user.senha) )
-    return res.status(400).send({ error: 'Usuário ou senha incorreta' });
+    return res.status( 400 ).send({ 
+      status: 'error',
+      mensage: 'Usuário ou senha incorreta',
+      error: 'Usuário ou senha incorreta' 
+    });
 
   user.senha = undefined;
 

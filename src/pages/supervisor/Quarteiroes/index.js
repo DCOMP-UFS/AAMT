@@ -46,6 +46,7 @@ function Quarteiroes({ quarteiroes, ...props }) {
     customToolbar: () => {
       return (
         <ButtonAdd
+          title="Adicionar"
           toggle="modal"
           target="#modal-novo-quarteirao" />
       );

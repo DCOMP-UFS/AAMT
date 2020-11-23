@@ -25,10 +25,10 @@ const INITIAL_STATE = {
   // Menu ativo currenteNav: [ menu, submenu ]
   currentNav: [ 1, 0 ],
   menu: [
-    createCategory( "Região" ),
-    createLink( 1, "Quarteirões", false, BorderAllIcon, "/sup/quarteiroes"),
-    createCategory( "Operacional" ),
+    createCategory( "Ações" ),
     createLink( 2, "Rotas de Trabalho", false, FaMapSigns, "/sup/rotas"),
+    createCategory( "Cadastros Básicos" ),
+    createLink( 1, "Quarteirões", false, BorderAllIcon, "/sup/quarteiroes"),
     // createCategory( "Recursos de Interface" ),
     // createNav( 8, "Elementos Básicos", false, IoIosCode, [
     //   createSubmenu( 1, false, "Botões", "/elementos/botoes" ),

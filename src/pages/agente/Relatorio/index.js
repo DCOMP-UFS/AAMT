@@ -195,7 +195,6 @@ function Relatorio({ usuario, vistorias, ...props }) {
   const [ qtdTratamentoGrama, setQtdTratamentoGrama ] = useState( 0 );
   const [ qtdDepositoEliminado, setQtdDepositoEliminado ] = useState( 0 );
   const [ totalDepositos, setTotalDepositos ] = useState( 0 );
-  const [ teste, setteste ] = useState( 0 );
 
   useEffect(() => {
     props.changeSidebar(3, 1);

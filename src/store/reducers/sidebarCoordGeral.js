@@ -25,17 +25,17 @@ const INITIAL_STATE = {
   // Menu ativo currenteNav: [ menu, submenu ]
   currentNav: [ 1, 0 ],
   menu: [
-    createCategory( "Administrativo" ),
+    createCategory( "Ações" ),
     createNav( 1, "Ciclos", false, FaSyncAlt, [
-      createSubmenu( 1, false, "Dashboard", "/cg/ciclos/" ),
-      createSubmenu( 2, false, "Consultar", "/cg/ciclos/consultar" ),
+      createSubmenu( 1, false, "Acompanhar", "/cg/ciclos/" ),
+      createSubmenu( 2, false, "Planejar", "/cg/ciclos/consultar" ),
     ]),
     createNav( 2, "Atividades", false, IoIosPaper, [
       createSubmenu( 1, false, "Consultar", "/cg/atividades/" ),
       createSubmenu( 2, false, "Cadastrar", "/cg/atividades/cadastrar" ),
     ]),
+    createCategory( "Cadastros Básicos" ),
     createLink( 3, "Usuários", false, FaUsers, "/cg/usuarios" ),
-    createCategory( "Região" ),
     // createLink( 5, "Regionais de Saúde", false, FaBuilding, "/cg/regionaisSaude"),
     createLink( 4, "Municípios", false, FaCity, "/cg/municipios"),
   ]

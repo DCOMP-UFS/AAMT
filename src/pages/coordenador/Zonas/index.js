@@ -66,8 +66,9 @@ function Zonas({ zonas, municipio, ...props }) {
     customToolbar: () => {
       return (
         <ButtonAdd
-          toggle="modal"
-          target="#modal-novo-zona" />
+          title="Adicionar"
+          data-toggle="modal"
+          data-target="#modal-novo-zona" />
       );
     },
     customToolbarSelect: ({ data }) => {

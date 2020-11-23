@@ -65,7 +65,7 @@ function Ciclos({ ciclos, regionalSaude_id, ...props }) {
     customToolbar: props => {
       return (
         <ButtonAdd
-          title="Adcionar Novo"
+          title="Adicionar"
           onClick={
             () => window.location = `${ window.location.origin.toString() }/cg/ciclos/cadastrar`
           }

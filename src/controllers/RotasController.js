@@ -141,10 +141,8 @@ plain = async ( req, res ) => {
   // Fim validação
 
   // en-GB: Britânico, d/m/Y
-  const [ d, m, Y ]  = new Date().toLocaleDateString('en-GB').split('/');
-  const current_date = `${Y}-${m}-${d}`;
-
-  console.log( current_date );
+  const [ m, d, Y ]  = new Date().toLocaleDateString('en-GB').split('/');
+  const current_date = `${Y}-${m}-${d} 00:00:00-03`;
 
   planejamento.forEach( async p => {
     await p.rotas.forEach( async rota => {

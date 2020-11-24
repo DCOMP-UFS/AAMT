@@ -144,6 +144,10 @@ plain = async ( req, res ) => {
   const [ d, m, Y ]  = new Date().toLocaleDateString('en-GB').split('/');
   const current_date = `${Y}-${m}-${d} 00:00:00-03`;
 
+  console.log( current_date );
+
+  return;
+
   planejamento.forEach( async p => {
     await p.rotas.forEach( async rota => {
       const td = await TrabalhoDiario.findOne({

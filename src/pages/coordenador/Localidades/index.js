@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 import { changeSidebar } from '../../../store/actions/sidebar';
 import { changeTableSelected } from '../../../store/actions/supportInfo';
 import { clearToast } from '../../../store/actions/appConfig';
-import { getLocationRequest, changeIndex } from '../../../store/actions/LocalidadeActions';
+import { getLocationRequest, getLocationByCityRequest, changeIndex } from '../../../store/actions/LocalidadeActions';
 
 // STYLES
 import { GlobalStyle } from './styles';
@@ -88,7 +88,7 @@ const columns = [
   "Ativo",
 ];
 
-function Localidades({ localidades, municipio, ...props }) {
+function Localidades({ municipio_id, localidades, municipio, ...props }) {
   const [ rows, setRows ] = useState([]);
   const options = {
     customToolbar: () => {
@@ -124,7 +124,8 @@ function Localidades({ localidades, municipio, ...props }) {
 
   useEffect(() => {
     props.changeSidebar(3, 0);
-    props.getLocationRequest();
+    // props.getLocationRequest();
+    props.getLocationByCityRequest( municipio_id );
   }, []);
 
   useEffect(() => {
@@ -193,6 +194,7 @@ function Localidades({ localidades, municipio, ...props }) {
 }
 
 const mapStateToProps = state => ({
+  municipio_id: state.appConfig.usuario.municipio.id,
   municipio: state.appConfig.usuario.municipio,
   localidades: state.localidade.localidades,
   reload: state.localidade.reload,
@@ -200,7 +202,14 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ changeSidebar, changeTableSelected, clearToast, getLocationRequest, changeIndex }, dispatch);
+  bindActionCreators({
+    changeSidebar,
+    changeTableSelected,
+    clearToast,
+    getLocationRequest,
+    getLocationByCityRequest,
+    changeIndex
+  }, dispatch);
 
 export default connect(
   mapStateToProps,

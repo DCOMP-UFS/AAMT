@@ -26,10 +26,11 @@ const INITIAL_STATE = {
   currentNav: [ 1, 0 ],
   menu: [
     createCategory( "Ações" ),
-    createNav( 1, "Ciclos", false, FaSyncAlt, [
-      createSubmenu( 1, false, "Acompanhar", "/cg/ciclos/" ),
-      createSubmenu( 2, false, "Planejar", "/cg/ciclos/consultar" ),
-    ]),
+    createLink( 1, "Ciclos", false, FaSyncAlt, "/cg/ciclos/consultar" ),
+    // createNav( 1, "Ciclos", false, FaSyncAlt, [
+    //   createSubmenu( 1, false, "Acompanhar", "/cg/ciclos/" ),
+    //   createSubmenu( 2, false, "Planejar", "/cg/ciclos/consultar" ),
+    // ]),
     createNav( 2, "Atividades", false, IoIosPaper, [
       createSubmenu( 1, false, "Consultar", "/cg/atividades/" ),
       createSubmenu( 2, false, "Cadastrar", "/cg/atividades/cadastrar" ),

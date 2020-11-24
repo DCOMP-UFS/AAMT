@@ -3,9 +3,11 @@ import React, { useEffect, useState } from 'react';
 import Typography from "@material-ui/core/Typography";
 import 'react-toastify/dist/ReactToastify.css';
 import Table, { ButtonAdd, ButtonDesabled } from '../../../components/Table';
-import { FaSyncAlt } from 'react-icons/fa';
+import { FaSyncAlt, FaRegChartBar } from 'react-icons/fa';
 import ModalDestroy from './ModalDestroy';
 import ModalUpdateCycle from './ModalUpdateCycle';
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
 import $ from 'jquery';
 
 // REDUX
@@ -56,7 +58,8 @@ const columns = [
       filter: false,
     }
   },
-  "Situação"
+  "Situação",
+  "Ações"
 ];
 
 function Ciclos({ ciclos, regionalSaude_id, ...props }) {
@@ -129,7 +132,12 @@ function Ciclos({ ciclos, regionalSaude_id, ...props }) {
           `${ ciclo.ano }.${ ciclo.sequencia }`,
           dataInicioBr,
           dataFimBr,
-          ciclo.situacao
+          ciclo.situacao,
+          <Tooltip className="text-info" title="Relatórios" >
+            <IconButton aria-label="desativar">
+              <FaRegChartBar />
+            </IconButton>
+          </Tooltip>
         ]
       )
     });

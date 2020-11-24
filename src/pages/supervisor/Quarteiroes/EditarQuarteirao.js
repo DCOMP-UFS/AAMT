@@ -186,6 +186,8 @@ function EditarQuarteirao({ usuario, quarteirao, municipio_id, ...props }) {
 
   function handleSubmit( e ) {
     e.preventDefault();
+
+    console.log( lados );
   }
 
   return (

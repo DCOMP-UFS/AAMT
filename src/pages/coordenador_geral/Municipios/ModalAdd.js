@@ -96,6 +96,7 @@ function ModalAdd({ createCityRequest, createdCity, ...props }) {
       $('#modal-novo-municipio').modal('hide');
       clearInput();
       setFlLoading( false );
+      props.clearCreateCity();
     }
   }, [ createdCity ]);
 
@@ -195,7 +196,7 @@ function ModalAdd({ createCityRequest, createdCity, ...props }) {
             </div>
             <div>
               <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
-              <Button type="submit" loading={ flLoading } disabled={ flLoading } >
+              <Button type="submit" loading={ flLoading.toString() } disabled={ flLoading ? 'disabled' : '' } >
                 {
                   flLoading ?
                     (

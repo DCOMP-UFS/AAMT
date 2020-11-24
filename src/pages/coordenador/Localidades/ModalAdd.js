@@ -44,6 +44,8 @@ function ModalAdd({ municipio, created, ...props }) {
       $('#modal-novo-localidade').modal('hide');
       setCodigo(null);
       setNome("");
+      props.clearCreate();
+      clearInput();
     }
   }, [ created ]);
 

@@ -46,8 +46,8 @@ function ModalDisabled( props ) {
         <Button
           className="danger"
           onClick={ handleClick }
-          loading={ flLoading }
-          disabled={ flLoading }
+          loading={ flLoading.toString() }
+          disabled={ flLoading ? 'disabled' : '' }
         >
           {
             flLoading ?

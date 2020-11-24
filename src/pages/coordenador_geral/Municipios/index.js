@@ -49,8 +49,9 @@ function Municipios({ municipios, ...props }) {
     customToolbar: () => {
       return (
         <ButtonAdd
-          toggle="modal"
-          target="#modal-novo-municipio" />
+          title="Adicionar"
+          data-toggle="modal"
+          data-target="#modal-novo-municipio" />
       );
     },
     customToolbarSelect: ({ data }) => {
@@ -58,8 +59,8 @@ function Municipios({ municipios, ...props }) {
       return (
         <ButtonDesabled
           title="Desativar município"
-          toggle="modal"
-          target="#modal-desativar-municipio" />
+          data-toggle="modal"
+          data-target="#modal-desativar-municipio" />
       );
     },
     setRowProps: (row) => {

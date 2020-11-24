@@ -4,18 +4,26 @@
 - [Iniciando o banco](#iniciando-o-banco)
 - [Documentação da API](#documentação-da-api)
   - [Auth](#auth)
-    - [Autenticação (/auth/authenticate)](#autenticação-authauthenticate)
+    - [Autenticação](#autenticação)
       - [*Request*](#request)
       - [*Response*](#response)
   - [Usuário](#usuário)
-    - [Consultar usuários (/usuarios)](#consultar-usuários-usuarios)
+    - [Consultar usuários](#consultar-usuários)
       - [*Request*](#request-1)
       - [*Response*](#response-1)
-    - [Consultar por ID (/usuarios/:id)](#consultar-por-id-usuariosid)
+    - [Consultar por ID](#consultar-por-id)
       - [*Request*](#request-2)
       - [*Response*](#response-2)
   - [Rotas](#rotas)
-    - [Check Rota Iniciada (/check/:trabalhoDiario_id/trabalhoDiario)](#check-rota-iniciada-checktrabalhodiario_idtrabalhodiario)
+    - [Check Rota Iniciada](#check-rota-iniciada)
+      - [*Request*](#request-3)
+      - [*Response*](#response-3)
+    - [Iniciar Rota](#iniciar-rota)
+      - [*Request*](#request-4)
+      - [*Response*](#response-4)
+    - [Finalizar Rota](#finalizar-rota)
+      - [*Request*](#request-5)
+      - [*Response*](#response-5)
 
 # Iniciando o banco
 
@@ -45,7 +53,9 @@ A documentação foi dividida por controladores, cara seção da documentação 
 
 Controladora responsável pelo login e retorno do *token* de acesso à API.
 
-### Autenticação (/auth/authenticate)
+### Autenticação
+
+(/auth/authenticate)
 
 Rota de login, ao fazer requisição nesta rota à API irá verificar o usuário e retonar as suas informações e o *token* de acesso para futuras requisições à API.
 Os *tokens* possuem prazo para expirar, atualmente o prazo é de um dia, pois a aplicação está em desenvolvimento.
@@ -126,7 +136,9 @@ curl --request POST \
 
 Controladora das requisições referentes aos usuários.
 
-### Consultar usuários (/usuarios)
+### Consultar usuários
+
+(/usuarios)
 
 Rota de consulta dos usuários, os perfis que contém permissão para esta rota são os coordenadores gerais e municipais. O coordenador geral pode visualizar todos os usuários de sua regional operacional enquanto o municipal recebe somente as listas de usuários do seu município.
 
@@ -255,7 +267,9 @@ curl --request GET \
 ]
 ```
 
-### Consultar por ID (/usuarios/:id)
+### Consultar por ID
+
+(/usuarios/:id)
 
 Consultar usuários por seu ID, esta rota é permitido para os coordenadores gerais, municipais ou caso um usuário queira ver suas próprias informações.
 
@@ -318,6 +332,191 @@ curl --request GET \
 
 Controladora das rotas dos usuários, um tempo associado a rota é o termo trabalho diário, usado no frontend da aplicação. Uma rota representa os quarteirões e lados que um determinado agente irá trabalhar ou trabalhou em um determinado dia. As rotas são planejadas pelos supervisores e consumidas pelos agentes.
 
-### Check Rota Iniciada (/check/:trabalhoDiario_id/trabalhoDiario)
+### Check Rota Iniciada 
+
+(/check/:trabalhoDiario_id/trabalhoDiario)
 
 Verifica se a rota com o id "trabalhoDiario_id" está iniciada ou não.
+
+#### *Request*
+
+```
+curl --request GET \
+  --url https://aamt-backend.herokuapp.com/rotas/check/3/trabalhoDiario \
+  --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjA2MTkwNDY4LCJleHAiOjE2MDYyNzY4Njh9.zs62_kKQ0fOZVA_heBNc-izXr8a8PmxHn3TBUbtjpDk'
+```
+
+#### *Response*
+
+```
+true
+```
+
+### Iniciar Rota
+
+(/rotas/iniciar)
+
+Iniciar a rota planejada pelo supervisor. A resposta desta requisição é uma lista de quarteirões com os lados e imóveis planejados para o agente.
+
+#### *Request*
+
+```
+curl --request POST \
+  --url https://aamt-backend.herokuapp.com/rotas/iniciar \
+  --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNjA2MTkwNzEyLCJleHAiOjE2MDYyNzcxMTJ9.8stAMVnsjcOOD_LBcTg0jiXOxWsaLXzhcPRqiCb5obk' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "trabalhoDiario_id": 3,
+    "horaInicio": "08:00"
+  }'
+```
+
+#### *Response*
+
+```
+[
+  {
+    "id": 1,
+    "numero": 1,
+    "ativo": 1,
+    "createdAt": "2020-11-12T12:12:25.849Z",
+    "updatedAt": "2020-11-12T12:12:25.849Z",
+    "localidade_id": 1,
+    "zona_id": 2,
+    "quarteirao_id": null,
+    "lados": [
+      {
+        "id": 2,
+        "numero": 2,
+        "createdAt": "2020-11-12T12:12:25.935Z",
+        "updatedAt": "2020-11-12T12:12:25.935Z",
+        "rua_id": 2,
+        "quarteirao_id": 1,
+        "imoveis": [
+          {
+            "id": 3,
+            "numero": 3,
+            "sequencia": null,
+            "responsavel": "Guilherme",
+            "complemento": "Complemento 3",
+            "tipoImovel": null,
+            "createdAt": "2020-11-23T14:47:37.012Z",
+            "updatedAt": "2020-11-23T14:47:37.012Z",
+            "lado_id": 2
+          },
+          {
+            "id": 4,
+            "numero": 4,
+            "sequencia": null,
+            "responsavel": "João",
+            "complemento": "Complemento 4",
+            "tipoImovel": null,
+            "createdAt": "2020-11-23T14:48:11.215Z",
+            "updatedAt": "2020-11-23T14:48:11.215Z",
+            "lado_id": 2
+          }
+        ],
+        "rota": [
+          {
+            "id": 3,
+            "data": "2020-11-24T03:00:00.000Z",
+            "horaInicio": "08:00:00",
+            "horaFim": null,
+            "createdAt": "2020-11-24T03:23:15.421Z",
+            "updatedAt": "2020-11-24T04:07:06.233Z",
+            "usuario_id": 4,
+            "supervisor_id": 3,
+            "equipe_id": 1,
+            "rotas": {
+              "createdAt": "2020-11-24T03:23:15.430Z",
+              "updatedAt": "2020-11-24T03:23:15.430Z",
+              "lado_id": 2,
+              "trabalho_diario_id": 3
+            }
+          }
+        ],
+        "rua": {
+          "id": 2,
+          "nome": "Rua B",
+          "cep": "49000-160",
+          "createdAt": "2020-11-12T12:12:25.906Z",
+          "updatedAt": "2020-11-12T12:12:25.906Z",
+          "localidade_id": 1
+        }
+      },
+      ...
+    ]
+  },
+  ...
+]
+```
+
+### Finalizar Rota
+
+(/rotas/iniciar)
+
+Finalizar a rota de um agente, essa rota recebe uma lista de vistorias realizadas do agente e salva na base.
+
+#### *Request*
+
+```
+curl --request POST \
+  --url https://aamt-backend.herokuapp.com/rotas/iniciar \
+  --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNjA2MTkwNzEyLCJleHAiOjE2MDYyNzcxMTJ9.8stAMVnsjcOOD_LBcTg0jiXOxWsaLXzhcPRqiCb5obk' \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"trabalhoDiario_id": 3,
+	"horaFim": "18:00",
+	"vistorias": [
+		{
+			"situacaoVistoria": "N",
+			"horaEntrada": "08:10",
+			"sequencia": 1,
+			"imovel": {
+				"id": 1,
+				"numero": 1,
+				"sequencia": null,
+				"responsavel": "Maria",
+				"complemento": "Complemento 1",
+				"tipoImovel": 1,
+				"createdAt": "2020-11-23T14:46:55.856Z",
+				"updatedAt": "2020-11-23T14:46:55.856Z",
+				"lado_id": 1,
+				"numeroQuarteirao": 1,
+				"logradouro": "Rua A"
+			},
+			"recipientes":[
+				{
+					"fl_comFoco": true,
+					"fl_tratado": null,
+					"fl_eliminado": null,
+					"tipoRecipiente": "A1",
+					"sequencia": 1,
+					"tratamento": {
+						"quantidade": 0,
+						"tecnica": 1
+					},
+					"amostras":[
+						{
+							"idUnidade": "3.1.1.1", 
+							"sequencia": 1,
+							"situacao": 1
+						}
+					]
+				}
+			],
+			"trabalhoDiario_id": 3
+		},
+		...
+	]
+}'
+```
+
+#### *Response*
+
+```
+{
+  "status": "success",
+  "mensage": "Vistorias registradas com sucesso!"
+}
+```

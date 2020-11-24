@@ -142,11 +142,9 @@ plain = async ( req, res ) => {
 
   // en-GB: Britânico, d/m/Y
   const [ d, m, Y ]  = new Date().toLocaleDateString('en-GB').split('/');
-  const current_date = `${Y}-${m}-${d} 00:00:00-03`;
+  const current_date = `${Y}-${m}-${d}`;
 
   console.log( current_date );
-
-  return;
 
   planejamento.forEach( async p => {
     await p.rotas.forEach( async rota => {

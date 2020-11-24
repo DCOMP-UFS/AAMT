@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { FaRoute, FaPlay } from 'react-icons/fa';
 import ModalIniciarTrabalho from '../components/ModalIniciarTrabalho';
 import RouteList from '../components/RouteList';
+import { YMaps, Map } from 'react-yandex-maps';
 import $ from 'jquery';
 
 // REDUX
@@ -20,6 +21,8 @@ import { Button } from '../../../styles/global';
 import { PageIcon, PageHeader, PagePopUp } from '../../../styles/util';
 
 function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...props }) {
+  const [ trabalhoDiario_date, setTrabalhoDiario_date ] = useState( '' );
+
   useEffect(() => {
     props.changeSidebar(1, 1);
 
@@ -50,6 +53,14 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
     }
   }, [ openModal ]);
 
+  useEffect(() => {
+    let date = trabalhoDiario.data.split( 'T' )[ 0 ].split( '-' );
+
+    console.log( date );
+
+    setTrabalhoDiario_date( `${ date[ 2 ] }/${ date[ 1 ] }/${ date[ 0 ] }` );
+  }, [ trabalhoDiario ]);
+
   function checkRota() {
     props.isStartedRequest( trabalhoDiario.id );
   }
@@ -79,7 +90,7 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
                       <Col className="d-flex justify-content-between align-items-center">
                         <label className="m-0">
                           <mark className="bg-warning mr-2">Atenção</mark>
-                          Você possui uma rota planejada para hoje!
+                          { `Você possui uma rota planejada para hoje, ${ trabalhoDiario_date }!`}
                         </label>
                         <Button
                           type="button"
@@ -95,7 +106,18 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
                         <RouteList quarteiroes={ rota } />
                       </Col>
                       <Col md="4">
-                        <div id="map-rota" style={{ width: '100%', height: '300px', background: '#ccc', lineHeight: '300px', textAlign: 'center' }}>Mapa</div>
+                        <YMaps query={{ lang: 'pt_BR' }}>
+                          <div>
+                            <Map
+                              defaultState={{
+                                center: [ -15.7752496, -48.3581231 ],
+                                zoom: 5
+                              }}
+                              width="100%"
+                            />
+                          </div>
+                        </YMaps>
+                        {/* <div id="map-rota" style={{ width: '100%', height: '300px', background: '#ccc', lineHeight: '300px', textAlign: 'center' }}>Mapa</div> */}
                       </Col>
                     </Row>
                     </>
@@ -117,11 +139,11 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
 }
 
 const mapStateToProps = state => ({
-  usuario: state.appConfig.usuario,
+  usuario:        state.appConfig.usuario,
   trabalhoDiario: state.rotaCache.trabalhoDiario,
-  rota: state.rotaCache.rota,
-  fl_iniciada: state.rota.fl_iniciada,
-  openModal: state.rota.openModal,
+  rota:           state.rotaCache.rota,
+  fl_iniciada:    state.rota.fl_iniciada,
+  openModal:      state.rota.openModal,
   showNotStarted: state.vistoriaCache.showNotStarted
 });
 

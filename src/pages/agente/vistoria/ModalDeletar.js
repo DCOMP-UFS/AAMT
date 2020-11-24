@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Modal, { ModalBody, ModalFooter } from '../../../components/Modal';
 import $ from 'jquery';
 import LoadginGif from '../../../assets/loading.gif';

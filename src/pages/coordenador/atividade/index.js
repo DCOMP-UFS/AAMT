@@ -16,7 +16,7 @@ import { getActivitiesByCityRequest } from '../../../store/actions/AtividadeActi
 // STYLES
 import { ContainerAtividade, ContainerCiclo, Header, Body } from './styles';
 import { FormGroup, selectDefault } from '../../../styles/global';
-import { InfoGroup, PagePopUp, PageIcon, PageHeader } from '../../../styles/util';
+import { PagePopUp, PageIcon, PageHeader } from '../../../styles/util';
 
 function PlanejarAtividade({ ciclos, atividades, ...props }) {
   const [ ciclo, setCiclo ] = useState({});

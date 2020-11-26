@@ -335,6 +335,6 @@ router.get('/:id', index);
 router.get('/:municipio_id/municipios', getBlockByCity);
 router.post('/', store);
 router.put('/:id', update);
-router.put('/:id/disabled', disabled);
+router.put('/:id/desativar', disabled);
 
 module.exports = app => app.use('/quarteiroes', router);

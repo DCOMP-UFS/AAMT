@@ -304,7 +304,7 @@ disabled = async ( req, res ) => {
   
   const { isRejected } = await Quarteirao.update(
     {
-      ativo: false,
+      ativo: 0,
     },{
       where: {
         id

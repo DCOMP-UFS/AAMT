@@ -298,7 +298,7 @@ disabled = async ( req, res ) => {
     return res.status(403).json({ error: 'Acesso negado' });
   }
 
-  const quarteirao = await Quateirao.findByPk( id );
+  const quarteirao = await Quarteirao.findByPk( id );
   if( !quarteirao )
     return res.status( 400 ).json({ error: 'Quarteirão não existe!' });
   

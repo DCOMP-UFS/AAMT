@@ -288,6 +288,46 @@ update = async ( req, res ) => {
   return res.json( quarteiraoFind );
 }
 
+disabled = async ( req, res ) => {
+  const { id } = req.params;
+
+  const userId = req.userId;
+
+  const allow = await allowFunction( userId, 'manter_quarteirao' );
+  if( !allow ) {
+    return res.status(403).json({ error: 'Acesso negado' });
+  }
+
+  const quarteirao = await Quateirao.findByPk( id );
+  if( !quarteirao )
+    return res.status( 400 ).json({ error: 'Quarteirão não existe!' });
+  
+  const { isRejected } = await Quarteirao.update(
+    {
+      ativo: false,
+    },{
+      where: {
+        id
+      }
+    }
+  );
+
+  if( isRejected ){
+    return res.status(400).json({ error: 'Não foi possível atualizar o quarteirão' });
+  }
+
+  const quarteiraoFind = await Quarteirao.findByPk( id, {
+    include: [
+      { association: 'zona', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } },
+    ],
+    attributes: {
+      exclude: [ 'zona_id' ]
+    }
+  });
+
+  return res.json( quarteiraoFind );
+}
+
 const router = express.Router();
 router.use(authMiddleware);
 
@@ -295,5 +335,6 @@ router.get('/:id', index);
 router.get('/:municipio_id/municipios', getBlockByCity);
 router.post('/', store);
 router.put('/:id', update);
+router.put('/:id/disabled', disabled);
 
 module.exports = app => app.use('/quarteiroes', router);

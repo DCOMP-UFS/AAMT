@@ -178,15 +178,14 @@ store = async ( req, res ) => {
     quarteirao_id
   });
 
-  lados.forEach( async l => {
+  for(const [ index, l ] of lados) {
     if( l.rua_id ) {
       await createSide( l.numero, quarteirao.id, l.rua_id );
-    }else {
+    } else {
       const rua = await createStreet( l.logradouro, l.localidade_id, l.cep );
-
       await createSide( l.numero, quarteirao.id, rua.id );
     }
-  });
+  }
   
   const quarteiraoFind = await Quarteirao.findByPk( quarteirao.id, {
     include: [

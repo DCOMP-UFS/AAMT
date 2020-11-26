@@ -75,6 +75,11 @@ getBlockByCity = async (req, res) => {
       {
         association: 'zona',
         attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+        include: {
+          where: { id: municipio_id },
+          association: 'municipio',
+          attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+        }
       }
     ]
   });

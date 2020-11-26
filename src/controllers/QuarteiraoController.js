@@ -334,7 +334,7 @@ router.use(authMiddleware);
 router.get('/:id', index);
 router.get('/:municipio_id/municipios', getBlockByCity);
 router.post('/', store);
-router.put('/:id', update);
 router.put('/:id/desativar', disabled);
+router.put('/:id', update);
 
 module.exports = app => app.use('/quarteiroes', router);

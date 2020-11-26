@@ -106,7 +106,7 @@ const findOrCreateStreet = async ( nome, localidade_id, cep ) => {
       nome,
       cep,
       localidade_id
-     }
+    }
   });
 
   return rua;
@@ -168,11 +168,16 @@ store = async ( req, res ) => {
     quarteirao_id
   });
 
-  await lados.forEach(async l => {
+  lados.forEach( async l => {
     if( l.rua_id ) {
       await createSide( l.numero, quarteirao.id, l.rua_id );
     }else {
-      const rua = await findOrCreateStreet( l.logradouro, l.localidade_id, l.cep );
+      // const rua = await findOrCreateStreet( l.logradouro, l.localidade_id, l.cep );
+      const rua = await Rua.create({
+        nome: l.logradouro,
+        cep: l.cep,
+        localidade_id: l.localidade_id
+      });
 
       await createSide( l.numero, quarteirao.id, rua.id );
     }

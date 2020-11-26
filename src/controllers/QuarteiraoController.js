@@ -85,7 +85,7 @@ getBlockByCity = async (req, res) => {
 
   let quarteirao = [];
   municipio.localidades.forEach( localidade => {
-    quarteirao = [ ...localidade.quarteiroes, quarteirao ];
+    quarteirao = [ ...localidade.quarteiroes, ...quarteirao ];
   });
 
   return res.json( quarteirao );

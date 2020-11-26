@@ -55,36 +55,40 @@ index = async ( req, res ) => {
 getBlockByCity = async (req, res) => {
   const { municipio_id } = req.params;
 
-  const municipio = await Municipio.findByPk( municipio_id );
+  const municipio = await Municipio.findOne({
+    where: {
+      id: municipio_id
+    },
+    include: {
+      association: 'localidades',
+      attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+      include: {
+        association: 'quarteiroes',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+        include: [
+          {
+            association: 'localidade',
+            attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+          },
+          {
+            association: 'zona',
+            attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+          }
+        ]
+      }
+    }
+  });
 
   if( !municipio ) {
     return res.status(400).json({ error: "Município não existe" });
   }
 
-  const quarteiroes = await Quarteirao.findAll({
-    include: [
-      {
-        association: 'localidade',
-        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-        include: {
-          where: { id: municipio_id },
-          association: 'municipio',
-          attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-        }
-      },
-      {
-        association: 'zona',
-        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-        include: {
-          where: { id: municipio_id },
-          association: 'municipio',
-          attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-        }
-      }
-    ]
+  let quarteirao = [];
+  municipio.localidades.forEach( localidade => {
+    quarteirao = [ ...localidade.quarteiroes, quarteirao ];
   });
 
-  return res.json( quarteiroes );
+  return res.json( quarteirao );
 }
 
 const createSide = async (numero, quarteirao_id, rua_id) => {

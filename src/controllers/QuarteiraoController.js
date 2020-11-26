@@ -173,13 +173,13 @@ store = async ( req, res ) => {
       await createSide( l.numero, quarteirao.id, l.rua_id );
     }else {
       // const rua = await findOrCreateStreet( l.logradouro, l.localidade_id, l.cep );
-      const rua = await Rua.create({
+      await Rua.create({
         nome: l.logradouro,
         cep: l.cep,
         localidade_id: l.localidade_id
+      }).then( async rua => {
+        await createSide( l.numero, quarteirao.id, rua.id );
       });
-
-      await createSide( l.numero, quarteirao.id, rua.id );
     }
   });
 

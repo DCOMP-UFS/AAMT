@@ -64,7 +64,6 @@ getBlockByCity = async (req, res) => {
       attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
       include: {
         association: 'quarteiroes',
-        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
         include: [
           {
             association: 'localidade',

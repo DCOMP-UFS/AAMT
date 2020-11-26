@@ -112,14 +112,14 @@ const findOrCreateStreet = async ( nome, localidade_id, cep ) => {
   return rua;
 }
 
-const createStreetAndSide = async ( nome, localidade_id, cep ) => {
-  await Rua.create({
+const createStreet = async ( nome, localidade_id, cep ) => {
+  const rua = await Rua.create({
     nome,
     cep,
     localidade_id
-  }).then( async rua => {
-    await createSide( l.numero, quarteirao.id, rua.id );
   });
+
+  return rua;
 }
 
 const updateSide = async ( id, numero, quarteirao_id, rua_id ) => {
@@ -182,10 +182,12 @@ store = async ( req, res ) => {
     if( l.rua_id ) {
       await createSide( l.numero, quarteirao.id, l.rua_id );
     }else {
-      await createStreetAndSide( l.logradouro, l.localidade_id, l.cep );
+      const rua = await createStreet( l.logradouro, l.localidade_id, l.cep );
+
+      await createSide( l.numero, quarteirao.id, rua.id );
     }
   });
-
+  
   const quarteiraoFind = await Quarteirao.findByPk( quarteirao.id, {
     include: [
       { association: 'zona', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } },

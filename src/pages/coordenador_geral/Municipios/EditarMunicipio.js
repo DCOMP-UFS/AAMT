@@ -4,7 +4,6 @@ import { Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
 import ButtonSave from '../../../components/ButtonSave';
 import { FaCity } from 'react-icons/fa';
-import LoadginGif from '../../../assets/loading.gif';
 import { FaMapSigns } from 'react-icons/fa';
 
 // REDUX

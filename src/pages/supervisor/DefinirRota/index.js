@@ -4,7 +4,6 @@ import { FaMapSigns } from 'react-icons/fa';
 import { Row, Col } from 'react-bootstrap';
 import ModalPlanejarRota from './ModalPlanejarRota';
 import ButtonSave from '../../../components/ButtonSave';
-import $ from 'jquery';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -134,7 +133,7 @@ function DefinirRota({ usuario, atividades, equipes, planejamentoCache, ciclo, r
                               </h6>
                               <ul className="members">
                                 {
-                                  eq.membros.filter( m => m.usuario.id != usuario.id ).map( (m, index) => {
+                                  eq.membros.filter( m => m.usuario.id !== usuario.id ).map( (m, index) => {
                                     let names = m.usuario.nome.split(' ');
                                     let userName = names[0] + ( names.length > 1 ? ' ' + names[ names.length - 1 ] : '' );
 

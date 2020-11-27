@@ -48,14 +48,17 @@ export default function sidebarCoordGeral(state = INITIAL_STATE, action) {
       const { id, subId } = action.payload;
       let currentNav = state.currentNav;
       let menu = state.menu;
-      menu[currentNav[0]].active = false;
+
+      menu[ currentNav[ 0 ] ].active = false;
 
       const index = menu.map( m => m.id ).indexOf( id );
-      menu[index].active = true;
+      menu[ index ].active = true;
 
       let indexSup = 0;
       if( menu[ index ].type === 'nav' ) {
-        menu[currentNav[0]].submenu[currentNav[1]].active = false;
+        if( menu[ currentNav[ 0 ] ].type === 'nav' )
+          menu[ currentNav[ 0 ] ].submenu[ currentNav[ 1 ] ].active = false;
+
         indexSup = menu[ index ].submenu.map( sub => sub.id ).indexOf( subId );
         menu[index].submenu[ indexSup ].active = true;
       }

@@ -115,12 +115,6 @@ const columns = [
   }
 ];
 
-const location = {
-  address: '1600 Amphitheatre Parkway, Mountain View, california.',
-  lat: 37.42216,
-  lng: -122.08427,
-}
-
 function Vistoria({ vistorias, routeNotStarted, usuario, trabalhoDiario, rota, showNotStarted, ...props }) {
   const [ rows, setRows ] = useState([]);
   const [ viewport, setViewport ] = useState({

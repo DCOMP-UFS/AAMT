@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Row, Col } from 'react-bootstrap';
+import { Row } from 'react-bootstrap';
 import { IoIosPaper } from 'react-icons/io';
 import Select from 'react-select';
 import cityIcon from '../../../assets/city-icon.png';

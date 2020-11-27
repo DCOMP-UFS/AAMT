@@ -5,7 +5,6 @@ import Select from 'react-select';
 import ButtonSave from '../../../components/ButtonSave';
 import { perfil } from '../../../config/enumerate';
 import { FaUsers } from 'react-icons/fa';
-import LoadginGif from '../../../assets/loading.gif';
 
 // REDUX
 import { bindActionCreators } from 'redux';

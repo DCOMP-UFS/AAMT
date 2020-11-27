@@ -66,7 +66,7 @@ export function* closeRoute(action) {
       if( data.status === "success" ) {
         const [ d, m, Y ]  = new Date().toLocaleDateString('en-GB').split('/');
         const current_date = `${Y}-${m}-${d}`;
-        const { data, status } = yield call( getRouteRequest, { usuario_id: action.payload.usuario_id, dia: current_date } );
+        const { data } = yield call( getRouteRequest, { usuario_id: action.payload.usuario_id, dia: current_date } );
 
         yield put( RotaCacheActions.getRoute( data ) );
         yield put( AppConfigActions.showNotifyToast( "Rota finalizada e vistorias registradas com sucesso!", "success" ) );

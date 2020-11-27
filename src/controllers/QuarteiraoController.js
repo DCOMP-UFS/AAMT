@@ -112,16 +112,6 @@ const findOrCreateStreet = async ( nome, localidade_id, cep ) => {
   return rua;
 }
 
-const createStreet = async ( nome, localidade_id, cep ) => {
-  const rua = await Rua.create({
-    nome,
-    cep,
-    localidade_id
-  });
-
-  return rua;
-}
-
 const updateSide = async ( id, numero, quarteirao_id, rua_id ) => {
   const { isRejected } = await Lado.update(
     {
@@ -178,11 +168,16 @@ store = async ( req, res ) => {
     quarteirao_id
   });
 
-  for(const [ index, l ] of lados) {
+  for ( const l of lados ) {
     if( l.rua_id ) {
       await createSide( l.numero, quarteirao.id, l.rua_id );
     } else {
-      const rua = await createStreet( l.logradouro, l.localidade_id, l.cep );
+      const rua = await Rua.create({
+        nome: l.logradouro,
+        cep: l.cep,
+        localidade_id: l.localidade_id
+      });
+
       await createSide( l.numero, quarteirao.id, rua.id );
     }
   }

@@ -7,7 +7,9 @@ class Imovel extends Model {
       sequencia: DataTypes.INTEGER,
       responsavel: DataTypes.STRING,
       complemento: DataTypes.STRING,
-      tipoImovel: DataTypes.INTEGER
+      tipoImovel: DataTypes.INTEGER,
+      lng: DataTypes.DECIMAL,
+      lat: DataTypes.DECIMAL
     }, {
       sequelize,
       tableName: 'imoveis'

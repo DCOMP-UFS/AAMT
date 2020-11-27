@@ -58,8 +58,6 @@ getOpenCycles = async ( req, res ) => {
   const [ d, m, Y ]  = new Date().toLocaleDateString('en-GB').split('/');
   const current_date = `${Y}-${m}-${d}`;
 
-  console.log(current_date);
-
   const ciclos = await Ciclo.findOne({
     where: Sequelize.and(
       { regional_saude_id: regionalSaude_id } ,

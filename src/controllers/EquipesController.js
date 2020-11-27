@@ -35,11 +35,11 @@ getTeamsSupervised = async ( req, res ) => {
   if( escopo === 1 ) { // Regional
     regionalSaude_id = supervisor.atuacoes[0].local_id;
   } else if( escopo === 2 ) { // Municipal
-    const regional = await Municipio.findByPk( supervisor.atuacoes[0].local_id, {
+    const municipio = await Municipio.findByPk( supervisor.atuacoes[0].local_id, {
       include: { association: "regional" }
     });
-    
-    regionalSaude_id = regional.id;
+
+    regionalSaude_id = municipio.regional.id;
   } else { // Laboratório
 
   }

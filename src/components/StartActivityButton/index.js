@@ -16,7 +16,15 @@ import Button from '../../components/Button';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import {Container, Header, Title, Description, Card, Small} from './styles';
+import {
+  Container,
+  Header,
+  Title,
+  Description,
+  Card,
+  Small,
+  ButtonRow,
+} from './styles';
 
 const StartActivityButton: React.FC = ({user_id, activities, ...props}) => {
   var date = format(new Date(), 'yyyy-MM-dd');
@@ -82,10 +90,11 @@ const StartActivityButton: React.FC = ({user_id, activities, ...props}) => {
                     Iniciar trabalho diário
                   </Button>
                   <Button
+                    style={{marginTop: 10}}
                     color="#0095DA"
                     textColor="#fff"
                     onPress={() => navigation.navigate('Lista de Quarteirões')}>
-                    Ver lista de quarteirões
+                    Ver quarteirões
                   </Button>
                 </>
               )}

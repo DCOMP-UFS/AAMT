@@ -39,3 +39,9 @@ export const Description = styled.Text`
   color: #a6a8ad;
   margin-bottom: 15px;
 `;
+
+export const ButtonRow = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-self: stretch;
+`;

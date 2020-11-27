@@ -70,10 +70,12 @@ function ModalAdd({ createCityBlockRequest, municipio_id, created, ...props }) {
   }, [ props.ruas ]);
 
   useEffect(() => {
-    setLado({ ...lado, localidade_id: localidade.value });
-    props.getStreetByLocalityRequest( localidade.value );
+    if( Object.entries( localidade ).length > 0 ) {
+      setLado({ ...lado, localidade_id: localidade.value });
+      props.getStreetByLocalityRequest( localidade.value );
 
-    setZona({});
+      setZona({});
+    }
   }, [ localidade ]);
 
   useEffect(() => {
@@ -111,8 +113,12 @@ function ModalAdd({ createCityBlockRequest, municipio_id, created, ...props }) {
     setCep("");
     setOutra("");
 
-    setLados( [...lados, l] );
+    setLados( [ ...lados, l ] );
   }
+
+  useEffect(() => {
+    console.log( lados );
+  }, [ lados ]);
 
   function handleCadastrar( e ) {
     e.preventDefault();

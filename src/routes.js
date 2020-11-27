@@ -51,6 +51,7 @@ import Vistoria from './pages/agente/vistoria';
 import Relatorio from './pages/agente/Relatorio';
 import TrabalhoDiario from './pages/agente/Relatorio/trabalhoDiario';
 import CadastrarVistoria from './pages/agente/vistoria/cadastrar';
+import EditarVistoria from './pages/agente/vistoria/editar';
 import CDT_Trabalho_diario from './pages/trabalho_diario/Iniciar';
 import ListaVistoria from './pages/trabalho_diario/ListaVistoria';
 import FormVistoria from './pages/trabalho_diario/Form';
@@ -200,6 +201,7 @@ const Routes = props => {
         <PrivateAgente path="/agente/relatorio" component={ Relatorio } tipoPerfil={ perfil } />
         <PrivateAgente path="/agente/trabalho_diario/:trabalho_diario_id" component={ TrabalhoDiario } tipoPerfil={ perfil } />
         <PrivateAgente path="/agente/vistoria/cadastrar" component={ CadastrarVistoria } tipoPerfil={ perfil } />
+        <PrivateAgente path="/agente/vistoria/editar/:index" component={ EditarVistoria } tipoPerfil={ perfil } />
         <PrivateCoordenador path="/trabalho_diario/iniciar" component={CDT_Trabalho_diario} tipoPerfil={ perfil } />
         <PrivateCoordenador path="/trabalho_diario/vistoria/lista" component={ListaVistoria} tipoPerfil={ perfil } />
         <PrivateCoordenador path="/trabalho_diario/vistoria/formulario" component={FormVistoria} tipoPerfil={ perfil } />

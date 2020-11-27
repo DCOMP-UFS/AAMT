@@ -5,6 +5,7 @@ import Table, { ButtonAdd, ButtonDesabled } from '../../../components/Table';
 import Typography from "@material-ui/core/Typography";
 import ModalAdd from './ModalAdd';
 import BorderAllIcon from '@material-ui/icons/BorderAll';
+import { ModalConfirm } from '../../../components/Modal';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -12,7 +13,6 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebarSupervisor';
-import { changeTableSelected } from '../../../store/actions/supportInfo';
 import { getBlockByCityRequest } from '../../../store/actions/QuarteiraoActions';
 
 // STYLES
@@ -31,17 +31,36 @@ const columns = [
       )
     }
   },
-  "Quarteirão",
+  {
+    name: "numero",
+    label: "Quarteirão",
+    options: {
+      filter: false,
+    }
+  },
   "Cód. Localidade",
   "Localidade",
   "Zona",
   "Ativo",
-  "Criado em",
-  "Atualizado em"
+  {
+    name: "createdAt",
+    label: "Criado em",
+    options: {
+      filter: false,
+    }
+  },
+  {
+    name: "updatedAt",
+    label: "Atualizado em",
+    options: {
+      filter: false,
+    }
+  }
 ];
 
-function Quarteiroes({ quarteiroes, ...props }) {
+function Quarteiroes({ quarteiroes, tableSelection, ...props }) {
   const [ rows, setRows ] = useState([]);
+  const [ rowsSelected, setRowsSelected ] = useState([]);
   const options = {
     customToolbar: () => {
       return (
@@ -52,12 +71,16 @@ function Quarteiroes({ quarteiroes, ...props }) {
       );
     },
     customToolbarSelect: ({ data }) => {
-      props.changeTableSelected('tableCity', data);
+      // setRowsSelected( data );
       return (
         <ButtonDesabled
-          toggle="modal"
-          target="#modal-desativar-quarteirao" />
+          title="Desativar"
+          data-toggle="modal"
+          data-target="#modal-desativar-quarteirao" />
       );
+    },
+    onRowsSelect : ( curRowSelected, allRowsSelected ) => {
+      setRowsSelected( allRowsSelected );
     },
     setRowProps: (row) => {
       const className = row[3] === "Não" ? "row-desabled" : "";
@@ -74,13 +97,18 @@ function Quarteiroes({ quarteiroes, ...props }) {
   };
 
   useEffect(() => {
-    props.changeSidebar(1, 1);
+    props.changeSidebar( 1, 1 );
     props.getBlockByCityRequest( props.municipio.id );
   }, []);
 
   useEffect(() => {
     createRows();
   }, [ quarteiroes ]);
+
+  useEffect(() => {
+    const quarteiroesSelect = rowsSelected.map( r => ( rows[ r.dataIndex ] ));
+    console.log( quarteiroesSelect );
+  }, [ rowsSelected ]);
 
   function createRows() {
     const list = quarteiroes.map( (quarteirao, index) => (
@@ -122,6 +150,13 @@ function Quarteiroes({ quarteiroes, ...props }) {
           </article>
         </div>
         <ModalAdd />
+        <ModalConfirm
+          id="modal-desativar-quarteirao"
+          title="Desativar"
+          confirm={() => console.log( "desativar" ) }
+        >
+          <p>Deseja desativar o(s) quarteirão(ões)?</p>
+        </ModalConfirm>
       </section>
     </>
   );
@@ -129,11 +164,12 @@ function Quarteiroes({ quarteiroes, ...props }) {
 
 const mapStateToProps = state => ({
   municipio: state.appConfig.usuario.municipio,
-  quarteiroes: state.quarteirao.quarteiroes
+  quarteiroes: state.quarteirao.quarteiroes,
+  tableSelection: state.supportInfo.tableSelection
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ changeSidebar, getBlockByCityRequest, changeTableSelected }, dispatch);
+  bindActionCreators({ changeSidebar, getBlockByCityRequest }, dispatch);
 
 export default connect(
   mapStateToProps,

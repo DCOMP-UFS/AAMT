@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
 import { FaClipboardCheck, FaCheckDouble } from 'react-icons/fa';
 import { Row, Col } from 'react-bootstrap';
 import Typography from "@material-ui/core/Typography";
@@ -8,6 +7,8 @@ import dotenv from 'dotenv';
 import ModalFinalizarTrabalho from '../components/ModalFinalizarTrabalho';
 import ModalDeletar from './ModalDeletar';
 import { tipoImovel as tipoImovelEnum } from '../../../config/enumerate';
+import ReactMapGL, { Marker } from 'react-map-gl';
+import img_home_icon from '../../../assets/home-icon.png';
 import $ from 'jquery';
 
 // REDUX
@@ -122,6 +123,13 @@ const location = {
 
 function Vistoria({ vistorias, routeNotStarted, usuario, trabalhoDiario, rota, showNotStarted, ...props }) {
   const [ rows, setRows ] = useState([]);
+  const [ viewport, setViewport ] = useState({
+    width: '100%',
+    height: '100%',
+    latitude: -10.968002,
+    longitude: -37.081680,
+    zoom: 14
+  });
   const options = {
     customToolbar: () => {
       return (
@@ -155,10 +163,10 @@ function Vistoria({ vistorias, routeNotStarted, usuario, trabalhoDiario, rota, s
     //   }
     // },
     onRowClick: (row, ...props) => {
-      const index = row[0].props['data-index'];
+      const index = row[ 0 ].props[ 'data-index' ];
       console.log( index );
 
-      // window.location = `${ window.location.origin.toString() }/agente/vistoria/editar/${ index }`;
+      window.location = `${ window.location.origin.toString() }/agente/vistoria/editar/${ index }`;
     }
   };
 
@@ -251,15 +259,30 @@ function Vistoria({ vistorias, routeNotStarted, usuario, trabalhoDiario, rota, s
         <Row>
           <article className="col-md-12 stretch-card mb-0" style={{ paddingTop: 15 }}>
             <div style={{ height: '300px', width: '100%', backgroundColor: '#ccc' }}>
-              {/* <Map
-                className="map"
-                style={{width: 'calc(100vw - 365px)', height: '300px', position: 'relative'}}
-                google={ props.google }
-                zoom={14} >
-                <Marker
-                  onClick={ console.log('teste') }
-                  name={'Current location'} />
-              </Map> */}
+              <ReactMapGL
+                { ...viewport }
+                onViewportChange={ nextViewport => setViewport( nextViewport ) }
+                mapboxApiAccessToken={ process.env.REACT_APP_MAP_TOKEN }
+              >
+                {
+                  rota.map( r => r.lados.map( lado => lado.imoveis.map(( imovel, index ) => {
+                    return (
+                    <Marker
+                      key={ index }
+                      latitude={ parseFloat( imovel.lat ) }
+                      longitude={ parseFloat( imovel.lng ) }
+                      offsetLeft={ -20 }
+                      offsetTop={ -10 }
+                    >
+                      <img
+                        src={ img_home_icon }
+                        width="25"
+                        alt="Carregando"
+                      />
+                    </Marker>
+                  )})))
+                }
+              </ReactMapGL>
             </div>
           </article>
         </Row>
@@ -295,21 +318,14 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
-    changeSidebar,
-    getRouteRequest,
-    resetHandleSave,
-    routeNotStarted,
-    changeTableSelected
-  }, dispatch);
+  changeSidebar,
+  getRouteRequest,
+  resetHandleSave,
+  routeNotStarted,
+  changeTableSelected
+}, dispatch);
 
-const LoadingContainer = (props) => (
-  <div>Carregando mapa...</div>
-)
-
-export default GoogleApiWrapper({
-  apiKey: ( process.env.REACT_API_MAP_KEY ),
-  LoadingContainer: LoadingContainer,
-})(connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Vistoria));
+)(Vistoria);

@@ -3,7 +3,9 @@ import { Row, Col } from 'react-bootstrap';
 import { FaRoute, FaPlay } from 'react-icons/fa';
 import ModalIniciarTrabalho from '../components/ModalIniciarTrabalho';
 import RouteList from '../components/RouteList';
-import { YMaps, Map } from 'react-yandex-maps';
+import ReactMapGL, { Marker } from 'react-map-gl';
+import dotenv from 'dotenv';
+import img_home_icon from '../../../assets/home-icon.png';
 import $ from 'jquery';
 
 // REDUX
@@ -20,8 +22,17 @@ import { resetShowNotStarted } from '../../../store/actions/VistoriaCacheActions
 import { Button } from '../../../styles/global';
 import { PageIcon, PageHeader, PagePopUp } from '../../../styles/util';
 
+dotenv.config();
+
 function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...props }) {
   const [ trabalhoDiario_date, setTrabalhoDiario_date ] = useState( '' );
+  const [ viewport, setViewport ] = useState({
+    width: '100%',
+    height: '100%',
+    latitude: -10.968002,
+    longitude: -37.081680,
+    zoom: 14
+  });
 
   useEffect(() => {
     props.changeSidebar(1, 1);
@@ -56,10 +67,12 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
   useEffect(() => {
     let date = trabalhoDiario.data.split( 'T' )[ 0 ].split( '-' );
 
-    console.log( date );
-
     setTrabalhoDiario_date( `${ date[ 2 ] }/${ date[ 1 ] }/${ date[ 0 ] }` );
   }, [ trabalhoDiario ]);
+
+  useEffect(() => {
+    console.log( rota );
+  }, [ rota ]);
 
   function checkRota() {
     props.isStartedRequest( trabalhoDiario.id );
@@ -102,21 +115,34 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
                       </Col>
                     </Row>
                     <Row>
-                      <Col md="8" style={{ maxheight: '300px' }}>
+                      <Col md="7" style={{ maxheight: '300px' }}>
                         <RouteList quarteiroes={ rota } />
                       </Col>
-                      <Col md="4">
-                        <YMaps query={{ lang: 'pt_BR' }}>
-                          <div>
-                            <Map
-                              defaultState={{
-                                center: [ -15.7752496, -48.3581231 ],
-                                zoom: 5
-                              }}
-                              width="100%"
-                            />
-                          </div>
-                        </YMaps>
+                      <Col md="5">
+                        <ReactMapGL
+                          {...viewport}
+                          onViewportChange={ nextViewport => setViewport( nextViewport ) }
+                          mapboxApiAccessToken={ process.env.REACT_APP_MAP_TOKEN }
+                        >
+                          {
+                            rota.map( r => r.lados.map( lado => lado.imoveis.map(( imovel, index ) => {
+                              return (
+                              <Marker
+                                key={ index }
+                                latitude={ parseFloat( imovel.lat ) }
+                                longitude={ parseFloat( imovel.lng ) }
+                                offsetLeft={ -20 }
+                                offsetTop={ -10 }
+                              >
+                                <img
+                                  src={ img_home_icon }
+                                  width="25"
+                                  alt="Carregando"
+                                />
+                              </Marker>
+                            )})))
+                          }
+                        </ReactMapGL>
                         {/* <div id="map-rota" style={{ width: '100%', height: '300px', background: '#ccc', lineHeight: '300px', textAlign: 'center' }}>Mapa</div> */}
                       </Col>
                     </Row>

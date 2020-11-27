@@ -106,8 +106,9 @@ function EditarQuarteirao({ usuario, quarteirao, municipio_id, ...props }) {
 
   useEffect(() => {
     const options = props.zonas.map(( z ) => {
-      if( z.id === quarteirao.zona.id )
-        setZona({ value: z.id, label: z.nome });
+      if( quarteirao.zona )
+        if( z.id === quarteirao.zona.id )
+          setZona({ value: z.id, label: z.nome });
 
       return ({ value: z.id, label: z.nome })
     });

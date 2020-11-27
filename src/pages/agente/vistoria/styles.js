@@ -5,4 +5,8 @@ export const Container = styled.div`
     width: auto!important;
     height: auto!important;
   }
+
+  table tbody tr {
+    cursor: pointer;
+  }
 `;

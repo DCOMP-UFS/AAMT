@@ -55,7 +55,7 @@ getCycle = async ( req, res ) => {
 
 getOpenCycles = async ( req, res ) => {
   const { regionalSaude_id } = req.params;
-  const [ d, m, Y ]  = new Date().toLocaleDateString('en-GB').split('/');
+  const [ m, d, Y ]  = new Date().toLocaleDateString('en-GB').split('/');
   const current_date = `${Y}-${m}-${d}`;
 
   const ciclos = await Ciclo.findOne({
@@ -71,10 +71,6 @@ getOpenCycles = async ( req, res ) => {
       )
     )
   });
-
-  console.log( regionalSaude_id );
-  console.log( current_date );
-  console.log( ciclos );
 
   return res.json( ciclos );
 }

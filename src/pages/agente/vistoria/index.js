@@ -115,7 +115,7 @@ const columns = [
   }
 ];
 
-function Vistoria({ vistorias, routeNotStarted, usuario, trabalhoDiario, rota, showNotStarted, ...props }) {
+function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ...props }) {
   const [ rows, setRows ] = useState([]);
   const [ viewport, setViewport ] = useState({
     width: '100%',
@@ -192,10 +192,6 @@ function Vistoria({ vistorias, routeNotStarted, usuario, trabalhoDiario, rota, s
 
     setRows( vists );
   }
-
-  useEffect(() => {
-    console.log( rows );
-  }, [ rows ]);
 
   useEffect(() => {
     if( !trabalhoDiario.id ) {

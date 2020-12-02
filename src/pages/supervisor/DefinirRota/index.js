@@ -23,11 +23,15 @@ import { ContainerFixed, PageIcon, PageHeader, PagePopUp } from '../../../styles
 function DefinirRota({ usuario, atividades, equipes, planejamentoCache, ciclo, regionalSaude_id, ...props }) {
   const [ indexAtividade, setIndexAtividade] = useState( 0 );
   const [ loading, setLoading] = useState( false );
+  const [ currentDate, setCurrentDate] = useState( '' );
 
   useEffect(() => {
-    props.changeSidebar(2, 1);
-    props.getOpenCycleRequest(regionalSaude_id);
+    props.changeSidebar( 2, 1 );
+    props.getOpenCycleRequest( regionalSaude_id );
     props.getActivitiesSupRequest( usuario.id );
+
+    const [ m, d, Y ]  = new Date().toLocaleDateString('en-GB').split('/');
+    setCurrentDate( `${d}/${m}/${Y}` );
   }, []);
 
   useEffect(() => {
@@ -83,7 +87,7 @@ function DefinirRota({ usuario, atividades, equipes, planejamentoCache, ciclo, r
               <label className="m-0">
                 {
                   Object.entries(ciclo).length > 0 ?
-                    `Ciclo ${ ciclo.ano }.${ ciclo.sequencia }: selecione uma equipe para planejar as rotas do dia.` :
+                    `Ciclo ${ ciclo.ano }.${ ciclo.sequencia }: selecione uma equipe para planejar as rotas do dia ${ currentDate }.` :
                     "Não há ciclo em abertos"
                 }
               </label>

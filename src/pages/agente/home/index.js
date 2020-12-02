@@ -20,7 +20,8 @@ import { resetShowNotStarted } from '../../../store/actions/VistoriaCacheActions
 
 // STYLES
 import { Button } from '../../../styles/global';
-import { PageIcon, PageHeader, PagePopUp } from '../../../styles/util';
+import { PageIcon, PageHeader, PagePopUp, NumberDash } from '../../../styles/util';
+import { tr } from 'date-fns/locale';
 
 dotenv.config();
 
@@ -33,6 +34,8 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
     longitude: -37.081680,
     zoom: 14
   });
+  const [ qtdQuarteirao, setQtdQuarteirao ] = useState( 0 );
+  const [ imoveis, setImoveis ] = useState( [] );
 
   useEffect(() => {
     props.changeSidebar(1, 1);
@@ -71,7 +74,19 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
   }, [ trabalhoDiario ]);
 
   useEffect(() => {
-    console.log( rota );
+    let imo = [];
+
+    rota.forEach(q => {
+      q.lados.forEach(l => {
+        let i = l.imoveis.map(imovel => ({ ...imovel, rua: l.rua.nome, quarteirao: q.numero }));
+
+        imo = [ ...i, ...imo ];
+      });
+    });
+
+    console.log( imo );
+
+    setImoveis( imo );
   }, [ rota ]);
 
   function checkRota() {
@@ -98,8 +113,7 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
                     <label className="m-0">Você não possui uma rota planejada para hoje!</label>
                   ) :
                   (
-                    <>
-                    <Row className="mb-3">
+                    <Row>
                       <Col className="d-flex justify-content-between align-items-center">
                         <label className="m-0">
                           <mark className="bg-warning mr-2">Atenção</mark>
@@ -114,39 +128,6 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
                         </Button>
                       </Col>
                     </Row>
-                    <Row>
-                      <Col md="7" style={{ maxheight: '300px' }}>
-                        <RouteList quarteiroes={ rota } />
-                      </Col>
-                      <Col md="5">
-                        <ReactMapGL
-                          {...viewport}
-                          onViewportChange={ nextViewport => setViewport( nextViewport ) }
-                          mapboxApiAccessToken={ process.env.REACT_APP_MAP_TOKEN }
-                        >
-                          {
-                            rota.map( r => r.lados.map( lado => lado.imoveis.map(( imovel, index ) => {
-                              return (
-                              <Marker
-                                key={ index }
-                                latitude={ parseFloat( imovel.lat ) }
-                                longitude={ parseFloat( imovel.lng ) }
-                                offsetLeft={ -20 }
-                                offsetTop={ -10 }
-                              >
-                                <img
-                                  src={ img_home_icon }
-                                  width="25"
-                                  alt="Carregando"
-                                />
-                              </Marker>
-                            )})))
-                          }
-                        </ReactMapGL>
-                        {/* <div id="map-rota" style={{ width: '100%', height: '300px', background: '#ccc', lineHeight: '300px', textAlign: 'center' }}>Mapa</div> */}
-                      </Col>
-                    </Row>
-                    </>
                   )
               }
             </div>
@@ -155,7 +136,74 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
         <Row>
           <article className="col-md-12 stretch-card">
             <div className="card">
-              <h4 className="title">Estatísticas</h4>
+              <Row className="mb-3">
+                <Col md="6" style={{ maxheight: '350px' }}>
+                  <RouteList quarteiroes={ rota } />
+                </Col>
+                <Col md="6" style={{ height: '350px' }}>
+                  <ReactMapGL
+                    {...viewport}
+                    onViewportChange={ nextViewport => setViewport( nextViewport ) }
+                    mapboxApiAccessToken={ process.env.REACT_APP_MAP_TOKEN }
+                  >
+                    {
+                      imoveis.map(( imovel, index ) => (
+                        <Marker
+                          key={ index }
+                          latitude={ parseFloat( imovel.lat ) }
+                          longitude={ parseFloat( imovel.lng ) }
+                          offsetLeft={ -20 }
+                          offsetTop={ -10 }
+                        >
+                          <img
+                            src={ img_home_icon }
+                            width="25"
+                            alt="Carregando"
+                          />
+                        </Marker>
+                      ))
+                    }
+                  </ReactMapGL>
+                </Col>
+              </Row>
+              <Row>
+                <Col md="6">
+                  <Row>
+                    <NumberDash className="col border-r margin-b">
+                      <h5 className="legend">Quarteiroes</h5>
+                      <h4>{ rota.length }</h4>
+                    </NumberDash>
+                    <NumberDash className="col margin-b">
+                      <h5 className="legend">Vistorias/Imóveis</h5>
+                      <h4>{ `0/${ imoveis.length }` }</h4>
+                    </NumberDash>
+                  </Row>
+                </Col>
+                <Col md="6" xs="12">
+                  <table className="table">
+                    <thead className="thead-dark">
+                      <tr>
+                        <th scope="col">Nº</th>
+                        <th scope="col">Seq.</th>
+                        <th scope="col">Rua</th>
+                        <th scope="col">Quart.</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {
+                        imoveis.map(( imovel, index ) => (
+                          <tr key={ index }>
+                            <td>{ imovel.numero }</td>
+                            <td>{ imovel.sequencia ? imovel.sequencia : '' }</td>
+                            <td>{ imovel.rua }</td>
+                            <td>{ imovel.quarteirao }</td>
+                          </tr>
+                        ))
+                      }
+                    </tbody>
+                  </table>
+                </Col>
+              </Row>
             </div>
           </article>
         </Row>

@@ -72,6 +72,10 @@ getOpenCycles = async ( req, res ) => {
     )
   });
 
+  console.log( regionalSaude_id );
+  console.log( current_date );
+  console.log( ciclos );
+
   return res.json( ciclos );
 }
 

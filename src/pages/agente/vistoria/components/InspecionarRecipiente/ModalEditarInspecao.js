@@ -61,7 +61,6 @@ function InspecionarRecipiente({ updatedIndex, sequenciaRecipiente, recipientes,
   useEffect(() => {
     if( updatedIndex > -1 ) {
       const recipiente = recipientes[ updatedIndex ];
-      console.log( recipiente );
       setTipoRecipiente({ value: recipiente.tipoRecipiente, label: recipiente.tipoRecipiente });
       setFl_eliminado({ value: recipiente.fl_eliminado, label: recipiente.fl_eliminado ? "Sim" : "Não" });
       setFl_tratado({ value: recipiente.fl_tratado, label: recipiente.fl_tratado ? "Sim" : "Não" });

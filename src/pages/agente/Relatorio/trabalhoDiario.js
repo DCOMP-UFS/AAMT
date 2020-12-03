@@ -113,7 +113,6 @@ const columns = [
 const options = {
   onRowClick: (row, ...props) => {
     const index = row[0].props['data-index'];
-    console.log( index );
 
     // window.location = `${ window.location.origin.toString() }/agente/vistoria/editar/${ index }`;
   }
@@ -206,7 +205,6 @@ function TrabalhoDiario({ usuario, vistorias, ...props }) {
 
   useEffect(() => {
     filter();
-    console.log( vistorias );
 
     let trabDiario = [],
         optTrabalhoDiario = [];

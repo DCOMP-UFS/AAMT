@@ -23,9 +23,6 @@ function CadastrarVistoria({ trabalhoDiario, rota, ...props }) {
   }, []);
 
   function getForm() {
-    // console.log( trabalhoDiario );
-    // console.log( rota );
-    // return "Calma";
     switch ( trabalhoDiario.atividade.metodologia.sigla ) {
       case 'PNCD':
         return <PNCD objetivo="LI+T" />

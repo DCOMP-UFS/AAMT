@@ -107,7 +107,6 @@ function Quarteiroes({ quarteiroes, tableSelection, ...props }) {
 
   useEffect(() => {
     const quarteiroesSelect = rowsSelected.map( r => ( rows[ r.dataIndex ] ));
-    console.log( quarteiroesSelect );
   }, [ rowsSelected ]);
 
   function createRows() {

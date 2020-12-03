@@ -26,10 +26,32 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
   const [ optionTipoImovel, setOptionTipoImovel ] = useState(Object.entries( tipoImovelEnum ).map(([key, value]) => {
     return { value: value.id, label: value.label };
   }));
+  const [ imoveis, setImoveis ] = useState( [] );
 
   useEffect(() => {
     props.setQuarteiraoSelect({ value: 0, label: rota[0].numero, id: rota[0].id });
+
+    // const inspection  = props.vistorias.find(vistoria => ( vistoria.imovel.id === imovel.id ) );
+    // console.log( props.vistorias );
   }, []);
+
+  useEffect(() => {
+    if( selectQuarteirao ) {
+      let im = rota[ selectQuarteirao.value ].lados.reduce(( imvs, l ) => {
+        l.imoveis = l.imoveis.map( i => {
+          const inspection  = props.vistorias.find( vistoria =>
+            vistoria.imovel.id === i.id && vistoria.imovel.id !== imovel.id
+          );
+
+          return ({ ...i, numeroQuarteirao: quarteirao.numero, logradouro: l.rua.nome, fl_inspection: inspection ? true : false })
+        });
+
+        return [ ...imvs, ...l.imoveis ];
+      }, []);
+
+      setImoveis( im );
+    }
+  }, [ selectQuarteirao ]);
 
   function handleImovel( i ) {
     props.setImovelSelected( i );
@@ -184,23 +206,19 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
           <ListImovel
             idImovelSelect={ imovel ? imovel.id : undefined }
             quarteirao={ selectQuarteirao ? rota[ selectQuarteirao.value ] : undefined }
+            imoveis={ imoveis }
             rotaIndex={ selectQuarteirao ? selectQuarteirao.value : undefined }
             handleImovel={ handleImovel }
             numero={ numero === "" ? "-1" : numero }
-            sequencia={ sequencia === "" ? "-1" : sequencia } />
+            sequencia={ sequencia === "" ? "-1" : sequencia }
+            vistorias={ props.vistorias } />
         </Col>
       </Row>
     </Container>
   );
 }
 
-function ListImovel({ rotaIndex, idImovelSelect, quarteirao, ...props }) {
-  const imoveis = quarteirao ?
-    quarteirao.lados.reduce(( imoveis, l ) => {
-      l.imoveis = l.imoveis.map( i => ({ ...i, numeroQuarteirao: quarteirao.numero, logradouro: l.rua.nome }));
-      return [ ...imoveis, ...l.imoveis ];
-    }, []) :
-    [];
+function ListImovel({ rotaIndex, idImovelSelect, quarteirao, imoveis, ...props }) {
   const numero = parseInt( props.numero );
   const sequencia = parseInt( props.sequencia );
 
@@ -216,23 +234,27 @@ function ListImovel({ rotaIndex, idImovelSelect, quarteirao, ...props }) {
     }
   );
 
-  let li = filterImovel.map(( imovel, index ) =>
-    <LiImovel
-      key={ index}
-      className={ idImovelSelect === imovel.id ? "active" : "" }
-      onClick={ () => props.handleImovel( imovel ) }>
-      <ContainerIcon className="ContainerIcon" >
-        <IoIosHome />
-      </ContainerIcon>
-      <DivDescription>
-        <div>
-          <span className="mr-2">Nº: { imovel.numero }</span>
-          <span>Seq.: { imovel.sequencia === -1 ? "" : imovel.sequencia }</span>
-        </div>
-        <Span>Responsável: { imovel.responsavel }</Span>
-      </DivDescription>
-    </LiImovel>
-  );
+  let li = filterImovel.map(( imovel, index ) => {
+    return (
+      <LiImovel
+        key={ index}
+        className={ `${ idImovelSelect === imovel.id ? "active" : imovel.fl_inspection ? " disabled" : "" }` }
+        onClick={ () => {
+          props.handleImovel( imovel );
+        }}>
+        <ContainerIcon className="ContainerIcon" >
+          <IoIosHome />
+        </ContainerIcon>
+        <DivDescription>
+          <div>
+            <span className="mr-2">Nº: { imovel.numero }</span>
+            <span>Seq.: { imovel.sequencia === -1 ? "" : imovel.sequencia }</span>
+          </div>
+          <Span>Responsável: { imovel.responsavel }</Span>
+        </DivDescription>
+      </LiImovel>
+    )
+  });
 
   if(filterImovel.length === 0) {
     li = <LiEmpty>
@@ -252,7 +274,8 @@ const mapStateToProps = state => ({
   quarteirao: state.supportInfo.quarteirao,
   selectQuarteirao: state.vistoria.selectQuarteirao,
   imovel: state.vistoria.imovel,
-  reload: state.vistoria.reload
+  reload: state.vistoria.reload,
+  vistorias: state.vistoriaCache.vistorias,
 });
 
 const mapDispatchToProps = dispatch =>

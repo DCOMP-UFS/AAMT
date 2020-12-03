@@ -32,15 +32,6 @@ function ModalPlanejarRota({ planejamento, planejamentoIndex, usuario, ...props 
   const classes = useStyles();
   const [ routerIndex, setRouterIndex ] = useState( -1 );
 
-  // useEffect(() => {
-  //   console.log(planejamento);
-  // }, [ planejamento ]);
-
-  useEffect(() => {
-    console.log(planejamentoIndex);
-    console.log(planejamento);
-  }, [ props.reload ]);
-
   const handleChange = (event, index) => {
     props.changeRouteUser( event.target.value, index );
   };

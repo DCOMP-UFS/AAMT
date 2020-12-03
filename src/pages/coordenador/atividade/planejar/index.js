@@ -59,10 +59,6 @@ function PlanejarAtividade({ atividade, estratos, equipes, ...props }) {
   }, []);
 
   useEffect(() => {
-    console.log(equipes);
-  }, [ equipes ]);
-
-  useEffect(() => {
     if( Object.entries( atividade ).length > 0 ) {
       setObjetivoAtividade( atividade.objetivoAtividade );
       setAbrangencia(

@@ -84,8 +84,6 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
       });
     });
 
-    console.log( imo );
-
     setImoveis( imo );
   }, [ rota ]);
 

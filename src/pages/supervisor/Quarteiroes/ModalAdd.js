@@ -116,10 +116,6 @@ function ModalAdd({ createCityBlockRequest, municipio_id, created, ...props }) {
     setLados( [ ...lados, l ] );
   }
 
-  useEffect(() => {
-    console.log( lados );
-  }, [ lados ]);
-
   function handleCadastrar( e ) {
     e.preventDefault();
 

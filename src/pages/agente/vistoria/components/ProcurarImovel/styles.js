@@ -32,6 +32,12 @@ export const LiImovel = styled.li`
   &.active .ContainerIcon {
     background: ${ Color.success };
   }
+
+  &.disabled {
+    cursor: not-allowed;
+    background: #ebedf2;
+    opacity: 0.7;
+  }
 `;
 
 export const ContainerIcon = styled.div`

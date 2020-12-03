@@ -87,8 +87,11 @@ function LIRAa({ handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, .
       };
 
       // Editar
-      if( props.indexInspection ) props.updateInspection( vistoria, props.indexInspection );
-      else props.addVistoria( vistoria );
+      if( props.indexInspection ) {
+        props.updateInspection( vistoria, props.indexInspection );
+      } else {
+        props.addVistoria( vistoria );
+      }
     }
   }
 
@@ -171,6 +174,7 @@ function LIRAa({ handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, .
 }
 
 const mapStateToProps = state => ({
+  rota: state.rotaCache.rota,
   imovel: state.vistoria.imovel,
   recipientes: state.vistoria.recipientes,
   vistorias: state.vistoriaCache.vistorias,

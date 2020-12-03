@@ -9,6 +9,7 @@ import ModalDeletar from './ModalDeletar';
 import { tipoImovel as tipoImovelEnum } from '../../../config/enumerate';
 import ReactMapGL, { Marker } from 'react-map-gl';
 import img_home_icon from '../../../assets/home-icon.png';
+import img_home_icon_green from '../../../assets/home-icon-green.png';
 import $ from 'jquery';
 
 // REDUX
@@ -158,7 +159,6 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
     // },
     onRowClick: (row, ...props) => {
       const index = row[ 0 ].props[ 'data-index' ];
-      console.log( index );
 
       window.location = `${ window.location.origin.toString() }/agente/vistoria/editar/${ index }`;
     }
@@ -256,21 +256,26 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
               >
                 {
                   rota.map( r => r.lados.map( lado => lado.imoveis.map(( imovel, index ) => {
+                    const inspection  = vistorias.find(vistoria => vistoria.imovel.id === imovel.id );
+
                     return (
-                    <Marker
-                      key={ index }
-                      latitude={ parseFloat( imovel.lat ) }
-                      longitude={ parseFloat( imovel.lng ) }
-                      offsetLeft={ -20 }
-                      offsetTop={ -10 }
-                    >
-                      <img
-                        src={ img_home_icon }
-                        width="25"
-                        alt="Carregando"
-                      />
-                    </Marker>
-                  )})))
+                      <Marker
+                        key={ index }
+                        latitude={ parseFloat( imovel.lat ) }
+                        longitude={ parseFloat( imovel.lng ) }
+                        offsetLeft={ -20 }
+                        offsetTop={ -10 }
+                      >
+                        <img
+                          src={
+                            inspection ? img_home_icon_green : img_home_icon
+                          }
+                          width="25"
+                          alt="Carregando"
+                        />
+                      </Marker>
+                    )
+                  })))
                 }
               </ReactMapGL>
             </div>

@@ -4,7 +4,8 @@ export const ActionTypes = {
   ROTA_NAO_INICIADA: "ROTA_NAO_INICIADA",
   RESETAR_SHOWNOTSTARTED: "RESETAR_SHOWNOTSTARTED",
   LIMPAR_VISTORIAS: "LIMPAR_VISTORIAS",
-  DELETAR_VISTORIA: "DELETAR_VISTORIA"
+  DELETAR_VISTORIA: "DELETAR_VISTORIA",
+  UPDATE_INSPECTION: "UPDATE_INSPECTION"
 }
 
 export const clearInspection = () => {
@@ -22,6 +23,16 @@ export const resetShowNotStarted = () => {
 export const routeNotStarted = () => {
   return {
     type: ActionTypes.ROTA_NAO_INICIADA
+  }
+}
+
+export const updateInspection = ( class_inspection, int_indexInspection ) => {
+  return {
+    type: ActionTypes.UPDATE_INSPECTION,
+    payload: {
+      class_inspection,
+      int_indexInspection
+    }
   }
 }
 

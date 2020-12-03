@@ -5,14 +5,40 @@ const INITIAL_STATE = {
   imovel: undefined,
   indexRota: -1,
   sequenciaRecipiente: 1,
+  inspectionSequence: 1,
   recipientes: [],
   reload: false,
   updatedIndex: -1,
   vistorias: []
 }
 
-export default function Vistoria(state = INITIAL_STATE, action) {
-  switch (action.type) {
+export default function Vistoria( state = INITIAL_STATE, action ) {
+  switch ( action.type ) {
+    case ActionTypes.SET_IMMOBILE: {
+      return {
+        ...state,
+        imovel: action.payload.class_immobile,
+        reload: !state.reload
+      }
+    }
+
+    case ActionTypes.SET_SEQUENCE_INSPECTION: {
+      return {
+        ...state,
+        inspectionSequence: action.payload.int_sequence,
+        reload: !state.reload
+      }
+    }
+
+    case ActionTypes.SET_RECIPIENT: {
+      return {
+        ...state,
+        recipientes: action.payload.array_recipient,
+        sequenciaRecipiente: action.payload.array_recipient.length + 1,
+        reload: !state.reload
+      }
+    }
+
     case ActionTypes.CONSULTAR_VISTORIAS_SUCCESS: {
       return {
         ...state,

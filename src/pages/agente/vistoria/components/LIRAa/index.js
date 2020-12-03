@@ -15,7 +15,8 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { showNotifyToast } from '../../../../../store/actions/appConfig';
-import { addVistoria } from '../../../../../store/actions/VistoriaCacheActions';
+import { addVistoria, updateInspection } from '../../../../../store/actions/VistoriaCacheActions';
+import { setRecipient, setSequenceInspection, setImmobile } from '../../../../../store/actions/VistoriaActions';
 
 // STYLES
 import { Separator, selectDefault } from '../../../../../styles/global';
@@ -33,14 +34,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function LIRAa({ handleSave, trabalhoDiario_id, sequenciaVistoria, recipientes, imovel, objetivo, ...props }) {
+function LIRAa({ handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, ...props }) {
   const classes = useStyles();
   const [ entrada, setEntrada ] = useState( "" );
   const [ visita, setVisita ] = useState({ value: "N", label: "Normal" });
+  const [ sequenciaVistoria, setSequenciaVistoria ] = useState( 0 );
   const [ optionVisita, setOptionVisita ] = useState([
     { value: "N", label: "Normal" },
     { value: "R", label: "Recuperada" },
   ]);
+
+  useEffect(() => {
+    let seq = props.vistorias.length + 1;
+
+    if( props.vistoria ) {
+      const inspection = props.vistoria;
+
+      setEntrada( inspection.horaEntrada );
+      props.setRecipient( inspection.recipientes );
+      props.setImmobile( inspection.imovel );
+      seq = inspection.sequencia;
+    }
+
+    props.setSequenceInspection( seq );
+    setSequenciaVistoria( seq );
+  }, []);
 
   useEffect(() => {
     if( handleSave )
@@ -68,7 +86,9 @@ function LIRAa({ handleSave, trabalhoDiario_id, sequenciaVistoria, recipientes, 
         trabalhoDiario_id
       };
 
-      props.addVistoria( vistoria );
+      // Editar
+      if( props.indexInspection ) props.updateInspection( vistoria, props.indexInspection );
+      else props.addVistoria( vistoria );
     }
   }
 
@@ -153,14 +173,21 @@ function LIRAa({ handleSave, trabalhoDiario_id, sequenciaVistoria, recipientes, 
 const mapStateToProps = state => ({
   imovel: state.vistoria.imovel,
   recipientes: state.vistoria.recipientes,
-  sequenciaVistoria: state.vistoriaCache.sequenciaVistoria,
+  vistorias: state.vistoriaCache.vistorias,
   handleSave: state.vistoriaCache.handleSave,
   trabalhoDiario_id: state.rotaCache.trabalhoDiario.id,
   reload: state.vistoria.reload
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ showNotifyToast, addVistoria }, dispatch);
+  bindActionCreators({
+    showNotifyToast,
+    addVistoria,
+    updateInspection,
+    setRecipient,
+    setSequenceInspection,
+    setImmobile
+  }, dispatch);
 
 export default connect(
   mapStateToProps,

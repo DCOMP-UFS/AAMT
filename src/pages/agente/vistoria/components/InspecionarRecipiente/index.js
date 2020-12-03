@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ButtonNewObject from '../../../../../components/ButtonNewObject';
 import ModalCadastrarInspecao from './ModalCadastrarInspecao';
 import ModalEditarInspecao from './ModalEditarInspecao';
@@ -23,8 +23,8 @@ import {
 } from './styles';
 import { LiEmpty } from '../../../../../styles/global';
 
-function InspecionarRecipiente({ sequenciaRecipiente, vistorias, trabalhoDiario_id, recipientes, objetivo, ...props }) {
-  function openModalEdit( index ) {
+function InspecionarRecipiente({ sequenciaRecipiente, inspectionSequence, vistorias, trabalhoDiario_id, recipientes, objetivo, ...props }) {
+    function openModalEdit( index ) {
     props.changeUpdatedIndex( index );
     $('#modalEditarInspecao').modal('show');
   }
@@ -43,7 +43,7 @@ function InspecionarRecipiente({ sequenciaRecipiente, vistorias, trabalhoDiario_
         <ListRecipiente
           recipientes={ recipientes }
           trabalhoDiario_id={ trabalhoDiario_id }
-          vistoriaSequencia={ vistorias.length + 1 }
+          vistoriaSequencia={ inspectionSequence }
           removerRecipiente={ props.removerRecipiente }
           openModalEdit={ openModalEdit } />
 
@@ -63,9 +63,9 @@ function ListRecipiente({ recipientes, trabalhoDiario_id, vistoriaSequencia, ...
         </ContainerIcon>
         <DivDescription>
           <div>
-            <span className="mr-2">Cód. do recipiente: { `${ trabalhoDiario_id }.${ vistoriaSequencia }.${ recipiente.sequencia }` }</span>
+            <span className="mr-2">Recipiente: { `${ trabalhoDiario_id }.${ vistoriaSequencia }.${ recipiente.sequencia }` }</span>
           </div>
-          <span>Nº amostra(s): { recipiente.amostras.length }</span>
+          <span>Amostra(s): { recipiente.amostras.length }</span>
         </DivDescription>
       </ListContainer>
       <ButtonClose
@@ -89,6 +89,7 @@ function ListRecipiente({ recipientes, trabalhoDiario_id, vistoriaSequencia, ...
 }
 
 const mapStateToProps = state => ({
+  inspectionSequence: state.vistoria.inspectionSequence,
   recipientes: state.vistoria.recipientes,
   reload: state.vistoria.reload,
   trabalhoDiario_id: state.rotaCache.trabalhoDiario.id,

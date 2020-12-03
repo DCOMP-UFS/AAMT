@@ -6,7 +6,37 @@ export const ActionTypes = {
   REMOVER_RECIPIENTE: "REMOVER_RECIPIENTE",
   ALTERAR_UPDATEDINDEX: "ALTERAR_UPDATEDINDEX",
   CONSULTAR_VISTORIAS_REQUEST: "CONSULTAR_VISTORIAS_REQUEST",
-  CONSULTAR_VISTORIAS_SUCCESS: "CONSULTAR_VISTORIAS_SUCCESS"
+  CONSULTAR_VISTORIAS_SUCCESS: "CONSULTAR_VISTORIAS_SUCCESS",
+  SET_RECIPIENT: "SET_RECIPIENT",
+  SET_SEQUENCE_INSPECTION: "SET_SEQUENCE_INSPECTION",
+  SET_IMMOBILE: "SET_IMMOBILE"
+}
+
+export const setImmobile = class_immobile => {
+  return {
+    type: ActionTypes.SET_IMMOBILE,
+    payload: {
+      class_immobile
+    }
+  }
+}
+
+export const setSequenceInspection = int_sequence => {
+  return {
+    type: ActionTypes.SET_SEQUENCE_INSPECTION,
+    payload: {
+      int_sequence
+    }
+  }
+}
+
+export const setRecipient = array_recipient => {
+  return {
+    type: ActionTypes.SET_RECIPIENT,
+    payload: {
+      array_recipient
+    }
+  }
 }
 
 export const changeUpdatedIndex = index => {

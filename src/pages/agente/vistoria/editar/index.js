@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useState } from 'react';
 import { FaClipboardCheck } from 'react-icons/fa';
-import { Row, Col } from 'react-bootstrap';
+import { Row } from 'react-bootstrap';
 import PNCD from '../components/PNCD';
 import LIRAa from '../components/LIRAa';
 
@@ -15,7 +15,7 @@ import { changeSidebar } from '../../../../store/actions/sidebarAgente';
 import { PageIcon, PageHeader, ContainerFixed } from '../../../../styles/util';
 import { Container } from './styles';
 
-function CadastrarVistoria({ trabalhoDiario, rota, ...props }) {
+function CadastrarVistoria({ trabalhoDiario, rota, vistorias, ...props }) {
   const [ indexVistoria, setIndexVistoria ] = useState( 0 );
   useEffect(() => {
     setIndexVistoria( props.match.params.index );
@@ -23,15 +23,12 @@ function CadastrarVistoria({ trabalhoDiario, rota, ...props }) {
   }, []);
 
   function getForm() {
-    // console.log( trabalhoDiario );
-    // console.log( rota );
-    // return "Calma";
     switch ( trabalhoDiario.atividade.metodologia.sigla ) {
       case 'PNCD':
         return <PNCD objetivo="LI+T" />
 
       default: // LIRAa
-      return <LIRAa objetivo="LI" />
+      return <LIRAa objetivo="LI" vistoria={ vistorias[ indexVistoria ] } indexInspection={ indexVistoria } />
     }
   }
 
@@ -60,6 +57,7 @@ function CadastrarVistoria({ trabalhoDiario, rota, ...props }) {
 const mapStateToProps = state => ({
   trabalhoDiario: state.rotaCache.trabalhoDiario,
   rota: state.rotaCache.rota,
+  vistorias: state.vistoriaCache.vistorias
 });
 
 const mapDispatchToProps = dispatch =>

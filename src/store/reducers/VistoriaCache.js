@@ -38,6 +38,17 @@ export default function VistoriaCache(state = INITIAL_STATE, action) {
       }
     }
 
+    case ActionTypes.UPDATE_INSPECTION: {
+      let vistorias = state.vistorias;
+      vistorias[ action.payload.int_indexInspection ] = action.payload.class_inspection;
+
+      return {
+        ...state,
+        vistorias,
+        handleSave: true
+      }
+    }
+
     case ActionTypes.ADD_VISTORIA: {
       return {
         ...state,

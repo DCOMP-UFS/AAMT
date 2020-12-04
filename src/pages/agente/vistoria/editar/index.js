@@ -16,19 +16,27 @@ import { PageIcon, PageHeader, ContainerFixed } from '../../../../styles/util';
 import { Container } from './styles';
 
 function CadastrarVistoria({ trabalhoDiario, rota, vistorias, ...props }) {
-  const [ indexVistoria, setIndexVistoria ] = useState( 0 );
   useEffect(() => {
-    setIndexVistoria( props.match.params.index );
     props.changeSidebar(2, 1);
   }, []);
 
   function getForm() {
     switch ( trabalhoDiario.atividade.metodologia.sigla ) {
       case 'PNCD':
-        return <PNCD objetivo="LI+T" />
+        return (
+          <PNCD
+            objetivo="LI+T"
+            vistoria={ vistorias[ props.match.params.index ] }
+            indexInspection={ props.match.params.index } />
+        )
 
       default: // LIRAa
-      return <LIRAa objetivo="LI" vistoria={ vistorias[ indexVistoria ] } indexInspection={ indexVistoria } />
+        return (
+          <LIRAa
+            objetivo="LI"
+            vistoria={ vistorias[ props.match.params.index ] }
+            indexInspection={ props.match.params.index } />
+        )
     }
   }
 

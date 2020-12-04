@@ -30,20 +30,20 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
 
   useEffect(() => {
     props.setQuarteiraoSelect({ value: 0, label: rota[0].numero, id: rota[0].id });
-
-    // const inspection  = props.vistorias.find(vistoria => ( vistoria.imovel.id === imovel.id ) );
-    // console.log( props.vistorias );
   }, []);
 
   useEffect(() => {
     if( selectQuarteirao ) {
       let im = rota[ selectQuarteirao.value ].lados.reduce(( imvs, l ) => {
         l.imoveis = l.imoveis.map( i => {
-          const inspection  = props.vistorias.find( vistoria =>
-            vistoria.imovel.id === i.id && vistoria.imovel.id !== imovel.id
-          );
+          const inspection  = props.vistorias.find( vistoria => {
+            if( imovel ) // existe um imóvel setado
+              return vistoria.imovel.id === i.id && vistoria.imovel.id !== imovel.id;
+            else
+              return vistoria.imovel.id === i.id;
+          });
 
-          return ({ ...i, numeroQuarteirao: quarteirao.numero, logradouro: l.rua.nome, fl_inspection: inspection ? true : false })
+          return ({ ...i, numeroQuarteirao: rota[ selectQuarteirao.value ].numero, logradouro: l.rua.nome, fl_inspection: inspection ? true : false })
         });
 
         return [ ...imvs, ...l.imoveis ];

@@ -46,7 +46,6 @@ const columns = [
     label: "Nº do Quart.",
     options: {
       filter: true,
-      sortDirection: 'asc',
       align: "left",
       disablePadding: false
     }
@@ -110,6 +109,7 @@ const columns = [
     label: "Hora de entrada",
     options: {
       filter: false,
+      sortDirection: 'desc',
       align: "left",
       disablePadding: false
     }
@@ -172,6 +172,10 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
   useEffect(() => {
     createRows();
   }, [ vistorias, props.reload ]);
+
+  useEffect(() => {
+    console.log( rota );
+  }, [ rota ]);
 
   function createRows() {
     const vists = vistorias.map( ( vistoria, index ) => (

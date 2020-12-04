@@ -13,7 +13,8 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { showNotifyToast } from '../../../../../store/actions/appConfig';
-import { addVistoria } from '../../../../../store/actions/VistoriaCacheActions';
+import { addVistoria, updateInspection } from '../../../../../store/actions/VistoriaCacheActions';
+import { setRecipient, setSequenceInspection, setImmobile } from '../../../../../store/actions/VistoriaActions';
 
 // STYLES
 import { Separator, selectDefault } from '../../../../../styles/global';
@@ -31,19 +32,42 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function PNCD({ handleSave, trabalhoDiario_id, sequenciaVistoria, recipientes, imovel, objetivo, ...props }) {
+function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, ...props }) {
   const classes = useStyles();
   const [ optionVisita, setOptionVisita ] = useState([
     { value: "N", label: "Normal" },
     { value: "R", label: "Recuperada" },
   ]);
   const [ optionPendencia, setOptionPendencia ] = useState([
+    { value: null, label: "Nenhuma" },
     { value: "F", label: "Fechada" },
     { value: "R", label: "Recusada" }
   ]);
   const [ visita, setVisita ] = useState({});
   const [ pendencia, setPendencia ] = useState({});
   const [ entrada, setEntrada ] = useState( "" );
+  const [ sequenciaVistoria, setSequenciaVistoria ] = useState( 0 );
+
+  useEffect(() => {
+    let seq = props.vistorias.length + 1;
+
+    if( props.vistoria ) {
+      const inspection                = props.vistoria;
+      const class_inspectionSituation = optionVisita.find( option => props.vistoria.situacaoVistoria === option.value );
+      const class_pendency            = optionPendencia.find( option => props.vistoria.pendencia === option.value );
+
+
+      setEntrada( inspection.horaEntrada );
+      setVisita( class_inspectionSituation );
+      setPendencia( class_pendency );
+      props.setRecipient( inspection.recipientes );
+      props.setImmobile( inspection.imovel );
+      seq = inspection.sequencia;
+    }
+
+    props.setSequenceInspection( seq );
+    setSequenciaVistoria( seq );
+  }, []);
 
   useEffect(() => {
     if( handleSave )
@@ -75,7 +99,11 @@ function PNCD({ handleSave, trabalhoDiario_id, sequenciaVistoria, recipientes, i
         trabalhoDiario_id
       };
 
-      props.addVistoria( vistoria );
+      if( props.indexInspection ) {
+        props.updateInspection( vistoria, props.indexInspection );
+      } else {
+        props.addVistoria( vistoria );
+      }
     }
   }
 
@@ -155,13 +183,21 @@ function PNCD({ handleSave, trabalhoDiario_id, sequenciaVistoria, recipientes, i
 const mapStateToProps = state => ({
   imovel: state.vistoria.imovel,
   recipientes: state.vistoria.recipientes,
-  sequenciaVistoria: state.vistoriaCache.sequenciaVistoria,
   handleSave: state.vistoriaCache.handleSave,
+  vistorias: state.vistoriaCache.vistorias,
   trabalhoDiario_id: state.rotaCache.trabalhoDiario.id,
+  rota: state.rotaCache.rota,
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ showNotifyToast, addVistoria }, dispatch);
+  bindActionCreators({
+    showNotifyToast,
+    addVistoria,
+    setRecipient,
+    setSequenceInspection,
+    setImmobile,
+    updateInspection
+  }, dispatch);
 
 export default connect(
   mapStateToProps,

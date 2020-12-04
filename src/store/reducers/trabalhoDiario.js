@@ -12,6 +12,13 @@ const INITIAL_STATE = {
 
 export default function trabalhoDiario(state = INITIAL_STATE, action) {
   switch( action.type ) {
+    case ActionTypes.GET_BY_USER: {
+      return {
+        ...state,
+        trabalhosDiario: action.payload.dailyJobs
+      }
+    }
+
     case ActionTypes.ADD_TRABALHO_DIARIO:
       return {
         ...state,

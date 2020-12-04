@@ -3,123 +3,25 @@ import { Row, Col } from 'react-bootstrap';
 import { FaChartPie, FaSearch } from 'react-icons/fa';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
-import Table from '../../../components/Table';
-import Typography from "@material-ui/core/Typography";
-import { tipoImovel as tipoImovelEnum } from '../../../config/enumerate';
-import { tipoRecipiente as tipoRecipienteEnum } from '../../../config/enumerate';
-import Pie from '../../../components/Charts/Pie';
-import Bar from '../../../components/Charts/Bar';
+import { tipoImovel as tipoImovelEnum } from '../../../../config/enumerate';
+import { tipoRecipiente as tipoRecipienteEnum } from '../../../../config/enumerate';
+import Pie from '../../../../components/Charts/Pie';
+import Bar from '../../../../components/Charts/Bar';
 
 // REDUX
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebarAgente';
-import { getInspectsRequest } from '../../../store/actions/VistoriaActions';
+import { changeSidebar } from '../../../../store/actions/sidebarAgente';
+import { getInspectsRequest } from '../../../../store/actions/VistoriaActions';
 
 // STYLES
-import { Color, Button, selectDefault } from '../../../styles/global';
-import { PageIcon, PageHeader, PagePopUp, NumberDash } from '../../../styles/util';
+import { Color, Button } from '../../../../styles/global';
+import { PageIcon, PageHeader, PagePopUp, NumberDash } from '../../../../styles/util';
 
-const columns = [
-  {
-    name: "index",
-    label: "#",
-    options: {
-      filter: false,
-      display: 'false',
-      customBodyRender: (value, tableMeta, updateValue) => (
-        <Typography data-index={ value }>{ value }</Typography>
-      )
-    }
-  },
-  {
-    name: "numQuarteirao",
-    label: "Nº do Quart.",
-    options: {
-      filter: true,
-      sortDirection: 'asc',
-      align: "left",
-      disablePadding: false
-    }
-  },
-  {
-    name: "logradouro",
-    label: "Logradouro",
-    options: {
-      filter: true,
-      align: "left",
-      disablePadding: false
-    }
-  },
-  {
-    name: "numero",
-    label: "Nº",
-    options: {
-      filter: false,
-      align: "left",
-      disablePadding: false
-    }
-  },
-  {
-    name: "sequencia",
-    label: "Sequência",
-    options: {
-      filter: false,
-      align: "left",
-      disablePadding: false
-    }
-  },
-  {
-    name: "tipoImovel",
-    label: "Tipo do Imóvel",
-    options: {
-      filter: true,
-      align: "left",
-      disablePadding: false
-    }
-  },
-  {
-    name: "visita",
-    label: "Visita",
-    options: {
-      filter: true,
-      align: "left",
-      disablePadding: false
-    }
-  },
-  {
-    name: "pendencia",
-    label: "Pendência",
-    options: {
-      filter: true,
-      align: "left",
-      disablePadding: false
-    }
-  },
-  {
-    name: "horaEntrada",
-    label: "Hora de entrada",
-    options: {
-      filter: false,
-      align: "left",
-      disablePadding: false
-    }
-  }
-];
-
-const options = {
-  onRowClick: (row, ...props) => {
-    const index = row[0].props['data-index'];
-
-    // window.location = `${ window.location.origin.toString() }/agente/vistoria/editar/${ index }`;
-  }
-};
-
-function Relatorio({ usuario, vistorias, ...props }) {
+function Agent_metrics({ usuario, vistorias, ...props }) {
   const [ tabKey, setTabKey] = useState('relatorio');
-  const [ rows, setRows ] = useState([]);
   const [ imoveisTipoData, setImoveisTipoData ] = useState({
     labels: Object.entries( tipoImovelEnum ).map(([ key, value ]) => ( value.sigla ) ),
     reload: false,
@@ -196,7 +98,7 @@ function Relatorio({ usuario, vistorias, ...props }) {
   const [ totalDepositos, setTotalDepositos ] = useState( 0 );
 
   useEffect(() => {
-    props.changeSidebar(3, 1);
+    props.changeSidebar( 3, 1 );
     props.getInspectsRequest( usuario.id );
   }, []);
 
@@ -284,8 +186,6 @@ function Relatorio({ usuario, vistorias, ...props }) {
       else if( vistoria.pendencia === "R" ) qtdR++;
     });
 
-    createRows( filter_vistorias );
-
     itData.reload = !itData.reload;
     niData.reload = !niData.reload;
     dtData.reload = !depositosTipoData.reload;
@@ -301,32 +201,12 @@ function Relatorio({ usuario, vistorias, ...props }) {
     setTotalDepositos( totalDep );
   };
 
-  function createRows( array_vistorias ) {
-    const vists = array_vistorias.map( ( vistoria, index ) => {
-      return ([
-        index,
-        vistoria.imovel.lado.quarteirao.numero,
-        vistoria.imovel.lado.rua.nome,
-        vistoria.imovel.numero,
-        vistoria.imovel.sequencia,
-        tipoImovelEnum[
-          Object.entries( tipoImovelEnum ).find(([ key, value ]) => value.id === vistoria.imovel.tipoImovel )[0]
-        ].sigla,
-        vistoria.situacaoVistoria === "N" ? "Normal" : "Recuperada",
-        vistoria.pendencia ? ( vistoria.pendencia === "F" ? "Fechada" : "Recusada" ) : "",
-        vistoria.horaEntrada
-      ])
-    });
-
-    setRows( vists );
-  }
-
   return (
     <>
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaChartPie /></PageIcon>
-          Relatórios
+          Meus Índices
         </h3>
       </PageHeader>
 
@@ -336,7 +216,7 @@ function Relatorio({ usuario, vistorias, ...props }) {
             <div className="card">
               <Row>
                 <Col className="mb-2">
-                  <h3 className="d-inline">Filtrar</h3>
+                  <h4 className="d-inline">Filtrar</h4>
 
                   <Button
                     className="float-right"
@@ -370,7 +250,6 @@ function Relatorio({ usuario, vistorias, ...props }) {
             </div>
           </PagePopUp>
         </Row>
-
         <Row>
           <Col className="pt-40">
             <Tabs
@@ -378,9 +257,9 @@ function Relatorio({ usuario, vistorias, ...props }) {
               activeKey={ tabKey }
               onSelect={ k => setTabKey( k ) }
             >
-              <Tab eventKey="relatorio" title="Dashboard">
+              <Tab eventKey="relatorio" title="Índices">
                 <Row>
-                  <Col md="4">
+                  <Col md="6">
                     <article className="p-0">
                       <div className="card">
                         <h2 className="title">Nº imóveis trabalhados por tipo</h2>
@@ -388,11 +267,21 @@ function Relatorio({ usuario, vistorias, ...props }) {
                       </div>
                     </article>
                   </Col>
-                  <Col md="4">
+                  <Col md="6">
                     <article className="p-0">
                       <div className="card">
                         <h2 className="title">Nº imóveis</h2>
                         <Bar data={ numeroImoveisData } />
+                      </div>
+                    </article>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md="8">
+                    <article style={{ height: '100%', padding: '0 0 30px' }}>
+                      <div className="card h-100">
+                        <h2 className="title">Nº Depósitos Inspecionados, por tipo</h2>
+                        <Bar data={ depositosTipoData } />
                       </div>
                     </article>
                   </Col>
@@ -411,24 +300,12 @@ function Relatorio({ usuario, vistorias, ...props }) {
                         </Row>
                         <Row>
                           <NumberDash className="col">
-                            <h4 className="legend">Nº Tubitos/Amostras Coletadas</h4>
+                            <h4 className="legend">Nº Amostras Coletadas</h4>
                             <h2>{ qtdAmostra }</h2>
                           </NumberDash>
                         </Row>
                       </div>
                     </article>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col md="8">
-                    <article className="p-0">
-                      <div className="card">
-                        <h2 className="title">Nº Depósitos Inspecionados, por tipo</h2>
-                        <Bar data={ depositosTipoData } />
-                      </div>
-                    </article>
-                  </Col>
-                  <Col md="4">
                     <article className="p-0">
                       <div className="card">
                         <h2 className="title">Nº Depósitos Tratados</h2>
@@ -457,14 +334,6 @@ function Relatorio({ usuario, vistorias, ...props }) {
                   </Col>
                 </Row>
               </Tab>
-              {/* <Tab eventKey="desempenho" title="Desempenho"></Tab> */}
-              <Tab eventKey="vistorias" title="Vistorias">
-                <Table
-                  title="Vistorias"
-                  columns={ columns }
-                  data={ rows }
-                  options={ options } />
-              </Tab>
             </Tabs>
           </Col>
         </Row>
@@ -488,4 +357,4 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Relatorio);
+)( Agent_metrics );

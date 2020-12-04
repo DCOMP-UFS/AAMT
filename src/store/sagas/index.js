@@ -19,6 +19,7 @@ import { ActionTypes as DefinirRotaActions } from '../actions/DefinirRotaActions
 import { ActionTypes as DefinirRotaCacheActions } from '../actions/DefinirRotaCacheActions';
 import { ActionTypes as RotaActions } from '../actions/RotaActions';
 import { ActionTypes as VistoriaActions } from '../actions/VistoriaActions';
+import { ActionTypes as TrabalhoDiarioActions } from '../actions/trabalhoDiario';
 
 import {
   authenticate,
@@ -53,6 +54,7 @@ import * as DefinirRotaSagas from './DefinirRotaSagas';
 import * as DefinirRotaCacheSagas from './DefinirRotaCacheSagas';
 import * as RotaSagas from './RotaSagas';
 import * as VistoriaSagas from './VistoriaSagas';
+import * as TrabalhoDiarioSagas from './TrabalhoDiarioSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -152,5 +154,8 @@ export default function* rootSaga() {
 
     // Gerir Vistoria
     takeLatest( VistoriaActions.CONSULTAR_VISTORIAS_REQUEST, VistoriaSagas.getInspects ),
+
+    // Gerir Trabalho Diario
+    takeLatest( TrabalhoDiarioActions.GET_BY_USER_REQUEST, TrabalhoDiarioSagas.getByUser ),
   ]);
 }

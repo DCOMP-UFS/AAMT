@@ -27,5 +27,6 @@ require('./controllers/AtividadeController')(app);
 require('./controllers/EquipesController')(app);
 require('./controllers/RotasController')(app);
 require('./controllers/VistoriaController')(app);
+require('./controllers/TrabalhoDiarioController')(app);
 
 app.listen( process.env.PORT || 3333 );

@@ -39,11 +39,11 @@ getByUser = async ( req, res ) => {
     include: [
       {
         association: 'supervisor',
-        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+        attributes: { exclude: [ 'createdAt', 'updatedAt', 'senha' ] }
       },
       {
         association: 'usuario',
-        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+        attributes: { exclude: [ 'createdAt', 'updatedAt', 'senha' ] }
       },
       {
         association: 'equipe',

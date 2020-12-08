@@ -1,12 +1,12 @@
 import React from 'react';
-import {View, StatusBar} from 'react-native';
+import { View, StatusBar } from 'react-native';
 
 import StartActivityButton from '../../components/StartActivityButton';
 import BlocksList from '../../components/BlocksList';
 
-import {Container} from './styles';
+import { Container } from './styles';
 
-const Home = ({navigation}) => {
+const Home = () => {
   return (
     <>
       <Container>

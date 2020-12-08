@@ -19,12 +19,19 @@ export function startActivity(activity_id, start_hour) {
   };
 }
 
-export function endActivity(activity_id, end_hour, inspections) {
+export function endActivity() {
   return {
     type: '@activity/END_ROUTE',
-    payload: {activity_id, end_hour, inspections},
+    payload: {},
   };
 }
+
+// export function endActivity(activity_id, end_hour, inspections) {
+//   return {
+//     type: '@activity/END_ROUTE',
+//     payload: {activity_id, end_hour, inspections},
+//   };
+// }
 
 export function saveRoute(start_hour, routes) {
   return {

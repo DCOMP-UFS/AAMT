@@ -1,15 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useState, useEffect} from 'react';
-import {View} from 'react-native';
-import {format} from 'date-fns';
-import {useNavigation, useFocusEffect} from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
+import { View } from 'react-native';
+import { format } from 'date-fns';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
 import {
   getRouteRequest,
   startActivity,
+  endActivity,
 } from '../../store/modules/activityRoutes/actions';
 
 import Button from '../../components/Button';
@@ -26,7 +27,7 @@ import {
   ButtonRow,
 } from './styles';
 
-const StartActivityButton: React.FC = ({user_id, activities, ...props}) => {
+const StartActivityButton: React.FC = ({ user_id, activities, ...props }) => {
   var date = format(new Date(), 'yyyy-MM-dd');
 
   function handleStartActivity() {
@@ -42,7 +43,7 @@ const StartActivityButton: React.FC = ({user_id, activities, ...props}) => {
   }
 
   function handleFinishActivity() {
-    // props.endRoute();
+    props.endActivity();
   }
 
   useEffect(() => {
@@ -76,9 +77,10 @@ const StartActivityButton: React.FC = ({user_id, activities, ...props}) => {
               </Description>
               {activities.isStarted ? (
                 <Button
-                  color="#0095DA"
+                  color="#E74040"
                   textColor="#fff"
-                  onPress={handleFinishActivity}>
+                  onPress={handleFinishActivity}
+                >
                   Finalizar trabalho diário
                 </Button>
               ) : (
@@ -86,14 +88,16 @@ const StartActivityButton: React.FC = ({user_id, activities, ...props}) => {
                   <Button
                     color="#0095DA"
                     textColor="#fff"
-                    onPress={handleStartActivity}>
+                    onPress={handleStartActivity}
+                  >
                     Iniciar trabalho diário
                   </Button>
                   <Button
-                    style={{marginTop: 10}}
+                    style={{ marginTop: 10 }}
                     color="#0095DA"
                     textColor="#fff"
-                    onPress={() => navigation.navigate('Lista de Quarteirões')}>
+                    onPress={() => navigation.navigate('Lista de Quarteirões')}
+                  >
                     Ver quarteirões
                   </Button>
                 </>
@@ -110,21 +114,22 @@ const StartActivityButton: React.FC = ({user_id, activities, ...props}) => {
   );
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   activities: state.activityRoutes,
   user_id: state.user.profile.user.id,
 });
 
-const mapDispatchToProps = (dispatch) =>
+const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       getRouteRequest,
       startActivity,
+      endActivity,
     },
-    dispatch,
+    dispatch
   );
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(StartActivityButton);

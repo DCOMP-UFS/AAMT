@@ -1,9 +1,10 @@
-import {all} from 'redux-saga/effects';
+import { all } from 'redux-saga/effects';
 
 import auth from './auth/sagas';
 import user from './user/sagas';
 import activityRoutes from './activityRoutes/sagas';
+import inspections from './inspections/sagas';
 
 export default function* rootSaga() {
-  return yield all([auth, user, activityRoutes]);
+  return yield all([auth, user, activityRoutes, inspections]);
 }

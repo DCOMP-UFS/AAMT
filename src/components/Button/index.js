@@ -1,9 +1,9 @@
 import React from 'react';
-import {RectButtonProperties} from 'react-native-gesture-handler';
+import { RectButtonProperties } from 'react-native-gesture-handler';
 import PropTypes from 'prop-types';
-import {ActivityIndicator} from 'react-native';
+import { ActivityIndicator } from 'react-native';
 
-import {Container, ButtonText} from './styles';
+import { Container, ButtonText } from './styles';
 
 const Button: React.FC<RectButtonProperties> = ({
   children,

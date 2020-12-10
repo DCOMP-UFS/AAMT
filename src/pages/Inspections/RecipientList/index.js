@@ -1,10 +1,94 @@
-import React from 'react';
-import { View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, TouchableWithoutFeedback } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
-// import { Container } from './styles';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
-const RecipientList = () => {
-  return <View />;
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
+import Button from '../../../components/Button';
+
+import {
+  Container,
+  Card,
+  Header,
+  HeaderTitle,
+  RecipientContainer,
+  RecipientItem,
+  RecipientText,
+} from './styles';
+
+const RecipientList = ({ sequencia, inspections, trabalho_diario_id }) => {
+  const [recipients, setRecipients] = useState([]);
+
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { imovel_id } = route.params;
+
+  // useEffect(() => {
+  //   const index = inspections.findIndex(p => p.imovel_id === imovel_id);
+
+  //   if (index >= 0) {
+  //     setRecipients(inspections[index].recipientes);
+  //   }
+  // }, [inspections]);
+
+  return (
+    <Container>
+      <Card>
+        <Header>
+          <HeaderTitle>Depósitos</HeaderTitle>
+          <TouchableWithoutFeedback
+            onPress={() =>
+              navigation.navigate('Cadastrar Recipiente', {
+                imovel_id,
+              })
+            }
+          >
+            <Icon size={23} name="add" color="#0095da" />
+          </TouchableWithoutFeedback>
+        </Header>
+        <RecipientContainer>
+          {recipients.map((recipient, index) => (
+            <RecipientItem key={index}>
+              <TouchableWithoutFeedback
+                onPress={() =>
+                  navigation.navigate('Cadastrar Recipiente', {
+                    imovel_id,
+                    recipientSequence: recipient.sequencia,
+                  })
+                }
+              >
+                <RecipientText>{`Depósito ${recipient.sequencia}`}</RecipientText>
+              </TouchableWithoutFeedback>
+            </RecipientItem>
+          ))}
+        </RecipientContainer>
+      </Card>
+      <Button
+        color="#0095DA"
+        textColor="#fff"
+        onPress={() => navigation.navigate('Lista de Imóveis')}
+      >
+        Prosseguir
+      </Button>
+    </Container>
+  );
 };
 
-export default RecipientList;
+const mapStateToProps = state => ({
+  sequencia: state.inspections.sequenciaVistoria,
+  inspections: state.inspections.vistorias,
+  trabalho_diario_id: state.activityRoutes.dailyActivity.id,
+});
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      // addRecipient,
+    },
+    dispatch
+  );
+
+export default connect(mapStateToProps, mapDispatchToProps)(RecipientList);

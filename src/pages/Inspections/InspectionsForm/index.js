@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Alert } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+
+import { addInspection } from '../../../store/modules/inspections/actions';
 
 import SelectButton from '../../../components/SelectButton';
 import SecundaryButton from '../../../components/SecundaryButton';
@@ -9,7 +14,12 @@ import Button from '../../../components/Button';
 
 import { Container, Card, Title, Small, Item, ButtonContainer } from './styles';
 
-const InspectionsForm = () => {
+const InspectionsForm = ({
+  sequencia,
+  trabalho_diario_id,
+  inspections,
+  ...props
+}) => {
   const [optionStatus, setOptionStatus] = useState([
     { value: 'N', label: 'Normal' },
     { value: 'R', label: 'Recuperada' },
@@ -21,8 +31,11 @@ const InspectionsForm = () => {
   ]);
   const [status, setStatus] = useState('');
   const [pendency, setPendency] = useState('');
+  const [property, setProperty] = useState([]);
 
   const navigation = useNavigation();
+  const route = useRoute();
+  const { imovel_id } = route.params;
 
   function changePendency(item) {
     setPendency(item);
@@ -44,19 +57,34 @@ const InspectionsForm = () => {
   }
 
   function handleSubmit() {
-    var inspection = {
-      situacaoVistoria: status,
-      horaEntrada: null,
-      pendencia: pendency,
-      depositos: [],
-    };
-
     if ((status === 'N' || 'R') && pendency === null) {
-      navigation.navigate('Cadastrar Recipiente', { inspection });
+      const inspection = {
+        situacaoVistoria: status,
+        pendencia: pendency,
+        sequencia: sequencia + 1,
+        imovel_id,
+        trabalho_diario_id,
+        // horaEntrada:
+        recipientes: [],
+      };
+
+      props.addInspection(inspection);
+
+      navigation.navigate('Depósitos', { imovel_id });
     } else {
       navigation.navigate('Lista de Quarteirões'); // TEM DE ALTERAR PARA SALVAR A ROTA!!!!!!!!
     }
   }
+
+  // useEffect(() => {
+  //   const index = inspections.findIndex(p => p.imovel_id === imovel_id);
+
+  //   if (index >= 0) {
+  //     setProperty(inspections[index]);
+  //     setStatus(property.situacaoVistoria);
+  //     setPendency(property.pendencia);
+  //   }
+  // }, []);
 
   return (
     <Container>
@@ -101,4 +129,18 @@ const InspectionsForm = () => {
   );
 };
 
-export default InspectionsForm;
+const mapStateToProps = state => ({
+  sequencia: state.inspections.sequenciaVistoria,
+  inspections: state.inspections.vistorias,
+  trabalho_diario_id: state.activityRoutes.dailyActivity.id,
+});
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      addInspection,
+    },
+    dispatch
+  );
+
+export default connect(mapStateToProps, mapDispatchToProps)(InspectionsForm);

@@ -42,7 +42,9 @@ const PropertiesList = () => {
               <PropertyTitle>Imóvel {property.id}</PropertyTitle>
             </TitleContainer>
             <TouchableWithoutFeedback
-              onPress={() => navigation.navigate('Vistoria')}
+              onPress={() =>
+                navigation.navigate('Vistoria', { imovel_id: property.id })
+              }
             >
               <Icon size={23} name="add" color="#0095da" />
               {/* <InspectionStatus></InspectionStatus> */}

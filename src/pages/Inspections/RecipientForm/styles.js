@@ -54,3 +54,35 @@ export const TextInput = styled.TextInput`
   font-size: 16px;
   font-family: 'Roboto-Regular';
 `;
+
+export const Header = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+export const HeaderTitle = styled.Text`
+  font-family: 'Lato-Bold';
+  color: #3a3c4e;
+  font-size: 20px;
+  margin-bottom: 10px;
+`;
+
+export const SampleItem = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  border-style: solid;
+  border-top-width: 1px;
+  border-top-color: #edf1f4;
+  padding: 20px 0px;
+`;
+
+export const SampleText = styled.Text`
+  font-family: 'Lato-Regular';
+  color: #a6a8ad;
+  font-size: 16px;
+`;
+
+export const ExtraContainer = styled.View`
+  flex-direction: column;
+  margin: 15px 0px;
+`;

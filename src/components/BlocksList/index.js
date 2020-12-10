@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React from 'react';
+import React, { useState } from 'react';
 import {View, Text, TouchableWithoutFeedback} from 'react-native';
 import {
   Collapse,
@@ -11,33 +11,6 @@ import {useNavigation} from '@react-navigation/native';
 import {connect} from 'react-redux';
 
 import {Container, Header, Card, Title, Small, Box, Street, StreetText} from './styles';
-
-// function generateBlockList (routes) {
-//   let output = [];
-//   let qtdImoveis = 0;
-//   let tmp;
-//   let quarteirao;
-
-//   if (routes === undefined) {
-//     return [];
-//   }
-
-//   Object.keys(routes).forEach((i) => {
-//       let ruas = [];
-//       quarteirao = routes[i].numero;
-//       routes[i].lados.forEach((lado) => {
-//           ruas.push(lado.rua.nome);
-//           qtdImoveis = qtdImoveis + lado.imoveis.length;
-//       });
-//       tmp = {'blocks' : quarteirao, 'housesQuantity' : qtdImoveis, 'streets' : ruas};
-//       output.push(tmp);
-//       qtdImoveis = 0;
-//       tmp = undefined;
-//       quarteirao = undefined;
-//   });
-
-//   return output;
-// }
 
 function generateBlockList (routes) {
   let output = [];

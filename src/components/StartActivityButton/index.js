@@ -48,8 +48,6 @@ const StartActivityButton: React.FC = ({ user_id, activities, ...props }) => {
 
   useEffect(() => {
     props.getRouteRequest(user_id, date);
-    console.log(user_id);
-    console.log(date);
   }, [user_id, date]);
 
   const navigation = useNavigation();

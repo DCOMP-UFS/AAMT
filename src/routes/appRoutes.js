@@ -12,6 +12,7 @@ import PropertiesList from '../pages/Inspections/PropertiesList';
 import Profile from '../pages/Profile';
 import Blocks from '../pages/Blocks';
 import InspectionsForm from '../pages/Inspections/InspectionsForm';
+import RecipientList from '../pages/Inspections/RecipientList';
 import RecipientForm from '../pages/Inspections/RecipientForm';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -57,6 +58,7 @@ const AppStacker = () => {
       <AppStack.Screen name="Lista de Quarteirões" component={Blocks} />
       <AppStack.Screen name="Lista de Imóveis" component={PropertiesList} />
       <AppStack.Screen name="Vistoria" component={InspectionsForm} />
+      <AppStack.Screen name="Depósitos" component={RecipientList} />
       <AppStack.Screen name="Cadastrar Recipiente" component={RecipientForm} />
     </AppStack.Navigator>
   );

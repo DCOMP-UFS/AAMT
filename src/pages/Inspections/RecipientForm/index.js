@@ -62,6 +62,7 @@ const RecipientForm = ({
   const [treatmentType, setTreatmentType] = useState('');
   const [quantity, setQuantity] = useState('');
   const [sample, setSample] = useState([]);
+  const [sampleNumber, setSampleNumber] = useState(0);
 
   const navigation = useNavigation();
   const route = useRoute();
@@ -87,11 +88,25 @@ const RecipientForm = ({
   }
 
   function addSample() {
-    setSample([...sample, { sequence: sample.length + 1 }]);
+    setSample([
+      ...sample,
+      {
+        situacaoAmostra: 1,
+        sequencia:
+          trabalho_diario_id +
+          '.' +
+          inspections.length +
+          '.' +
+          (sequenciaRecipiente + 1) +
+          '.' +
+          (sampleNumber + 1),
+      },
+    ]);
+    setSampleNumber(sampleNumber + 1);
   }
 
   function removeSample(sampleSequence) {
-    setSample(sample.filter(item => item.sequence !== sampleSequence));
+    setSample(sample.filter(item => item.sequencia !== sampleSequence));
   }
 
   // useEffect(() => {
@@ -150,10 +165,10 @@ const RecipientForm = ({
                 </TouchableWithoutFeedback>
               </Header>
               {sample.map(item => (
-                <SampleItem key={item.sequence}>
-                  <SampleText>{`Amostra ${item.sequence}`}</SampleText>
+                <SampleItem key={item.sequencia}>
+                  <SampleText>{`Amostra ${item.sequencia}`}</SampleText>
                   <TouchableWithoutFeedback
-                    onPress={() => removeSample(item.sequence)}
+                    onPress={() => removeSample(item.sequencia)}
                   >
                     <Icon size={23} name="close" color="#E74040" />
                   </TouchableWithoutFeedback>

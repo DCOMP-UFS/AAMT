@@ -27,7 +27,13 @@ import {
   ButtonRow,
 } from './styles';
 
-const StartActivityButton: React.FC = ({ user_id, activities, ...props }) => {
+const StartActivityButton: React.FC = ({
+  user_id,
+  activities,
+  inspections,
+  trabalho_diario_id,
+  ...props
+}) => {
   var date = format(new Date(), 'yyyy-MM-dd');
 
   function handleStartActivity() {
@@ -43,7 +49,15 @@ const StartActivityButton: React.FC = ({ user_id, activities, ...props }) => {
   }
 
   function handleFinishActivity() {
-    props.endActivity();
+    var today = new Date();
+
+    var hh = String(today.getHours()).padStart(2, '0');
+    var minutes = String(today.getMinutes()).padStart(2, '0');
+    var ss = String(today.getSeconds()).padStart(2, '0');
+
+    today = hh + ':' + minutes + ':' + ss;
+
+    props.endActivity(activities.dailyActivity.id, today, inspections);
   }
 
   useEffect(() => {
@@ -115,6 +129,7 @@ const StartActivityButton: React.FC = ({ user_id, activities, ...props }) => {
 const mapStateToProps = state => ({
   activities: state.activityRoutes,
   user_id: state.user.profile.user.id,
+  inspections: state.inspections.vistorias,
 });
 
 const mapDispatchToProps = dispatch =>

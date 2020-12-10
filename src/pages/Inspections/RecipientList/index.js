@@ -26,13 +26,17 @@ const RecipientList = ({ sequencia, inspections, trabalho_diario_id }) => {
   const route = useRoute();
   const { imovel_id } = route.params;
 
-  // useEffect(() => {
-  //   const index = inspections.findIndex(p => p.imovel_id === imovel_id);
+  function removeRecipient(recipientSequence) {
+    console.log(recipientSequence);
+  }
 
-  //   if (index >= 0) {
-  //     setRecipients(inspections[index].recipientes);
-  //   }
-  // }, [inspections]);
+  useEffect(() => {
+    const index = inspections.findIndex(p => p.imovel.id === imovel_id);
+
+    if (index >= 0) {
+      setRecipients(inspections[index].recipientes);
+    }
+  }, [inspections]);
 
   return (
     <Container>
@@ -61,6 +65,11 @@ const RecipientList = ({ sequencia, inspections, trabalho_diario_id }) => {
                 }
               >
                 <RecipientText>{`Depósito ${recipient.sequencia}`}</RecipientText>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback
+                onPress={() => removeRecipient(recipient.sequencia)}
+              >
+                <Icon size={23} name="close" color="#E74040" />
               </TouchableWithoutFeedback>
             </RecipientItem>
           ))}

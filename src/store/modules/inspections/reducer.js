@@ -19,13 +19,16 @@ export default function inspections(state = INITIAL_STATE, action) {
     case '@inspections/ADD_RECIPIENT': {
       return produce(state, draft => {
         const inspectionIndex = draft.vistorias.findIndex(
-          p => p.imovel_id === action.payload.property_id
+          p => p.imovel.id === action.payload.property_id
         );
         draft.vistorias[inspectionIndex].recipientes.push(
           action.payload.recipient
         );
         draft.sequenciaRecipiente++;
       });
+    }
+    case '@inspections/REMOVE_RECIPIENT': {
+      return produce(state, draft => {});
     }
     default:
       return state;

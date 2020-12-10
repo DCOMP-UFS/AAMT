@@ -89,7 +89,7 @@ const InspectionsForm = ({
   }
 
   // useEffect(() => {
-  //   const index = inspections.findIndex(p => p.imovel_id === imovel_id);
+  //   const index = inspections.findIndex(p => p.imovel.id === imovel_id);
 
   //   if (index >= 0) {
   //     setProperty(inspections[index]);

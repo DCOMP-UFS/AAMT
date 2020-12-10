@@ -70,15 +70,14 @@ const RecipientForm = ({
 
   function handleSubmit() {
     const recipient = {
-      fl_comFoco: focus,
+      fl_comFoco: focus === 'Sim' ? true : false,
       tipoRecipiente: recipientType,
-      fl_tratado: treatment === 'Tratado' ? 'Sim' : 'Não',
-      fl_eliminado: treatment === 'Eliminado' ? 'Sim' : 'Não',
-      sequencia:
-        trabalho_diario_id + '.' + sequencia + '.' + (sequenciaRecipiente + 1),
+      fl_tratado: treatment === 'Tratado' ? true : false,
+      fl_eliminado: treatment === 'Eliminado' ? true : false,
+      sequencia: sequenciaRecipiente + 1,
       tratamento: {
         quantidade: quantity,
-        tecnica: treatmentType,
+        tecnica: treatmentType === 'Focal' ? 1 : 2,
       },
       amostras: sample,
     };
@@ -91,15 +90,16 @@ const RecipientForm = ({
     setSample([
       ...sample,
       {
-        situacaoAmostra: 1,
-        sequencia:
-          trabalho_diario_id +
-          '.' +
-          inspections.length +
-          '.' +
-          (sequenciaRecipiente + 1) +
-          '.' +
-          (sampleNumber + 1),
+        situacao: 1,
+        // sequencia:
+        //   trabalho_diario_id +
+        //   '.' +
+        //   inspections.length +
+        //   '.' +
+        //   (sequenciaRecipiente + 1) +
+        //   '.' +
+        //   (sampleNumber + 1),
+        sequencia: sampleNumber + 1,
       },
     ]);
     setSampleNumber(sampleNumber + 1);

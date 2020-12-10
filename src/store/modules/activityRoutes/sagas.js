@@ -60,7 +60,7 @@ export function* endRoute({ payload }) {
   try {
     const { activity_id, end_hour, inspections } = payload;
 
-    console.log(inspections);
+    console.log(JSON.stringify(inspections));
 
     const token = yield getToken();
 

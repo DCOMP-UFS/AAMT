@@ -35,13 +35,18 @@ export default function inspections(state = INITIAL_STATE, action) {
         draft.sequenciaRecipiente = 0;
         draft.vistorias = [];
       });
-    // case '@inspections/EDIT_INSPECTION': {
-    //   return produce(state, draft => {
-    //     draft.vistorias[action.payload.index] = action.payload.inspection;
-    //   });
-    // }
-    case '@inspections/REMOVE_RECIPIENT': {
+    case '@inspections/EDIT_INSPECTION': {
       return produce(state, draft => {});
+    }
+    case '@inspections/REMOVE_RECIPIENT': {
+      return produce(state, draft => {
+        const propertyIndex = action.payload.propertyIndex;
+        const recipientSequence = action.payload.recipientSequence;
+
+        draft.vistorias[propertyIndex].recipientes = state.vistorias[
+          propertyIndex
+        ].recipientes.filter(item => item.sequencia !== recipientSequence);
+      });
     }
     default:
       return state;

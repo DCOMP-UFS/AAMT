@@ -19,9 +19,9 @@ export function addRecipient(recipient, property_id) {
   };
 }
 
-export function removeRecipient(recipientSequence) {
+export function removeRecipient(propertyIndex, recipientSequence) {
   return {
     type: '@inspections/REMOVE_RECIPIENT',
-    payload: { recipientSequence },
+    payload: { propertyIndex, recipientSequence },
   };
 }

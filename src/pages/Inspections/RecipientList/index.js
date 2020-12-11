@@ -5,6 +5,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+import { removeRecipient } from '../../../store/modules/inspections/actions';
+
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Button from '../../../components/Button';
@@ -19,7 +21,12 @@ import {
   RecipientText,
 } from './styles';
 
-const RecipientList = ({ sequencia, inspections, trabalho_diario_id }) => {
+const RecipientList = ({
+  sequencia,
+  inspections,
+  trabalho_diario_id,
+  ...props
+}) => {
   const [recipients, setRecipients] = useState([]);
 
   const navigation = useNavigation();
@@ -27,7 +34,8 @@ const RecipientList = ({ sequencia, inspections, trabalho_diario_id }) => {
   const { imovel_id } = route.params;
 
   function removeRecipient(recipientSequence) {
-    console.log(recipientSequence);
+    const propertyIndex = inspections.findIndex(p => p.imovel.id === imovel_id);
+    props.removeRecipient(propertyIndex, recipientSequence);
   }
 
   useEffect(() => {
@@ -95,7 +103,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      // addRecipient,
+      removeRecipient,
     },
     dispatch
   );

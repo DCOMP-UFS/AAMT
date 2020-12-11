@@ -78,9 +78,12 @@ export function* endRoute({ payload }) {
         },
       }
     );
-    console.log(response.data);
+    Alert.alert('Parabéns!', 'O trabalho diário foi finalizado com sucesso!');
   } catch (err) {
-    Alert.alert('Ih', 'Deu merda ao finalizar o trabalho diário');
+    Alert.alert(
+      'Houve um problema',
+      'Algo deu errado ao finalizar o trabalho diário'
+    );
     console.log(err);
   }
 }

@@ -26,10 +26,11 @@ export default function activityRoutes(state = INITIAL_STATE, action) {
       });
     case '@activity/END_ROUTE':
       return produce(state, draft => {
-        // draft.isStarted = false;
-        // draft.dailyActivity = undefined;
-        // draft.routes = undefined;
-        // draft.start_hour = undefined;
+        draft.isStarted = false;
+        draft.start_hour = undefined;
+        draft.dailyActivity = undefined;
+        draft.routes = undefined;
+        draft.loading = false;
       });
     case '@activity/SAVE_ROUTE':
       return produce(state, draft => {

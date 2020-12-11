@@ -66,7 +66,7 @@ export const MoreDetails = styled.Text`
 export const StatusContainer = styled.View`
   width: auto;
   padding: 4px 10px;
-  background-color: #0095da;
+  background-color: ${props => props.color};
   justify-content: center;
   align-items: center;
   border-radius: 4px;

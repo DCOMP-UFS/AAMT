@@ -5,6 +5,13 @@ export function addInspection(inspection) {
   };
 }
 
+export function editInspection(inspection, index) {
+  return {
+    type: '@inspections/EDIT_INSPECTION',
+    payload: { inspection, index },
+  };
+}
+
 export function addRecipient(recipient, property_id) {
   return {
     type: '@inspections/ADD_RECIPIENT',

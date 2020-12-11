@@ -6,7 +6,10 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { addInspection } from '../../../store/modules/inspections/actions';
+import {
+  addInspection,
+  editInspection,
+} from '../../../store/modules/inspections/actions';
 
 import SelectButton from '../../../components/SelectButton';
 import SecundaryButton from '../../../components/SecundaryButton';
@@ -31,7 +34,10 @@ const InspectionsForm = ({
   ]);
   const [status, setStatus] = useState('');
   const [pendency, setPendency] = useState('');
-  const [property, setProperty] = useState([]);
+  const [propertyIndex, setPropertyIndex] = useState(-1);
+  const [sequence, setSequence] = useState(0);
+  const [startHour, setStartHour] = useState('');
+  const [recipients, setRecipients] = useState([]);
 
   const navigation = useNavigation();
   const route = useRoute();
@@ -69,18 +75,24 @@ const InspectionsForm = ({
   }
 
   function handleSubmit() {
-    if ((status === 'N' || 'R') && pendency === null) {
-      const inspection = {
-        situacaoVistoria: status,
-        pendencia: pendency,
-        sequencia: sequencia + 1,
-        imovel: { id: imovel_id },
-        trabalhoDiario_id: trabalho_diario_id,
-        horaEntrada: handleStartInspection(),
-        recipientes: [],
-      };
+    const inspection = {
+      situacaoVistoria: status,
+      pendencia: pendency,
+      sequencia: sequence,
+      imovel: { id: imovel_id },
+      trabalhoDiario_id: trabalho_diario_id,
+      horaEntrada: startHour === '' ? handleStartInspection() : startHour,
+      recipientes: recipients,
+    };
 
-      props.addInspection(inspection);
+    props.addInspection(inspection);
+
+    if ((status === 'N' || 'R') && pendency === null) {
+      // if (propertyIndex !== -1) {
+      //   props.editInspection(inspection, propertyIndex);
+      // } else {
+      //   props.addInspection(inspection);
+      // }
 
       navigation.navigate('Depósitos', { imovel_id });
     } else {
@@ -92,9 +104,12 @@ const InspectionsForm = ({
   //   const index = inspections.findIndex(p => p.imovel.id === imovel_id);
 
   //   if (index >= 0) {
-  //     setProperty(inspections[index]);
-  //     setStatus(property.situacaoVistoria);
-  //     setPendency(property.pendencia);
+  //     setStatus(inspections[index].situacaoVistoria);
+  //     setPendency(inspections[index].pendencia);
+  //     setSequence(inspections[index].sequencia);
+  //     setRecipients(inspections[index].recipientes);
+  //     setStartHour(inspections[index].horaEntrada);
+  //     setPropertyIndex(index);
   //   }
   // }, []);
 
@@ -151,6 +166,7 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       addInspection,
+      editInspection,
     },
     dispatch
   );

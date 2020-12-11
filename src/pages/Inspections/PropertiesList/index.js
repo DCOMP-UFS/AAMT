@@ -2,6 +2,9 @@ import React from 'react';
 import { View, Text, TouchableWithoutFeedback } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import {
@@ -19,15 +22,50 @@ import {
   StatusText,
 } from './styles';
 
-const InspectionStatus = () => {
+const InspectionStatus = ({ data, property }) => {
+  const navigation = useNavigation();
+
+  const index = data.findIndex(p => p.imovel.id === property);
+  const message = [
+    {
+      text: 'Vistoriado',
+      color: '#0095da',
+    },
+    {
+      text: 'Fechado',
+      color: '#FAA33F',
+    },
+    {
+      text: 'Recusado',
+      color: '#E5454C',
+    },
+  ];
+
+  var status = {};
+
+  if (index !== -1) {
+    const pendencia = data[index].pendencia;
+
+    pendencia === null ? (status = message[0]) : {};
+    pendencia === 'F' ? (status = message[2]) : {};
+    pendencia === 'R' ? (status = message[1]) : {};
+  } else {
+    return (
+      <TouchableWithoutFeedback
+        onPress={() => navigation.navigate('Vistoria', { imovel_id: property })}
+      >
+        <Icon size={23} name="add" color="#0095da" />
+      </TouchableWithoutFeedback>
+    );
+  }
   return (
-    <StatusContainer>
-      <StatusText>Vistoriado</StatusText>
+    <StatusContainer color={status.color}>
+      <StatusText>{status.text}</StatusText>
     </StatusContainer>
   );
 };
 
-const PropertiesList = () => {
+const PropertiesList = ({ inspections, ...props }) => {
   const route = useRoute();
   const { properties, street } = route.params;
   const navigation = useNavigation();
@@ -41,14 +79,7 @@ const PropertiesList = () => {
               <Icon size={23} name="house" color="#3a3c4e" />
               <PropertyTitle>Imóvel {property.id}</PropertyTitle>
             </TitleContainer>
-            <TouchableWithoutFeedback
-              onPress={() =>
-                navigation.navigate('Vistoria', { imovel_id: property.id })
-              }
-            >
-              <Icon size={23} name="add" color="#0095da" />
-              {/* <InspectionStatus></InspectionStatus> */}
-            </TouchableWithoutFeedback>
+            <InspectionStatus data={inspections} property={property.id} />
           </Header>
           <Label>Rua</Label>
           <Small>{street}</Small>
@@ -75,4 +106,10 @@ const PropertiesList = () => {
   );
 };
 
-export default PropertiesList;
+const mapStateToProps = state => ({
+  inspections: state.inspections.vistorias,
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({}, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(PropertiesList);

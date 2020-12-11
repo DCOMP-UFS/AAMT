@@ -27,6 +27,19 @@ export default function inspections(state = INITIAL_STATE, action) {
         draft.sequenciaRecipiente++;
       });
     }
+    case '@activity/END_ROUTE':
+      return produce(state, draft => {
+        draft.trabalhoDiario_id = undefined;
+        draft.horaFim = undefined;
+        draft.sequenciaVistoria = 0;
+        draft.sequenciaRecipiente = 0;
+        draft.vistorias = [];
+      });
+    // case '@inspections/EDIT_INSPECTION': {
+    //   return produce(state, draft => {
+    //     draft.vistorias[action.payload.index] = action.payload.inspection;
+    //   });
+    // }
     case '@inspections/REMOVE_RECIPIENT': {
       return produce(state, draft => {});
     }

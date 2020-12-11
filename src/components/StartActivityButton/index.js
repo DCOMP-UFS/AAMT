@@ -104,16 +104,16 @@ const StartActivityButton: React.FC = ({
                   >
                     Iniciar trabalho diário
                   </Button>
-                  <Button
-                    style={{ marginTop: 10 }}
-                    color="#0095DA"
-                    textColor="#fff"
-                    onPress={() => navigation.navigate('Lista de Quarteirões')}
-                  >
-                    Ver quarteirões
-                  </Button>
                 </>
               )}
+              <Button
+                style={{ marginTop: 10 }}
+                color="#0095DA"
+                textColor="#fff"
+                onPress={() => navigation.navigate('Lista de Quarteirões')}
+              >
+                Ver quarteirões
+              </Button>
             </>
           ) : (
             <Description>

@@ -65,47 +65,62 @@ const InspectionStatus = ({ data, property }) => {
   );
 };
 
-const PropertiesList = ({ inspections, ...props }) => {
+const PropertyDetails = ({ inspections, ...props }) => {
   const route = useRoute();
-  const { properties, street } = route.params;
+  const { property, street } = route.params;
   const navigation = useNavigation();
 
   return (
     <Container>
-      {properties.map(property => (
-        <Card key={property.id}>
-          <Header>
-            <TitleContainer>
-              <Icon size={23} name="house" color="#3a3c4e" />
-              <PropertyTitle>Imóvel {property.id}</PropertyTitle>
-            </TitleContainer>
-            <InspectionStatus data={inspections} property={property.id} />
-          </Header>
-          <Label>Rua</Label>
-          <Small>{street}</Small>
-          <CardRow>
-            <DetailsColumn>
-              <Label>Número</Label>
-              <Small>{property.numero}</Small>
-            </DetailsColumn>
-            <DetailsColumn>
-              <Label>Sequência (Imóvel)</Label>
-              {property.sequencia ? (
-                <Small>{property.sequencia}</Small>
-              ) : (
-                <Small>-</Small>
-              )}
-            </DetailsColumn>
-          </CardRow>
-          <TouchableWithoutFeedback
-            onPress={() =>
-              navigation.navigate('Detalhes do Imóvel', { property, street })
-            }
-          >
-            <MoreDetails>Ver detalhes do imóvel</MoreDetails>
-          </TouchableWithoutFeedback>
-        </Card>
-      ))}
+      <Card>
+        <Header>
+          <TitleContainer>
+            <Icon size={23} name="house" color="#3a3c4e" />
+            <PropertyTitle>Imóvel {property.id}</PropertyTitle>
+          </TitleContainer>
+          <InspectionStatus data={inspections} property={property.id} />
+        </Header>
+        <Label>Rua</Label>
+        <Small>{street}</Small>
+        <CardRow>
+          <DetailsColumn>
+            <Label>Número</Label>
+            <Small>{property.numero}</Small>
+          </DetailsColumn>
+          <DetailsColumn>
+            <Label>Sequência (Imóvel)</Label>
+            {property.sequencia ? (
+              <Small>{property.sequencia}</Small>
+            ) : (
+              <Small>-</Small>
+            )}
+          </DetailsColumn>
+        </CardRow>
+        <Label>Tipo de Imóvel</Label>
+        <Small>
+          {property.tipoImovel ? (
+            <Small>{property.tipoImovel}</Small>
+          ) : (
+            <Small>-</Small>
+          )}
+        </Small>
+        <Label>Complemento</Label>
+        <Small>
+          {property.complemento ? (
+            <Small>{property.complemento}</Small>
+          ) : (
+            <Small>-</Small>
+          )}
+        </Small>
+        <Label>Responsável</Label>
+        <Small>
+          {property.responsavel ? (
+            <Small>{property.responsavel}</Small>
+          ) : (
+            <Small>-</Small>
+          )}
+        </Small>
+      </Card>
     </Container>
   );
 };
@@ -116,4 +131,4 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({}, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(PropertiesList);
+export default connect(mapStateToProps, mapDispatchToProps)(PropertyDetails);

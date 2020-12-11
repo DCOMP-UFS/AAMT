@@ -45,3 +45,11 @@ export const RecipientText = styled.Text`
   color: #a6a8ad;
   font-size: 16px;
 `;
+
+export const NoRecipientText = styled.Text`
+  align-self: center;
+  font-family: 'Lato-Regular';
+  color: #a6a8ad;
+  font-size: 16px;
+  margin-top: 20px;
+`;

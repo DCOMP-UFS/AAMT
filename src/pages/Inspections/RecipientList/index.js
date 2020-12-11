@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TouchableWithoutFeedback } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { bindActionCreators } from 'redux';
@@ -19,6 +19,7 @@ import {
   RecipientContainer,
   RecipientItem,
   RecipientText,
+  NoRecipientText,
 } from './styles';
 
 const RecipientList = ({
@@ -62,25 +63,29 @@ const RecipientList = ({
           </TouchableWithoutFeedback>
         </Header>
         <RecipientContainer>
-          {recipients.map((recipient, index) => (
-            <RecipientItem key={index}>
-              <TouchableWithoutFeedback
-                onPress={() =>
-                  navigation.navigate('Cadastrar Recipiente', {
-                    imovel_id,
-                    recipientSequence: recipient.sequencia,
-                  })
-                }
-              >
-                <RecipientText>{`Depósito ${recipient.sequencia}`}</RecipientText>
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback
-                onPress={() => removeRecipient(recipient.sequencia)}
-              >
-                <Icon size={23} name="close" color="#E74040" />
-              </TouchableWithoutFeedback>
-            </RecipientItem>
-          ))}
+          {recipients.length !== 0 ? (
+            recipients.map((recipient, index) => (
+              <RecipientItem key={index}>
+                <TouchableWithoutFeedback
+                  onPress={() =>
+                    navigation.navigate('Cadastrar Recipiente', {
+                      imovel_id,
+                      recipientSequence: recipient.sequencia,
+                    })
+                  }
+                >
+                  <RecipientText>{`Depósito ${recipient.sequencia}`}</RecipientText>
+                </TouchableWithoutFeedback>
+                <TouchableWithoutFeedback
+                  onPress={() => removeRecipient(recipient.sequencia)}
+                >
+                  <Icon size={23} name="close" color="#E74040" />
+                </TouchableWithoutFeedback>
+              </RecipientItem>
+            ))
+          ) : (
+            <NoRecipientText>Não há depósitos cadastrados</NoRecipientText>
+          )}
         </RecipientContainer>
       </Card>
       <Button

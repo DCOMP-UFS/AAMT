@@ -51,6 +51,11 @@ export function* startRoute({ payload }) {
     );
 
     yield put(saveRoute(start_hour, response.data));
+
+    Alert.alert(
+      'Trabalho diário iniciado com sucesso!',
+      'Tenha um bom dia de trabalho!'
+    );
   } catch (err) {
     console.log(err);
   }

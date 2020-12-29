@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
-import { FaRoute, FaPlay } from 'react-icons/fa';
+import { FaRoute, FaPlay, FaHome, FaHouseDamage, FaStore, FaMapMarkerAlt } from 'react-icons/fa';
 import ModalIniciarTrabalho from '../components/ModalIniciarTrabalho';
-import RouteList from '../components/RouteList';
 import ReactMapGL, { Marker } from 'react-map-gl';
 import dotenv from 'dotenv';
 import img_home_icon from '../../../assets/home-icon.png';
+import Typography from "@material-ui/core/Typography";
+import Table from '../../../components/Table';
+import ProgressBar from '../../../components/ProgressBar';
+import { tipoImovelEnum } from '../../../config/enumerate';
 import $ from 'jquery';
 
 // REDUX
@@ -20,10 +23,69 @@ import { resetShowNotStarted } from '../../../store/actions/VistoriaCacheActions
 
 // STYLES
 import { Button } from '../../../styles/global';
-import { PageIcon, PageHeader, PagePopUp, NumberDash } from '../../../styles/util';
+import { PageIcon, PageHeader, PagePopUp, NumberDash, InfoBox } from '../../../styles/util';
 import { tr } from 'date-fns/locale';
 
 dotenv.config();
+
+const columns = [
+  {
+    name: "index",
+    label: "#",
+    options: {
+      filter: false,
+      display: 'false',
+      customBodyRender: (value, tableMeta, updateValue) => (
+        <Typography data-index={ value }>{ value }</Typography>
+      )
+    }
+  },
+  {
+    name: "numImovel",
+    label: "Nº",
+    options: {
+      filter: false,
+      align: "left",
+      disablePadding: false
+    }
+  },
+  {
+    name: "seqImovel",
+    label: "Seq.",
+    options: {
+      filter: false,
+      align: "left",
+      disablePadding: false
+    }
+  },
+  {
+    name: "tipoImovel",
+    label: "Tipo",
+    options: {
+      filter: true,
+      align: "left",
+      disablePadding: false
+    }
+  },
+  {
+    name: "lado",
+    label: "Rua",
+    options: {
+      filter: true,
+      align: "left",
+      disablePadding: false
+    }
+  },
+  {
+    name: "quarteirao",
+    label: "Quart.",
+    options: {
+      filter: true,
+      align: "left",
+      disablePadding: false
+    }
+  }
+];
 
 function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...props }) {
   const [ trabalhoDiario_date, setTrabalhoDiario_date ] = useState( '' );
@@ -35,12 +97,17 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
     zoom: 14
   });
   const [ qtdQuarteirao, setQtdQuarteirao ] = useState( 0 );
+  const [ qtdTipoImovel, setQtdTipoImovel ] = useState( [ 0, 0, 0, 0 ] );
   const [ imoveis, setImoveis ] = useState( [] );
+  const [ rows, setRows ] = useState( [] );
+  const options = {
+    selectableRows: 'none'
+  };
 
   useEffect(() => {
     props.changeSidebar(1, 1);
 
-    const [ d, m, Y ]  = new Date().toLocaleDateString('en-GB').split('/');
+    const [ d, m, Y ]  = new Date().toLocaleDateString().split('/');
     const current_date = `${Y}-${m}-${d}`;
 
     props.getRouteRequest( usuario.id, current_date );
@@ -87,6 +154,37 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
     setImoveis( imo );
   }, [ rota ]);
 
+  useEffect(() => {
+    createRows();
+  }, [ imoveis ]);
+
+  function createRows() {
+    let qtdTipo = [ 0, 0, 0, 0 ];
+    const imovs = imoveis.map( ( imovel, index ) => {
+      switch( imovel.tipoImovel ) {
+        case 1: qtdTipo[ 0 ]++; break; // Residêncial
+        case 2: qtdTipo[ 1 ]++; break; // Terreno Baldio
+        case 3: qtdTipo[ 2 ]++; break; // Comercial
+        default: qtdTipo[ 3 ]++; break; // Ponto Estratégico
+      }
+
+      const tipoImovel = tipoImovelEnum.find( tipo => imovel.tipoImovel === tipo.id );
+
+      return (
+        [
+          index,
+          imovel.numero,
+          imovel.sequencia ? imovel.sequencia : '',
+          tipoImovel.label,
+          imovel.rua,
+          imovel.quarteirao,
+        ]
+      )
+    });
+
+    setRows( imovs );
+    setQtdTipoImovel( qtdTipo );
+  }
   function checkRota() {
     props.isStartedRequest( trabalhoDiario.id );
   }
@@ -103,7 +201,7 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
       <section className="card-list">
         <ModalIniciarTrabalho id="modal-iniciar-rota" />
         <Row>
-          <PagePopUp className="w-100">
+          <PagePopUp className="w-100 col-12">
             <div className="card">
               {
                 typeof trabalhoDiario.id === 'undefined' ?
@@ -131,77 +229,81 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
             </div>
           </PagePopUp>
         </Row>
+
         <Row>
-          <article className="col-md-12 stretch-card">
+          <article className="col-12">
+            <ProgressBar className="bg-success" percentage={ 0 } total={ 4 } />
+          </article>
+          <article className="col-md-8">
+            <div className="card" style={{ height: '350px' }}>
+              <ReactMapGL
+                { ...viewport }
+                onViewportChange={ nextViewport => setViewport( nextViewport ) }
+                mapboxApiAccessToken={ process.env.REACT_APP_MAP_TOKEN }
+                // mapStyle="mapbox://styles/mapbox/satellite-streets-v11"
+              >
+                {
+                  imoveis.map(( imovel, index ) => (
+                    <Marker
+                      key={ index }
+                      latitude={ parseFloat( imovel.lat ) }
+                      longitude={ parseFloat( imovel.lng ) }
+                      offsetLeft={ -20 }
+                      offsetTop={ -10 }
+                    >
+                      <img
+                        src={ img_home_icon }
+                        width="25"
+                        alt="Carregando"
+                      />
+                    </Marker>
+                  ))
+                }
+              </ReactMapGL>
+            </div>
+          </article>
+          <article className="col-md-4">
+            <InfoBox className="mb-3 bg-info">
+              <span className="info-box-icon"><FaHome /></span>
+
+              <div className="info-box-content">
+                <span className="info-box-text">Residências</span>
+                <span className="info-box-number">{ qtdTipoImovel[ 0 ] }</span>
+              </div>
+            </InfoBox>
+            <InfoBox className="mb-3 bg-danger">
+              <span className="info-box-icon"><FaHouseDamage /></span>
+
+              <div className="info-box-content">
+                <span className="info-box-text">Terreno Baldio</span>
+                <span className="info-box-number">{ qtdTipoImovel[ 1 ] }</span>
+              </div>
+            </InfoBox>
+            <InfoBox className="mb-3 bg-warning">
+              <span className="info-box-icon"><FaStore /></span>
+
+              <div className="info-box-content">
+                <span className="info-box-text">Comercial</span>
+                <span className="info-box-number">{ qtdTipoImovel[ 2 ] }</span>
+              </div>
+            </InfoBox>
+            <InfoBox className="bg-primary">
+              <span className="info-box-icon"><FaMapMarkerAlt /></span>
+
+              <div className="info-box-content">
+                <span className="info-box-text">Ponto estratégico</span>
+                <span className="info-box-number">{ qtdTipoImovel[ 3 ] }</span>
+              </div>
+            </InfoBox>
+          </article>
+          <article className="col-12">
             <div className="card">
-              <Row className="mb-3">
-                <Col md="6" style={{ maxheight: '350px' }}>
-                  <RouteList quarteiroes={ rota } />
-                </Col>
-                <Col md="6" style={{ height: '350px' }}>
-                  <ReactMapGL
-                    {...viewport}
-                    onViewportChange={ nextViewport => setViewport( nextViewport ) }
-                    mapboxApiAccessToken={ process.env.REACT_APP_MAP_TOKEN }
-                  >
-                    {
-                      imoveis.map(( imovel, index ) => (
-                        <Marker
-                          key={ index }
-                          latitude={ parseFloat( imovel.lat ) }
-                          longitude={ parseFloat( imovel.lng ) }
-                          offsetLeft={ -20 }
-                          offsetTop={ -10 }
-                        >
-                          <img
-                            src={ img_home_icon }
-                            width="25"
-                            alt="Carregando"
-                          />
-                        </Marker>
-                      ))
-                    }
-                  </ReactMapGL>
-                </Col>
-              </Row>
-              <Row>
-                <Col md="6">
-                  <Row>
-                    <NumberDash className="col border-r margin-b">
-                      <h5 className="legend">Quarteiroes</h5>
-                      <h4>{ rota.length }</h4>
-                    </NumberDash>
-                    <NumberDash className="col margin-b">
-                      <h5 className="legend">Vistorias/Imóveis</h5>
-                      <h4>{ `0/${ imoveis.length }` }</h4>
-                    </NumberDash>
-                  </Row>
-                </Col>
-                <Col md="6" xs="12">
-                  <table className="table">
-                    <thead className="thead-dark">
-                      <tr>
-                        <th scope="col">Nº</th>
-                        <th scope="col">Seq.</th>
-                        <th scope="col">Rua</th>
-                        <th scope="col">Quart.</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {
-                        imoveis.map(( imovel, index ) => (
-                          <tr key={ index }>
-                            <td>{ imovel.numero }</td>
-                            <td>{ imovel.sequencia ? imovel.sequencia : '' }</td>
-                            <td>{ imovel.rua }</td>
-                            <td>{ imovel.quarteirao }</td>
-                          </tr>
-                        ))
-                      }
-                    </tbody>
-                  </table>
-                </Col>
-              </Row>
+              <Table
+                className="table-rounded-none"
+                title="Imóveis"
+                columns={ columns }
+                data={ rows }
+                options={ options } />
             </div>
           </article>
         </Row>

@@ -109,7 +109,7 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
 
   return (
     <div>
-      {/* Componente para escolha do imóvel da vistória */}
+      {/* Componente para escolha do imóvel da vistoria */}
       <ProcurarImovel />
 
       <Separator />
@@ -119,7 +119,7 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
         <Col md="6">
           <Row>
             <Col md="12">
-              <h4 className="title">Vistória</h4>
+              <h4 className="title">Vistoria</h4>
             </Col>
 
             <Col md="6" className="form-group">

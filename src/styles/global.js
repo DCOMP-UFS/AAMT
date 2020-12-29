@@ -101,6 +101,10 @@ export const GlobalStyle = createGlobalStyle`
     box-shadow: none!important;
   }
 
+  .table-rounded-none {
+    box-shadow: none!important;
+  }
+
   .expansion::before {
     display: none;
   }

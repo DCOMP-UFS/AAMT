@@ -32,6 +32,13 @@ export const tipoImovel = {
   pontoEstrategico: { id: 4, sigla: "PE", label: "Ponto estratégico" }
 }
 
+export const tipoImovelEnum = [
+  { id: 1, sigla: "R", label: "Residencial" },
+  { id: 2, sigla: "TB", label: "Terreno Baldio" },
+  { id: 3, sigla: "C", label: "Comercial" },
+  { id: 4, sigla: "PE", label: "Ponto estratégico" }
+]
+
 export const perfil = {
   agente: { id: 4, label: "Agente" },
   coordenador: { id: 2, label: "Coordenador" },

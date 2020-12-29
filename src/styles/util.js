@@ -129,8 +129,7 @@ export const Span = styled.span`
   }
 `;
 
-export const PagePopUp = styled.div`
-  padding: 15px 20px;
+export const PagePopUp = styled.article`
   display: flex;
   align-items: stretch;
   justify-content: stretch;
@@ -145,7 +144,7 @@ export const PagePopUp = styled.div`
 `;
 
 export const PageHeader = styled.div`
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 30px 0;
   padding: 0 5px;
 
   .page-title {
@@ -186,5 +185,46 @@ export const NumberDash = styled.div`
 
   .legend {
     color: #a7afb7;
+  }
+`;
+
+export const InfoBox = styled.div`
+  padding: 8px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 8px #c5baba;
+  display: flex;
+
+  .info-box-icon {
+    border-radius: .25rem;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -ms-flexbox;
+    display: flex;
+    font-size: 1.875rem;
+    -ms-flex-pack: center;
+    justify-content: center;
+    text-align: center;
+    width: 70px;
+  }
+
+  .info-box-content {
+    display: flex;
+    flex-direction: column;
+    padding: 0 10px;
+  }
+
+  .info-box-text, .progress-description {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 28px;
+  }
+
+  .info-box-number {
+    display: block;
+    margin-top: .25rem;
+    font-weight: 700;
+    line-height: 28px;
   }
 `;

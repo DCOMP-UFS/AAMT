@@ -67,7 +67,7 @@ class PNCD extends Component {
   render() {
     return (
       <div>
-        {/* Componente para escolha do imóvel da vistória */}
+        {/* Componente para escolha do imóvel da vistoria */}
         <FindImovel />
 
         <Separator />
@@ -80,7 +80,7 @@ class PNCD extends Component {
 
               <div className="row">
                 <div className="col-12">
-                  <h4 className="title">Vistória</h4>
+                  <h4 className="title">Vistoria</h4>
                 </div>
 
                 <div className="form-group col-md-6">

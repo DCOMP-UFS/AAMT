@@ -173,10 +173,6 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
     createRows();
   }, [ vistorias, props.reload ]);
 
-  useEffect(() => {
-    console.log( rota );
-  }, [ rota ]);
-
   function createRows() {
     const vists = vistorias.map( ( vistoria, index ) => (
       [
@@ -290,7 +286,7 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
           <article className="col-md-12 stretch-card mb-0">
               <Col className="p-0">
                 <Table
-                  title="Usuários"
+                  title="Vistorias Realizadas"
                   columns={ columns }
                   data={ rows }
                   options={ options } />

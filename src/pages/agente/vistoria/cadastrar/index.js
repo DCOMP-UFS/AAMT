@@ -42,13 +42,7 @@ function CadastrarVistoria({ trabalhoDiario, rota, ...props }) {
       </PageHeader>
 
       <section className="card-list">
-        <Row>
-          <article className="col-md-12 stretch-card">
-            <div className="card">
-              { getForm() }
-            </div>
-          </article>
-        </Row>
+        { getForm() }
       </section>
     </Container>
   );

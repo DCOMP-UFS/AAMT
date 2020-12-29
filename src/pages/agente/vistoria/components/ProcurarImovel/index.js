@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IoIosHome } from 'react-icons/io';
 import Select from 'react-select';
 import { Row, Col } from 'react-bootstrap';
+import PopDescription from '../../../../../components/PopDescription';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -81,7 +82,13 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
         <Col md="6">
           <Row>
             <Col md="12">
-              <h4 className="title">Filtrar</h4>
+              <h4 className="title">
+                Filtrar
+                <PopDescription title="Filtar imóveis" placement="right" content="Faça uma filtragem da lista de imóveis, exibida a direita, para selecionar o imóvel que deseja realizar uma vistoria!" />
+              </h4>
+            </Col>
+
+            <Col md="6">
               <div className="form-group">
                 <label>Nº do quarteirão?</label>
                 <Select
@@ -91,7 +98,12 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
                   value={ selectQuarteirao } />
               </div>
             </Col>
-
+            <Col md="6">
+              <div className="form-group">
+                <label>Rua</label>
+                <Select />
+              </div>
+            </Col>
             <Col md="6">
               <div className="form-group">
                 <label>Nº do imóvel?</label>
@@ -119,11 +131,21 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
             </Col>
 
             <Col md="12">
-              <h4 className="title">Imóvel selecionado</h4>
+              <h4 className="title">
+                Imóvel selecionado
+                <PopDescription
+                  placement="right"
+                  title="Imóvel selecionado"
+                  content={
+                    "Clique na lista de imóveis a direita para selecionar um imóvel. " +
+                    "Após selecionar um imóvel, os campos serão preenchidos e habilitados para edição.\n " +
+                    "As modificações realizadas nestes campos serão aplicadas no imóvel após finalizar os trabalhos do dia e a aplicação sincronizar os dados com o servidor!"
+                  } />
+              </h4>
               {
                 imovel ?
                   <p className="description">Registro do imóvel: <mark className="bg-success text-white">{ imovel.id }</mark></p> :
-                  <p className="description">Nenhum imóvel selecionado</p>
+                  <p className="description">Selecione um imóvel na lista a direita.</p>
               }
             </Col>
 
@@ -201,7 +223,13 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
         </Col>
 
         <Col md="6">
-          <h4>Imóveis</h4>
+          <h4 className="title">
+            Imóveis
+            <PopDescription
+              title="Lista de Imóveis"
+              placement="right"
+              content="Essa é a lista de imóveis, de acordo com o filtro. Clique em um imóvel para selecionar-lo nesta vistoria!" />
+          </h4>
 
           <ListImovel
             idImovelSelect={ imovel ? imovel.id : undefined }

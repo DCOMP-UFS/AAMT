@@ -173,6 +173,15 @@ export const GlobalStyle = createGlobalStyle`
       }
     }
   }
+
+  h1 .pop-description,
+  h2 .pop-description,
+  h3 .pop-description,
+  h4 .pop-description,
+  h5 .pop-description,
+  h6 .pop-description {
+    margin-left: 10px;
+  }
 `;
 
 export const ContainerBody = styled.div`

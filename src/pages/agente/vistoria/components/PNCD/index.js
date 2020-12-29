@@ -108,64 +108,70 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
   }
 
   return (
-    <div>
-      {/* Componente para escolha do imóvel da vistoria */}
-      <ProcurarImovel />
+    <>
+      <Row>
+        <article className="col-md-12">
+          <div className="card">
+            <ProcurarImovel />
+          </div>
+        </article>
+        <article className="col-md-12">
+          <div className="card">
+            <Row className="mt-4">
+              {/* Dados específicos do formulário PNCD */}
+              <Col md="6">
+                <Row>
+                  <Col md="12">
+                    <h4 className="title">Vistoria</h4>
+                  </Col>
 
-      <Separator />
+                  <Col md="6" className="form-group">
+                    <label htmlFor="horaEntrada">Horário de entrada <code>*</code></label>
+                    <TextField
+                      id="horaEntrada"
+                      type="time"
+                      value={ entrada }
+                      className={ classes.textField }
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      inputProps={{
+                        step: 300, // 5 min
+                      }}
+                      onChange={ e => setEntrada( e.target.value ) }
+                    />
+                  </Col>
+                </Row>
 
-      <Row className="mt-4">
-        {/* Dados específicos do formulário PNCD */}
-        <Col md="6">
-          <Row>
-            <Col md="12">
-              <h4 className="title">Vistoria</h4>
-            </Col>
+                <Row>
+                  <Col md="6" className="form-group">
+                    <label htmlFor="visita">Visita <code>*</code></label>
+                    <Select
+                      id="visita"
+                      styles={ selectDefault }
+                      options={ optionVisita }
+                      value={ visita }
+                      onChange={ option => setVisita( option ) } />
+                  </Col>
 
-            <Col md="6" className="form-group">
-              <label htmlFor="horaEntrada">Horário de entrada <code>*</code></label>
-              <TextField
-                id="horaEntrada"
-                type="time"
-                value={ entrada }
-                className={ classes.textField }
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                inputProps={{
-                  step: 300, // 5 min
-                }}
-                onChange={ e => setEntrada( e.target.value ) }
-              />
-            </Col>
-          </Row>
+                  <Col md="6" className="form-group">
+                    <label htmlFor="pendencia">Pendência</label>
+                    <Select
+                      id="pendencia"
+                      styles={ selectDefault }
+                      options={ optionPendencia }
+                      value={ pendencia }
+                      onChange={ option => setPendencia( option ) } />
+                  </Col>
+                </Row>
+              </Col>
 
-          <Row>
-            <Col md="6" className="form-group">
-              <label htmlFor="visita">Visita <code>*</code></label>
-              <Select
-                id="visita"
-                styles={ selectDefault }
-                options={ optionVisita }
-                value={ visita }
-                onChange={ option => setVisita( option ) } />
-            </Col>
-
-            <Col md="6" className="form-group">
-              <label htmlFor="pendencia">Pendência</label>
-              <Select
-                id="pendencia"
-                styles={ selectDefault }
-                options={ optionPendencia }
-                value={ pendencia }
-                onChange={ option => setPendencia( option ) } />
-            </Col>
-          </Row>
-        </Col>
-
-        <Col md="6" >
-          <InspecionarRecipiente objetivo={ objetivo } />
-        </Col>
+              <Col md="6" >
+                <InspecionarRecipiente objetivo={ objetivo } />
+              </Col>
+            </Row>
+          </div>
+        </article>
       </Row>
 
       <ContainerFixed>
@@ -176,7 +182,7 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
           type="button"
           onClick={ submit } />
       </ContainerFixed>
-    </div>
+    </>
   );
 }
 

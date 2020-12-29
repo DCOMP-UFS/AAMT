@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 import ModalFinalizarTrabalho from '../components/ModalFinalizarTrabalho';
 import ModalDeletar from './ModalDeletar';
 import { tipoImovel as tipoImovelEnum } from '../../../config/enumerate';
+import ProgressBar from '../../../components/ProgressBar';
 import ReactMapGL, { Marker } from 'react-map-gl';
 import img_home_icon from '../../../assets/home-icon.png';
 import img_home_icon_green from '../../../assets/home-icon-green.png';
@@ -225,7 +226,7 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
       <section className="card-list">
         <ModalFinalizarTrabalho id="modal-finalizar-rota" />
         <Row>
-          <PagePopUp className="w-100">
+          <PagePopUp className="w-100 col-12">
             <div className="card">
               <Row>
                 <Col className="d-flex align-items-center">
@@ -244,40 +245,44 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
               </Row>
             </div>
           </PagePopUp>
-        </Row>
 
-        <Row>
-          <article className="col-md-12 stretch-card mb-0" style={{ paddingTop: 15 }}>
-            <div style={{ height: '300px', width: '100%', backgroundColor: '#ccc' }}>
-              <ReactMapGL
-                { ...viewport }
-                onViewportChange={ nextViewport => setViewport( nextViewport ) }
-                mapboxApiAccessToken={ process.env.REACT_APP_MAP_TOKEN }
-              >
-                {
-                  rota.map( r => r.lados.map( lado => lado.imoveis.map(( imovel, index ) => {
-                    const inspection  = vistorias.find(vistoria => vistoria.imovel.id === imovel.id );
+          <article className="col-12">
+            <ProgressBar className="bg-success" percentage={ 0 } total={ 4 } />
+          </article>
 
-                    return (
-                      <Marker
-                        key={ index }
-                        latitude={ parseFloat( imovel.lat ) }
-                        longitude={ parseFloat( imovel.lng ) }
-                        offsetLeft={ -20 }
-                        offsetTop={ -10 }
-                      >
-                        <img
-                          src={
-                            inspection ? img_home_icon_green : img_home_icon
-                          }
-                          width="25"
-                          alt="Carregando"
-                        />
-                      </Marker>
-                    )
-                  })))
-                }
-              </ReactMapGL>
+          <article className="col-md-12">
+            <div className="card">
+              <div style={{ height: '300px', width: '100%', backgroundColor: '#ccc' }}>
+                <ReactMapGL
+                  { ...viewport }
+                  onViewportChange={ nextViewport => setViewport( nextViewport ) }
+                  mapboxApiAccessToken={ process.env.REACT_APP_MAP_TOKEN }
+                >
+                  {
+                    rota.map( r => r.lados.map( lado => lado.imoveis.map(( imovel, index ) => {
+                      const inspection  = vistorias.find(vistoria => vistoria.imovel.id === imovel.id );
+
+                      return (
+                        <Marker
+                          key={ index }
+                          latitude={ parseFloat( imovel.lat ) }
+                          longitude={ parseFloat( imovel.lng ) }
+                          offsetLeft={ -20 }
+                          offsetTop={ -10 }
+                        >
+                          <img
+                            src={
+                              inspection ? img_home_icon_green : img_home_icon
+                            }
+                            width="25"
+                            alt="Carregando"
+                          />
+                        </Marker>
+                      )
+                    })))
+                  }
+                </ReactMapGL>
+              </div>
             </div>
           </article>
         </Row>

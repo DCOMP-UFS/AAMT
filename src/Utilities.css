@@ -247,10 +247,11 @@ article .list-icon li{
 }
 
 .form-control .MuiInput-input {
-  border: 1px solid #ebedf2 !important;
+  border: 1px solid #ccc;
+  padding-right: 8px;
   font-family: "ubuntu-regular", sans-serif!important;
   font-size: 0.8125rem!important;
-  box-shadow: none!important;
+  box-shadow: none;
   display: block!important;
   width: 100%!important;
   height: 2.875rem!important;
@@ -263,6 +264,13 @@ article .list-icon li{
   border-radius: 2px!important;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out!important;
   box-sizing: inherit!important;
+}
+
+.form-control .MuiInput-input:focus {
+  border: 1px solid #198ae3;
+  box-shadow: 0 0 3px #719ECE;
+  outline: none;
+  outline-style: none;
 }
 
 .form-control .MuiInput-underline::before, .form-control .MuiInput-underline::after {

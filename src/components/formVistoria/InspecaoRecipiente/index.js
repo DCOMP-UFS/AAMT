@@ -44,7 +44,7 @@ class InspecaoRecipiente extends Component {
             data-target="#modalCadastrarInspecao" />
         </h4>
 
-        <ListRecipiente recipiente={recipiente} />
+        <ListRecipiente recipiente={ recipiente } />
 
         <ModalCadastrarInspecao idRecipiente={ nextIdRecipiente } />
       </div>

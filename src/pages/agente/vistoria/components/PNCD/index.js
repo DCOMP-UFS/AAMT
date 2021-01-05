@@ -17,7 +17,7 @@ import { addVistoria, updateInspection } from '../../../../../store/actions/Vist
 import { setRecipient, setSequenceInspection, setImmobile } from '../../../../../store/actions/VistoriaActions';
 
 // STYLES
-import { Separator, selectDefault } from '../../../../../styles/global';
+import { Separator, selectDefault, FormGroup } from '../../../../../styles/global';
 import { ContainerFixed } from '../../../../../styles/util';
 
 const useStyles = makeStyles((theme) => ({
@@ -33,7 +33,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, ...props }) {
-  const classes = useStyles();
   const [ optionVisita, setOptionVisita ] = useState([
     { value: "N", label: "Normal" },
     { value: "R", label: "Recuperada" },
@@ -131,7 +130,7 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
                       id="horaEntrada"
                       type="time"
                       value={ entrada }
-                      className={ classes.textField }
+                      className="form-control"
                       InputLabelProps={{
                         shrink: true,
                       }}

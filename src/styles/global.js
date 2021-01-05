@@ -182,6 +182,23 @@ export const GlobalStyle = createGlobalStyle`
   h6 .pop-description {
     margin-left: 10px;
   }
+
+  .dropdown-toggle{
+    padding: 8px;
+    width: 35px;
+    padding: 4px;
+    border: none;
+    border-radius: 50px;
+    background: transparent;
+
+    &.no-arrow::after {
+      content: none;
+    }
+
+    &:hover {
+      color: ${ Color.info };
+    }
+  }
 `;
 
 export const ContainerBody = styled.div`
@@ -685,7 +702,7 @@ export const FormGroup = styled.div`
   }
 
   .form-control .MuiInput-input {
-    border: 1px solid ${ Color.border_input } !important;
+    border: 1px solid ${ Color.border_input };
     font-family: "ubuntu-regular", sans-serif!important;
     font-size: 0.8125rem!important;
     box-shadow: none!important;

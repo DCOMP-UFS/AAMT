@@ -9,6 +9,7 @@ const INITIAL_STATE = {
   recipientes: [],
   reload: false,
   updatedIndex: -1,
+  duplicatorIndex: -1,
   vistorias: []
 }
 
@@ -65,6 +66,13 @@ export default function Vistoria( state = INITIAL_STATE, action ) {
       }
     }
 
+    case ActionTypes.ALTERAR_DUPLICATORINDEX: {
+      return {
+        ...state,
+        duplicatorIndex: action.payload.index
+      }
+    }
+
     case ActionTypes.SET_QUARTEIRAO_SELECT: {
       return {
         ...state,
@@ -81,24 +89,12 @@ export default function Vistoria( state = INITIAL_STATE, action ) {
     }
 
     case ActionTypes.ADD_RECIPIENTE: {
-      const qtdRepeticao = action.payload.qtdRepeticao;
       let recipiente = action.payload.recipiente;
       let seq = state.sequenciaRecipiente;
       let recips = [];
 
-      if( !recipiente.fl_comFoco && qtdRepeticao > 1 ) {
-        for( let index = 0; index < qtdRepeticao; index++ ) {
-          recipiente = {
-            ...recipiente,
-            sequencia: seq++
-          }
-
-          recips = [ ...recips, recipiente ];
-        }
-      }else {
-        seq++;
-        recips = [ ...recips, recipiente ];
-      }
+      seq++;
+      recips = [ ...recips, recipiente ];
 
       return {
         ...state,
@@ -117,6 +113,29 @@ export default function Vistoria( state = INITIAL_STATE, action ) {
         ...state,
         recipientes,
         reload: !state.reload
+      }
+    }
+
+    case ActionTypes.DUPLICAR_RECIPIENTE: {
+      const { index, numberCopies } = action.payload;
+      let recips      = [],
+          seq         = state.sequenciaRecipiente,
+          recipientes = state.recipientes,
+          recipiente  = {};
+
+      for(let i = 0; i < numberCopies; i++ ) {
+        recipiente = {
+          ...recipientes[ index ],
+          sequencia: seq++
+        }
+
+        recips = [ ...recips, recipiente ];
+      }
+
+      return {
+        ...state,
+        recipientes: [ ...state.recipientes, ...recips ],
+        sequenciaRecipiente: seq
       }
     }
 

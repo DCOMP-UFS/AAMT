@@ -139,7 +139,7 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
                   content={
                     "Clique na lista de imóveis a direita para selecionar um imóvel. " +
                     "Após selecionar um imóvel, os campos serão preenchidos e habilitados para edição.\n " +
-                    "As modificações realizadas nestes campos serão aplicadas no imóvel após finalizar os trabalhos do dia e a aplicação sincronizar os dados com o servidor!"
+                    "As modificações realizadas nestes campos serão aplicadas no imóvel após finalizar os trabalhos do dia!"
                   } />
               </h4>
               {

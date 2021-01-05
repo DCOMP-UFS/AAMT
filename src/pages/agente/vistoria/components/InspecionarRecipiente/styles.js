@@ -39,14 +39,9 @@ export const UlIcon = styled.ul`
 export const LiIcon = styled.li`
   display: flex;
   align-items: center;
-  cursor: pointer;
 
   &:not(:last-child) {
     border-bottom: 1px solid ${ Color.border_input };
-  }
-
-  &:hover {
-    background: ${ Color.border_light };
   }
 
   &.active .ContainerIcon {

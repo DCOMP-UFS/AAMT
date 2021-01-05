@@ -45,7 +45,6 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
   const [ fl_foco, setFl_foco ] = useState({ value: null, label: null });
   const [ tecnicaTratamento, setTecnicaTratamento ] = useState({ value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label });
   const [ numUnidade, setNumUnidade ] = useState(0);
-  const [ qtdRepeticao, setQtdRepeticao ] = useState(1);
   const [ qtdTratamento, setQtdTratamento ] = useState(0);
   const [ unidade, setUnidade ] = useState([]);
   const [ reload, setReload ] = useState( false );
@@ -59,6 +58,12 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
   const [ optionsTecnicaTratamento, setOptionsTecnicaTratamento ] = useState(
     Object.entries( tecnicaTratamentoEnum ).map(([ key, value ]) => ({ value: value.id, label: value.label }))
   );
+
+  useEffect(() => {
+    $( '#modalCadastrarInspecao' ).on( 'shown.bs.modal', function() {
+      $('#tipoRecipiente').focus();
+    });
+  }, []);
 
   function addUnidade() {
     let nu = numUnidade + 1;
@@ -112,7 +117,7 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
         amostras: unidade
       };
 
-      props.addRecipiente( recipiente, qtdRepeticao );
+      props.addRecipiente( recipiente );
 
       // Reset state
       setTipoRecipiente({ value: null, label: null, name: "tipoRecipiente" });
@@ -121,7 +126,6 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
       setFl_foco({ value: null, label: null, name: "fl_foco" });
       setNumUnidade( 0 );
       setUnidade( [] );
-      setQtdRepeticao( 1 );
       setQtdTratamento( 0 );
       setTecnicaTratamento({ value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label });
 
@@ -142,12 +146,10 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
           </div>
 
           <div className="modal-body">
-
             <div className="form-group">
-              <label htmlFor="tipoRecipiente">Tipo de recipiente <code>*</code></label>
+              <label>Tipo de recipiente <code>*</code></label>
 
               <Select
-                id="tipoRecipiente"
                 options={ optionsTipoRecipiente }
                 value={ tipoRecipiente }
                 styles={ selectDefault }
@@ -206,17 +208,6 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
                 </Row>
               </ContainerTratamento>
             </Tratamento>
-            <div className={ "form-group " + ( fl_foco.value === true ? "d-none" : "" ) }>
-              <label htmlFor="qtdRepeticao">Repetir inspeção? <code>*</code></label>
-
-              <input
-                id="qtdRepeticao"
-                type="number"
-                min={ 1 }
-                className="form-control"
-                value={ qtdRepeticao }
-                onChange={ e => setQtdRepeticao( e.target.value ) } />
-            </div>
 
             <div className="form-group">
               <label htmlFor="fl_foco">Com foco? <code>*</code></label>

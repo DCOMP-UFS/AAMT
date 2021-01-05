@@ -69,8 +69,10 @@ function InspecionarRecipiente({ updatedIndex, sequenciaRecipiente, recipientes,
         { value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label } :
         { value: tecnicaTratamentoEnum.perifocal.id, label: tecnicaTratamentoEnum.perifocal.label }
       );
-      setNumUnidade( recipiente.amostras[ recipiente.amostras.length - 1 ].sequencia );
       setUnidade( recipiente.amostras );
+
+      if( recipiente.amostras.length > 0 )
+        setNumUnidade( recipiente.amostras[ recipiente.amostras.length - 1 ].sequencia );
     }
   }, [ updatedIndex ]);
 

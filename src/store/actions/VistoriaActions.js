@@ -4,7 +4,9 @@ export const ActionTypes = {
   ADD_RECIPIENTE: "ADD_RECIPIENTE",
   ATUALIZAR_RECIPIENTE: "ATUALIZAR_RECIPIENTE",
   REMOVER_RECIPIENTE: "REMOVER_RECIPIENTE",
+  DUPLICAR_RECIPIENTE: "DUPLICAR_RECIPIENTE",
   ALTERAR_UPDATEDINDEX: "ALTERAR_UPDATEDINDEX",
+  ALTERAR_DUPLICATORINDEX: "ALTERAR_DUPLICATORINDEX",
   CONSULTAR_VISTORIAS_REQUEST: "CONSULTAR_VISTORIAS_REQUEST",
   CONSULTAR_VISTORIAS_SUCCESS: "CONSULTAR_VISTORIAS_SUCCESS",
   SET_RECIPIENT: "SET_RECIPIENT",
@@ -48,6 +50,15 @@ export const changeUpdatedIndex = index => {
   }
 }
 
+export const changeDuplicatorIndex = index => {
+  return {
+    type: ActionTypes.ALTERAR_DUPLICATORINDEX,
+    payload: {
+      index
+    }
+  }
+}
+
 export const setQuarteiraoSelect = option => {
   return {
     type: ActionTypes.SET_QUARTEIRAO_SELECT,
@@ -76,12 +87,11 @@ export const atualizarRecipiente = ( index, recipiente ) => {
   }
 }
 
-export const addRecipiente = ( recipiente, qtdRepeticao ) => {
+export const addRecipiente = recipiente => {
   return {
     type: ActionTypes.ADD_RECIPIENTE,
     payload: {
-      recipiente,
-      qtdRepeticao
+      recipiente
     }
   }
 }
@@ -91,6 +101,16 @@ export const removerRecipiente = index => {
     type: ActionTypes.REMOVER_RECIPIENTE,
     payload: {
       index
+    }
+  }
+}
+
+export const duplicateRecipient = ( index, numberCopies ) => {
+  return {
+    type: ActionTypes.DUPLICAR_RECIPIENTE,
+    payload: {
+      index,
+      numberCopies
     }
   }
 }

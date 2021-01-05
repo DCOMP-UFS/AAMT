@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 
 import { bindActionCreators } from 'redux';
@@ -25,7 +25,7 @@ import {
 const InspectionStatus = ({ data, property }) => {
   const navigation = useNavigation();
 
-  const index = data.findIndex(p => p.imovel.id === property);
+  const index = data.findIndex(p => p.imovel.id === property.id);
   const message = [
     {
       text: 'Vistoriado',
@@ -51,35 +51,49 @@ const InspectionStatus = ({ data, property }) => {
     pendencia === 'F' ? (status = message[1]) : {};
   } else {
     return (
-      <TouchableWithoutFeedback
-        onPress={() => navigation.navigate('Vistoria', { imovel_id: property })}
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('Vistoria', {
+            property,
+          })
+        }
       >
         <Icon size={23} name="add" color="#0095da" />
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     );
   }
   return (
-    <StatusContainer color={status.color}>
-      <StatusText>{status.text}</StatusText>
-    </StatusContainer>
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate('Vistoria', {
+          imovel_id: property,
+          house: data[index],
+        })
+      }
+    >
+      <StatusContainer color={status.color}>
+        <StatusText>{status.text}</StatusText>
+      </StatusContainer>
+    </TouchableOpacity>
   );
 };
 
-const PropertiesList = ({ inspections, ...props }) => {
+const PropertiesList = ({ inspections, routes, ...props }) => {
   const route = useRoute();
-  const { properties, street } = route.params;
+  const { street, blockIndex, streetIndex } = route.params;
+  const properties = routes[blockIndex].lados[streetIndex].imoveis;
   const navigation = useNavigation();
 
   return (
     <Container>
-      {properties.map(property => (
+      {properties.map((property, i) => (
         <Card key={property.id}>
           <Header>
             <TitleContainer>
               <Icon size={23} name="house" color="#3a3c4e" />
               <PropertyTitle>Imóvel {property.id}</PropertyTitle>
             </TitleContainer>
-            <InspectionStatus data={inspections} property={property.id} />
+            <InspectionStatus data={inspections} property={property} />
           </Header>
           <Label>Rua</Label>
           <Small>{street}</Small>
@@ -97,13 +111,18 @@ const PropertiesList = ({ inspections, ...props }) => {
               )}
             </DetailsColumn>
           </CardRow>
-          <TouchableWithoutFeedback
+          <TouchableOpacity
             onPress={() =>
-              navigation.navigate('Detalhes do Imóvel', { property, street })
+              navigation.navigate('Detalhes do Imóvel', {
+                street,
+                blockIndex,
+                streetIndex,
+                propertyIndex: i,
+              })
             }
           >
             <MoreDetails>Ver detalhes do imóvel</MoreDetails>
-          </TouchableWithoutFeedback>
+          </TouchableOpacity>
         </Card>
       ))}
     </Container>
@@ -112,6 +131,7 @@ const PropertiesList = ({ inspections, ...props }) => {
 
 const mapStateToProps = state => ({
   inspections: state.inspections.vistorias,
+  routes: state.activityRoutes.routes,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({}, dispatch);

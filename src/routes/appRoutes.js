@@ -15,6 +15,7 @@ import InspectionsForm from '../pages/Inspections/InspectionsForm';
 import RecipientList from '../pages/Inspections/RecipientList';
 import RecipientForm from '../pages/Inspections/RecipientForm';
 import PropertyDetails from '../pages/Inspections/PropertyDetails';
+import UpdateProperty from '../pages/Inspections/UpdateProperty';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -62,6 +63,7 @@ const AppStacker = () => {
       <AppStack.Screen name="Depósitos" component={RecipientList} />
       <AppStack.Screen name="Cadastrar Recipiente" component={RecipientForm} />
       <AppStack.Screen name="Detalhes do Imóvel" component={PropertyDetails} />
+      <AppStack.Screen name="Atualizar imóvel" component={UpdateProperty} />
     </AppStack.Navigator>
   );
 };

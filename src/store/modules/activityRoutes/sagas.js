@@ -26,7 +26,10 @@ export function* getRoute({ payload }) {
 
     yield put(getRouteSuccess(response.data));
   } catch (err) {
-    Alert.alert('Ih', 'Deu merda');
+    Alert.alert(
+      'Houve um problema',
+      'Não foi possível buscar atividades disponíveis para hoje'
+    );
   }
 }
 
@@ -57,7 +60,10 @@ export function* startRoute({ payload }) {
       'Tenha um bom dia de trabalho!'
     );
   } catch (err) {
-    console.log(err);
+    Alert.alert(
+      'Ocorreu um erro',
+      'Não foi possível iniciar o trabalho diário'
+    );
   }
 }
 
@@ -89,7 +95,6 @@ export function* endRoute({ payload }) {
       'Houve um problema',
       'Algo deu errado ao finalizar o trabalho diário'
     );
-    console.log(err);
   }
 }
 

@@ -13,7 +13,10 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { addRecipient } from '../../../store/modules/inspections/actions';
+import {
+  addRecipient,
+  editRecipient,
+} from '../../../store/modules/inspections/actions';
 
 import {
   Container,
@@ -35,6 +38,7 @@ const RecipientForm = ({
   trabalho_diario_id,
   inspections,
   sequenciaRecipiente,
+  metodologia,
   ...props
 }) => {
   const [recipientOptions, setRecipientOptions] = useState([
@@ -56,6 +60,7 @@ const RecipientForm = ({
     'Perifocal',
   ]);
 
+  const [sequence, setSequence] = useState(sequenciaRecipiente);
   const [recipientType, setRecipientType] = useState('');
   const [focus, setFocus] = useState('');
   const [treatment, setTreatment] = useState('');
@@ -66,7 +71,7 @@ const RecipientForm = ({
 
   const navigation = useNavigation();
   const route = useRoute();
-  const { imovel_id, recipientSequence } = route.params;
+  const { imovel_id, recipientSequence, recipientExistent } = route.params;
 
   function handleSubmit() {
     const recipient = {
@@ -74,7 +79,7 @@ const RecipientForm = ({
       tipoRecipiente: recipientType,
       fl_tratado: treatment === 'Tratado' ? true : false,
       fl_eliminado: treatment === 'Eliminado' ? true : false,
-      sequencia: sequenciaRecipiente + 1,
+      sequencia: recipientExistent ? sequence : sequence + 1,
       tratamento: {
         quantidade: quantity,
         tecnica: treatmentType === 'Focal' ? 1 : 2,
@@ -82,7 +87,12 @@ const RecipientForm = ({
       amostras: sample,
     };
 
-    props.addRecipient(recipient, imovel_id);
+    if (!recipientExistent) {
+      props.addRecipient(recipient, imovel_id);
+    } else {
+      props.editRecipient(recipient, imovel_id, recipient.sequencia);
+    }
+
     navigation.navigate('Depósitos');
   }
 
@@ -91,14 +101,6 @@ const RecipientForm = ({
       ...sample,
       {
         situacao: 1,
-        // sequencia:
-        //   trabalho_diario_id +
-        //   '.' +
-        //   inspections.length +
-        //   '.' +
-        //   (sequenciaRecipiente + 1) +
-        //   '.' +
-        //   (sampleNumber + 1),
         sequencia: sampleNumber + 1,
       },
     ]);
@@ -109,23 +111,23 @@ const RecipientForm = ({
     setSample(sample.filter(item => item.sequencia !== sampleSequence));
   }
 
-  // useEffect(() => {
-  //   const propertyIndex = inspections.findIndex(p => p.imovel_id === imovel_id);
-  //   const recipientIndex = inspections[propertyIndex].recipientes.findIndex(
-  //     p => p.sequencia === recipientSequence
-  //   );
-
-  //   if (propertyIndex >= 0 && recipientIndex >= 0) {
-  //     const recipient = inspections[propertyIndex].recipientes[recipientIndex];
-  //     setRecipientType(recipient.tipoRecipiente);
-  //     setFocus(recipient.fl_comFoco);
-  //     setTreatmentType(recipient.tratamento.tecnica);
-  //     setQuantity(recipient.tratamento.quantidade);
-  //     recipient.fl_tratado === 'Sim'
-  //       ? setTreatment('Tratado')
-  //       : setTreatment('Eliminado');
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (recipientExistent) {
+      const recipient = recipientExistent;
+      setRecipientType(recipient.tipoRecipiente);
+      setFocus(recipient.fl_comFoco ? 'Sim' : 'Não');
+      setTreatmentType(
+        recipient.tratamento.tecnica === 1 ? 'Focal' : 'Perifocal'
+      );
+      setSequence(recipient.sequencia);
+      setQuantity(recipient.tratamento.quantidade);
+      setSample(recipient.amostras);
+      setSampleNumber(recipient.amostras.length);
+      recipient.fl_tratado
+        ? setTreatment('Tratado')
+        : setTreatment('Eliminado');
+    }
+  }, []);
 
   return (
     <Container>
@@ -190,7 +192,7 @@ const RecipientForm = ({
             </TouchableWithoutFeedback>
           ))}
         </ButtonContainer>
-        {treatment === 'Tratado' && (
+        {treatment === 'Tratado' && metodologia === 'PNCD' && (
           <>
             <ExtraContainer>
               <Title>Tratamento</Title>
@@ -219,7 +221,7 @@ const RecipientForm = ({
           </>
         )}
         <Button color="#0095DA" textColor="#fff" onPress={() => handleSubmit()}>
-          Prosseguir
+          Concluir inspeção
         </Button>
         <SecundaryButton>Cancelar</SecundaryButton>
       </Card>
@@ -232,12 +234,14 @@ const mapStateToProps = state => ({
   sequenciaRecipiente: state.inspections.sequenciaRecipiente,
   inspections: state.inspections.vistorias,
   trabalho_diario_id: state.activityRoutes.dailyActivity.id,
+  metodologia: state.activityRoutes.dailyActivity.atividade.metodologia.sigla,
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       addRecipient,
+      editRecipient,
     },
     dispatch
   );

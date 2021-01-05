@@ -21,6 +21,7 @@ const InspectionsForm = ({
   sequencia,
   trabalho_diario_id,
   inspections,
+  metodologia,
   ...props
 }) => {
   const [optionStatus, setOptionStatus] = useState([
@@ -34,14 +35,14 @@ const InspectionsForm = ({
   ]);
   const [status, setStatus] = useState('');
   const [pendency, setPendency] = useState('');
-  const [propertyIndex, setPropertyIndex] = useState(-1);
-  const [sequence, setSequence] = useState(0);
+  // const [propertyIndex, setPropertyIndex] = useState(-1);
+  const [sequence, setSequence] = useState(sequencia);
   const [startHour, setStartHour] = useState('');
   const [recipients, setRecipients] = useState([]);
 
   const navigation = useNavigation();
   const route = useRoute();
-  const { imovel_id } = route.params;
+  const { imovel_id, house } = route.params;
 
   function changePendency(item) {
     setPendency(item);
@@ -85,33 +86,36 @@ const InspectionsForm = ({
       recipientes: recipients,
     };
 
-    props.addInspection(inspection);
+    if (!house) {
+      props.addInspection(inspection);
+    } else {
+      props.editInspection(inspection, imovel_id);
+    }
 
     if ((status === 'N' || 'R') && pendency === null) {
-      // if (propertyIndex !== -1) {
-      //   props.editInspection(inspection, propertyIndex);
-      // } else {
-      //   props.addInspection(inspection);
-      // }
-
-      navigation.navigate('Depósitos', { imovel_id });
+      navigation.navigate('Depósitos', { imovel_id, house });
     } else {
-      navigation.navigate('Lista de Quarteirões'); // TEM DE ALTERAR PARA SALVAR A ROTA!!!!!!!!
+      navigation.goBack();
+      Alert.alert('Operação concluída!', 'Você finalizou uma vistoria'); // TEM DE ALTERAR PARA SALVAR A ROTA!!!!!!!!
     }
   }
 
-  // useEffect(() => {
-  //   const index = inspections.findIndex(p => p.imovel.id === imovel_id);
+  useEffect(() => {
+    if (house) {
+      setStatus(house.situacaoVistoria);
+      setPendency(house.pendencia);
+      setSequence(house.sequencia);
+      setRecipients(house.recipientes);
+      setStartHour(house.horaEntrada);
+    }
+  }, []);
 
-  //   if (index >= 0) {
-  //     setStatus(inspections[index].situacaoVistoria);
-  //     setPendency(inspections[index].pendencia);
-  //     setSequence(inspections[index].sequencia);
-  //     setRecipients(inspections[index].recipientes);
-  //     setStartHour(inspections[index].horaEntrada);
-  //     setPropertyIndex(index);
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (metodologia === 'LIRAa') {
+      setStatus('N');
+      setPendency(null);
+    }
+  }, []);
 
   return (
     <Container>
@@ -160,6 +164,7 @@ const mapStateToProps = state => ({
   sequencia: state.inspections.sequenciaVistoria,
   inspections: state.inspections.vistorias,
   trabalho_diario_id: state.activityRoutes.dailyActivity.id,
+  metodologia: state.activityRoutes.dailyActivity.atividade.metodologia.sigla,
 });
 
 const mapDispatchToProps = dispatch =>

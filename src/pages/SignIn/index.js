@@ -1,15 +1,15 @@
-import React, {useState} from 'react';
-import {Text, ScrollView, StatusBar} from 'react-native';
+import React, { useState } from 'react';
+import { Text, ScrollView, StatusBar } from 'react-native';
 
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '../../components/Button';
 import Background from '../../components/Background';
 import Input from '../../components/Input';
 
-import {Container, TextContainer, Label} from './styles';
+import { Container, TextContainer, Label } from './styles';
 
-import {signInRequest} from '../../store/modules/auth/actions';
+import { signInRequest } from '../../store/modules/auth/actions';
 
 const SignIn = () => {
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ const SignIn = () => {
   const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
 
-  const loading = useSelector((state) => state.auth.loading);
+  const loading = useSelector(state => state.auth.loading);
 
   function handleSubmit() {
     dispatch(signInRequest(user, password));
@@ -29,7 +29,8 @@ const SignIn = () => {
       <Background>
         <ScrollView
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{flex: 1}}>
+          contentContainerStyle={{ flex: 1 }}
+        >
           <Container>
             <TextContainer>
               <Label>Usuário</Label>
@@ -57,7 +58,8 @@ const SignIn = () => {
               color="#0095DA"
               textColor="#fff"
               onPress={handleSubmit}
-              loading={loading}>
+              loading={loading}
+            >
               Entrar
             </Button>
           </Container>

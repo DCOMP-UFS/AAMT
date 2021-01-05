@@ -46,10 +46,21 @@ export const RecipientText = styled.Text`
   font-size: 16px;
 `;
 
+export const RecipientOptions = styled.View`
+  flex-direction: row;
+`;
+
+export const NoRecipientContainer = styled.View`
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0px;
+`;
+
 export const NoRecipientText = styled.Text`
   align-self: center;
   font-family: 'Lato-Regular';
-  color: #a6a8ad;
+  color: #c6cdd3;
   font-size: 16px;
-  margin-top: 20px;
+  margin-top: 10px;
 `;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TouchableWithoutFeedback, Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { bindActionCreators } from 'redux';
@@ -19,7 +19,9 @@ import {
   RecipientContainer,
   RecipientItem,
   RecipientText,
+  RecipientOptions,
   NoRecipientText,
+  NoRecipientContainer,
 } from './styles';
 
 const RecipientList = ({
@@ -32,11 +34,16 @@ const RecipientList = ({
 
   const navigation = useNavigation();
   const route = useRoute();
-  const { imovel_id } = route.params;
+  const { imovel_id, house } = route.params;
 
   function removeRecipient(recipientSequence) {
     const propertyIndex = inspections.findIndex(p => p.imovel.id === imovel_id);
     props.removeRecipient(propertyIndex, recipientSequence);
+  }
+
+  function finishInspection() {
+    navigation.navigate('Lista de Imóveis');
+    Alert.alert('Operação concluída!', 'Você finalizou uma vistoria');
   }
 
   useEffect(() => {
@@ -51,7 +58,7 @@ const RecipientList = ({
     <Container>
       <Card>
         <Header>
-          <HeaderTitle>Depósitos</HeaderTitle>
+          <HeaderTitle>Lista de depósitos</HeaderTitle>
           <TouchableWithoutFeedback
             onPress={() =>
               navigation.navigate('Cadastrar Recipiente', {
@@ -71,29 +78,33 @@ const RecipientList = ({
                     navigation.navigate('Cadastrar Recipiente', {
                       imovel_id,
                       recipientSequence: recipient.sequencia,
+                      recipientExistent: recipient,
                     })
                   }
                 >
                   <RecipientText>{`Depósito ${recipient.sequencia}`}</RecipientText>
                 </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback
-                  onPress={() => removeRecipient(recipient.sequencia)}
-                >
-                  <Icon size={23} name="close" color="#E74040" />
-                </TouchableWithoutFeedback>
+                <RecipientOptions>
+                  <TouchableWithoutFeedback
+                    onPress={() => removeRecipient(recipient.sequencia)}
+                  >
+                    <Icon size={23} name="close" color="#E74040" />
+                  </TouchableWithoutFeedback>
+                </RecipientOptions>
               </RecipientItem>
             ))
           ) : (
-            <NoRecipientText>Não há depósitos cadastrados</NoRecipientText>
+            <NoRecipientContainer>
+              <Icon size={60} name="receipt-long" color="#C6CDD3" />
+              <NoRecipientText>
+                Não há depósitos cadastrados para este imóvel
+              </NoRecipientText>
+            </NoRecipientContainer>
           )}
         </RecipientContainer>
       </Card>
-      <Button
-        color="#0095DA"
-        textColor="#fff"
-        onPress={() => navigation.navigate('Lista de Imóveis')}
-      >
-        Prosseguir
+      <Button color="#0095DA" textColor="#fff" onPress={() => finishInspection()}>
+        Concluir vistoria
       </Button>
     </Container>
   );

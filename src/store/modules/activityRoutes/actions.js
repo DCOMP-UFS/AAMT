@@ -32,3 +32,16 @@ export function saveRoute(start_hour, routes) {
     payload: { routes, start_hour },
   };
 }
+
+export function editProperty(
+  property_id,
+  blockIndex,
+  streetIndex,
+  propertyIndex,
+  property
+) {
+  return {
+    type: '@activity/EDIT_PROPERTY',
+    payload: { property_id, blockIndex, streetIndex, propertyIndex, property },
+  };
+}

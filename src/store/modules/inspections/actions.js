@@ -5,10 +5,17 @@ export function addInspection(inspection) {
   };
 }
 
-export function editInspection(inspection, index) {
+export function editInspection(inspection, property_id) {
   return {
     type: '@inspections/EDIT_INSPECTION',
-    payload: { inspection, index },
+    payload: { inspection, property_id },
+  };
+}
+
+export function editRecipient(recipient, property_id, recipientSequence) {
+  return {
+    type: '@inspections/EDIT_RECIPIENT',
+    payload: { recipient, property_id, recipientSequence },
   };
 }
 

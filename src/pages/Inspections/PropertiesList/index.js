@@ -54,6 +54,7 @@ const InspectionStatus = ({ data, property }) => {
       <TouchableOpacity
         onPress={() =>
           navigation.navigate('Vistoria', {
+            house: data[index],
             property,
           })
         }
@@ -66,8 +67,8 @@ const InspectionStatus = ({ data, property }) => {
     <TouchableOpacity
       onPress={() =>
         navigation.navigate('Vistoria', {
-          imovel_id: property,
           house: data[index],
+          property,
         })
       }
     >

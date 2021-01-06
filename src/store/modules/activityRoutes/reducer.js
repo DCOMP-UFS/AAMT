@@ -16,8 +16,10 @@ export default function activityRoutes(state = INITIAL_STATE, action) {
       });
     case '@activity/GET_ROUTE_SUCCESS':
       return produce(state, draft => {
-        draft.dailyActivity = action.payload.data.trabalhoDiario;
-        draft.routes = action.payload.data.rota;
+        if (draft.dailyActivity === undefined) {
+          draft.dailyActivity = action.payload.data.trabalhoDiario;
+          draft.routes = action.payload.data.rota;
+        }
         draft.loading = false;
       });
     case '@activity/START_ROUTE':

@@ -78,12 +78,13 @@ export default function inspections(state = INITIAL_STATE, action) {
     //     const inspectionIndex = draft.vistorias.findIndex(
     //       p => p.imovel.id === action.payload.property_id
     //     );
+    //     console.tron.log(inspectionIndex);
     //     if (inspectionIndex > 0) {
     //       const { property } = action.payload;
     //       const currentProperty = draft.vistorias[inspectionIndex];
     //       currentProperty.numero = property.number;
     //       currentProperty.sequencia = property.sequence;
-    //       currentProperty.responsável = property.responsible;
+    //       currentProperty.responsavel = property.responsible;
     //       currentProperty.complemento = property.complement;
     //       currentProperty.tipoImovel = property.propertyType;
     //     }

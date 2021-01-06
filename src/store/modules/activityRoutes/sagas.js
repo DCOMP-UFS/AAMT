@@ -12,8 +12,6 @@ export function* getRoute({ payload }) {
 
     const token = yield getToken();
 
-    console.log('Entrou no saga');
-
     const response = yield call(
       api.get,
       `/rotas/${user_id}/usuarios/${date}/data`,
@@ -36,9 +34,6 @@ export function* getRoute({ payload }) {
 export function* startRoute({ payload }) {
   try {
     const { activity_id, start_hour } = payload;
-
-    console.log(activity_id);
-    console.log(start_hour);
 
     const token = yield getToken();
 

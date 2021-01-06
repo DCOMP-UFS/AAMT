@@ -42,7 +42,9 @@ const InspectionsForm = ({
 
   const navigation = useNavigation();
   const route = useRoute();
-  const { imovel_id, house } = route.params;
+  const { house, property } = route.params;
+
+  const imovel_id = property.id;
 
   function changePendency(item) {
     setPendency(item);
@@ -80,7 +82,7 @@ const InspectionsForm = ({
       situacaoVistoria: status,
       pendencia: pendency,
       sequencia: sequence,
-      imovel: { id: imovel_id },
+      imovel: property,
       trabalhoDiario_id: trabalho_diario_id,
       horaEntrada: startHour === '' ? handleStartInspection() : startHour,
       recipientes: recipients,

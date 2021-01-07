@@ -27,10 +27,7 @@ const INITIAL_STATE = {
     createCategory( "Operacional" ),
     createLink( 1, "Rota", true, FaRoute, "/agente/home"),
     createLink( 2, "Vistorias", false, FaClipboardCheck, "/agente/vistoria"),
-    createNav( 3, "Relatórios", false, FaChartPie, [
-      createSubmenu( 1, false, "Meus Índices", "/agente/relatorio/indices" ),
-      createSubmenu( 2, false, "Boletins Diário", "/agente/relatorio/boletim_diario" ),
-    ])
+    createLink( 3, "Relatórios", false, FaChartPie, "/agente/relatorio/boletim_diario")
     // createLink( 2, "Rotas de Trabalho", false, FaMapSigns, "/sup/rotas"),
     // createCategory( "Recursos de Interface" ),
     // createNav( 8, "Elementos Básicos", false, IoIosCode, [

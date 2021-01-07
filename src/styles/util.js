@@ -227,4 +227,36 @@ export const InfoBox = styled.div`
     font-weight: 700;
     line-height: 28px;
   }
+
+  .info-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .info-subtitle {
+    font-size: 0.9rem;
+    opacity: .9;
+  }
+
+  &.template-no-icon {
+    .info-box-content {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      justify-content: space-between;
+
+      .info-box-number {
+        font-weight: bold;
+        font-size: 1.8rem;
+        margin-top: 0;
+        line-height: inherit;
+      }
+
+      .content-right {
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
 `;

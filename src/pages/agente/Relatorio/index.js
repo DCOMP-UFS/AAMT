@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { FaChartPie, FaRegChartBar } from 'react-icons/fa';
-import Table from '../../../../components/Table';
+import Table from '../../../components/Table';
 import Typography from "@material-ui/core/Typography";
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
@@ -11,11 +11,11 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../../store/actions/sidebarAgente';
-import { getByUserRequest } from '../../../../store/actions/trabalhoDiario';
+import { changeSidebar } from '../../../store/actions/sidebarAgente';
+import { getByUserRequest } from '../../../store/actions/trabalhoDiario';
 
 // STYLES
-import { PageIcon, PageHeader } from '../../../../styles/util';
+import { PageIcon, PageHeader } from '../../../styles/util';
 
 const columns = [
   {
@@ -102,15 +102,6 @@ const columns = [
     }
   }
 ];
-
-const options = {
-  onRowClick: (row, ...props) => {
-    const index = row[0].props['data-index'];
-
-    // window.location = `${ window.location.origin.toString() }/agente/vistoria/editar/${ index }`;
-  }
-};
-
 function Agent_DailyReport({ user, dailyJobs, ...props }) {
   const [ rows, setRows ] = useState([]);
 
@@ -151,7 +142,7 @@ function Agent_DailyReport({ user, dailyJobs, ...props }) {
   }
 
   function openReport( dailyJob_id ) {
-    console.log( dailyJob_id );
+    window.location = `${ window.location.origin.toString() }/agente/relatorio/boletim_diario/${ dailyJob_id }`;
   }
 
   return (
@@ -169,8 +160,8 @@ function Agent_DailyReport({ user, dailyJobs, ...props }) {
             <Table
               title="Boletins"
               columns={ columns }
-              data={ rows }
-              options={ options } />
+              data={ rows } 
+            />
           </Col>
         </Row>
       </section>

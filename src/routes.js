@@ -48,8 +48,8 @@ import EditarQuarteirao from './pages/supervisor/Quarteiroes/EditarQuarteirao';
 // Páginas do agente
 import HomeAgente from './pages/agente/home';
 import Vistoria from './pages/agente/vistoria';
-import Agent_metrics from './pages/agente/Relatorio/indices';
-import Agent_DailyReport from './pages/agente/Relatorio/boletins_diarios';
+import ListWorks from './pages/agente/Relatorio';
+import DailyReport from './pages/agente/Relatorio/dailyReport';
 import CadastrarVistoria from './pages/agente/vistoria/cadastrar';
 import EditarVistoria from './pages/agente/vistoria/editar';
 import CDT_Trabalho_diario from './pages/trabalho_diario/Iniciar';
@@ -198,9 +198,8 @@ const Routes = props => {
         {/* Rotas de agentes */}
         <PrivateAgente path="/agente/home" component={ HomeAgente } tipoPerfil={ perfil } />
         <PrivateAgente exact path="/agente/vistoria" component={ Vistoria } tipoPerfil={ perfil } />
-        <PrivateAgente path="/agente/relatorio/indices" component={ Agent_metrics } tipoPerfil={ perfil } />
-        <PrivateAgente path="/agente/relatorio/boletim_diario/" component={ Agent_DailyReport } tipoPerfil={ perfil } />
-        <PrivateAgente path="/agente/relatorio/boletim_diario/:trabalho_diario_id" component={ Agent_DailyReport } tipoPerfil={ perfil } />
+        <PrivateAgente exact path="/agente/relatorio/boletim_diario/" component={ ListWorks } tipoPerfil={ perfil } />
+        <PrivateAgente path="/agente/relatorio/boletim_diario/:trabalho_diario_id" component={ DailyReport } tipoPerfil={ perfil } />
         <PrivateAgente path="/agente/vistoria/cadastrar" component={ CadastrarVistoria } tipoPerfil={ perfil } />
         <PrivateAgente path="/agente/vistoria/editar/:index" component={ EditarVistoria } tipoPerfil={ perfil } />
         <PrivateCoordenador path="/trabalho_diario/iniciar" component={CDT_Trabalho_diario} tipoPerfil={ perfil } />

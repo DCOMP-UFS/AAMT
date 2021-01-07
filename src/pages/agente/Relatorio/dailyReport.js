@@ -1,26 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
-import { FaChartPie, FaSearch } from 'react-icons/fa';
-import Tabs from 'react-bootstrap/Tabs';
-import Tab from 'react-bootstrap/Tab';
-import { tipoImovel as tipoImovelEnum } from '../../../../config/enumerate';
-import { tipoRecipiente as tipoRecipienteEnum } from '../../../../config/enumerate';
-import Pie from '../../../../components/Charts/Pie';
-import Bar from '../../../../components/Charts/Bar';
+import { FaChartPie, FaVial, FaBan, FaLock, FaTintSlash } from 'react-icons/fa';
+import { tipoImovel as tipoImovelEnum } from '../../../config/enumerate';
+import { tipoRecipiente as tipoRecipienteEnum } from '../../../config/enumerate';
+import Pie from '../../../components/Charts/Pie';
+import Bar from '../../../components/Charts/Bar';
 
 // REDUX
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../../store/actions/sidebarAgente';
-import { getInspectsRequest } from '../../../../store/actions/VistoriaActions';
+import { changeSidebar } from '../../../store/actions/sidebarAgente';
+import { getInspectsRequest } from '../../../store/actions/VistoriaActions';
 
 // STYLES
-import { Color, Button } from '../../../../styles/global';
-import { PageIcon, PageHeader, PagePopUp, NumberDash } from '../../../../styles/util';
+import { Color } from '../../../styles/global';
+import { PageIcon, PageHeader, NumberDash, InfoBox } from '../../../styles/util';
 
-function Agent_metrics({ usuario, vistorias, ...props }) {
+function DailyReport({ usuario, vistorias, ...props }) {
   const [ tabKey, setTabKey] = useState('relatorio');
   const [ imoveisTipoData, setImoveisTipoData ] = useState({
     labels: Object.entries( tipoImovelEnum ).map(([ key, value ]) => ( value.sigla ) ),
@@ -206,135 +204,112 @@ function Agent_metrics({ usuario, vistorias, ...props }) {
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaChartPie /></PageIcon>
-          Meus Índices
+          Resumo diário - xx/xx/xxxx
         </h3>
       </PageHeader>
 
       <section className="card-list">
         <Row>
-          <PagePopUp className="w-100">
-            <div className="card">
-              <Row>
-                <Col className="mb-2">
-                  <h4 className="d-inline">Filtrar</h4>
-
-                  <Button
-                    className="float-right"
-                    type="button"
-                    onClick={ () => console.log( "Submit" ) }>
-                    <FaSearch className="btn-icon" />
-                    Buscar
-                  </Button>
-                </Col>
-              </Row>
-
-              <Row>
-                <Col md="8" className="form-group">
-                  <label>Período</label>
-                  <Row>
-                    <Col>
-                      <input
-                        name="data_inicio"
-                        type="date"
-                        className="form-control" />
-                    </Col>
-                    <Col>
-                      <input
-                        name="data_fim"
-                        type="date"
-                        className="form-control" />
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-            </div>
-          </PagePopUp>
+          <Col md="6">
+            <article className="p-0">
+              <div className="card">
+                <h2 className="title">Imóveis por tipo</h2>
+                <Pie data={ imoveisTipoData } />
+              </div>
+            </article>
+          </Col>
+          <Col md="6">
+            <article className="p-0">
+              <div className="card">
+                <h2 className="title">Imóveis</h2>
+                <Bar data={ numeroImoveisData } />
+              </div>
+            </article>
+          </Col>
         </Row>
         <Row>
-          <Col className="pt-40">
-            <Tabs
-              className="nav-page"
-              activeKey={ tabKey }
-              onSelect={ k => setTabKey( k ) }
-            >
-              <Tab eventKey="relatorio" title="Índices">
-                <Row>
-                  <Col md="6">
-                    <article className="p-0">
-                      <div className="card">
-                        <h2 className="title">Nº imóveis trabalhados por tipo</h2>
-                        <Pie data={ imoveisTipoData } />
-                      </div>
-                    </article>
-                  </Col>
-                  <Col md="6">
-                    <article className="p-0">
-                      <div className="card">
-                        <h2 className="title">Nº imóveis</h2>
-                        <Bar data={ numeroImoveisData } />
-                      </div>
-                    </article>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col md="8">
-                    <article style={{ height: '100%', padding: '0 0 30px' }}>
-                      <div className="card h-100">
-                        <h2 className="title">Nº Depósitos Inspecionados, por tipo</h2>
-                        <Bar data={ depositosTipoData } />
-                      </div>
-                    </article>
-                  </Col>
-                  <Col md="4">
-                    <article className="p-0">
-                      <div className="card">
-                        <Row>
-                          <NumberDash className="col border-r margin-b">
-                            <h4 className="legend">Recusas</h4>
-                            <h2>{ qtdRecusa }</h2>
-                          </NumberDash>
-                          <NumberDash className="col margin-b">
-                            <h4 className="legend">Fechados</h4>
-                            <h2>{ qtdFechada }</h2>
-                          </NumberDash>
-                        </Row>
-                        <Row>
-                          <NumberDash className="col">
-                            <h4 className="legend">Nº Amostras Coletadas</h4>
-                            <h2>{ qtdAmostra }</h2>
-                          </NumberDash>
-                        </Row>
-                      </div>
-                    </article>
-                    <article className="p-0">
-                      <div className="card">
-                        <h2 className="title">Nº Depósitos Tratados</h2>
-                        <Row>
-                          <NumberDash className="col border-r margin-b">
-                            <h4 className="legend">Eliminados</h4>
-                            <h2>{ qtdDepositoEliminado }</h2>
-                          </NumberDash>
-                          <NumberDash className="col margin-b">
-                            <h4 className="legend">Tratados</h4>
-                            <h2>{ qtdDepositoTratado }</h2>
-                          </NumberDash>
-                        </Row>
-                        <Row>
-                          <NumberDash className="col border-r margin-b">
-                            <h4 className="legend">Total dep.</h4>
-                            <h2>{ totalDepositos }</h2>
-                          </NumberDash>
-                          <NumberDash className="col">
-                            <h4 className="legend">Qtde (Gramas)</h4>
-                            <h2>{ qtdTratamentoGrama } g</h2>
-                          </NumberDash>
-                        </Row>
-                      </div>
-                    </article>
-                  </Col>
-                </Row>
-              </Tab>
-            </Tabs>
+          <Col md="9">
+            <article style={{ height: '100%', padding: '0 0 30px' }}>
+              <div className="card h-100">
+                <h2 className="title">Depósitos por tipo</h2>
+                <Bar data={ depositosTipoData } />
+              </div>
+            </article>
+          </Col>
+          <Col md="3">
+            <article className="p-0">
+              <InfoBox className="mb-3 bg-primary template-no-icon text-white">
+                <div className="info-box-content">
+                  <div className="content-left">
+                    <div className="info-title">Amostra(s)</div>
+                    <div className="info-subtitle">Nº amostras</div>
+                  </div>
+                  <div className="content-right">
+                    <span className="info-box-number">{ qtdAmostra }</span>
+                  </div>
+                </div>
+              </InfoBox>
+
+              <InfoBox className="mb-3 bg-danger template-no-icon text-white">
+                <div className="info-box-content">
+                  <div className="content-left">
+                    <div className="info-title">Recusa(s)</div>
+                    <div className="info-subtitle">Nº de recusas</div>
+                  </div>
+                  <div className="content-right">
+                    <span className="info-box-number">{ qtdRecusa }</span>
+                  </div>
+                </div>
+              </InfoBox>
+
+              <InfoBox className="mb-3 bg-warning template-no-icon text-white">
+                <div className="info-box-content">
+                  <div className="content-left">
+                    <div className="info-title">Fechada(s)</div>
+                    <div className="info-subtitle">Nº imóveis fechados</div>
+                  </div>
+                  <div className="content-right">
+                    <span className="info-box-number">{ qtdFechada }</span>
+                  </div>
+                </div>
+              </InfoBox>
+
+              <InfoBox className="mb-3 bg-info template-no-icon text-white">
+                <div className="info-box-content">
+                  <div className="content-left">
+                    <div className="info-title">Eliminado(s)</div>
+                    <div className="info-subtitle">Qtd. Depósito(s)</div>
+                  </div>
+                  <div className="content-right">
+                    <span className="info-box-number">{ qtdDepositoEliminado }</span>
+                  </div>
+                </div>
+              </InfoBox>
+
+              <InfoBox className="mb-3 bg-primary template-no-icon text-white">
+                <div className="info-box-content">
+                  <div className="content-left">
+                    <div className="info-title">Tratado(s)</div>
+                    <div className="info-subtitle">Qtd. Depósito(s)</div>
+                  </div>
+                  <div className="content-right">
+                    <span className="info-box-number">{ qtdDepositoTratado }</span>
+                  </div>
+                </div>
+              </InfoBox>
+
+              <InfoBox className="mb-3 bg-danger template-no-icon text-white">
+                <div className="info-box-content">
+                  <div className="content-left">
+                    <div className="info-title">Inseticida</div>
+                    <div className="info-subtitle">Qtd. usada</div>
+                  </div>
+                  <div className="content-right">
+                    <span className="info-box-number">{ qtdTratamentoGrama }g</span>
+                  </div>
+                </div>
+              </InfoBox>
+            </article>
           </Col>
         </Row>
       </section>
@@ -357,4 +332,4 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)( Agent_metrics );
+)( DailyReport );

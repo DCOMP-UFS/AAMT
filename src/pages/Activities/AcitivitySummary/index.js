@@ -2,12 +2,17 @@ import React, { useEffect, useCallback, useState } from 'react';
 import { View, Alert } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 
+import { BarChart, Grid, YAxis } from 'react-native-svg-charts';
+import * as scale from 'd3-scale';
+import { Text } from 'react-native-svg';
+
 import api from '../../../services/api';
 import getToken from '../../../utils/getToken';
 
-// import { Container } from './styles';
+import { Container, Card, Header, PropertyTitle } from './styles';
 
 const AcitivitySummary = () => {
+  const [loading, setLoading] = useState(false);
   const [activity, setActivity] = useState([]);
   const [propertiesType, setPropertiesType] = useState([
     { label: 'Residencial', value: 0 },
@@ -151,6 +156,14 @@ const AcitivitySummary = () => {
         });
       }
     });
+
+    setPropertiesType(tipoImovel);
+    setRecipientType(tipoDeposito);
+    setPendency(pendencia);
+    setStatus(statusVistoria);
+    setDestination(destinoDeposito);
+    setTreatment(tratamento);
+    setSampleNumber(amostras);
   }
 
   const route = useRoute();
@@ -182,7 +195,92 @@ const AcitivitySummary = () => {
     filter();
   }, [activity]);
 
-  return <View />;
+  function Bar(data) {
+    const CUT_OFF = 0;
+    const Labels = ({ x, y, bandwidth, data }) =>
+      data.map((value, index) => (
+        <Text
+          key={index}
+          x={value.value > CUT_OFF ? x(0) + 10 : x(value.value) + 10}
+          y={y(index) + bandwidth / 2}
+          fontSize={14}
+          fill={value.value > CUT_OFF ? 'white' : 'black'}
+          alignmentBaseline={'middle'}
+        >
+          {value.value}
+        </Text>
+      ));
+
+    return (
+      <View
+        style={{ flexDirection: 'row', height: 'auto', paddingVertical: 16 }}
+      >
+        <YAxis
+          data={data}
+          yAccessor={({ index }) => index}
+          scale={scale.scaleBand}
+          contentInset={{ top: 10, bottom: 10 }}
+          spacing={0.2}
+          formatLabel={(_, index) => data[index].label}
+          svg={{ fill: 'black' }}
+        />
+        <BarChart
+          style={{ flex: 1, marginLeft: 8, height: 200 }}
+          data={data}
+          horizontal={true}
+          yAccessor={({ item }) => item.value}
+          svg={{ fill: '#0095DA' }}
+          contentInset={{ top: 10, bottom: 10 }}
+          spacing={0.2}
+          gridMin={0}
+        >
+          <Grid direction={Grid.Direction.VERTICAL} />
+          <Labels />
+        </BarChart>
+      </View>
+    );
+  }
+
+  return (
+    <Container>
+      <Card>
+        <Header>
+          <PropertyTitle>Imóveis trabalhos por tipo</PropertyTitle>
+        </Header>
+        {Bar(propertiesType)}
+      </Card>
+      <Card>
+        <Header>
+          <PropertyTitle>Imóveis trabalhos por status</PropertyTitle>
+        </Header>
+        {Bar(status)}
+      </Card>
+      <Card>
+        <Header>
+          <PropertyTitle>Imóveis trabalhos por pendencia</PropertyTitle>
+        </Header>
+        {Bar(pendency)}
+      </Card>
+      <Card>
+        <Header>
+          <PropertyTitle>Depósitos inspecionados por tipo</PropertyTitle>
+        </Header>
+        {Bar(recipientType)}
+      </Card>
+      <Card>
+        <Header>
+          <PropertyTitle>Destino dos depósitos</PropertyTitle>
+        </Header>
+        {Bar(destination)}
+      </Card>
+      <Card>
+        <Header>
+          <PropertyTitle>Tipo de tratamento</PropertyTitle>
+        </Header>
+        {Bar(treatment)}
+      </Card>
+    </Container>
+  );
 };
 
 export default AcitivitySummary;

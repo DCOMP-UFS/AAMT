@@ -115,21 +115,6 @@ getInspectsByDailyWork = async ( req, res ) => {
   const userId = req.userId;
 
   // Iniciando validação
-  const userRequest = await Usuario.findByPk( userId, {
-    include: {
-      association: "atuacoes"
-    }
-  });
-
-  let fl_agente = false;
-  userRequest.atuacoes.forEach( at => {
-    if( at.tipoPerfil === 4 )
-      fl_agente = true;
-  });
-
-  if( fl_agente && parseInt( usuario_id ) !== userRequest.id )
-    return res.status(400).json({ error: "Acesso negado" });
-
   const trabalho_diario = await TrabalhoDiario.findByPk( trabalho_diario_id );
 
   if( !trabalho_diario )
@@ -137,14 +122,14 @@ getInspectsByDailyWork = async ( req, res ) => {
   // Fim validação
 
   const vistorias = await Vistoria.findAll({
+    where: {
+      trabalho_diario_id: trabalho_diario.id
+    },
     order: [
       [ 'createdAt', 'DESC' ]
     ],
     include: [
       {
-        where: {
-          trabalho_diario_id: trabalho_diario.id
-        },
         association: 'trabalhoDiario',
         attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
         include: {
@@ -268,7 +253,7 @@ const router = express.Router();
 router.use( authMiddleware );
 
 router.get('/:usuario_id/usuarios', getInspects);
-router.get('/:trabalho_diario_id/trabalhos_diarios', getInspects);
+router.get('/trabalho/:trabalho_diario_id/trabalhos_diarios', getInspectsByDailyWork);
 router.get('/periodo/:usuario_id/usuarios/:data_inicio/data_inicio/:data_fim/data_fim', getInspectsByPeriod);
 
 module.exports = app => app.use('/vistorias', router);

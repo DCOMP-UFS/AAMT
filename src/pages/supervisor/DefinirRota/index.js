@@ -30,7 +30,7 @@ function DefinirRota({ usuario, atividades, equipes, planejamentoCache, ciclo, r
     props.getOpenCycleRequest( regionalSaude_id );
     props.getActivitiesSupRequest( usuario.id );
 
-    const [ m, d, Y ]  = new Date().toLocaleDateString('en-GB').split('/');
+    const [ d, m, Y ]  = new Date().toLocaleDateString().split('/');
     setCurrentDate( `${d}/${m}/${Y}` );
   }, []);
 
@@ -86,9 +86,12 @@ function DefinirRota({ usuario, atividades, equipes, planejamentoCache, ciclo, r
             <div className="card">
               <label className="m-0">
                 {
-                  Object.entries(ciclo).length > 0 ?
-                    `Ciclo ${ ciclo.ano }.${ ciclo.sequencia }: selecione uma equipe para planejar as rotas do dia ${ currentDate }.` :
-                    "Não há ciclo em abertos"
+                  ciclo ?
+                    Object.entries( ciclo ).length > 0 ?
+                      `Ciclo ${ ciclo.ano }.${ ciclo.sequencia }: selecione uma equipe para planejar as rotas do dia ${ currentDate }.` :
+                      "Não há ciclo em abertos"
+                    :
+                    ''
                 }
               </label>
             </div>

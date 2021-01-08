@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { Color } from '../../../styles/global';
-import { stylesProps } from '../../../styles/util';
 
 export const Article = styled.article`
 `;

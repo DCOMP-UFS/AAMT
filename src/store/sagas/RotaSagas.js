@@ -64,14 +64,14 @@ export function* closeRoute(action) {
 
     if( status === 200 ) {
       if( data.status === "success" ) {
-        const [ d, m, Y ]  = new Date().toLocaleDateString('en-GB').split('/');
+        const [ d, m, Y ]  = new Date().toLocaleDateString().split('/');
         const current_date = `${Y}-${m}-${d}`;
         const { data } = yield call( getRouteRequest, { usuario_id: action.payload.usuario_id, dia: current_date } );
 
         yield put( RotaCacheActions.getRoute( data ) );
         yield put( AppConfigActions.showNotifyToast( "Rota finalizada e vistorias registradas com sucesso!", "success" ) );
 
-        window.location = window.location.origin.toString() + '/agente/home';
+        window.location = window.location.origin.toString() + '/agente/relatorio/boletim_diario/' + action.payload.trabalhoDiario_id;
       }else {
         yield put( AppConfigActions.showNotifyToast( "Ocorreu um erro no servidor durante a requisição! Por favor, aguarde e tente novamente mais tarde.", "error" ) );
       }

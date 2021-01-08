@@ -11,7 +11,8 @@ export const ActionTypes = {
   CONSULTAR_VISTORIAS_SUCCESS: "CONSULTAR_VISTORIAS_SUCCESS",
   SET_RECIPIENT: "SET_RECIPIENT",
   SET_SEQUENCE_INSPECTION: "SET_SEQUENCE_INSPECTION",
-  SET_IMMOBILE: "SET_IMMOBILE"
+  SET_IMMOBILE: "SET_IMMOBILE",
+  GET_INSPECTS_BY_DAILY_WORK_REQUEST: "GET_INSPECTS_BY_DAILY_WORK_REQUEST"
 }
 
 export const setImmobile = class_immobile => {
@@ -125,6 +126,24 @@ export const getInspectsRequest = usuario_id => {
 }
 
 export const getInspects = vistorias => {
+  return {
+    type: ActionTypes.CONSULTAR_VISTORIAS_SUCCESS,
+    payload: {
+      vistorias
+    }
+  }
+}
+
+export const getInspectsByDailyWorkRequest = trabalho_diario_id => {
+  return {
+    type: ActionTypes.GET_INSPECTS_BY_DAILY_WORK_REQUEST,
+    payload: {
+      trabalho_diario_id
+    }
+  }
+}
+
+export const getInspectsByDailyWork = vistorias => {
   return {
     type: ActionTypes.CONSULTAR_VISTORIAS_SUCCESS,
     payload: {

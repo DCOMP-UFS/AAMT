@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect } from 'react';
 import { FaClipboardCheck } from 'react-icons/fa';
 import { Row } from 'react-bootstrap';
 import PNCD from '../components/PNCD';
@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { changeSidebar } from '../../../../store/actions/sidebarAgente';
 
 // STYLES
-import { PageIcon, PageHeader, ContainerFixed } from '../../../../styles/util';
+import { PageIcon, PageHeader } from '../../../../styles/util';
 import { Container } from './styles';
 
 function CadastrarVistoria({ trabalhoDiario, rota, vistorias, ...props }) {

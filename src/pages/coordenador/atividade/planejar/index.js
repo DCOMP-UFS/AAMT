@@ -40,17 +40,17 @@ import { PageIcon, PageHeader, ContainerFixed } from '../../../../styles/util';
 
 function PlanejarAtividade({ atividade, estratos, equipes, ...props }) {
   const [ id ] = useState(props.match.params.id);
-  const [ objetivoAtividade, setObjetivoAtividade ] = useState("");
-  const [ abrangencia, setAbrangencia ] = useState(undefined);
-  const [ situacao, setSituacao ] = useState(undefined);
-  const [ responsabilidade, setResponsabilidade ] = useState(undefined);
-  const [ flTodosImoveis, setFlTodosImoveis ] = useState(false);
-  const [ metodologia, setMetodologia ] = useState({
+  const [ objetivoAtividade, setObjetivoAtividade ] = useState( "" );
+  const [ abrangencia, setAbrangencia ]             = useState( undefined );
+  // const [ situacao, setSituacao ] = useState( undefined );
+  const [ responsabilidade, setResponsabilidade ]   = useState( undefined );
+  const [ flTodosImoveis, setFlTodosImoveis ]       = useState( false );
+  const [ metodologia, setMetodologia ]             = useState({
     sigla: ""
   });
-  const [ objetivo, setObjetivo ] = useState({});
-  const [ mensageEstrato, setMensageEstrato ] = useState("");
-  const [ mensageEquipe, setMensageEquipe ] = useState("");
+  const [ objetivo, setObjetivo ]                   = useState( {} );
+  const [ mensageEstrato, setMensageEstrato ]       = useState( "" );
+  const [ mensageEquipe, setMensageEquipe ]         = useState( "" );
 
   useEffect(() => {
     props.changeSidebar(1, 1);
@@ -65,7 +65,7 @@ function PlanejarAtividade({ atividade, estratos, equipes, ...props }) {
         Object.entries( abrangenciaEnum )
           .filter(([ attr, data ]) => data.id === atividade.abrangencia )[0][1].label
       );
-      setSituacao( atividade.situacao );
+      // setSituacao( atividade.situacao );
       setResponsabilidade(
         Object.entries( responsabilidadeAtividade )
           .filter(([ attr, data ]) => data.id === atividade.responsabilidade )[0][1].label

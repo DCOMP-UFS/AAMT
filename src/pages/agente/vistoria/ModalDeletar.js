@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Modal, { ModalBody, ModalFooter } from '../../../components/Modal';
-import $ from 'jquery';
 import LoadginGif from '../../../assets/loading.gif';
 
 // REDUX
@@ -14,7 +13,7 @@ import { deletarVistoria } from '../../../store/actions/VistoriaCacheActions';
 import { Button } from '../../../styles/global';
 
 function ModalConfirmar({ tableSelected, ...props }) {
-  const [ flLoading, setFlLoading ] = useState( false );
+  const [ flLoading ] = useState( false );
 
   // useEffect(() => {
   //   if( updateUser ) {

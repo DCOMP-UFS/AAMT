@@ -5,6 +5,7 @@ import ModalIniciarTrabalho from '../components/ModalIniciarTrabalho';
 import ReactMapGL, { Marker } from 'react-map-gl';
 import dotenv from 'dotenv';
 import img_home_icon from '../../../assets/home-icon.png';
+import img_home_icon_green from '../../../assets/home-icon-green.png';
 import Typography from "@material-ui/core/Typography";
 import Table from '../../../components/Table';
 import ProgressBar from '../../../components/ProgressBar';
@@ -23,8 +24,7 @@ import { resetShowNotStarted } from '../../../store/actions/VistoriaCacheActions
 
 // STYLES
 import { Button } from '../../../styles/global';
-import { PageIcon, PageHeader, PagePopUp, NumberDash, InfoBox } from '../../../styles/util';
-import { tr } from 'date-fns/locale';
+import { PageIcon, PageHeader, PagePopUp, InfoBox } from '../../../styles/util';
 
 dotenv.config();
 
@@ -87,7 +87,7 @@ const columns = [
   }
 ];
 
-function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...props }) {
+function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vistorias, ...props }) {
   const [ trabalhoDiario_date, setTrabalhoDiario_date ] = useState( '' );
   const [ viewport, setViewport ] = useState({
     width: '100%',
@@ -96,7 +96,7 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
     longitude: -37.081680,
     zoom: 14
   });
-  const [ qtdQuarteirao, setQtdQuarteirao ] = useState( 0 );
+  // const [ qtdQuarteirao, setQtdQuarteirao ] = useState( 0 );
   const [ qtdTipoImovel, setQtdTipoImovel ] = useState( [ 0, 0, 0, 0 ] );
   const [ imoveis, setImoveis ] = useState( [] );
   const [ rows, setRows ] = useState( [] );
@@ -155,36 +155,37 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
   }, [ rota ]);
 
   useEffect(() => {
+    function createRows() {
+      let qtdTipo = [ 0, 0, 0, 0 ];
+      const imovs = imoveis.map( ( imovel, index ) => {
+        switch( imovel.tipoImovel ) {
+          case 1: qtdTipo[ 0 ]++; break; // Residêncial
+          case 2: qtdTipo[ 1 ]++; break; // Terreno Baldio
+          case 3: qtdTipo[ 2 ]++; break; // Comercial
+          default: qtdTipo[ 3 ]++; break; // Ponto Estratégico
+        }
+  
+        const tipoImovel = tipoImovelEnum.find( tipo => imovel.tipoImovel === tipo.id );
+  
+        return (
+          [
+            index,
+            imovel.numero,
+            imovel.sequencia ? imovel.sequencia : '',
+            tipoImovel.label,
+            imovel.rua,
+            imovel.quarteirao,
+          ]
+        )
+      });
+  
+      setRows( imovs );
+      setQtdTipoImovel( qtdTipo );
+    }
+
     createRows();
   }, [ imoveis ]);
 
-  function createRows() {
-    let qtdTipo = [ 0, 0, 0, 0 ];
-    const imovs = imoveis.map( ( imovel, index ) => {
-      switch( imovel.tipoImovel ) {
-        case 1: qtdTipo[ 0 ]++; break; // Residêncial
-        case 2: qtdTipo[ 1 ]++; break; // Terreno Baldio
-        case 3: qtdTipo[ 2 ]++; break; // Comercial
-        default: qtdTipo[ 3 ]++; break; // Ponto Estratégico
-      }
-
-      const tipoImovel = tipoImovelEnum.find( tipo => imovel.tipoImovel === tipo.id );
-
-      return (
-        [
-          index,
-          imovel.numero,
-          imovel.sequencia ? imovel.sequencia : '',
-          tipoImovel.label,
-          imovel.rua,
-          imovel.quarteirao,
-        ]
-      )
-    });
-
-    setRows( imovs );
-    setQtdTipoImovel( qtdTipo );
-  }
   function checkRota() {
     props.isStartedRequest( trabalhoDiario.id );
   }
@@ -232,7 +233,7 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
 
         <Row>
           <article className="col-12">
-            <ProgressBar className="bg-success" percentage={ 0 } total={ 4 } />
+            <ProgressBar className="bg-success" percentage={ vistorias.length } total={ imoveis.length } />
           </article>
           <article className="col-md-8">
             <div className="card" style={{ height: '350px' }}>
@@ -243,21 +244,27 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, ...
                 // mapStyle="mapbox://styles/mapbox/satellite-streets-v11"
               >
                 {
-                  imoveis.map(( imovel, index ) => (
-                    <Marker
-                      key={ index }
-                      latitude={ parseFloat( imovel.lat ) }
-                      longitude={ parseFloat( imovel.lng ) }
-                      offsetLeft={ -20 }
-                      offsetTop={ -10 }
-                    >
-                      <img
-                        src={ img_home_icon }
-                        width="25"
-                        alt="Carregando"
-                      />
-                    </Marker>
-                  ))
+                  rota.map( r => r.lados.map( lado => lado.imoveis.map(( imovel, index ) => {
+                    const inspection  = vistorias.find(vistoria => vistoria.imovel.id === imovel.id );
+
+                    return (
+                      <Marker
+                        key={ index }
+                        latitude={ parseFloat( imovel.lat ) }
+                        longitude={ parseFloat( imovel.lng ) }
+                        offsetLeft={ -20 }
+                        offsetTop={ -10 }
+                      >
+                        <img
+                          src={
+                            inspection ? img_home_icon_green : img_home_icon
+                          }
+                          width="25"
+                          alt="Carregando"
+                        />
+                      </Marker>
+                    )
+                  })))
                 }
               </ReactMapGL>
             </div>
@@ -318,7 +325,8 @@ const mapStateToProps = state => ({
   rota:           state.rotaCache.rota,
   fl_iniciada:    state.rota.fl_iniciada,
   openModal:      state.rota.openModal,
-  showNotStarted: state.vistoriaCache.showNotStarted
+  showNotStarted: state.vistoriaCache.showNotStarted,
+  vistorias:      state.vistoriaCache.vistorias
 });
 
 const mapDispatchToProps = dispatch =>

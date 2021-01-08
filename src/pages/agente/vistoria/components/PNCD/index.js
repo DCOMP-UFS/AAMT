@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
-import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import ProcurarImovel from '../ProcurarImovel';
 import InspecionarRecipiente from '../InspecionarRecipiente'
@@ -17,27 +16,15 @@ import { addVistoria, updateInspection } from '../../../../../store/actions/Vist
 import { setRecipient, setSequenceInspection, setImmobile } from '../../../../../store/actions/VistoriaActions';
 
 // STYLES
-import { Separator, selectDefault, FormGroup } from '../../../../../styles/global';
+import { selectDefault } from '../../../../../styles/global';
 import { ContainerFixed } from '../../../../../styles/util';
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: 200,
-  },
-}));
-
 function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, ...props }) {
-  const [ optionVisita, setOptionVisita ] = useState([
+  const [ optionVisita ] = useState([
     { value: "N", label: "Normal" },
     { value: "R", label: "Recuperada" },
   ]);
-  const [ optionPendencia, setOptionPendencia ] = useState([
+  const [ optionPendencia ] = useState([
     { value: null, label: "Nenhuma" },
     { value: "F", label: "Fechada" },
     { value: "R", label: "Recusada" }

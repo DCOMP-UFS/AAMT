@@ -6,3 +6,10 @@ export const getInspectsRequest = data => {
     ...headerAuthorization()
   });
 }
+
+export const getInspectsByDailyWorkRequest = data => {
+  const { trabalho_diario_id } = data;
+  return api.get(`/vistorias/trabalho/${ trabalho_diario_id }/trabalhos_diarios`, {
+    ...headerAuthorization()
+  });
+}

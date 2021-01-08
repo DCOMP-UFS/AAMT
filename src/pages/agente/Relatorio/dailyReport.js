@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
-import { FaChartPie, FaVial, FaBan, FaLock, FaTintSlash } from 'react-icons/fa';
+import { FaChartPie } from 'react-icons/fa';
 import { tipoImovel as tipoImovelEnum } from '../../../config/enumerate';
 import { tipoRecipiente as tipoRecipienteEnum } from '../../../config/enumerate';
 import Pie from '../../../components/Charts/Pie';
@@ -12,14 +12,14 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebarAgente';
-import { getInspectsRequest } from '../../../store/actions/VistoriaActions';
+import { getDailyWorkByIdRequest } from '../../../store/actions/trabalhoDiario';
+import { getInspectsByDailyWorkRequest } from '../../../store/actions/VistoriaActions';
 
 // STYLES
 import { Color } from '../../../styles/global';
-import { PageIcon, PageHeader, NumberDash, InfoBox } from '../../../styles/util';
+import { PageIcon, PageHeader, InfoBox } from '../../../styles/util';
 
-function DailyReport({ usuario, vistorias, ...props }) {
-  const [ tabKey, setTabKey] = useState('relatorio');
+function DailyReport({ usuario, vistorias, trabalhoDiario, ...props }) {
   const [ imoveisTipoData, setImoveisTipoData ] = useState({
     labels: Object.entries( tipoImovelEnum ).map(([ key, value ]) => ( value.sigla ) ),
     reload: false,
@@ -94,11 +94,21 @@ function DailyReport({ usuario, vistorias, ...props }) {
   const [ qtdTratamentoGrama, setQtdTratamentoGrama ] = useState( 0 );
   const [ qtdDepositoEliminado, setQtdDepositoEliminado ] = useState( 0 );
   const [ totalDepositos, setTotalDepositos ] = useState( 0 );
+  const [ data, setData ] = useState( '' );
 
   useEffect(() => {
     props.changeSidebar( 3, 1 );
-    props.getInspectsRequest( usuario.id );
+    props.getDailyWorkByIdRequest( props.match.params.trabalho_diario_id );
+    props.getInspectsByDailyWorkRequest( props.match.params.trabalho_diario_id );
   }, []);
+
+  // Consultando a data do trabalho diário
+  useEffect(() => {
+    if( trabalhoDiario ) {
+      const [ Y, m, d ] = trabalhoDiario.data.split( 'T' )[ 0 ].split( '-' );
+      setData( `${ d }/${ m }/${ Y }` );
+    }
+  }, [ trabalhoDiario ]);
 
   useEffect(() => {
     filter();
@@ -204,7 +214,7 @@ function DailyReport({ usuario, vistorias, ...props }) {
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaChartPie /></PageIcon>
-          Resumo diário - xx/xx/xxxx
+          Resumo diário - { data }
         </h3>
       </PageHeader>
 
@@ -319,14 +329,15 @@ function DailyReport({ usuario, vistorias, ...props }) {
 
 const mapStateToProps = state => ({
   usuario: state.appConfig.usuario,
-  trabalhoDiario: state.rotaCache.trabalhoDiario,
   vistorias: state.vistoria.vistorias,
+  trabalhoDiario: state.trabalhoDiario.trabalhoDiario
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
     changeSidebar,
-    getInspectsRequest
+    getInspectsByDailyWorkRequest,
+    getDailyWorkByIdRequest
   }, dispatch);
 
 export default connect(

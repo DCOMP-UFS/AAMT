@@ -48,14 +48,14 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
   const [ qtdTratamento, setQtdTratamento ] = useState(0);
   const [ unidade, setUnidade ] = useState([]);
   const [ reload, setReload ] = useState( false );
-  const [ optionsTipoRecipiente, setOptionsTipoRecipiente ] = useState(tipoRecipienteEnum.map( tipo => (
+  const [ optionsTipoRecipiente ] = useState(tipoRecipienteEnum.map( tipo => (
     { value: tipo, label: tipo }
   ) ));
-  const [ optionsSimNao, setOptionsSimNao ] = useState([
+  const [ optionsSimNao ] = useState([
     { value: true, label: "Sim" },
     { value: false, label: "Não" }
   ]);
-  const [ optionsTecnicaTratamento, setOptionsTecnicaTratamento ] = useState(
+  const [ optionsTecnicaTratamento ] = useState(
     Object.entries( tecnicaTratamentoEnum ).map(([ key, value ]) => ({ value: value.id, label: value.label }))
   );
 

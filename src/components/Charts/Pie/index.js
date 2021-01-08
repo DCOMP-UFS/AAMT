@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Pie } from 'react-chartjs-2';
 
-import { generateColor } from '../support';
-
 const configChart = {
   fill: false,
   lineTension: 0.1,
@@ -25,15 +23,11 @@ export default class PieChart extends Component {
   render() {
     let data = this.props.data;
 
-    // const chartColor = generateColor( data.datasets[0].data.length );
-
     data.datasets = data.datasets
       .map( (dataset, index) => {
         return {
           ...dataset,
           ...configChart,
-          // backgroundColor: chartColor[ (index % data.datasets.length ) ],
-          // borderColor: chartColor[ (index % data.datasets.length ) ]
         }
       });
 

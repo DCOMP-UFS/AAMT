@@ -6,3 +6,10 @@ export const getByUserRequest = data => {
     ...headerAuthorization()
   });
 }
+
+export const getDailyWorkByIdRequest = data => {
+  const { trabalho_diario_id } = data;
+  return api.get(`/trabalhoDiario/${ trabalho_diario_id }`, {
+    ...headerAuthorization()
+  });
+}

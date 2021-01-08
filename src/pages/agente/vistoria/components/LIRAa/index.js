@@ -39,7 +39,7 @@ function LIRAa({ handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, .
   const [ entrada, setEntrada ] = useState( "" );
   const [ visita, setVisita ] = useState({ value: "N", label: "Normal" });
   const [ sequenciaVistoria, setSequenciaVistoria ] = useState( 0 );
-  const [ optionVisita, setOptionVisita ] = useState([
+  const [ optionVisita ] = useState([
     { value: "N", label: "Normal" },
     { value: "R", label: "Recuperada" },
   ]);

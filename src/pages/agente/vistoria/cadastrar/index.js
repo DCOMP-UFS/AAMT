@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { FaClipboardCheck } from 'react-icons/fa';
-import { Row, Col } from 'react-bootstrap';
 import PNCD from '../components/PNCD';
 import LIRAa from '../components/LIRAa';
 
@@ -12,13 +11,13 @@ import { connect } from 'react-redux';
 import { changeSidebar } from '../../../../store/actions/sidebarAgente';
 
 // STYLES
-import { PageIcon, PageHeader, ContainerFixed } from '../../../../styles/util';
+import { PageIcon, PageHeader } from '../../../../styles/util';
 import { Container } from './styles';
 
 function CadastrarVistoria({ trabalhoDiario, rota, ...props }) {
-  const [ indexVistoria, setIndexVistoria ] = useState( 0 );
+  // const [ indexVistoria, setIndexVistoria ] = useState( 0 );
   useEffect(() => {
-    setIndexVistoria( props.match.params.index );
+    // setIndexVistoria( props.match.params.index );
     props.changeSidebar(2, 1);
   }, []);
 

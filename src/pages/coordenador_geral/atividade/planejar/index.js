@@ -1,26 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {Map, Marker, GoogleApiWrapper} from 'google-maps-react';
-import { Row, Col } from 'react-bootstrap';
-import Select from 'react-select';
 
 // ACTIONS
 import { changeSidebar } from '../../../../store/actions/sidebarCoordGeral';
 
 // STYLES
-// import { ContainerMap } from './styles';
-import { FormGroup, selectDefault } from '../../../../styles/global';
 
 function PlanejarAtividade({ ...props }) {
   useEffect(() => {
     props.changeSidebar(2, 1);
   }, []);
-
-  function handleSubmit( e ) {
-    e.preventDefault();
-  }
 
   return (
     <section className="card-list">

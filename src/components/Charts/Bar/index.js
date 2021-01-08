@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Bar } from "react-chartjs-2";
 
-import { generateColor } from '../support';
-
 const configChart = {
   fill: false,
   lineTension: 0.1,

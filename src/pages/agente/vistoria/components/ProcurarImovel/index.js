@@ -19,12 +19,12 @@ import { selectDefault } from '../../../../../styles/global';
 import { Container, UlImovel, LiImovel, ContainerIcon, DivDescription, LiEmpty, Span } from './styles';
 
 function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }) {
-  const [ optionQuarteirao, setOptionQuarteirao ] = useState( rota.map(( quarteirao, index ) => {
+  const [ optionQuarteirao ] = useState( rota.map(( quarteirao, index ) => {
     return { value: index, label: quarteirao.numero, id: quarteirao.id };
   }));
   const [ numero, setNumero ] = useState("");
   const [ sequencia, setSequencia ] = useState("");
-  const [ optionTipoImovel, setOptionTipoImovel ] = useState(Object.entries( tipoImovelEnum ).map(([key, value]) => {
+  const [ optionTipoImovel ] = useState(Object.entries( tipoImovelEnum ).map(([key, value]) => {
     return { value: value.id, label: value.label };
   }));
   const [ imoveis, setImoveis ] = useState( [] );

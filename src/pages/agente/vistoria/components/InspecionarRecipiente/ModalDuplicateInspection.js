@@ -43,7 +43,7 @@ function ModalDuplicateInspection({ index, recipientes, objetivo, ...props }) {
       );
       setQtdTratamento( recipiente.tratamento.quantidade );
     }
-  }, [ index ]);
+  }, [ index, recipientes ]);
 
   function closeModal() {
     setNumberCopies( 1 );

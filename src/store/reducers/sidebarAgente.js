@@ -4,13 +4,13 @@ import { ActionTypes } from '../actions/sidebarAgente';
 
 const location = window.location.origin.toString();
 
-function createNav( id, description, active, icon, submenu ){
-  return { id, description, type: "nav", active, icon, submenu }
-}
+// function createNav( id, description, active, icon, submenu ){
+//   return { id, description, type: "nav", active, icon, submenu }
+// }
 
-function createSubmenu( id, active, description, url ) {
-  return { id, active, description, url: location + url }
-}
+// function createSubmenu( id, active, description, url ) {
+//   return { id, active, description, url: location + url }
+// }
 
 function createCategory( description ) {
   return { description, type: "category" }

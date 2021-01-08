@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import ButtonNewObject from '../../../../../components/ButtonNewObject';
 import ModalCadastrarInspecao from './ModalCadastrarInspecao';
 import ModalEditarInspecao from './ModalEditarInspecao';

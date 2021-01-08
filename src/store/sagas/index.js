@@ -154,8 +154,10 @@ export default function* rootSaga() {
 
     // Gerir Vistoria
     takeLatest( VistoriaActions.CONSULTAR_VISTORIAS_REQUEST, VistoriaSagas.getInspects ),
+    takeLatest( VistoriaActions.GET_INSPECTS_BY_DAILY_WORK_REQUEST, VistoriaSagas.getInspectsByDailyWork ),
 
     // Gerir Trabalho Diario
     takeLatest( TrabalhoDiarioActions.GET_BY_USER_REQUEST, TrabalhoDiarioSagas.getByUser ),
+    takeLatest( TrabalhoDiarioActions.GET_DAILY_WORK_BY_ID_REQUEST, TrabalhoDiarioSagas.getDailyWorkById ),
   ]);
 }

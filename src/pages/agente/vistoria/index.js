@@ -118,8 +118,10 @@ const columns = [
 ];
 
 function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ...props }) {
-  const [ rows, setRows ] = useState([]);
+  const [ rows, setRows ]         = useState([]);
+  const [ imoveis, setImoveis ]   = useState( [] );
   const [ viewport, setViewport ] = useState({
+    
     width: '100%',
     height: '100%',
     latitude: -10.968002,
@@ -171,28 +173,28 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
   }, [ showNotStarted ]);
 
   useEffect(() => {
+    function createRows() {
+      const vists = vistorias.map( ( vistoria, index ) => (
+        [
+          index,
+          vistoria.imovel.numeroQuarteirao,
+          vistoria.imovel.logradouro,
+          vistoria.imovel.numero,
+          vistoria.imovel.sequencia,
+          tipoImovelEnum[
+            Object.entries( tipoImovelEnum ).find(([ key, value ]) => value.id === vistoria.imovel.tipoImovel )[0]
+          ].sigla,
+          vistoria.situacaoVistoria === "N" ? "Normal" : "Recuperada",
+          vistoria.pendencia ? ( vistoria.pendencia === "F" ? "Fechada" : "Recusada" ) : "",
+          vistoria.horaEntrada
+        ]
+      ));
+  
+      setRows( vists );
+    }
+
     createRows();
   }, [ vistorias, props.reload ]);
-
-  function createRows() {
-    const vists = vistorias.map( ( vistoria, index ) => (
-      [
-        index,
-        vistoria.imovel.numeroQuarteirao,
-        vistoria.imovel.logradouro,
-        vistoria.imovel.numero,
-        vistoria.imovel.sequencia,
-        tipoImovelEnum[
-          Object.entries( tipoImovelEnum ).find(([ key, value ]) => value.id === vistoria.imovel.tipoImovel )[0]
-        ].sigla,
-        vistoria.situacaoVistoria === "N" ? "Normal" : "Recuperada",
-        vistoria.pendencia ? ( vistoria.pendencia === "F" ? "Fechada" : "Recusada" ) : "",
-        vistoria.horaEntrada
-      ]
-    ));
-
-    setRows( vists );
-  }
 
   useEffect(() => {
     if( !trabalhoDiario.id ) {
@@ -203,12 +205,27 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
 
     props.changeSidebar(2, 1);
 
-    const [ d, m, Y ]  = new Date().toLocaleDateString('en-GB').split('/');
+    const [ d, m, Y ]  = new Date().toLocaleDateString().split('/');
     const current_date = `${Y}-${m}-${d}`;
 
     props.getRouteRequest( usuario.id, current_date );
     props.resetHandleSave();
   }, []);
+
+  // pegando a lista de imóveis planejados para trabalho
+  useEffect(() => {
+    let imo = [];
+
+    rota.forEach(q => {
+      q.lados.forEach(l => {
+        let i = l.imoveis.map(imovel => ({ ...imovel, rua: l.rua.nome, quarteirao: q.numero }));
+
+        imo = [ ...i, ...imo ];
+      });
+    });
+
+    setImoveis( imo );
+  }, [ rota ]);
 
   function openModalFinalizarRota() {
     $('#modal-finalizar-rota').modal('show');
@@ -224,7 +241,6 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
       </PageHeader>
 
       <section className="card-list">
-        <ModalFinalizarTrabalho id="modal-finalizar-rota" />
         <Row>
           <PagePopUp className="w-100 col-12">
             <div className="card">
@@ -247,7 +263,7 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
           </PagePopUp>
 
           <article className="col-12">
-            <ProgressBar className="bg-success" percentage={ 0 } total={ 4 } />
+            <ProgressBar className="bg-success" percentage={ vistorias.length } total={ imoveis.length } />
           </article>
 
           <article className="col-md-12">
@@ -299,6 +315,7 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
           </article>
         </Row>
 
+        <ModalFinalizarTrabalho id="modal-finalizar-rota" />
         <ModalDeletar />
       </section>
     </Container>

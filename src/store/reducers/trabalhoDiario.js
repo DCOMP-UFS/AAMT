@@ -25,7 +25,7 @@ export default function trabalhoDiario(state = INITIAL_STATE, action) {
         trabalhosDiario: state.trabalhosDiario.push( action.payload.trabalhoDiario )
       }
 
-    case ActionTypes.GET_TRABALHO_DIARIO:
+    case ActionTypes.GET_TRABALHO_DIARIO: {
       // Simulando consulta na API
       const trabalhosDiario = [{
           id: 1,
@@ -42,6 +42,14 @@ export default function trabalhoDiario(state = INITIAL_STATE, action) {
       ];
 
       return { ...state,  trabalhosDiario: trabalhosDiario }
+    }
+
+    case ActionTypes.GET_DAILY_WORK_BY_ID: {
+      return {
+        ...state,
+        trabalhoDiario: action.payload.dailyJob
+      }
+    }
 
     default:
       return state;

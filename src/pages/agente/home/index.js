@@ -135,9 +135,11 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
   }, [ openModal ]);
 
   useEffect(() => {
-    let date = trabalhoDiario.data.split( 'T' )[ 0 ].split( '-' );
-
-    setTrabalhoDiario_date( `${ date[ 2 ] }/${ date[ 1 ] }/${ date[ 0 ] }` );
+    if( Object.entries( trabalhoDiario ).length > 0 ) {
+      let date = trabalhoDiario.data.split( 'T' )[ 0 ].split( '-' );
+  
+      setTrabalhoDiario_date( `${ date[ 2 ] }/${ date[ 1 ] }/${ date[ 0 ] }` );
+    }
   }, [ trabalhoDiario ]);
 
   useEffect(() => {

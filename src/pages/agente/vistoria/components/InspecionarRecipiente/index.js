@@ -89,7 +89,7 @@ function ListRecipiente({ recipientes, trabalhoDiario_id, vistoriaSequencia, ...
           className="dropdown-item"
           onClick={ () => props.openModalDuplicate( index ) }
           disabled={ recipiente.amostras.length > 0 }
-        >Duplicar</button>
+        >Replicar</button>
         <div className="dropdown-divider"></div>
         <button
           className="dropdown-item bg-danger"

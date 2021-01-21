@@ -141,7 +141,7 @@ plain = async ( req, res ) => {
   // Fim validação
 
   // en-GB: d/m/Y
-  const [ d, m, Y ]  = new Date().toLocaleDateString().split('/');
+  const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split('/');
   const current_date = `${ Y }-${ m }-${ d } 00:00:00-03`;
 
   planejamento.forEach( async p => {
@@ -221,7 +221,7 @@ getPlain = async ( req, res ) => {
   if( !fl_supervisor )
     return res.status(400).json({ error: "Usuário informado não é um supervisor!" });
 
-  const [ d, m, Y ]  = new Date().toLocaleDateString().split('/');
+  const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split('/');
   const current_date = `${Y}-${m}-${d} 00:00:00-03`;
   const planejamento = await TrabalhoDiario.findAll({
     where: {

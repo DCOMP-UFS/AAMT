@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
-import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import ProcurarImovel from '../ProcurarImovel';
 import InspecionarRecipiente from '../InspecionarRecipiente'
@@ -22,20 +21,7 @@ import { setRecipient, setSequenceInspection, setImmobile } from '../../../../..
 import { Separator, selectDefault } from '../../../../../styles/global';
 import { ContainerFixed } from '../../../../../styles/util';
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: 200,
-  },
-}));
-
 function LIRAa({ handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, ...props }) {
-  const classes = useStyles();
   const [ entrada, setEntrada ] = useState( "" );
   const [ visita, setVisita ] = useState({ value: "N", label: "Normal" });
   const [ sequenciaVistoria, setSequenciaVistoria ] = useState( 0 );
@@ -96,80 +82,86 @@ function LIRAa({ handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, .
   }
 
   return (
-    <div>
-      {/* Componente para escolha do imóvel da vistoria */}
-      <ProcurarImovel />
+    <>
+      <Row>
+        {/* Componente para escolha do imóvel da vistoria */}
+        <article className="col-md-12">
+          <div className="card">
+            <ProcurarImovel />
+          </div>
+        </article>
+        <article className="col-md-12">
+          <div className="card">
+            <Row className="mt-4">
+              {/* Dados específicos do formulário LIRAa */}
+              <Col md="6">
+                <Row>
+                  <Col md="12">
+                    <h4 className="title">Vistoria</h4>
+                  </Col>
 
-      <Separator />
+                  <Col md="6" className="form-group">
+                    <label htmlFor="horaEntrada">Horário de entrada <code>*</code></label>
+                    <TextField
+                      id="horaEntrada"
+                      type="time"
+                      value={ entrada }
+                      className="form-control"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      inputProps={{
+                        step: 300, // 5 min
+                      }}
+                      onChange={ e => setEntrada( e.target.value ) }
+                    />
+                  </Col>
+                  <Col md="6" className="form-group">
+                    <label htmlFor="horaEntrada">Imóvel</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      disabled="disabled"
+                      value={
+                        imovel ?
+                          imovel.tipoImovel === tipoImovelEnum.terrenoBaldio.id ?
+                            "TB" :
+                            "Outro"
+                          : ""
+                      }
+                      onChange={ e => {} } />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md="6" className="form-group">
+                    <label htmlFor="visita">Visita <code>*</code></label>
+                    <Select
+                      id="visita"
+                      styles={ selectDefault }
+                      options={ optionVisita }
+                      value={ visita }
+                      isDisabled={ true }
+                      onChange={ option => setVisita( option ) } />
+                  </Col>
+                </Row>
+              </Col>
 
-      <Row className="mt-4">
-        {/* Dados específicos do formulário LIRAa */}
-        <Col md="6">
-          <Row>
-            <Col md="12">
-              <h4 className="title">Vistoria</h4>
-            </Col>
-
-            <Col md="6" className="form-group">
-              <label htmlFor="horaEntrada">Horário de entrada <code>*</code></label>
-              <TextField
-                id="horaEntrada"
-                type="time"
-                value={ entrada }
-                className={ classes.textField }
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                inputProps={{
-                  step: 300, // 5 min
-                }}
-                onChange={ e => setEntrada( e.target.value ) }
-              />
-            </Col>
-            <Col md="6" className="form-group">
-              <label htmlFor="horaEntrada">Imóvel</label>
-              <input
-                type="text"
-                className="form-control"
-                disabled="disabled"
-                value={
-                  imovel ?
-                    imovel.tipoImovel === tipoImovelEnum.terrenoBaldio.id ?
-                      "TB" :
-                      "Outro"
-                    : ""
-                }
-                onChange={ e => {} } />
-            </Col>
-          </Row>
-          <Row>
-            <Col md="6" className="form-group">
-              <label htmlFor="visita">Visita <code>*</code></label>
-              <Select
-                id="visita"
-                styles={ selectDefault }
-                options={ optionVisita }
-                value={ visita }
-                isDisabled={ true }
-                onChange={ option => setVisita( option ) } />
-            </Col>
-          </Row>
-        </Col>
-
-        <Col md="6" >
-          <InspecionarRecipiente objetivo={ objetivo } />
-        </Col>
+              <Col md="6" >
+                <InspecionarRecipiente objetivo={ objetivo } />
+              </Col>
+            </Row>
+          </div>
+        </article>
+        <ContainerFixed>
+          <ButtonSave
+            title="Salvar Vistoria"
+            className="bg-info text-white"
+            loading={ false }
+            type="button"
+            onClick={ submit } />
+        </ContainerFixed>
       </Row>
-
-      <ContainerFixed>
-        <ButtonSave
-          title="Salvar Vistoria"
-          className="bg-info text-white"
-          loading={ false }
-          type="button"
-          onClick={ submit } />
-      </ContainerFixed>
-    </div>
+    </>
   );
 }
 

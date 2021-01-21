@@ -140,7 +140,7 @@ plain = async ( req, res ) => {
     return res.status(400).json({ error: "Usuário informado não é um supervisor!" });
   // Fim validação
 
-  // en-GB: Britânico, d/m/Y
+  // en-GB: d/m/Y
   const [ d, m, Y ]  = new Date().toLocaleDateString().split('/');
   const current_date = `${ Y }-${ m }-${ d } 00:00:00-03`;
 

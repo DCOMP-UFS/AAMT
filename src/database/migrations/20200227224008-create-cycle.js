@@ -15,11 +15,11 @@ module.exports = {
           allowNull: false
         },
         data_inicio: {
-          type: Sequelize.DATE,
+          type: Sequelize.DATEONLY,
           allowNull: false
         },
         data_fim: {
-          type: Sequelize.DATE,
+          type: Sequelize.DATEONLY,
           allowNull: false
         },
         sequencia: {

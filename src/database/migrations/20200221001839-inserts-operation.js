@@ -44,6 +44,38 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date()
       },
+      {
+        usuario_id: 6,
+        tipo_perfil: 2,
+        escopo: 2,
+        local_id: 2,
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
+        usuario_id: 7,
+        tipo_perfil: 3,
+        escopo: 2,
+        local_id: 2,
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
+        usuario_id: 8,
+        tipo_perfil: 4,
+        escopo: 2,
+        local_id: 2,
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
+        usuario_id: 9,
+        tipo_perfil: 5,
+        escopo: 3,
+        local_id: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      },
     ]);
   },
 

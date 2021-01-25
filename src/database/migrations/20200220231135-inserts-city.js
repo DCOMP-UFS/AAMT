@@ -18,6 +18,34 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date()
       },
+      {
+        codigo: 2800506,
+        nome: 'Areia Branca',
+        regional_saude_id: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
+        codigo: 2802908,
+        nome: 'Itabaiana',
+        regional_saude_id: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
+        codigo: 2804805,
+        nome: 'Nossa Senhora do Socorro',
+        regional_saude_id: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
+        codigo: 2806701,
+        nome: 'São Cristóvão',
+        regional_saude_id: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      },
     ]);
   },
 

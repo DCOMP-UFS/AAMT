@@ -44,7 +44,7 @@ getRoute = async ( req, res ) => {
   const td = await TrabalhoDiario.findOne({
     where: {
       usuario_id: usuario.id,
-      data: `${ data } 00:00:00-03`
+      data: `${ data }`
     },
 
     include: {

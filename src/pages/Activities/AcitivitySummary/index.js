@@ -245,19 +245,19 @@ const AcitivitySummary = () => {
     <Container>
       <Card>
         <Header>
-          <PropertyTitle>Imóveis trabalhos por tipo</PropertyTitle>
+          <PropertyTitle>Imóveis trabalhados por tipo</PropertyTitle>
         </Header>
         {Bar(propertiesType)}
       </Card>
       <Card>
         <Header>
-          <PropertyTitle>Imóveis trabalhos por status</PropertyTitle>
+          <PropertyTitle>Imóveis trabalhados por status</PropertyTitle>
         </Header>
         {Bar(status)}
       </Card>
       <Card>
         <Header>
-          <PropertyTitle>Imóveis trabalhos por pendencia</PropertyTitle>
+          <PropertyTitle>Imóveis trabalhados por pendencia</PropertyTitle>
         </Header>
         {Bar(pendency)}
       </Card>

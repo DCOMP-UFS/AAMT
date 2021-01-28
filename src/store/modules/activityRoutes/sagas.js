@@ -22,6 +22,8 @@ export function* getRoute({ payload }) {
       }
     );
 
+    console.log(response.data);
+
     yield put(getRouteSuccess(response.data));
   } catch (err) {
     Alert.alert(

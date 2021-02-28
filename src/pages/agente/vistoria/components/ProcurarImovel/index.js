@@ -144,7 +144,7 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
               </h4>
               {
                 imovel ?
-                  <p className="description">Registro do imóvel: <mark className="bg-success text-white">{ imovel.id }</mark></p> :
+                  <p className="description">Imóvel selecionado</p> :
                   <p className="description">Selecione um imóvel na lista a direita.</p>
               }
             </Col>
@@ -179,7 +179,7 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
 
             <Col md="6">
               <div className="form-group">
-                <label>Responsável<code>*</code></label>
+                <label>Responsável do imóvel<code>*</code></label>
                 <input
                   name="responsavel"
                   type="text"
@@ -278,7 +278,7 @@ function ListImovel({ rotaIndex, idImovelSelect, quarteirao, imoveis, ...props }
             <span className="mr-2">Nº: { imovel.numero }</span>
             <span>Seq.: { imovel.sequencia === -1 ? "" : imovel.sequencia }</span>
           </div>
-          <Span>Responsável: { imovel.responsavel }</Span>
+          <Span>Responsável do imóvel: { imovel.responsavel }</Span>
         </DivDescription>
       </LiImovel>
     )

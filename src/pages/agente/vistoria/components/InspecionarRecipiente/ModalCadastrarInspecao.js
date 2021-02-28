@@ -147,7 +147,7 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
 
           <div className="modal-body">
             <div className="form-group">
-              <label>Tipo de recipiente <code>*</code></label>
+              <label>Tipo do depósito <code>*</code></label>
 
               <Select
                 options={ optionsTipoRecipiente }
@@ -158,7 +158,7 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
 
             <Tratamento className={ ( objetivo === 'LI+T' || objetivo === 'T' ) ? "active" : "" }>
               <div className="form-group">
-                <label htmlFor="fl_eliminado">Recipiente eliminado? <code>*</code></label>
+                <label htmlFor="fl_eliminado">Depósito eliminado? <code>*</code></label>
                 <Select
                   id="fl_eliminado"
                   options={ optionsSimNao }
@@ -171,7 +171,7 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
                   }} />
               </div>
               <div className="form-group">
-                <label htmlFor="fl_tratado">Recipiente tratado? <code>*</code></label>
+                <label htmlFor="fl_tratado">Depósito tratado? <code>*</code></label>
                 <Select
                   id="fl_tratado"
                   options={ optionsSimNao }
@@ -224,9 +224,9 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
               <Separator />
 
               <h4>
-                Cadastrar Amostra(s)
+                Gerar código da(s) amostra(s)
                 <ButtonNewObject
-                  title="Cadastrar Amostra"
+                  title="Gerar código"
                   onClick={ addUnidade } />
               </h4>
 

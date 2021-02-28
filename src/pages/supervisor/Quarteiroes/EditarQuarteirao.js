@@ -413,7 +413,7 @@ function ListHouse({ lado, update: updateAction, delete: deleteAction }) {
               <span className="mr-2">Nº: { i.numero }</span>
               <span>Seq.: { i.sequencia === -1 ? "" : i.sequencia }</span>
             </div>
-            <Span>Responsável: { i.responsavel }</Span>
+            <Span>Responsável do imóvel: { i.responsavel }</Span>
           </DivDescription>
         </Container>
         <ButtonClose

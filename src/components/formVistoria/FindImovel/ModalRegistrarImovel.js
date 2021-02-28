@@ -160,7 +160,7 @@ class ModalRegistrarImovel extends Component {
 
                 <div className="col-md-6">
                   <div className="form-group">
-                    <label>Responsável<code>*</code></label>
+                    <label>Responsável do imóvel<code>*</code></label>
                     <input
                       id="responsavel"
                       name="responsavel"

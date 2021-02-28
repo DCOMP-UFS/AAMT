@@ -3,7 +3,6 @@ import { Row, Col } from 'react-bootstrap';
 import { FaChartPie } from 'react-icons/fa';
 import { tipoImovel as tipoImovelEnum } from '../../../config/enumerate';
 import { tipoRecipiente as tipoRecipienteEnum } from '../../../config/enumerate';
-import Pie from '../../../components/Charts/Pie';
 import Bar from '../../../components/Charts/Bar';
 
 // REDUX
@@ -224,7 +223,7 @@ function DailyReport({ usuario, vistorias, trabalhoDiario, ...props }) {
             <article className="p-0">
               <div className="card">
                 <h2 className="title">Imóveis por tipo</h2>
-                <Pie data={ imoveisTipoData } />
+                <Bar data={ imoveisTipoData } />
               </div>
             </article>
           </Col>
@@ -311,7 +310,7 @@ function DailyReport({ usuario, vistorias, trabalhoDiario, ...props }) {
               <InfoBox className="mb-3 bg-danger template-no-icon text-white">
                 <div className="info-box-content">
                   <div className="content-left">
-                    <div className="info-title">Inseticida</div>
+                    <div className="info-title">Larvicida</div>
                     <div className="info-subtitle">Qtd. usada</div>
                   </div>
                   <div className="content-right">

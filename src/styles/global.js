@@ -672,7 +672,6 @@ export const FormGroup = styled.div`
     outline-style: none;
   }
 
-
   label {
     font-size: 0.875rem;
     line-height: 1;

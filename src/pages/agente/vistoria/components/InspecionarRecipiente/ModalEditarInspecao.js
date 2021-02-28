@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { FaVial } from 'react-icons/fa';
-import { validInputIsNull } from '../../../../../config/function';
+import { validInputIsNull, msgInputInvalid } from '../../../../../config/function';
 import $ from 'jquery';
 import ButtonNewObject from '../../../../../components/ButtonNewObject';
 import ButtonClose from '../../../../../components/ButtonClose';
@@ -112,6 +112,16 @@ function InspecionarRecipiente({ updatedIndex, sequenciaRecipiente, recipientes,
     if( !validInputIsNull( "#fl_tratado", fl_tratado.value ) ) fl_valido = false;
     if( !validInputIsNull( "#fl_foco", fl_foco.value ) ) fl_valido = false;
 
+    if( fl_tratado.value && qtdTratamento === 0 ) {
+      fl_valido = false;
+      
+      var input_qtd_tratamento = $( '#edi_qtdTratamento' ),
+          form_group = input_qtd_tratamento.parent();
+      input_qtd_tratamento.addClass( 'invalid' );
+
+      form_group.append( msgInputInvalid( 'O valor não pode ser zero' ) );
+    }
+
     if( fl_valido ) {
       const recipiente = {
         fl_comFoco: fl_foco.value,
@@ -197,13 +207,13 @@ function InspecionarRecipiente({ updatedIndex, sequenciaRecipiente, recipientes,
             <ContainerTratamento className={ fl_tratado.value === true ? "" : "d-none" }>
               <Row>
                 <Col md="6" className="form-group">
-                  <label htmlFor="qtdTratamento">Quantidade aplicada? (g) <code>*</code></label>
+                  <label htmlFor="edi_qtdTratamento">Quantidade aplicada? (g) <code>*</code></label>
 
                   <input
-                    id="qtdTratamento"
+                    id="edi_qtdTratamento"
                     type="number"
                     step="0.01"
-                    min={ 0 }
+                    min={ 0.01 }
                     className="form-control"
                     value={ qtdTratamento }
                     onChange={ e => setQtdTratamento( e.target.value === "" ? 0 : parseFloat( e.target.value ) ) } />

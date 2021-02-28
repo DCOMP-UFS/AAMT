@@ -479,6 +479,13 @@ select.form-control {
   border: 1px solid #fe7c96;
 }
 
+.form-label-invalid {
+  font-size: .8rem;
+  margin-top: 5px;
+  display: block;
+  color: #fe7c96;
+}
+
 .expansion.Mui-expanded::before {
   background-color: transparent!important;
   opacity: 1!important;

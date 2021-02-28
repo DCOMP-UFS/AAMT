@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { FaVial } from 'react-icons/fa';
-import { validInputIsNull } from '../../../../../config/function';
+import { validInputIsNull, msgInputInvalid } from '../../../../../config/function';
 import $ from 'jquery';
 import ButtonNewObject from '../../../../../components/ButtonNewObject';
 import ButtonClose from '../../../../../components/ButtonClose';
@@ -45,7 +45,7 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
   const [ fl_foco, setFl_foco ] = useState({ value: null, label: null });
   const [ tecnicaTratamento, setTecnicaTratamento ] = useState({ value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label });
   const [ numUnidade, setNumUnidade ] = useState(0);
-  const [ qtdTratamento, setQtdTratamento ] = useState(0);
+  const [ qtdTratamento, setQtdTratamento ] = useState( 0 );
   const [ unidade, setUnidade ] = useState([]);
   const [ reload, setReload ] = useState( false );
   const [ optionsTipoRecipiente ] = useState(tipoRecipienteEnum.map( tipo => (
@@ -102,6 +102,15 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
       if( !validInputIsNull( "#fl_tratado", fl_tratado.value ) ) fl_valido = false;
     }
     if( !validInputIsNull( "#fl_foco", fl_foco.value ) ) fl_valido = false;
+    if( fl_tratado.value && qtdTratamento === 0 ) {
+      fl_valido = false;
+      
+      var input_qtd_tratamento = $( '#qtdTratamento' ),
+          form_group = input_qtd_tratamento.parent();
+      input_qtd_tratamento.addClass( 'invalid' );
+
+      form_group.append( msgInputInvalid( 'O valor não pode ser zero' ) );
+    }
 
     if( fl_valido ) {
       const recipiente = {
@@ -191,7 +200,7 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
                       id="qtdTratamento"
                       type="number"
                       step="0.01"
-                      min={ 0 }
+                      min={ 0.01 }
                       className="form-control"
                       value={ qtdTratamento }
                       onChange={ e => setQtdTratamento( e.target.value === "" ? 0 : parseFloat( e.target.value ) ) } />

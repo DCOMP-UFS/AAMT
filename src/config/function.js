@@ -1,4 +1,5 @@
 // Todas as funções neste arquivo devem ser de uso global
+import React from 'react';
 import $ from 'jquery';
 
 /*
@@ -105,4 +106,10 @@ export const stableSort = ( array, cmp ) => {
 
 export const getSorting = ( order, orderBy ) => {
   return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
+}
+
+export const msgInputInvalid = ( msg = 'Campo obrigatório' ) => {
+  return (
+    `<span class="form-label-invalid">${ msg }</span>`
+  );
 }

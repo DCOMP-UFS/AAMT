@@ -127,7 +127,7 @@ class FindImovel extends Component {
               {
                 imovelSelect.idImovel === -1 ?
                   <p className="description">Nenhum imóvel selecionado</p> :
-                  <p className="description">Registro do imóvel: <mark className="bg-success text-white">{imovelSelect.idImovel}</mark></p>
+                  <p className="description">Imóvel selecionado</p>
               }
             </div>
 
@@ -161,7 +161,7 @@ class FindImovel extends Component {
 
             <div className="col-md-6">
               <div className="form-group">
-                <label>Responsável<code>*</code></label>
+                <label>Responsável do imóvel<code>*</code></label>
                 <input
                   name="responsavel"
                   type="text"
@@ -259,7 +259,7 @@ function ListImovel( props ) {
         <span className="mr-2">Nº: { imovel.numero }</span>
         <span>Seq.: { imovel.sequencia === -1 ? "" : imovel.sequencia }</span>
       </div>
-      <Span>Responsável: { imovel.responsavel }</Span>
+      <Span>Responsável do imóvel: { imovel.responsavel }</Span>
     </DivDescription>
   </LiImovel>
   );

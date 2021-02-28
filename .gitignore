@@ -25,3 +25,4 @@ yarn-error.log*
 
 .VSCodeCounter
 .vscode/launch.json
+package-lock.json

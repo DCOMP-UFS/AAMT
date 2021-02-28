@@ -37,7 +37,7 @@ class InspecaoRecipiente extends Component {
     return (
       <div>
         <h4>
-          Recipiente(s) inspecionado(s)
+          Depósito(s) inspecionado(s)
           <ButtonNewObject
             title="Cadastrar Inspeção"
             data-toggle="modal"
@@ -73,7 +73,7 @@ function ListRecipiente( props ) {
 
   if( recipiente.length === 0 ) {
     li = <LiEmpty>
-      <h4>Nenhum recipiente cadastrado</h4>
+      <h4>Nenhum depósito cadastrado</h4>
     </LiEmpty>;
   }
 

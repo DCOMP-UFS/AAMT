@@ -113,7 +113,7 @@ function ModalAddHouse({ lados, ...props }) {
           <Row>
             <Col sm="6">
               <FormGroup>
-                <label htmlFor="responsavel">Responsável</label>
+                <label htmlFor="responsavel">Responsável do imóvel</label>
                 <input
                   id="responsavel"
                   value={ responsavel }

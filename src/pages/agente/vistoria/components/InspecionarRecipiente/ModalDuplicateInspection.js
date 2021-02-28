@@ -70,7 +70,7 @@ function ModalDuplicateInspection({ index, recipientes, objetivo, ...props }) {
           <form onSubmit={ submit }>
             <div className="modal-body">
               <div className="form-group">
-                <label htmlFor="numberCopies">Tipo de recipiente</label>
+                <label htmlFor="numberCopies">Tipo do depósito</label>
 
                 <Select
                   value={ tipoRecipiente }
@@ -79,7 +79,7 @@ function ModalDuplicateInspection({ index, recipientes, objetivo, ...props }) {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="fl_eliminado">Recipiente eliminado? <code>*</code></label>
+                <label htmlFor="fl_eliminado">Depósito eliminado? <code>*</code></label>
 
                 <Select
                   value={ fl_eliminado }
@@ -89,7 +89,7 @@ function ModalDuplicateInspection({ index, recipientes, objetivo, ...props }) {
               </div>
 
               <div className="form-group">
-                <label htmlFor="fl_tratado">Recipiente tratado? <code>*</code></label>
+                <label htmlFor="fl_tratado">Depósito tratado? <code>*</code></label>
 
                 <Select
                   value={ fl_tratado }

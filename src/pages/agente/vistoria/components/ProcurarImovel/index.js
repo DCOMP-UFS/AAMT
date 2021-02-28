@@ -275,10 +275,13 @@ function ListImovel({ rotaIndex, idImovelSelect, quarteirao, imoveis, ...props }
         </ContainerIcon>
         <DivDescription>
           <div>
-            <span className="mr-2">Nº: { imovel.numero }</span>
-            <span>Seq.: { imovel.sequencia === -1 ? "" : imovel.sequencia }</span>
+            <span className="mr-2">Imóvel nº: { imovel.numero }</span>
+            {
+              imovel.sequencia === -1 ?
+                ("") :
+                <span>Seq.: { imovel.sequencia === -1 ? "" : imovel.sequencia }</span>
+            }
           </div>
-          <Span>Responsável do imóvel: { imovel.responsavel }</Span>
         </DivDescription>
       </LiImovel>
     )

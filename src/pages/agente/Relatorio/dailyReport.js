@@ -18,8 +18,8 @@ import { getInspectsByDailyWorkRequest } from '../../../store/actions/VistoriaAc
 import { Color } from '../../../styles/global';
 import { PageIcon, PageHeader, InfoBox } from '../../../styles/util';
 
-function DailyReport({ usuario, vistorias, trabalhoDiario, ...props }) {
-  const [ imoveisTipoData, setImoveisTipoData ] = useState({
+const initVar = {
+  imoveisTipoData: {
     labels: Object.entries( tipoImovelEnum ).map(([ key, value ]) => ( value.sigla ) ),
     reload: false,
     datasets: [{
@@ -38,26 +38,32 @@ function DailyReport({ usuario, vistorias, trabalhoDiario, ...props }) {
       ],
       borderWidth: 1
     }]
-  });
-  const [ numeroImoveisData, setNumeroImoveisData ] = useState({
-    labels: [ 'Tratados', 'Inspecionados', 'Recuperados' ],
+  },
+  numeroImoveisData: {
+    labels: [ 'Trabalhados', 'Inspecionados', 'Com Foco', 'Tratados', 'Fechados/Recusados', 'Recuperados' ],
     reload: false,
     datasets: [{
-      data: [ 0, 0, 0 ],
+      data: [ 0, 0, 0, 0, 0, 0 ],
       backgroundColor: [
         Color.chartColor[1][0],
         Color.chartColor[2][0],
-        Color.chartColor[3][0]
+        Color.chartColor[3][0],
+        Color.chartColor[4][0],
+        Color.chartColor[5][0],
+        Color.chartColor[6][0]
       ],
       borderColor: [
         Color.chartColor[1][1],
         Color.chartColor[2][1],
-        Color.chartColor[3][1]
+        Color.chartColor[3][1],
+        Color.chartColor[4][1],
+        Color.chartColor[5][1],
+        Color.chartColor[6][1]
       ],
       borderWidth: 1
     }]
-  });
-  const [ depositosTipoData, setDepositosTipoData ] = useState({
+  },
+  depositosTipoData: {
     labels: tipoRecipienteEnum,
     reload: false,
     datasets: [{
@@ -85,14 +91,19 @@ function DailyReport({ usuario, vistorias, trabalhoDiario, ...props }) {
       ],
       borderWidth: 1
     }]
-  });
+  }
+}
+
+function DailyReport({ usuario, vistorias, trabalhoDiario, ...props }) {
+  const [ imoveisTipoData, setImoveisTipoData ]     = useState(initVar.imoveisTipoData);
+  const [ numeroImoveisData, setNumeroImoveisData ] = useState(initVar.numeroImoveisData);
+  const [ depositosTipoData, setDepositosTipoData ] = useState(initVar.depositosTipoData);
   const [ qtdRecusa, setQtdRecusa ] = useState( 0 );
   const [ qtdFechada, setQtdFechada ] = useState( 0 );
   const [ qtdAmostra, setQtdAmostra ] = useState( 0 );
   const [ qtdDepositoTratado, setQtdDepositoTratado ] = useState( 0 );
   const [ qtdTratamentoGrama, setQtdTratamentoGrama ] = useState( 0 );
   const [ qtdDepositoEliminado, setQtdDepositoEliminado ] = useState( 0 );
-  const [ totalDepositos, setTotalDepositos ] = useState( 0 );
   const [ data, setData ] = useState( '' );
 
   useEffect(() => {
@@ -114,84 +125,124 @@ function DailyReport({ usuario, vistorias, trabalhoDiario, ...props }) {
   }, [ vistorias, props.reload ]);
 
   function filter() {
-    let itData = imoveisTipoData;
-    let niData = numeroImoveisData;
-    let dtData = depositosTipoData;
-    let qtdR = qtdRecusa;
-    let qtdF = qtdFechada;
-    let qtdA = qtdAmostra;
-    let qtdDepTrat = qtdDepositoTratado;
-    let qtdDepElim = qtdDepositoEliminado;
-    let qtdTratGrama = qtdTratamentoGrama;
-    let totalDep = totalDepositos;
+    let itData          = initVar.imoveisTipoData,
+        niData          = initVar.numeroImoveisData,
+        dtData          = initVar.depositosTipoData,
+        qtdR            = 0,
+        qtdF            = 0,
+        qtdA            = 0,
+        qtdDepTrat      = 0,
+        qtdDepElim      = 0,
+        qtdTratGrama    = 0,
+        qtdResidencial  = 0,
+        qtdTb           = 0,
+        qtdComercial    = 0,
+        qtdPE           = 0,
+        depA1           = 0,
+        depA2           = 0,
+        depB            = 0,
+        depC            = 0,
+        depD1           = 0,
+        depD2           = 0,
+        depE            = 0,
+        qtdTrabalhados  = 0,
+        qtdInspecionado = 0,
+        qtdFoco         = 0,
+        qtdTratado      = 0,
+        qtdPendencia    = 0,
+        qtdRecuperado   = 0;
 
-    let filter_vistorias = vistorias.filter( vistoria => {
-      return true;
-    });
+    console.log( vistorias );
 
-    filter_vistorias.forEach( ( vistoria, index ) => {
+    vistorias.forEach(( vistoria, index ) => {
       switch ( vistoria.imovel.tipoImovel ) {
         case tipoImovelEnum.residencial.id:// residencial
-          itData.datasets[ 0 ].data[ 0 ]++;
+          qtdResidencial++;
           break;
-        case tipoImovelEnum.terrenoBaldio.id:
-          itData.datasets[ 0 ].data[ 1 ]++;
+        case tipoImovelEnum.terrenoBaldio.id:// TB
+          qtdTb++;
           break;
-        case tipoImovelEnum.comercial.id:
-          itData.datasets[ 0 ].data[ 2 ]++;
+        case tipoImovelEnum.comercial.id:// Comercial
+          qtdComercial++;
           break;
         default:// pontoEstrategico
-          itData.datasets[ 0 ].data[ 3 ]++;
+          qtdPE++;
           break;
       }
-
-      totalDep += vistoria.depositos.length;
 
       let fl_tratado = false;
       vistoria.depositos.forEach( d => {
         qtdA += d.amostras.length;
-        if( d.fl_tratado ){
+        if( d.fl_tratado ) {
           fl_tratado = true;
           qtdDepTrat++;
 
-          qtdTratGrama += d.tratamentos[ 0 ].quantidade;
+          qtdTratGrama += d.tratamentos.length > 0 ? d.tratamentos[ 0 ].quantidade : 0;
         }
-
         if( d.fl_eliminado ) qtdDepElim++;
+        if( d.fl_comFoco ) qtdFoco++;
 
         switch ( d.tipoRecipiente ) {
           case "A1":
-            dtData.datasets[ 0 ].data[ 0 ]++;
+            depA1++;
             break;
           case "A2":
-            dtData.datasets[ 0 ].data[ 1 ]++;
+            depA2++;
             break;
           case "B":
-            dtData.datasets[ 0 ].data[ 2 ]++;
+            depB++;
             break;
           case "C":
-            dtData.datasets[ 0 ].data[ 3 ]++;
+            depC++;
             break;
           case "D1":
-            dtData.datasets[ 0 ].data[ 4 ]++;
+            depD1++;
             break;
           case "D2":
-            dtData.datasets[ 0 ].data[ 5 ]++;
+            depD2++;
             break;
-
           default:// E
-            dtData.datasets[ 0 ].data[ 6 ]++;
+            depE++;
             break;
         }
       });
 
-      if( fl_tratado ) niData.datasets[ 0 ].data[ 0 ]++;
-      if( vistoria.situacaoVistoria === "N" ) niData.datasets[ 0 ].data[ 1 ]++;
-      else niData.datasets[ 0 ].data[ 2 ]++;
+      if( fl_tratado ) qtdTratado++;
+
+      if( vistoria.situacaoVistoria === "N" ) qtdInspecionado++;
+      else qtdRecuperado++;
+
+      qtdTrabalhados++;
+
+      if((vistoria.pendencia === "F" || vistoria.pendencia === "R"))
+        qtdPendencia++;
 
       if( vistoria.pendencia === "F" ) qtdF++;
       else if( vistoria.pendencia === "R" ) qtdR++;
     });
+
+    // Gráfico de vistoria por tipo de imóvel
+    itData.datasets[ 0 ].data[ 0 ] = qtdResidencial;
+    itData.datasets[ 0 ].data[ 1 ] = qtdTb;
+    itData.datasets[ 0 ].data[ 2 ] = qtdComercial;
+    itData.datasets[ 0 ].data[ 3 ] = qtdPE;
+
+    // Gráfico de tipo de depósito
+    dtData.datasets[ 0 ].data[ 0 ] = depA1;
+    dtData.datasets[ 0 ].data[ 1 ] = depA2;
+    dtData.datasets[ 0 ].data[ 2 ] = depB;
+    dtData.datasets[ 0 ].data[ 3 ] = depC;
+    dtData.datasets[ 0 ].data[ 4 ] = depD1;
+    dtData.datasets[ 0 ].data[ 5 ] = depD2;
+    dtData.datasets[ 0 ].data[ 6 ] = depE;
+
+    // Gráfico de vistorias
+    niData.datasets[ 0 ].data[ 0 ] = qtdTrabalhados;
+    niData.datasets[ 0 ].data[ 1 ] = qtdInspecionado;
+    niData.datasets[ 0 ].data[ 2 ] = qtdFoco;
+    niData.datasets[ 0 ].data[ 3 ] = qtdTratado;
+    niData.datasets[ 0 ].data[ 4 ] = qtdPendencia;
+    niData.datasets[ 0 ].data[ 5 ] = qtdRecuperado;
 
     itData.reload = !itData.reload;
     niData.reload = !niData.reload;
@@ -205,7 +256,6 @@ function DailyReport({ usuario, vistorias, trabalhoDiario, ...props }) {
     setQtdDepositoTratado( qtdDepTrat );
     setQtdDepositoEliminado( qtdDepElim );
     setQtdTratamentoGrama( qtdTratGrama );
-    setTotalDepositos( totalDep );
   };
 
   return (

@@ -115,6 +115,91 @@ getActivitiesOfCity = async ( req, res ) => {
   return res.json( municipios );
 }
 
+// Esta rota não contém quarteirões e estratos associados
+
+getAllUserActivities = async ( req, res ) => {
+  const { usuario_id } = req.params;
+
+  const usuario = await Usuario.findByPk( usuario_id, {
+    include: {
+      association: "atuacoes"
+    }
+  });
+  if( !usuario )
+    return res.status(400).json({ error: "Usuário não existe" });
+
+  let regionalSaude_id = -1;
+  const escopo = usuario.atuacoes[0].escopo;
+
+  if( escopo === 1 ) { // Regional
+    regionalSaude_id = usuario.atuacoes[0].local_id;
+  } else if( escopo === 2 ) { // Municipal
+    const regional = await Municipio.findByPk( usuario.atuacoes[0].local_id, {
+      include: { association: "regional" }
+    });
+    
+    regionalSaude_id = regional.id;
+  } else { // Laboratório
+
+  }
+
+  const ciclo = await Ciclo.findOne({
+    where: {
+      regional_saude_id: regionalSaude_id,
+    }
+  });
+
+  if( !ciclo ) {
+    return res.json([]);
+  }
+
+  let atividades = await Atividade.findAll({
+    where: {
+      ciclo_id: ciclo.id
+    },
+    include: [
+      {
+        association: "equipes",
+        include: [
+          {
+            association: "membros",
+            attributes: [ "tipo_perfil" ],
+            include: { 
+              association: "usuario",
+              attributes: [ "id", "nome", "usuario" ], 
+            }
+          },
+        ]
+      },
+      {
+        association: 'metodologia',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+      },
+      {
+        association: 'objetivo',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+      }
+    ]
+  });
+
+  atividades = atividades.filter( a => {
+    const atividade = a.dataValues;
+    let isActivity = false;
+    
+    atividade.equipes.forEach( e => {
+      e.membros.forEach( m => {
+        const usuario = m.dataValues.usuario.dataValues;
+        if( usuario.id === parseInt( usuario_id ) )
+          isActivity = true;
+      });
+    });
+
+    return isActivity;
+  });
+
+  return res.status(200).json(atividades);
+}
+
 
 getUserActivities = async ( req, res ) => {
   const { usuario_id } = req.params;
@@ -455,6 +540,7 @@ router.get('/:id', getById);
 router.get('/:ciclo_id/ciclos/:municipio_id/municipios', index);
 router.get('/:regionalSaude_id/regionaisSaude', getActivitiesOfCity);
 router.get('/abertas/:usuario_id/usuarios', getUserActivities);
+router.get('/todas/:usuario_id/usuarios', getAllUserActivities);
 router.get('/locais/:abrangencia_id/abrangencia/:municipio_id/municipios', getLocations);
 router.put('/:id', update);
 router.post('/', store);

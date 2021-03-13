@@ -30,10 +30,6 @@ const INITIAL_STATE = {
     createLink( 3, "Relatórios", false, FaChartPie, "/agente/relatorio/boletim_diario")
     // createLink( 2, "Rotas de Trabalho", false, FaMapSigns, "/sup/rotas"),
     // createCategory( "Recursos de Interface" ),
-    // createNav( 8, "Elementos Básicos", false, IoIosCode, [
-    //   createSubmenu( 1, false, "Botões", "/elementos/botoes" ),
-    //   createSubmenu( 2, false, "Tipografia", "/elementos/tipografia" ),
-    // ]),
     // createLink( 9, "Formulários", false, IoIosCheckboxOutline, "/elementos/formulario" )
   ]
 }

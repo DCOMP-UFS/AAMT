@@ -121,7 +121,6 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
   const [ rows, setRows ]         = useState([]);
   const [ imoveis, setImoveis ]   = useState( [] );
   const [ viewport, setViewport ] = useState({
-    
     width: '100%',
     height: '100%',
     latitude: -10.968002,
@@ -189,7 +188,7 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
           vistoria.horaEntrada
         ]
       ));
-  
+
       setRows( vists );
     }
 
@@ -224,6 +223,13 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
       });
     });
 
+    setViewport({
+      width: '100%',
+      height: '100%',
+      latitude: imo[0].lat ? parseFloat(imo[0].lat) : -15.7801,
+      longitude: imo[0].lng ? parseFloat(imo[0].lng) : -47.9292,
+      zoom: 14
+    });
     setImoveis( imo );
   }, [ rota ]);
 

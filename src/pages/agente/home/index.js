@@ -92,9 +92,9 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
   const [ viewport, setViewport ] = useState({
     width: '100%',
     height: '100%',
-    latitude: -10.968002,
-    longitude: -37.081680,
-    zoom: 14
+    latitude: -15.7801,
+    longitude: -47.9292,
+    zoom: 2
   });
   // const [ qtdQuarteirao, setQtdQuarteirao ] = useState( 0 );
   const [ qtdTipoImovel, setQtdTipoImovel ] = useState( [ 0, 0, 0, 0 ] );
@@ -137,7 +137,7 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
   useEffect(() => {
     if( Object.entries( trabalhoDiario ).length > 0 ) {
       let date = trabalhoDiario.data.split( 'T' )[ 0 ].split( '-' );
-  
+
       setTrabalhoDiario_date( `${ date[ 2 ] }/${ date[ 1 ] }/${ date[ 0 ] }` );
     }
   }, [ trabalhoDiario ]);
@@ -153,6 +153,13 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
       });
     });
 
+    setViewport({
+      width: '100%',
+      height: '100%',
+      latitude: imo[0].lat ? parseFloat(imo[0].lat) : -15.7801,
+      longitude: imo[0].lng ? parseFloat(imo[0].lng) : -47.9292,
+      zoom: 14
+    });
     setImoveis( imo );
   }, [ rota ]);
 
@@ -166,9 +173,9 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
           case 3: qtdTipo[ 2 ]++; break; // Comercial
           default: qtdTipo[ 3 ]++; break; // Ponto Estratégico
         }
-  
+
         const tipoImovel = tipoImovelEnum.find( tipo => imovel.tipoImovel === tipo.id );
-  
+
         return (
           [
             index,
@@ -180,7 +187,7 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
           ]
         )
       });
-  
+
       setRows( imovs );
       setQtdTipoImovel( qtdTipo );
     }

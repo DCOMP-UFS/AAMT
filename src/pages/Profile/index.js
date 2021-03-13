@@ -1,18 +1,24 @@
 import React from 'react';
-import {View, StatusBar, TouchableWithoutFeedback} from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
+import { View, StatusBar, TouchableWithoutFeedback } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 
-import {signOut} from '../../store/modules/auth/actions';
+import { signOut } from '../../store/modules/auth/actions';
 
 import api from '../../services/api';
 
 import userFunction from '../../utils/revealFunction';
 
-import {Container, ProfileContainer, Small, Item, LogoutButton} from './styles';
+import {
+  Container,
+  ProfileContainer,
+  Small,
+  Item,
+  LogoutButton,
+} from './styles';
 
 const Profile = () => {
   const dispatch = useDispatch();
-  const profile = useSelector((state) => state.user.profile);
+  const profile = useSelector(state => state.user.profile);
 
   function logout() {
     dispatch(signOut());

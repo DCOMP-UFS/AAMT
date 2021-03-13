@@ -1,8 +1,6 @@
 import { Alert } from 'react-native';
 import { takeLatest, call, put, all } from 'redux-saga/effects';
 
-import getToken from '../../../utils/getToken';
-
 import api from '../../../services/api';
 import { getRouteSuccess, saveRoute, endActivity } from './actions';
 
@@ -10,16 +8,9 @@ export function* getRoute({ payload }) {
   try {
     const { user_id, date } = payload;
 
-    const token = yield getToken();
-
     const response = yield call(
       api.get,
-      `/rotas/${user_id}/usuarios/${date}/data`,
-      {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      }
+      `/rotas/${user_id}/usuarios/${date}/data`
     );
 
     console.log(response.data);
@@ -37,18 +28,10 @@ export function* startRoute({ payload }) {
   try {
     const { activity_id, start_hour } = payload;
 
-    const token = yield getToken();
-
-    const response = yield call(
-      api.post,
-      '/rotas/iniciar',
-      { trabalhoDiario_id: activity_id, horaInicio: start_hour },
-      {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = yield call(api.post, '/rotas/iniciar', {
+      trabalhoDiario_id: activity_id,
+      horaInicio: start_hour,
+    });
 
     yield put(saveRoute(start_hour, response.data));
 
@@ -70,22 +53,11 @@ export function* endRoute({ payload }) {
 
     console.log(JSON.stringify(inspections));
 
-    const token = yield getToken();
-
-    const response = yield call(
-      api.post,
-      '/rotas/finalizar',
-      {
-        trabalhoDiario_id: activity_id,
-        horaFim: end_hour,
-        vistorias: inspections,
-      },
-      {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = yield call(api.post, '/rotas/finalizar', {
+      trabalhoDiario_id: activity_id,
+      horaFim: end_hour,
+      vistorias: inspections,
+    });
     Alert.alert('Parabéns!', 'O trabalho diário foi finalizado com sucesso!');
   } catch (err) {
     Alert.alert(

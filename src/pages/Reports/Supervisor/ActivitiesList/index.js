@@ -4,11 +4,11 @@ import { format, parseISO } from 'date-fns';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
-import api from '../../../services/api';
+import api from '../../../../services/api';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import Button from '../../../components/Button';
+import Button from '../../../../components/Button';
 
 import {
   Container,
@@ -29,7 +29,7 @@ const ActivitiesList = () => {
   const route = useRoute();
 
   const dispatch = useDispatch();
-  const { id } = useSelector(state => state.user.profile.user);
+  const { id } = route.params;
 
   const loadActivities = useCallback(async () => {
     try {
@@ -40,7 +40,6 @@ const ActivitiesList = () => {
       }
     } catch (err) {
       Alert.alert('Ocorreu um erro', 'Não foi possível carregar as atividades');
-      console.log(err.response.data);
     }
   }, []);
 

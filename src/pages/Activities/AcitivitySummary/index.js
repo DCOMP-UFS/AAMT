@@ -7,7 +7,6 @@ import * as scale from 'd3-scale';
 import { Text } from 'react-native-svg';
 
 import api from '../../../services/api';
-import getToken from '../../../utils/getToken';
 
 import { Container, Card, Header, PropertyTitle } from './styles';
 
@@ -171,13 +170,7 @@ const AcitivitySummary = () => {
 
   const loadActivity = useCallback(async () => {
     try {
-      const token = await getToken();
-
-      const response = await api.get(`/trabalhoDiario/${id}`, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await api.get(`/trabalhoDiario/${id}`);
 
       if (!!response.data.status) {
         setActivity(response.data.data.vistorias);

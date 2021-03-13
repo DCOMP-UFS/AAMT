@@ -2,25 +2,22 @@ import styled from 'styled-components/native';
 
 export const Container = styled.View`
   flex: 1;
-  align-items: center;
+  /* align-items: center; */
   justify-content: center;
   padding: 0 25px;
+  background-color: ${({ theme }) => theme.colors.background};
 `;
 
-export const WelcomeText = styled.Text`
-  font-family: 'Lato-Regular';
-  font-size: 24px;
-  color: #3a3c4e;
-`;
-
-export const TextContainer = styled.View`
-  flex-direction: column;
-  width: 100%;
-`;
-
-export const Label = styled.Text`
-  font-family: 'Lato-Bold';
-  font-size: 14px;
-  color: #a6a8ad;
+export const WelcomeTitle = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.bold};
+  font-size: 40px;
+  color: ${({ theme }) => theme.colors.blue};
   margin-bottom: 10px;
+`;
+
+export const WelcomeDescription = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.regular};
+  font-size: 22px;
+  color: ${({ theme }) => theme.colors.black};
+  margin-bottom: 50px;
 `;

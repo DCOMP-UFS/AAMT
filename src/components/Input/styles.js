@@ -1,18 +1,52 @@
-import styled from 'styled-components/native';
+import styled, { css } from 'styled-components/native';
 
 export const Container = styled.View`
+  flex-direction: column;
+  margin-bottom: 16px;
+  align-self: stretch;
+`;
+
+export const TextContainer = styled.View`
   width: 100%;
   height: 60px;
   padding: 0 16px;
   background: #fff;
-  border-radius: 4px;
-  margin-bottom: 16px;
-  border: 1px solid #dddddd;
+  border-radius: 8px;
+  border: 1px solid ${({ theme }) => theme.colors.borderInput};
+  ${props =>
+    props.isFocused &&
+    css`
+      border-color: ${props.theme.colors.blue};
+    `};
+  ${props =>
+    props.isErrored &&
+    css`
+      border-color: ${props.theme.colors.error};
+    `}
 `;
 
-export const TextInput = styled.TextInput`
+export const TInput = styled.TextInput`
   flex: 1;
-  color: #999999;
+  color: ${({ theme }) => theme.colors.textInput};
   font-size: 16px;
-  font-family: 'Roboto-Regular';
+  font-family: ${({ theme }) => theme.fonts.regular};
+  ${props =>
+    props.isFocused &&
+    css`
+      color: ${props.theme.colors.blue};
+    `}
+`;
+
+export const Label = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.bold};
+  font-size: 16px;
+  color: ${({ theme }) => theme.colors.label};
+  margin-bottom: 10px;
+`;
+
+export const ErrorMessage = styled.Text`
+  font-family: 'Lato-Regular';
+  color: ${({ theme }) => theme.colors.error};
+  font-size: 14px;
+  margin-top: 8px;
 `;

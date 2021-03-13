@@ -1,70 +1,85 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import { Text, ScrollView, StatusBar } from 'react-native';
-
 import { useDispatch, useSelector } from 'react-redux';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 
 import Button from '../../components/Button';
-import Background from '../../components/Background';
 import Input from '../../components/Input';
 
-import { Container, TextContainer, Label } from './styles';
+import { Container, WelcomeTitle, WelcomeDescription } from './styles';
 
 import { signInRequest } from '../../store/modules/auth/actions';
 
 const SignIn = () => {
   const dispatch = useDispatch();
 
-  const [user, setUser] = useState('');
-  const [password, setPassword] = useState('');
-
   const loading = useSelector(state => state.auth.loading);
 
-  function handleSubmit() {
+  const passwordRef = useRef(null);
+
+  const signInValidationSchema = Yup.object().shape({
+    user: Yup.string().required('Usuário é obrigatório'),
+    password: Yup.string().required('Senha é obrigatória'),
+  });
+
+  function handleSignIn(data) {
+    const { user, password } = data;
     dispatch(signInRequest(user, password));
   }
 
   return (
     <>
-      <StatusBar barStyle="light-content" backgroundColor="#0095DA" />
-      <Background>
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ flex: 1 }}
-        >
-          <Container>
-            <TextContainer>
-              <Label>Usuário</Label>
-              <Input
-                value={user}
-                onChangeText={setUser}
-                keyboardType="email-address"
-                returnKeyType="send"
-              />
-            </TextContainer>
-
-            <TextContainer>
-              <Label>Senha</Label>
-              <Input
-                value={password}
-                onChangeText={setPassword}
-                // eslint-disable-next-line react/jsx-boolean-value
-                secureTextEntry={true}
-                keyboardType="default"
-                returnKeyType="send"
-              />
-            </TextContainer>
-
-            <Button
-              color="#0095DA"
-              textColor="#fff"
-              onPress={handleSubmit}
-              loading={loading}
-            >
-              Entrar
-            </Button>
-          </Container>
-        </ScrollView>
-      </Background>
+      <StatusBar barStyle="dark-content" backgroundColor="#F9F9F9" />
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ flex: 1 }}
+      >
+        <Container>
+          <WelcomeTitle>Olá!</WelcomeTitle>
+          <WelcomeDescription>Faça login para continuar</WelcomeDescription>
+          <Formik
+            validationSchema={signInValidationSchema}
+            validateOnChange={false}
+            validateOnBlur={false}
+            initialValues={{ user: '', password: '' }}
+            onSubmit={values => handleSignIn(values)}
+          >
+            {({ handleChange, handleSubmit, errors, values }) => (
+              <>
+                <Input
+                  value={values.user}
+                  onChangeText={handleChange('user')}
+                  label="Usuário"
+                  keyboardType="default"
+                  returnKeyType="next"
+                  onSubmitEditing={() => passwordRef.current?.focus()}
+                  errors={errors.user}
+                />
+                <Input
+                  forwardRef={passwordRef}
+                  value={values.password}
+                  onChangeText={handleChange('password')}
+                  label="Senha"
+                  secureTextEntry={true}
+                  keyboardType="default"
+                  returnKeyType="send"
+                  onSubmitEditing={handleSubmit}
+                  errors={errors.password}
+                />
+                <Button
+                  color="#0095DA"
+                  textColor="#fff"
+                  onPress={handleSubmit}
+                  loading={loading}
+                >
+                  Entrar
+                </Button>
+              </>
+            )}
+          </Formik>
+        </Container>
+      </ScrollView>
     </>
   );
 };

@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React from 'react';
 import { View, Text } from 'react-native';
 
@@ -5,7 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { useNavigation, NavigationContainer } from '@react-navigation/native';
 
-import Home from '../pages/Home';
+import AgentHomePage from '../pages/HomePage/AgentHomePage';
 import ActivitiesList from '../pages/Activities/ActivitiesList';
 import Inspections from '../pages/Inspections';
 import PropertiesList from '../pages/Inspections/PropertiesList';
@@ -46,7 +47,7 @@ const AppStacker = () => {
     >
       <AppStack.Screen
         name="Página Inicial"
-        component={Home}
+        component={AgentHomePage}
         options={{
           headerLeft: () => (
             <Icon

@@ -1,20 +1,22 @@
-import {Alert} from 'react-native';
-import {takeLatest, call, put, all} from 'redux-saga/effects';
+import { Alert } from 'react-native';
+import { takeLatest, call, put, all, retry } from 'redux-saga/effects';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import api from '../../../services/api';
-import {signInSuccess, signInFailure} from './actions';
+import { signInSuccess, signInFailure } from './actions';
 
-export function* signIn({payload}) {
+export function* signIn({ payload }) {
   try {
-    const {user, password} = payload;
+    const { user, password } = payload;
 
     const response = yield call(api.post, '/auth/authenticate', {
       usuario: user,
       senha: password,
     });
 
-    yield AsyncStorage.setItem('@Auth:token', response.data.token);
+    const { token } = response.data;
+
+    api.defaults.headers.Authorization = `Bearer ${token}`;
 
     yield put(signInSuccess(response.data));
   } catch (err) {
@@ -23,4 +25,17 @@ export function* signIn({payload}) {
   }
 }
 
-export default all([takeLatest('@auth/SIGN_IN_REQUEST', signIn)]);
+export function setToken({ payload }) {
+  if (!payload.user.profile) return;
+
+  const { token } = payload.user.profile;
+
+  if (token) {
+    api.defaults.headers.Authorization = `Bearer ${token}`;
+  }
+}
+
+export default all([
+  takeLatest('persist/REHYDRATE', setToken),
+  takeLatest('@auth/SIGN_IN_REQUEST', signIn),
+]);

@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, StatusBar } from 'react-native';
 
-import StartActivityButton from '../../components/StartActivityButton';
-import BlocksList from '../../components/BlocksList';
+import StartActivityButton from '../../../components/StartActivityButton';
+import BlocksList from '../../../components/BlocksList';
 
 import { Container } from './styles';
 
-const Home = () => {
+const AgentHomePage = () => {
   return (
     <>
       <Container>
@@ -17,4 +17,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default AgentHomePage;

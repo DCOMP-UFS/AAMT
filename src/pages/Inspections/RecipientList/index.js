@@ -103,9 +103,7 @@ const RecipientList = ({
           )}
         </RecipientContainer>
       </Card>
-      <Button color="#0095DA" textColor="#fff" onPress={() => finishInspection()}>
-        Concluir vistoria
-      </Button>
+      <Button onPress={() => finishInspection()}>Concluir vistoria</Button>
     </Container>
   );
 };
@@ -113,7 +111,7 @@ const RecipientList = ({
 const mapStateToProps = state => ({
   sequencia: state.inspections.sequenciaVistoria,
   inspections: state.inspections.vistorias,
-  trabalho_diario_id: state.activityRoutes.dailyActivity.id,
+  trabalho_diario_id: state.currentActivity.dailyActivity.id,
 });
 
 const mapDispatchToProps = dispatch =>

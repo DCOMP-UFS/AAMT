@@ -12,6 +12,12 @@ export function getRouteSuccess(data) {
   };
 }
 
+export function getRouteFailure() {
+  return {
+    type: '@activity/GET_ROUTE_FAILURE',
+  };
+}
+
 export function startActivity(activity_id, start_hour) {
   return {
     type: '@activity/START_ROUTE',

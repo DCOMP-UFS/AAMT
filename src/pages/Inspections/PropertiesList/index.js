@@ -132,7 +132,7 @@ const PropertiesList = ({ inspections, routes, ...props }) => {
 
 const mapStateToProps = state => ({
   inspections: state.inspections.vistorias,
-  routes: state.activityRoutes.routes,
+  routes: state.currentActivity.routes,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({}, dispatch);

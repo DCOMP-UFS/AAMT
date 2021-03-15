@@ -67,12 +67,7 @@ const SignIn = () => {
                   onSubmitEditing={handleSubmit}
                   errors={errors.password}
                 />
-                <Button
-                  color="#0095DA"
-                  textColor="#fff"
-                  onPress={handleSubmit}
-                  loading={loading}
-                >
+                <Button onPress={handleSubmit} loading={loading}>
                   Entrar
                 </Button>
               </>

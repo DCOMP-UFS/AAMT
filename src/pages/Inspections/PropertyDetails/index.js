@@ -5,9 +5,7 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import Icon from 'react-native-vector-icons/MaterialIcons';
-
-import Button from '../../../components/Button';
+import Icon from 'react-native-vector-icons/Feather';
 
 import {
   Container,
@@ -23,49 +21,6 @@ import {
   StatusContainer,
   StatusText,
 } from './styles';
-
-const InspectionStatus = ({ data, property }) => {
-  const navigation = useNavigation();
-
-  const index = data.findIndex(p => p.imovel.id === property);
-  const message = [
-    {
-      text: 'Vistoriado',
-      color: '#0095da',
-    },
-    {
-      text: 'Fechado',
-      color: '#FAA33F',
-    },
-    {
-      text: 'Recusado',
-      color: '#E5454C',
-    },
-  ];
-
-  var status = {};
-
-  if (index !== -1) {
-    const pendencia = data[index].pendencia;
-
-    pendencia === null ? (status = message[0]) : {};
-    pendencia === 'R' ? (status = message[2]) : {};
-    pendencia === 'F' ? (status = message[1]) : {};
-  } else {
-    return (
-      <TouchableWithoutFeedback
-        onPress={() => navigation.navigate('Vistoria', { imovel_id: property })}
-      >
-        <Icon size={23} name="add" color="#0095da" />
-      </TouchableWithoutFeedback>
-    );
-  }
-  return (
-    <StatusContainer color={status.color}>
-      <StatusText>{status.text}</StatusText>
-    </StatusContainer>
-  );
-};
 
 const PropertyDetails = ({ inspections, routes, ...props }) => {
   const route = useRoute();
@@ -94,10 +49,20 @@ const PropertyDetails = ({ inspections, routes, ...props }) => {
       <Card>
         <Header>
           <TitleContainer>
-            <Icon size={23} name="house" color="#3a3c4e" />
+            <Icon size={23} name="home" color="#3a3c4e" />
             <PropertyTitle>Imóvel {property.id}</PropertyTitle>
           </TitleContainer>
-          <InspectionStatus data={inspections} property={property.id} />
+          <TouchableWithoutFeedback
+            onPress={() =>
+              navigation.navigate('Atualizar imóvel', {
+                blockIndex,
+                streetIndex,
+                propertyIndex,
+              })
+            }
+          >
+            <Icon size={23} name="edit" color="#0095da" />
+          </TouchableWithoutFeedback>
         </Header>
         <Label>Rua</Label>
         <Small>{street}</Small>
@@ -139,19 +104,6 @@ const PropertyDetails = ({ inspections, routes, ...props }) => {
             <Small>-</Small>
           )}
         </Small>
-        <Button
-          color="#0095DA"
-          textColor="#fff"
-          onPress={() =>
-            navigation.navigate('Atualizar imóvel', {
-              blockIndex,
-              streetIndex,
-              propertyIndex,
-            })
-          }
-        >
-          Editar imóvel
-        </Button>
       </Card>
       {index !== -1 && (
         <Card>
@@ -212,7 +164,7 @@ const PropertyDetails = ({ inspections, routes, ...props }) => {
 
 const mapStateToProps = state => ({
   inspections: state.inspections.vistorias,
-  routes: state.activityRoutes.routes,
+  routes: state.currentActivity.routes,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({}, dispatch);

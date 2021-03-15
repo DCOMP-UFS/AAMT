@@ -220,9 +220,7 @@ const RecipientForm = ({
             </ExtraContainer>
           </>
         )}
-        <Button color="#0095DA" textColor="#fff" onPress={() => handleSubmit()}>
-          Concluir inspeção
-        </Button>
+        <Button onPress={() => handleSubmit()}>Concluir inspeção</Button>
         <SecundaryButton>Cancelar</SecundaryButton>
       </Card>
     </Container>
@@ -233,8 +231,8 @@ const mapStateToProps = state => ({
   sequencia: state.inspections.sequenciaVistoria,
   sequenciaRecipiente: state.inspections.sequenciaRecipiente,
   inspections: state.inspections.vistorias,
-  trabalho_diario_id: state.activityRoutes.dailyActivity.id,
-  metodologia: state.activityRoutes.dailyActivity.atividade.metodologia.sigla,
+  trabalho_diario_id: state.currentActivity.dailyActivity.id,
+  metodologia: state.currentActivity.dailyActivity.atividade.metodologia.sigla,
 });
 
 const mapDispatchToProps = dispatch =>

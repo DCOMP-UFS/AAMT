@@ -28,9 +28,7 @@ const ChooseDay = () => {
             returnKeyType="send"
           />
         </TextContainer>
-        <Button color="#0095DA" textColor="#fff" onPress={() => handleSubmit()}>
-          Concluir
-        </Button>
+        <Button onPress={() => handleSubmit()}>Concluir</Button>
       </Card>
     </Container>
   );

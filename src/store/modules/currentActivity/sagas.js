@@ -2,7 +2,12 @@ import { Alert } from 'react-native';
 import { takeLatest, call, put, all } from 'redux-saga/effects';
 
 import api from '../../../services/api';
-import { getRouteSuccess, saveRoute, endActivity } from './actions';
+import {
+  getRouteSuccess,
+  getRouteFailure,
+  saveRoute,
+  endActivity,
+} from './actions';
 
 export function* getRoute({ payload }) {
   try {
@@ -13,14 +18,13 @@ export function* getRoute({ payload }) {
       `/rotas/${user_id}/usuarios/${date}/data`
     );
 
-    console.log(response.data);
-
     yield put(getRouteSuccess(response.data));
   } catch (err) {
     Alert.alert(
       'Houve um problema',
       'Não foi possível buscar atividades disponíveis para hoje'
     );
+    yield put(getRouteFailure());
   }
 }
 

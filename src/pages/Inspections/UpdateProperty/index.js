@@ -5,7 +5,7 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { editProperty } from '../../../store/modules/activityRoutes/actions';
+import { editProperty } from '../../../store/modules/currentActivity/actions';
 
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
@@ -102,15 +102,13 @@ const UpdateProperty = ({ routes, ...props }) => {
             returnKeyType="send"
           />
         </TextContainer>
-        <Button color="#0095DA" textColor="#fff" onPress={() => handleSubmit()}>
-          Concluir
-        </Button>
+        <Button onPress={() => handleSubmit()}>Concluir</Button>
       </Card>
     </Container>
   );
 };
 
-const mapStateToProps = state => ({ routes: state.activityRoutes.routes });
+const mapStateToProps = state => ({ routes: state.currentActivity.routes });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(

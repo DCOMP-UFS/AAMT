@@ -17,18 +17,19 @@ export const Card = styled.View`
 export const Header = styled.View`
   flex-direction: row;
   justify-content: space-between;
+  margin-bottom: 10px;
 `;
 
 export const PropertyTitle = styled.Text`
   font-family: 'Lato-Bold';
   color: #3a3c4e;
   font-size: 20px;
-  margin-bottom: 10px;
   margin-left: 7px;
 `;
 
 export const TitleContainer = styled.View`
   flex-direction: row;
+  justify-content: center;
 `;
 
 export const Label = styled.Text`

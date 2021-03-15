@@ -30,8 +30,7 @@ export const Item = styled.Text`
 `;
 
 export const LogoutButton = styled(Button).attrs({
-  color: '#E74040',
-  textColor: '#fff',
+  type: 'error',
 })`
   align-self: stretch;
   margin-top: 15px;

@@ -15,14 +15,15 @@ import SelectButton from '../../../components/SelectButton';
 import SecundaryButton from '../../../components/SecundaryButton';
 import Button from '../../../components/Button';
 
+import FeatherIcon from 'react-native-vector-icons/Feather';
+
 import { Container, Card, Title, Small, Item, ButtonContainer } from './styles';
 
 const InspectionsForm = ({
   sequencia,
-  trabalho_diario_id,
   inspections,
+  trabalho_diario_id,
   metodologia,
-  ...props
 }) => {
   const [optionStatus, setOptionStatus] = useState([
     { value: 'N', label: 'Normal' },
@@ -35,7 +36,6 @@ const InspectionsForm = ({
   ]);
   const [status, setStatus] = useState('');
   const [pendency, setPendency] = useState('');
-  // const [propertyIndex, setPropertyIndex] = useState(-1);
   const [sequence, setSequence] = useState(sequencia);
   const [startHour, setStartHour] = useState('');
   const [recipients, setRecipients] = useState([]);
@@ -149,13 +149,7 @@ const InspectionsForm = ({
             </TouchableWithoutFeedback>
           ))}
         </ButtonContainer>
-        <Button
-          color="#0095DA"
-          textColor="#fff"
-          onPress={() => formValidation()}
-        >
-          Prosseguir
-        </Button>
+        <Button onPress={() => formValidation()}>Prosseguir</Button>
         <SecundaryButton>Cancelar</SecundaryButton>
       </Card>
     </Container>
@@ -165,8 +159,8 @@ const InspectionsForm = ({
 const mapStateToProps = state => ({
   sequencia: state.inspections.sequenciaVistoria,
   inspections: state.inspections.vistorias,
-  trabalho_diario_id: state.activityRoutes.dailyActivity.id,
-  metodologia: state.activityRoutes.dailyActivity.atividade.metodologia.sigla,
+  trabalho_diario_id: state.currentActivity.dailyActivity.id,
+  metodologia: state.currentActivity.dailyActivity.atividade.metodologia.sigla,
 });
 
 const mapDispatchToProps = dispatch =>

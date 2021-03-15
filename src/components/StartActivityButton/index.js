@@ -1,20 +1,23 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from 'react';
-import { View } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Alert, Text } from 'react-native';
 import { format } from 'date-fns';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import PropTypes from 'prop-types';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+
+import NetInfo from '@react-native-community/netinfo';
+
+import api from '../../services/api';
 
 import {
   getRouteRequest,
   startActivity,
   endActivity,
-} from '../../store/modules/activityRoutes/actions';
+} from '../../store/modules/currentActivity/actions';
 
 import Button from '../../components/Button';
-
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import {
@@ -34,7 +37,9 @@ const StartActivityButton: React.FC = ({
   trabalho_diario_id,
   ...props
 }) => {
-  var date = format(new Date(), 'yyyy-MM-dd');
+  const [connState, setConnState] = useState(false);
+
+  const date = format(new Date(), 'yyyy-MM-dd');
 
   function handleStartActivity() {
     var today = new Date();
@@ -61,8 +66,41 @@ const StartActivityButton: React.FC = ({
   }
 
   useEffect(() => {
-    props.getRouteRequest(user_id, date);
-  }, [user_id, date]);
+    NetInfo.fetch().then(state => {
+      setConnState(state.isConnected);
+    });
+
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setConnState(state.isConnected);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  const checkDailyActivities = useCallback(async () => {
+    try {
+      console.log(connState);
+      // setLoading(true);
+      const response = await api.get(`/rotas/${user_id}/usuarios/${date}/data`);
+
+      console.log(response.data);
+    } catch (err) {
+      Alert.alert(
+        'Ocorreu um erro',
+        'Não foi possível buscar as atividades, por favor tente mais tarde.'
+      );
+    }
+    // setLoading(false);
+  }, [connState, user_id, date]);
+
+  useEffect(() => {
+    if (connState) {
+      checkDailyActivities();
+    }
+    // props.getRouteRequest(user_id, date);
+  }, [checkDailyActivities]);
 
   const navigation = useNavigation();
 
@@ -88,28 +126,19 @@ const StartActivityButton: React.FC = ({
                 {activities.dailyActivity.atividade.objetivo.sigla}
               </Description>
               {activities.isStarted ? (
-                <Button
-                  color="#E74040"
-                  textColor="#fff"
-                  onPress={handleFinishActivity}
-                >
+                <Button type="error" onPress={handleFinishActivity}>
                   Finalizar trabalho diário
                 </Button>
               ) : (
                 <>
-                  <Button
-                    color="#0095DA"
-                    textColor="#fff"
-                    onPress={handleStartActivity}
-                  >
+                  <Button type="normal" onPress={handleStartActivity}>
                     Iniciar trabalho diário
                   </Button>
                 </>
               )}
               <Button
                 style={{ marginTop: 10 }}
-                color="#0095DA"
-                textColor="#fff"
+                type="normal"
                 onPress={() => navigation.navigate('Lista de Quarteirões')}
               >
                 Ver quarteirões
@@ -127,7 +156,7 @@ const StartActivityButton: React.FC = ({
 };
 
 const mapStateToProps = state => ({
-  activities: state.activityRoutes,
+  activities: state.currentActivity,
   user_id: state.user.profile.user.id,
   inspections: state.inspections.vistorias,
 });

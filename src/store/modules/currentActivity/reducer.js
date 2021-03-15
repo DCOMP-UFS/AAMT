@@ -8,7 +8,7 @@ const INITIAL_STATE = {
   loading: false,
 };
 
-export default function activityRoutes(state = INITIAL_STATE, action) {
+export default function currentActivity(state = INITIAL_STATE, action) {
   switch (action.type) {
     case '@activity/GET_ROUTE_REQUEST':
       return produce(state, draft => {
@@ -16,10 +16,15 @@ export default function activityRoutes(state = INITIAL_STATE, action) {
       });
     case '@activity/GET_ROUTE_SUCCESS':
       return produce(state, draft => {
+        console.tron.log(draft.dailyActivity);
         if (draft.dailyActivity === undefined) {
-          draft.dailyActivity = action.payload.data.trabalhoDiario;
-          draft.routes = action.payload.data.rota;
+          // draft.dailyActivity = action.payload.data.trabalhoDiario;
+          // draft.routes = action.payload.data.rota;
         }
+        draft.loading = false;
+      });
+    case '@activity/GET_ROUTE_FAILURE':
+      return produce(state, draft => {
         draft.loading = false;
       });
     case '@activity/START_ROUTE':

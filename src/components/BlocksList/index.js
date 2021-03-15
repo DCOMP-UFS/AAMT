@@ -70,8 +70,8 @@ const BlocksList = ({ routes, activityStarted }) => {
 };
 
 const mapStateToProps = state => ({
-  routes: state.activityRoutes.routes,
-  activityStarted: state.activityRoutes.start_hour,
+  routes: state.currentActivity.routes,
+  activityStarted: state.currentActivity.start_hour,
 });
 
 export default connect(mapStateToProps)(BlocksList);

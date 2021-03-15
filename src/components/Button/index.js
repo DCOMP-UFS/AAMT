@@ -5,33 +5,27 @@ import { ActivityIndicator } from 'react-native';
 
 import { Container, ButtonText } from './styles';
 
-const Button: React.FC<RectButtonProperties> = ({
-  children,
-  loading,
-  color,
-  textColor,
-  ...rest
-}) => (
-  <Container {...rest} color={color}>
-    {loading ? (
-      <ActivityIndicator size="large" color="#fff" />
-    ) : (
-      <ButtonText textColor={textColor}>{children}</ButtonText>
-    )}
-  </Container>
-);
+const Button = ({ children, loading, type, ...rest }) => {
+  return (
+    <Container type={type} {...rest}>
+      {loading ? (
+        <ActivityIndicator size="large" color="#fff" />
+      ) : (
+        <ButtonText>{children}</ButtonText>
+      )}
+    </Container>
+  );
+};
 
 Button.defaultProps = {
-  color: undefined,
-  textColor: undefined,
   loading: false,
+  type: 'normal',
 };
 
 Button.propTypes = {
   children: PropTypes.string.isRequired,
-  color: PropTypes.string,
-  textColor: PropTypes.string,
   loading: PropTypes.bool,
+  type: PropTypes.string,
 };
 
 export default Button;

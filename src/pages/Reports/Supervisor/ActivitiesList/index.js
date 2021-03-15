@@ -96,8 +96,6 @@ const ActivitiesList = () => {
             </CardRow>
             {item.horaFim && (
               <Button
-                color="#0095DA"
-                textColor="#fff"
                 onPress={() =>
                   navigation.navigate('Resumo da atividade', { id: item.id })
                 }

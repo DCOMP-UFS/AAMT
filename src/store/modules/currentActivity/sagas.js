@@ -65,7 +65,6 @@ export function* endRoute({ payload }) {
       vistorias: inspections,
     });
 
-    console.log(response.data);
     Alert.alert('Parabéns!', 'O trabalho diário foi finalizado com sucesso!');
   } catch (err) {
     Alert.alert(

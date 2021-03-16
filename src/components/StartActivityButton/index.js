@@ -40,6 +40,7 @@ const StartActivityButton = ({
   inspections,
   trabalho_diario_id,
   loading,
+  routes,
   ...props
 }) => {
   const [connState, setConnState] = useState(false);
@@ -76,15 +77,53 @@ const StartActivityButton = ({
 
   function handleFinishActivity() {
     if (connState) {
+      const [routeLength, inspectionLength] = agentPerformance();
+      var confirmationMessage = '';
+
+      if (inspectionLength < routeLength) {
+        confirmationMessage = `Você ainda possui ${
+          routeLength - inspectionLength
+        } vistorias pendentes.`;
+      }
+
       const time = getActualHours();
 
-      props.endActivity(activity.trabalhoDiario.id, time, inspections);
+      Alert.alert(
+        'Atenção!',
+        `Tem certeza que deseja finalizar esta rota? ${confirmationMessage}`,
+        [
+          {
+            text: 'Não',
+            style: 'cancel',
+          },
+          {
+            text: 'Sim',
+            onPress: () =>
+              props.endActivity(activity.trabalhoDiario.id, time, inspections),
+          },
+        ],
+        { cancelable: false }
+      );
     } else {
       Alert.alert(
         'Ocorreu um erro!',
         'Você precisa estar conectado á internet para finalizar esta rota'
       );
     }
+  }
+
+  function agentPerformance() {
+    var routeLength = 0;
+    var inspectionsLength = inspections.length;
+
+    routes.map(route => {
+      var lados = route.lados;
+      lados.map(lado => {
+        routeLength += lado.imoveis.length;
+      });
+    });
+
+    return [routeLength, inspectionsLength];
   }
 
   useEffect(() => {
@@ -196,6 +235,7 @@ const StartActivityButton = ({
 
 const mapStateToProps = state => ({
   activity: state.currentActivity.dailyActivity,
+  routes: state.currentActivity.routes,
   isStarted: state.currentActivity.isStarted,
   user_id: state.user.profile.user.id,
   inspections: state.inspections.vistorias,

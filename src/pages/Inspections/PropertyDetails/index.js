@@ -108,7 +108,7 @@ const PropertyDetails = ({ inspections, routes, ...props }) => {
       {index !== -1 && (
         <Card>
           <TitleContainer>
-            <Icon size={23} name="description" color="#3a3c4e" />
+            <Icon size={23} name="file-text" color="#3a3c4e" />
             <PropertyTitle>Dados da vistoria</PropertyTitle>
           </TitleContainer>
           <Label>Situação da vistoria</Label>
@@ -124,7 +124,7 @@ const PropertyDetails = ({ inspections, routes, ...props }) => {
           {inspection.recipientes.map(recipiente => (
             <>
               <TitleContainer key={recipiente.sequencia}>
-                <Icon size={23} name="science" color="#3a3c4e" />
+                <Icon size={23} name="droplet" color="#3a3c4e" />
                 <PropertyTitle>{`Recipiente ${recipiente.sequencia}`}</PropertyTitle>
               </TitleContainer>
               <Label>Tipo de recipiente</Label>

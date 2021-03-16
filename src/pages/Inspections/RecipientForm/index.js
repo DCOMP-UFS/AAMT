@@ -231,8 +231,10 @@ const mapStateToProps = state => ({
   sequencia: state.inspections.sequenciaVistoria,
   sequenciaRecipiente: state.inspections.sequenciaRecipiente,
   inspections: state.inspections.vistorias,
-  trabalho_diario_id: state.currentActivity.dailyActivity.id,
-  metodologia: state.currentActivity.dailyActivity.atividade.metodologia.sigla,
+  trabalho_diario_id: state.currentActivity.dailyActivity.trabalhoDiario.id,
+  metodologia:
+    state.currentActivity.dailyActivity.trabalhoDiario.atividade.metodologia
+      .sigla,
 });
 
 const mapDispatchToProps = dispatch =>

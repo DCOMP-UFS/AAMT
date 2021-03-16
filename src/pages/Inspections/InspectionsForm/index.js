@@ -24,6 +24,7 @@ const InspectionsForm = ({
   inspections,
   trabalho_diario_id,
   metodologia,
+  ...props
 }) => {
   const [optionStatus, setOptionStatus] = useState([
     { value: 'N', label: 'Normal' },
@@ -89,8 +90,10 @@ const InspectionsForm = ({
     };
 
     if (!house) {
+      console.log('entrou aqui');
       props.addInspection(inspection);
     } else {
+      console.log('entrou lá!');
       props.editInspection(inspection, imovel_id);
     }
 
@@ -159,8 +162,10 @@ const InspectionsForm = ({
 const mapStateToProps = state => ({
   sequencia: state.inspections.sequenciaVistoria,
   inspections: state.inspections.vistorias,
-  trabalho_diario_id: state.currentActivity.dailyActivity.id,
-  metodologia: state.currentActivity.dailyActivity.atividade.metodologia.sigla,
+  trabalho_diario_id: state.currentActivity.dailyActivity.trabalhoDiario.id,
+  metodologia:
+    state.currentActivity.dailyActivity.trabalhoDiario.atividade.metodologia
+      .sigla,
 });
 
 const mapDispatchToProps = dispatch =>

@@ -17,7 +17,6 @@ export const Card = styled.View`
 export const Header = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  margin-bottom: 10px;
 `;
 
 export const PropertyTitle = styled.Text`
@@ -29,7 +28,8 @@ export const PropertyTitle = styled.Text`
 
 export const TitleContainer = styled.View`
   flex-direction: row;
-  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
 `;
 
 export const Label = styled.Text`

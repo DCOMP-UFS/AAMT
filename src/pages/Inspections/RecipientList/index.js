@@ -111,7 +111,7 @@ const RecipientList = ({
 const mapStateToProps = state => ({
   sequencia: state.inspections.sequenciaVistoria,
   inspections: state.inspections.vistorias,
-  trabalho_diario_id: state.currentActivity.dailyActivity.id,
+  trabalho_diario_id: state.currentActivity.dailyActivity.trabalhoDiario.id,
 });
 
 const mapDispatchToProps = dispatch =>

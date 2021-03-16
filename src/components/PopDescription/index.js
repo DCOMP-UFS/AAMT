@@ -14,7 +14,7 @@ export default function PopDescription({ trigger, id, title, placement, content,
 
   return (
     <Container>
-      <OverlayTrigger trigger={ trigger ? trigger : 'hover' } placement={ placement } overlay={ popover }>
+      <OverlayTrigger trigger={ trigger ? trigger : ['hover', 'focus'] } placement={ placement } overlay={ popover }>
         <span className="pop-description">
           <FaInfoCircle className="icon icon-sm" />
         </span>

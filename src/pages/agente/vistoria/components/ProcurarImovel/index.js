@@ -19,9 +19,7 @@ import { selectDefault } from '../../../../../styles/global';
 import { Container, UlImovel, LiImovel, ContainerIcon, DivDescription, LiEmpty, Span } from './styles';
 
 function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }) {
-  const [ optionQuarteirao ] = useState( rota.map(( quarteirao, index ) => {
-    return { value: index, label: quarteirao.numero, id: quarteirao.id };
-  }));
+  const [ optionQuarteirao, setOptionQuarteirao ] = useState([]);
   const [ numero, setNumero ] = useState("");
   const [ sequencia, setSequencia ] = useState("");
   const [ optionTipoImovel ] = useState(Object.entries( tipoImovelEnum ).map(([key, value]) => {
@@ -30,29 +28,47 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
   const [ imoveis, setImoveis ] = useState( [] );
 
   useEffect(() => {
+    let optQuarteirao = rota.map(( quarteirao, index ) => {
+      return { value: index, label: quarteirao.numero, id: quarteirao.id };
+    });
+    setOptionQuarteirao([
+      { value: -1, label: 'Todos', id: -1 },
+      ...optQuarteirao
+    ]);
+
+
     props.setQuarteiraoSelect({ value: 0, label: rota[0].numero, id: rota[0].id });
   }, []);
 
   useEffect(() => {
     if( selectQuarteirao ) {
-      let im = rota[ selectQuarteirao.value ].lados.reduce(( imvs, l ) => {
-        l.imoveis = l.imoveis.map( i => {
-          const inspection  = props.vistorias.find( vistoria => {
-            if( imovel ) // existe um imóvel setado
-              return vistoria.imovel.id === i.id && vistoria.imovel.id !== imovel.id;
-            else
-              return vistoria.imovel.id === i.id;
+      let im = [];
+      if(selectQuarteirao.value === -1) {
+        console.log('Todos');
+      } else {
+        im = rota[ selectQuarteirao.value ].lados.reduce(( imvs, l ) => {
+          l.imoveis = l.imoveis.map( i => {
+            const inspection  = props.vistorias.find( vistoria => {
+              if( imovel ) // existe um imóvel setado
+                return vistoria.imovel.id === i.id && vistoria.imovel.id !== imovel.id;
+              else
+                return vistoria.imovel.id === i.id;
+            });
+
+            return ({ ...i, numeroQuarteirao: rota[ selectQuarteirao.value ].numero, logradouro: l.rua.nome, fl_inspection: inspection ? true : false })
           });
 
-          return ({ ...i, numeroQuarteirao: rota[ selectQuarteirao.value ].numero, logradouro: l.rua.nome, fl_inspection: inspection ? true : false })
-        });
-
-        return [ ...imvs, ...l.imoveis ];
-      }, []);
+          return [ ...imvs, ...l.imoveis ];
+        }, []);
+      }
 
       setImoveis( im );
     }
   }, [ selectQuarteirao ]);
+
+  useEffect(() => {
+    console.log(quarteirao);
+  }, [quarteirao]);
 
   function handleImovel( i ) {
     props.setImovelSelected( i );

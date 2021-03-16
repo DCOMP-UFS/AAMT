@@ -4,10 +4,6 @@ import { ActionTypes } from '../actions/supportInfo';
 import { tipoImovel } from '../../config/enumerate';
 
 // OBJETOS
-const createQuarteirao = (idQuarteirao, arrayImovel) => {
-  return { idQuarteirao, imovel: arrayImovel }
-}
-
 const createImovel = (idImovel, numero, sequencia, tipoImovel, complemento, responsavel, long, lat) => {
   return { idImovel, numero, sequencia, tipoImovel, complemento, responsavel, long, lat }
 }
@@ -43,43 +39,7 @@ const INITIAL_STATE = {
     numRecipiente: 2,
     recipienteInspecionado: [],
   },
-  quarteirao: [
-    createQuarteirao(
-      1,
-      [
-        createImovel( 2, 3, -1, tipoImovel[0], "DCOMP", "Daniel", -10.922438, -37.103766 ),
-        createImovel( 6, 3, 1, tipoImovel[1], "DCOMP Antigo", "Daniel", -10.923907, -37.101415 ),
-        createImovel( 7, 10, -1, tipoImovel[0], "Didática I", "UFS", -10.925682, -37.103215 ),
-        createImovel( 8, 11, -1, tipoImovel[0], "Didática II", "UFS", -10.925229, -37.103233 ),
-        createImovel( 9, 12, -1, tipoImovel[0], "Didática III", "UFS", -10.924725, -37.103224 ),
-        createImovel( 10, 13, -1, tipoImovel[0], "Didática IV", "UFS", -10.924297, -37.103268 ),
-        createImovel( 11, 14, -1, tipoImovel[0], "Didática V", "UFS", -10.925015, -37.104049 ),
-        createImovel( 12, 15, -1, tipoImovel[0], "Didática VI", "UFS", -10.925696, -37.103947 ),
-        createImovel( 13, 16, -1, tipoImovel[0], "Didática VII", "UFS", -10.929331, -37.102639 ),
-        createImovel( 14, 17, -1, tipoImovel[0], "Departamento de Engenharia Mecânica", "DEMEC/UFS", -10.922793, -37.104079 ),
-        createImovel( 15, 18, -1, tipoImovel[0], "Departamento de Morfologia", "DMO/UFS", -10.922247, -37.102072 ),
-        createImovel( 16, 19, -1, tipoImovel[0], "Departamento de Fisiologia", "DFS/UFS", -10.922691, -37.102023 ),
-      ]
-    ),
-    createQuarteirao(
-      2,
-      [
-        createImovel( 3, 4, -1, tipoImovel[3], "BICEN", "Gia", -10.926382, -37.100958),
-      ]
-    ),
-    createQuarteirao(
-      3,
-      [
-        createImovel( 4, 5, -1, tipoImovel[3], "RESUN", "Stefano", -10.926356, -37.102154),
-      ]
-    ),
-    createQuarteirao(
-      4,
-      [
-        createImovel( 5, 6, -1, tipoImovel[2], "Softeam", "Marlene", -10.922522, -37.103957),
-      ]
-    ),
-  ],
+  quarteirao: [],
   tableSelection: {},
   imovelSelect: {}
 };

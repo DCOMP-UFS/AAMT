@@ -290,7 +290,28 @@ export const Button = styled(basicButton)`
     border-color: ${ Color.secondary }!important;
   }
   /* </SECONDARY> */
+  /* <INFO> */
+  &.info {
+    color: #FFF;
+    background-color: ${ Color.info };
+    border-color: ${ Color.info }!important;
+  }
 
+  &.info:hover {
+    background-color: #198ae3c7!important;
+    border-color: #198ae3c7!important;
+  }
+
+  &.info:focus {
+    box-shadow: 0 0 0 0.2rem #198ae36e!important;
+  }
+
+  &.info:disabled {
+    color: #FFF;
+    background-color: ${ Color.success }!important;
+    border-color: ${ Color.success }!important;
+  }
+  /* </INFO> */
   /* <SUCCESS> */
   &.success {
     color: #FFF;

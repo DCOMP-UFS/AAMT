@@ -44,7 +44,6 @@ const StartActivityButton = ({
   ...props
 }) => {
   const [connState, setConnState] = useState(false);
-  // const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
 
@@ -237,7 +236,7 @@ const mapStateToProps = state => ({
   activity: state.currentActivity.dailyActivity,
   routes: state.currentActivity.routes,
   isStarted: state.currentActivity.isStarted,
-  user_id: state.user.profile.user.id,
+  user_id: state.user.profile.id,
   inspections: state.inspections.vistorias,
   loading: state.currentActivity.loading,
 });

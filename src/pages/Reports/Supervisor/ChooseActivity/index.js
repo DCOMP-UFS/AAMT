@@ -30,7 +30,7 @@ import {
 const ChooseActivity = () => {
   const [activities, setActivities] = useState([]);
 
-  const userId = useSelector(state => state.user.profile.user.id);
+  const userId = useSelector(state => state.user.profile.id);
 
   const navigation = useNavigation();
   const route = useRoute();

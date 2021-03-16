@@ -8,7 +8,7 @@ import SupRoutes from './supRoutes';
 
 const routes: React.FC = ({ signed, profile }) => {
   if (signed) {
-    const profileType = profile.user.atuacoes[0].tipoPerfil;
+    const profileType = profile.atuacoes[0].tipoPerfil;
 
     switch (profileType) {
       case 4:

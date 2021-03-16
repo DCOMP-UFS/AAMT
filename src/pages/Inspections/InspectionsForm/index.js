@@ -90,7 +90,6 @@ const InspectionsForm = ({
     };
 
     if (!house) {
-      console.log('entrou aqui');
       props.addInspection(inspection);
     } else {
       console.log('entrou lá!');

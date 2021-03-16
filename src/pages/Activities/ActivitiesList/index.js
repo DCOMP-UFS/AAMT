@@ -29,7 +29,7 @@ const ActivitiesList = () => {
   const route = useRoute();
 
   const dispatch = useDispatch();
-  const { id } = useSelector(state => state.user.profile.user);
+  const { id } = useSelector(state => state.user.profile);
 
   const loadActivities = useCallback(async () => {
     try {

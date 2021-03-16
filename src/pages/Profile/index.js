@@ -30,13 +30,13 @@ const Profile = () => {
       <Container>
         <ProfileContainer>
           <Small>Nome</Small>
-          <Item>{profile.user.nome}</Item>
+          <Item>{profile.nome}</Item>
           <Small>Atuação</Small>
-          <Item>{userFunction(profile.user.atuacoes[0].tipoPerfil)}</Item>
+          <Item>{userFunction(profile.atuacoes[0].tipoPerfil)}</Item>
           <Small>Usuário</Small>
-          <Item>{profile.user.usuario}</Item>
+          <Item>{profile.usuario}</Item>
           <Small>Email</Small>
-          <Item>{profile.user.email}</Item>
+          <Item>{profile.email}</Item>
         </ProfileContainer>
         <TouchableWithoutFeedback onPress={logout}>
           <LogoutButton>Desconectar</LogoutButton>

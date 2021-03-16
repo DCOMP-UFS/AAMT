@@ -1,14 +1,14 @@
 export function signInRequest(user, password) {
   return {
     type: '@auth/SIGN_IN_REQUEST',
-    payload: {user, password},
+    payload: { user, password },
   };
 }
 
-export function signInSuccess(profile) {
+export function signInSuccess(token, profile) {
   return {
     type: '@auth/SIGN_IN_SUCCESS',
-    payload: {profile},
+    payload: { token, profile },
   };
 }
 

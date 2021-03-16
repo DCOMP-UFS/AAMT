@@ -7,20 +7,18 @@ import { signInSuccess, signInFailure } from './actions';
 
 export function* signIn({ payload }) {
   try {
-    const { user, password } = payload;
-
-    console.log('entrou no sign in');
+    const { user: usuario, password } = payload;
 
     const response = yield call(api.post, '/auth/authenticate', {
-      usuario: user,
+      usuario,
       senha: password,
     });
 
-    const { token } = response.data;
+    const { user, token } = response.data;
 
     api.defaults.headers.Authorization = `Bearer ${token}`;
 
-    yield put(signInSuccess(response.data));
+    yield put(signInSuccess(token, user));
   } catch (err) {
     Alert.alert('Autenticação falhou', 'Verifique seu usuário ou senha');
     yield put(signInFailure());
@@ -28,9 +26,9 @@ export function* signIn({ payload }) {
 }
 
 export function setToken({ payload }) {
-  if (!payload.user.profile) return;
+  if (!payload) return;
 
-  const { token } = payload.user.profile;
+  const { token } = payload.auth;
 
   if (token) {
     api.defaults.headers.Authorization = `Bearer ${token}`;

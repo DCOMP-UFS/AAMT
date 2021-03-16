@@ -135,11 +135,11 @@ const AppDrawer = () => (
   >
     <Drawer.Screen name="Página Inicial" component={AppStacker} />
     <Drawer.Screen name="Minhas atividades" component={ActivityStacker} />
-    <Drawer.Screen
+    {/* <Drawer.Screen
       name="Vistorias"
       component={Inspections}
       options={{ headerShown: true }}
-    />
+    /> */}
     <Drawer.Screen
       name="Perfil"
       component={Profile}

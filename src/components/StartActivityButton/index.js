@@ -35,16 +35,15 @@ import { cos } from 'react-native-reanimated';
 
 const StartActivityButton = ({
   user_id,
-  activities,
+  activity,
   isStarted,
   inspections,
   trabalho_diario_id,
-  // loading,
+  loading,
   ...props
 }) => {
   const [connState, setConnState] = useState(false);
-  const [activity, setActivity] = useState(null);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
 
@@ -63,15 +62,29 @@ const StartActivityButton = ({
   }
 
   function handleStartActivity() {
-    const time = getActualHours();
+    if (connState) {
+      const time = getActualHours();
 
-    props.startActivity(activities.trabalhoDiario.id, time);
+      props.startActivity(activity.trabalhoDiario.id, time);
+    } else {
+      Alert.alert(
+        'Ocorreu um erro!',
+        'Você precisa estar conectado á internet para iniciar esta rota'
+      );
+    }
   }
 
   function handleFinishActivity() {
-    const time = getActualHours();
+    if (connState) {
+      const time = getActualHours();
 
-    props.endActivity(activities.trabalhoDiario.id, time, inspections);
+      props.endActivity(activity.trabalhoDiario.id, time, inspections);
+    } else {
+      Alert.alert(
+        'Ocorreu um erro!',
+        'Você precisa estar conectado á internet para finalizar esta rota'
+      );
+    }
   }
 
   useEffect(() => {
@@ -88,36 +101,19 @@ const StartActivityButton = ({
     };
   }, []);
 
-  const checkDailyActivities = useCallback(async () => {
-    try {
-      setLoading(true);
-      const response = await api.get(`/rotas/${user_id}/usuarios/${date}/data`);
-
-      if (response.data.trabalhoDiario) {
-        props.getRouteRequest(user_id, date);
-        setActivity(response.data);
-      }
-    } catch (err) {
-      Alert.alert(
-        'Ocorreu um erro',
-        'Não foi possível buscar as atividades, por favor tente mais tarde.'
-      );
-    }
-    setLoading(false);
-  }, [user_id, date]);
-
   useEffect(() => {
     if (connState) {
       if (!isStarted) {
-        checkDailyActivities();
+        props.getRouteRequest(user_id, date);
+        // checkDailyactivity();
       } else {
-        setActivity(activities);
+        // setActivity(activity);
       }
     }
     if (!connState && isStarted) {
-      setActivity(activities);
+      // setActivity(activity);
     }
-  }, [connState, isStarted, checkDailyActivities]);
+  }, [connState, isStarted]);
 
   function formatDate(date) {
     const formattedDate = format(parseISO(date), 'dd/MM/yyyy');
@@ -199,11 +195,11 @@ const StartActivityButton = ({
 };
 
 const mapStateToProps = state => ({
-  activities: state.currentActivity.dailyActivity,
+  activity: state.currentActivity.dailyActivity,
   isStarted: state.currentActivity.isStarted,
   user_id: state.user.profile.user.id,
   inspections: state.inspections.vistorias,
-  // loading: state.currentActivity.loading,
+  loading: state.currentActivity.loading,
 });
 
 const mapDispatchToProps = dispatch =>

@@ -105,7 +105,7 @@ const PropertyDetails = ({ inspections, routes, ...props }) => {
           )}
         </Small>
       </Card>
-      {index !== -1 && (
+      {/* {index !== -1 && (
         <Card>
           <TitleContainer>
             <Icon size={23} name="file-text" color="#3a3c4e" />
@@ -157,7 +157,7 @@ const PropertyDetails = ({ inspections, routes, ...props }) => {
             </>
           ))}
         </Card>
-      )}
+      )} */}
     </Container>
   );
 };

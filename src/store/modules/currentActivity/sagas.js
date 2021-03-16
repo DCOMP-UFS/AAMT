@@ -20,6 +20,8 @@ export function* getRoute({ payload }) {
 
     if (response.data.trabalhoDiario) {
       yield put(getRouteSuccess(response.data));
+    } else {
+      yield put(getRouteFailure());
     }
   } catch (err) {
     Alert.alert(

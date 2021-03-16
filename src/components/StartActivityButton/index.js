@@ -31,6 +31,7 @@ import {
   RouteButton,
   MenuTitle,
 } from './styles';
+import { cos } from 'react-native-reanimated';
 
 const StartActivityButton = ({
   user_id,
@@ -92,9 +93,10 @@ const StartActivityButton = ({
       setLoading(true);
       const response = await api.get(`/rotas/${user_id}/usuarios/${date}/data`);
 
-      props.getRouteRequest(user_id, date);
-
-      setActivity(response.data);
+      if (response.data.trabalhoDiario) {
+        props.getRouteRequest(user_id, date);
+        setActivity(response.data);
+      }
     } catch (err) {
       Alert.alert(
         'Ocorreu um erro',

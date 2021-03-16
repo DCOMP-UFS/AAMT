@@ -18,7 +18,9 @@ export function* getRoute({ payload }) {
       `/rotas/${user_id}/usuarios/${date}/data`
     );
 
-    yield put(getRouteSuccess(response.data));
+    if (response.data.trabalhoDiario) {
+      yield put(getRouteSuccess(response.data));
+    }
   } catch (err) {
     Alert.alert(
       'Houve um problema',

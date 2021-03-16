@@ -11,8 +11,11 @@ const defaultTheme: DefaultTheme = {
     label: '#a6a8ad',
     textInput: '#999999',
     borderInput: '#dddddd',
+    cardBackground: '#ffffff',
 
+    confirm: '#22c6b8',
     error: '#c53030',
+    warning: '#ffcc6a',
   },
 
   fonts: {

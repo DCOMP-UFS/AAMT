@@ -55,13 +55,13 @@ export function* endRoute({ payload }) {
   try {
     const { activity_id, end_hour, inspections } = payload;
 
-    console.log(JSON.stringify(inspections));
-
     const response = yield call(api.post, '/rotas/finalizar', {
       trabalhoDiario_id: activity_id,
       horaFim: end_hour,
       vistorias: inspections,
     });
+
+    console.log(response.data);
     Alert.alert('Parabéns!', 'O trabalho diário foi finalizado com sucesso!');
   } catch (err) {
     Alert.alert(

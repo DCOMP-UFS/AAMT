@@ -5,6 +5,9 @@ const containerModifiers = {
   normal: css`
     background-color: ${({ theme }) => theme.colors.blue};
   `,
+  confirm: css`
+    background-color: ${({ theme }) => theme.colors.confirm};
+  `,
   error: css`
     background-color: ${({ theme }) => theme.colors.error};
   `,
@@ -12,7 +15,7 @@ const containerModifiers = {
 
 export const Container = styled(RectButton)`
   width: 100%;
-  height: 60px;
+  height: 50px;
   border-radius: 8px;
   justify-content: center;
   align-items: center;
@@ -20,7 +23,7 @@ export const Container = styled(RectButton)`
 `;
 
 export const ButtonText = styled.Text`
-  font-family: ${({ theme }) => theme.fonts.regular};
+  font-family: ${({ theme }) => theme.fonts.bold};
   color: #ffffff;
-  font-size: 18px;
+  font-size: 16px;
 `;

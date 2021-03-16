@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Alert, Text } from 'react-native';
-import { format } from 'date-fns';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { format, parseISO } from 'date-fns';
 import PropTypes from 'prop-types';
-
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
 import NetInfo from '@react-native-community/netinfo';
+import Icon from 'react-native-vector-icons/Feather';
 
 import api from '../../services/api';
 
@@ -18,7 +17,7 @@ import {
 } from '../../store/modules/currentActivity/actions';
 
 import Button from '../../components/Button';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Loading from '../../components/Loading';
 
 import {
   Container,
@@ -27,21 +26,30 @@ import {
   Description,
   Card,
   Small,
+  Pair,
   ButtonRow,
+  RouteButton,
+  MenuTitle,
 } from './styles';
 
-const StartActivityButton: React.FC = ({
+const StartActivityButton = ({
   user_id,
   activities,
+  isStarted,
   inspections,
   trabalho_diario_id,
+  // loading,
   ...props
 }) => {
   const [connState, setConnState] = useState(false);
+  const [activity, setActivity] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const navigation = useNavigation();
 
   const date = format(new Date(), 'yyyy-MM-dd');
 
-  function handleStartActivity() {
+  function getActualHours() {
     var today = new Date();
 
     var hh = String(today.getHours()).padStart(2, '0');
@@ -50,19 +58,19 @@ const StartActivityButton: React.FC = ({
 
     today = hh + ':' + minutes + ':' + ss;
 
-    props.startActivity(activities.dailyActivity.id, today);
+    return today;
+  }
+
+  function handleStartActivity() {
+    const time = getActualHours();
+
+    props.startActivity(activities.trabalhoDiario.id, time);
   }
 
   function handleFinishActivity() {
-    var today = new Date();
+    const time = getActualHours();
 
-    var hh = String(today.getHours()).padStart(2, '0');
-    var minutes = String(today.getMinutes()).padStart(2, '0');
-    var ss = String(today.getSeconds()).padStart(2, '0');
-
-    today = hh + ':' + minutes + ':' + ss;
-
-    props.endActivity(activities.dailyActivity.id, today, inspections);
+    props.endActivity(activities.trabalhoDiario.id, time, inspections);
   }
 
   useEffect(() => {
@@ -81,73 +89,106 @@ const StartActivityButton: React.FC = ({
 
   const checkDailyActivities = useCallback(async () => {
     try {
-      console.log(connState);
-      // setLoading(true);
+      setLoading(true);
       const response = await api.get(`/rotas/${user_id}/usuarios/${date}/data`);
 
-      console.log(response.data);
+      props.getRouteRequest(user_id, date);
+
+      setActivity(response.data);
     } catch (err) {
       Alert.alert(
         'Ocorreu um erro',
         'Não foi possível buscar as atividades, por favor tente mais tarde.'
       );
     }
-    // setLoading(false);
-  }, [connState, user_id, date]);
+    setLoading(false);
+  }, [user_id, date]);
 
   useEffect(() => {
     if (connState) {
-      checkDailyActivities();
+      if (!isStarted) {
+        checkDailyActivities();
+      } else {
+        setActivity(activities);
+      }
     }
-    // props.getRouteRequest(user_id, date);
-  }, [checkDailyActivities]);
+    if (!connState && isStarted) {
+      setActivity(activities);
+    }
+  }, [connState, isStarted, checkDailyActivities]);
 
-  const navigation = useNavigation();
+  function formatDate(date) {
+    const formattedDate = format(parseISO(date), 'dd/MM/yyyy');
+
+    return formattedDate;
+  }
+
+  const RouteAvailableMessage = () => {
+    return connState ? (
+      <Description>Você não possui uma rota planejada para hoje</Description>
+    ) : (
+      <Description>
+        Você não não está conectado a internet. Por favor, reconecte-se.
+      </Description>
+    );
+  };
+
+  const ButtonComponent = () => {
+    return (
+      <ButtonRow>
+        {!isStarted ? (
+          <RouteButton type="confirm" onPress={() => handleStartActivity()}>
+            Iniciar rota
+          </RouteButton>
+        ) : (
+          <RouteButton type="error" onPress={() => handleFinishActivity()}>
+            Encerrar rota
+          </RouteButton>
+        )}
+        <RouteButton
+          onPress={() => navigation.navigate('Lista de Quarteirões')}
+        >
+          Ver rota
+        </RouteButton>
+      </ButtonRow>
+    );
+  };
+
+  const ActivityComponent = () => {
+    return (
+      <>
+        <Header>
+          <Icon size={23} name="calendar" color="#3a3c4e" />
+          <Title>{formatDate(activity.trabalhoDiario.data)}</Title>
+        </Header>
+        <Pair>
+          <Small>Metodologia</Small>
+          <Description>
+            {activity.trabalhoDiario.atividade.metodologia.sigla}
+          </Description>
+        </Pair>
+        <Pair>
+          <Small>Objetivo</Small>
+          <Description>
+            {activity.trabalhoDiario.atividade.objetivo.sigla}
+          </Description>
+        </Pair>
+        <ButtonComponent />
+      </>
+    );
+  };
 
   return (
     <>
       <Container>
+        <MenuTitle>Planejamento do dia</MenuTitle>
         <Card>
-          <Header>
-            <Icon size={23} name="calendar-today" color="#3a3c4e" />
-            <Title>Planejamento do dia</Title>
-          </Header>
-
-          {activities.loading ? (
-            <Description>Verificando planejamento do dia...</Description>
-          ) : activities.dailyActivity ? (
-            <>
-              <Small>Metodologia</Small>
-              <Description>
-                {activities.dailyActivity.atividade.metodologia.sigla}
-              </Description>
-              <Small>Objetivo</Small>
-              <Description>
-                {activities.dailyActivity.atividade.objetivo.sigla}
-              </Description>
-              {activities.isStarted ? (
-                <Button type="error" onPress={handleFinishActivity}>
-                  Finalizar trabalho diário
-                </Button>
-              ) : (
-                <>
-                  <Button type="normal" onPress={handleStartActivity}>
-                    Iniciar trabalho diário
-                  </Button>
-                </>
-              )}
-              <Button
-                style={{ marginTop: 10 }}
-                type="normal"
-                onPress={() => navigation.navigate('Lista de Quarteirões')}
-              >
-                Ver quarteirões
-              </Button>
-            </>
+          {loading ? (
+            <Loading />
+          ) : activity ? (
+            <ActivityComponent />
           ) : (
-            <Description>
-              Você não possui uma rota planejada para hoje
-            </Description>
+            <RouteAvailableMessage />
           )}
         </Card>
       </Container>
@@ -156,9 +197,11 @@ const StartActivityButton: React.FC = ({
 };
 
 const mapStateToProps = state => ({
-  activities: state.currentActivity,
+  activities: state.currentActivity.dailyActivity,
+  isStarted: state.currentActivity.isStarted,
   user_id: state.user.profile.user.id,
   inspections: state.inspections.vistorias,
+  // loading: state.currentActivity.loading,
 });
 
 const mapDispatchToProps = dispatch =>

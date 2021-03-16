@@ -3,9 +3,9 @@ import produce from 'immer';
 const INITIAL_STATE = {
   isStarted: false,
   start_hour: undefined,
+  loading: false,
   dailyActivity: undefined,
   routes: undefined,
-  loading: false,
 };
 
 export default function currentActivity(state = INITIAL_STATE, action) {
@@ -16,11 +16,8 @@ export default function currentActivity(state = INITIAL_STATE, action) {
       });
     case '@activity/GET_ROUTE_SUCCESS':
       return produce(state, draft => {
-        console.tron.log(draft.dailyActivity);
-        if (draft.dailyActivity === undefined) {
-          // draft.dailyActivity = action.payload.data.trabalhoDiario;
-          // draft.routes = action.payload.data.rota;
-        }
+        draft.dailyActivity = action.payload.data;
+        draft.routes = action.payload.data.rota;
         draft.loading = false;
       });
     case '@activity/GET_ROUTE_FAILURE':

@@ -9,6 +9,8 @@ export function* signIn({ payload }) {
   try {
     const { user, password } = payload;
 
+    console.log('entrou no sign in');
+
     const response = yield call(api.post, '/auth/authenticate', {
       usuario: user,
       senha: password,

@@ -3,7 +3,6 @@ export const ActionTypes = {
 }
 
 export const setImovel = imovel => {
-  console.log(imovel);
   return {
     type: ActionTypes.SET_IMOVEL,
     payload: {

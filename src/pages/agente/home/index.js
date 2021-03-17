@@ -229,7 +229,8 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
                           type="button"
                           className="success btn-small"
                           onClick={ checkRota }>
-                          <FaPlay className="btn-icon" />
+                          <FaPlay className="btn-icon"
+                        />
                           Iniciar Rota
                         </Button>
                       </Col>

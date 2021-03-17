@@ -146,7 +146,8 @@ function SelecionarImovel({ rota, vistoria, ...props }) {
             title="Selecione um Imóveis"
             columns={ columns }
             data={ rows }
-            options={ options } />
+            options={ options }
+          />
         </Col>
       </Row>
     </Container>

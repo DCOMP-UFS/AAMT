@@ -3,6 +3,9 @@
 - [Sumário](#sumário)
 - [Iniciando o banco](#iniciando-o-banco)
 - [Documentação da API](#documentação-da-api)
+  - [Atividades](#atividades)
+    - [Atividades de Responsabilidade do supervisor](#atividades-de-responsabilidade-do-supervisor)
+    - [Consultar Localidades](#consultar-localidades)
   - [Auth](#auth)
     - [Autenticação](#autenticação)
       - [*Request*](#request)
@@ -48,6 +51,95 @@ https://sequelize.org/v5/manual/associations.html#belongs-to-many-associations
 # Documentação da API
 
 A documentação foi dividida por controladores, cara seção da documentação representa um arquivo dentro da pasta *controllers* onde são configuradas as rotas da API.
+
+## Atividades
+
+Controladora das rotas de consulta de atividades;
+
+### Atividades de Responsabilidade do supervisor
+
+(/atividades/supervisor/:user_id/responsavel/:cycle_id/ciclos)
+
+Esta rota retorna todas as atividades em que o supervisor contém pelo menos uma equipe em sua responsabilidade.
+
+*Request*
+```
+curl --request GET \
+  --url __BASE_URL__/atividades/supervisor/:user_id/responsavel/:cycle_id/ciclos \
+  --header 'Authorization:  Bearer __TOKEN__
+```
+
+*Response*
+```
+[
+  {
+    "id": 21,
+    "objetivoAtividade": "Objetivo de uma atividade PNCD",
+    "abrangencia": 1,
+    "situacao": 1,
+    "responsabilidade": 1,
+    "flTodosImoveis": true,
+    "municipio_id": 1,
+    "ciclo_id": 2,
+    "metodologia_id": 2,
+    "objetivo_id": 2,
+    "equipes": [
+      {
+        "id": 9,
+        "atividade_id": 21,
+        "membros": [
+          {
+            "id": 18,
+            "tipoPerfil": 3,
+            "equipe_id": 9,
+            "usuario_id": 10,
+            "usuario": {
+              "id": 10,
+              "nome": "Roseli La Corte",
+              "cpf": "08750241818",
+              "rg": "183284987",
+              "email": "rlacorte@ufs.br",
+              "usuario": "rlacorte",
+              "senha": "$2a$10$dnku6Q9Q/VUasgWfPYil3.4napuGrRSPcq5GIwlHWvCXOXo.ytQn2",
+              "ativo": 1
+            }
+          },
+          ...
+        ]
+      },
+      ...
+    ]
+  },
+  ...
+]
+```
+
+### Consultar Localidades
+
+(/atividades/locais/:abrangencia_enum/abrangencia/:municipio_id/municipios)
+
+Esta rota retorna todas as localidades de um município de acordo com a abrangencia (1 - Localidade, 2 - Zona ou 3 - Quarteirão).
+
+*Request*
+
+```
+curl --request GET \
+  --url __BASE_URL__/atividades/locais/:abrangencia_enum/abrangencia/:municipio_id/municipios \
+  --header 'Authorization:  Bearer __TOKEN__
+```
+
+*Response*
+
+```
+[
+  {
+    "id": 2,
+    "nome": 1,
+    "tipo": "quarteirao"
+  },
+  ...
+]
+```
 
 ## Auth
 
@@ -149,7 +241,7 @@ Requisição de Exemplo:
 ```
 curl --request GET \
   --url __BASE_URL__/usuarios/ \
-  --header 'Authorization:  Bearer __TOKEN__'
+  --header 'Authorization:  Bearer __TOKEN__
 ```
 
 Requisição real com token retornado no login:

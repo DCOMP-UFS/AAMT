@@ -318,14 +318,18 @@ getLocations = async ( req, res ) => {
         where: {
           municipio_id
         }
-      }).map( l => ({ id: l.id, nome: l.nome, tipo: "localidade" }));
+      }).then( localidades => {
+        return localidades.map( localidade => ({ id: localidade.id, nome: localidade.nome, tipo: "localidade" }));
+      });
       break;
     case "2"://Zona
       locais = await Zona.findAll({
         where: {
           municipio_id
         }
-      }).map( z => ({ id: z.id, nome: z.nome, tipo: "zona" }));
+      }).then( zonas => {
+        return zonas.map( zona => ({ id: zona.id, nome: zona.nome, tipo: "zona" }));
+      });
       break;
   
     default://Quarteirão
@@ -336,7 +340,9 @@ getLocations = async ( req, res ) => {
             municipio_id
           }
         }
-      }).map( q => ({ id: q.id, nome: q.numero, tipo: "quarteirao" }));
+      }).then( quarteiroes => {
+        return quarteiroes.map( quarteirao => ({ id: quarteirao.id, nome: quarteirao.numero, tipo: "quarteirao" }));
+      });
       break;
   }
 
@@ -533,6 +539,95 @@ plain = async ( req, res ) => {
   return res.json( atividade );
 }
 
+getResponsibilityActivities = async ( req, res ) => {
+  const { user_id, cycle_id } = req.params;
+
+  const allow = await allowFunction( req.userId, 'definir_trabalho_diario' );
+  if( !allow )
+    return res.status(403).json({ error: 'Acesso negado A' });
+
+  if( parseInt( user_id ) !== req.userId )
+    return res.status(403).json({ error: 'Acesso negado B' });
+
+  const supervisor = await Usuario.findByPk( user_id, {
+    include: {
+      association: "atuacoes"
+    }
+  });
+  if( !supervisor )
+    return res.status(400).json({ error: "Usuário não existe" });
+
+  if( supervisor.atuacoes[ 0 ].escopo !== 2 )
+    return res.json([]);
+
+  const activities = await Atividade.findAll({
+    where: {
+      ciclo_id: cycle_id,
+      municipio_id: supervisor.atuacoes[ 0 ].local_id
+    },
+    attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+    include: [
+      {
+        association: 'metodologia',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+      },
+      {
+        association: 'objetivo',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+      },
+      {
+        association: 'equipes',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+        include: [
+          {
+            association: 'membros',
+            attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+            include: {
+              association: 'usuario',
+              attributes: { exclude: [ 'createdAt', 'updatedAt' ] } 
+            }
+          },
+          {
+            association: 'quarteiroes',
+            include: {
+              association: 'lados',
+              attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+              include: {
+                association: 'rua',
+                attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+              }
+            }
+          }
+        ]
+      }
+    ]
+  });
+
+  const responsabilityActivities = [];
+
+  activities.forEach(( activity ) => {
+    let act = activity;
+
+    const teams = activity.equipes.filter( (team, index) => {
+      let fl_team = false;
+      
+      team.membros.forEach( member => {
+        if( member.usuario_id === supervisor.id && member.tipoPerfil === 4 )
+          fl_team = true;
+      });
+
+      return fl_team;
+    });
+
+    act.dataValues.equipes = teams;
+
+    if( teams.length > 0 )
+      responsabilityActivities.push( act );
+  });
+
+  return res.json( responsabilityActivities );
+}
+
 const router = express.Router();
 router.use(authMiddleware);
 
@@ -546,5 +641,6 @@ router.put('/:id', update);
 router.post('/', store);
 router.post('/planejar/:id', plain);
 router.delete('/:id', destroy);
+router.get('/supervisor/:user_id/responsavel/:cycle_id/ciclos', getResponsibilityActivities);
 
 module.exports = app => app.use('/atividades', router);

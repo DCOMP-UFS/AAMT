@@ -29,6 +29,13 @@ export const getLocationsRequest = data => {
   });
 }
 
+export const getResponsabilityActivitiesRequest = data => {
+  const { usuario_id, ciclo_id } = data;
+  return api.get(`/atividades/supervisor/${ usuario_id }/responsavel/${ ciclo_id }/ciclos`, {
+    ...headerAuthorization()
+  });
+}
+
 export const createActiveRequest = data => {
   const {
     objetivoAtividade,

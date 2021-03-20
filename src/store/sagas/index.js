@@ -21,6 +21,9 @@ import { ActionTypes as RotaActions } from '../actions/RotaActions';
 import { ActionTypes as VistoriaActions } from '../actions/VistoriaActions';
 import { ActionTypes as TrabalhoDiarioActions } from '../actions/trabalhoDiario';
 
+// Nova Estrutura
+import { ActionTypes as NW_AtividadeActions } from '../Atividade/atividadeActions';
+
 import {
   authenticate,
   getUsuarios,
@@ -55,6 +58,9 @@ import * as DefinirRotaCacheSagas from './DefinirRotaCacheSagas';
 import * as RotaSagas from './RotaSagas';
 import * as VistoriaSagas from './VistoriaSagas';
 import * as TrabalhoDiarioSagas from './TrabalhoDiarioSagas';
+
+// Nova Estrutura
+import * as NW_AtividadeSagas from '../Atividade/atividadeSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -139,6 +145,8 @@ export default function* rootSaga() {
     takeLatest( AtividadeActions.GET_LOCATIONS_REQUEST, AtividadeSagas.getLocations ),
     takeLatest( AtividadeActions.CREATE_ACTIVE_REQUEST, AtividadeSagas.createActive ),
     takeLatest( AtividadeActions.PLAN_ACTIVITY_REQUEST, AtividadeSagas.planActivity ),
+    // Nova Estrutura
+    takeLatest( NW_AtividadeActions.GET_RESPONSABILITY_ACTIVITIES_REQUEST, NW_AtividadeSagas.getResponsabilityActivities ),
 
     // Gerir Equipes
     takeLatest( DefinirRotaActions.GET_ACTIVITIES_SUPERVISED_REQUEST, DefinirRotaSagas.getActivitiesSup ),

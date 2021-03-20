@@ -53,6 +53,12 @@ export const abrangencia = {
   quarteirao: { id: 3, label: "Por Quarteirão" },
 }
 
+export const abrangenciaEnum = [
+  { id: 1, label: "Por Localidade/Bairro" },
+  { id: 2, label: "Por Zona" },
+  { id: 3, label: "Por Quarteirão" },
+]
+
 export const situacaoAtividade = {
   aberta: { id: 1, label: "Em aberto" },
   concluida: { id: 2, label: "Concluída" },
@@ -65,6 +71,11 @@ export const responsabilidadeAtividade = {
   regional: { id: 1, label: "Regional" },
   municipal: { id: 2, label: "Municipal" },
 }
+
+export const responsabilidadeAtividadeEnum = [
+  { id: 1, label: "Regional" },
+  { id: 2, label: "Municipal" },
+]
 
 export const tecnicaTratamentoEnum = {
   focal: { id: 1, label: "Focal" },

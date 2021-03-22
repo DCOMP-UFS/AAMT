@@ -3,6 +3,13 @@ const {endOfWeek, isSunday, differenceInCalendarDays, parseISO, subDays, addWeek
 module.exports = (semana, ano) => {
     const firstDayofYear = new Date(parseInt(ano), 0, 1)
 
+    semana = parseInt(semana);
+    ano = parseInt(ano);
+
+    if (semana > 53) {
+        return -1;
+    }
+
     var firstDay = firstDayofYear;
 
     if (!isSunday(firstDayofYear)) {
@@ -23,19 +30,21 @@ module.exports = (semana, ano) => {
 
     firstDayOfEpiWeek = addSeconds(firstDayOfEpiWeek, 1)
 
+    var lastDayOfEpiWeek = addDays(firstDayOfEpiWeek, 6);
+
     // Trata o caso de Semana 53 quando o limite é 52
 
-    if (getYear(firstDayOfEpiWeek) === parseInt(ano) + 1) {
-        console.log('Passou do limite!')
-    } else {
-        var differenceBetween = differenceInCalendarDays(new Date(parseInt(ano), 11, 31), firstDayOfEpiWeek) + 1
+    if (semana === 53) {
+        var differenceBetween = differenceInCalendarDays(lastDayOfEpiWeek, new Date(ano + 1, 0, 1)) + 1;
 
-        if (differenceBetween < 4) {
-            console.log('Passou do limite!')
+        if (getYear(firstDayOfEpiWeek) === ano + 1) {
+            return -1;
+        }
+
+        if (getYear(firstDayOfEpiWeek) === ano && getYear(lastDayOfEpiWeek) === ano + 1 && differenceBetween >= 4) {
+            return -1;
         }
     }
-
-    var lastDayOfEpiWeek = addDays(firstDayOfEpiWeek, 6);
 
     lastDayOfEpiWeek = format(lastDayOfEpiWeek, 'yyyy-MM-dd');
 

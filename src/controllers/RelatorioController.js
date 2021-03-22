@@ -17,6 +17,7 @@ const TrabalhoDiario = require('../models/TrabalhoDiario');
 const Rota = require('../models/Rota');
 
 const getEpiWeek = require('../util/getEpiWeek');
+const { format, parseISO } = require('date-fns');
 
 const router = express.Router();
 router.use(authMiddleware);
@@ -182,17 +183,41 @@ getTeamCycleActivity = async (req, res) => {
 
 getActivityWeeklyReport = async (req, res) => {
     const { atividade_id, ano, semana } = req.query;
+    const userId = req.userId;
 
-    // O número máximo de semanas em um ano é 53, quando há
-    // ano bissexto
+    // Validação da rota
 
-    if (semana > 53) {
-        return res.status(400).json({ message: 'A quantidade de semanas epidemiológicas não pode ser maior que 53' });
+    const usuario = await Usuario.findByPk( userId, {
+        include: {
+          association: "atuacoes"
+        }
+    });
+
+    if ( !usuario )
+        return res.status(400).json({ error: "Usuário não existe" });
+
+    let fl_agente = false;
+    usuario.atuacoes.forEach( at => {
+        if( at.tipoPerfil === 3 )
+        fl_agente = true;
+    });
+
+    if ( !fl_agente )
+        return res.status(400).json({ error: "Acesso negado" });
+
+
+    const semanaEpidemiologica = getEpiWeek(semana, ano);
+
+    // O número máximo de semanas em um ano é 53, em situações
+    // específicas
+
+    if (semanaEpidemiologica === -1) {
+        return res.status(400).json({ error: `Este ano não possui ${semana} semanas epidemiológicas` })
     }
 
-    const [data_inicio, data_fim] = getEpiWeek(semana, ano);
+    const [data_inicio, data_fim] = semanaEpidemiologica;
 
-    // Selecionando todas as equipes daquela atividae
+    // Selecionando todas as equipes daquela atividade
 
     let equipes = await Equipe.findAll({
         where: {
@@ -203,7 +228,7 @@ getActivityWeeklyReport = async (req, res) => {
 
     equipes = equipes.map(({ id }) => id);
 
-    // Selecionando todos vistorias realizadas
+    // Selecionando todas as vistorias realizadas
     // por aquelas equipes
 
     let trabalhos = await TrabalhoDiario.findAll({
@@ -243,6 +268,10 @@ getActivityWeeklyReport = async (req, res) => {
         ]
     });
 
+    if (trabalhos.length === 0) {
+        return res.json([])
+    }
+
     let propertiesByType = [
         { label: 'Residencial', sigla: 'R', value: 0 },
         { label: 'Terreno Baldio', sigla: 'TB', value: 0 },
@@ -277,6 +306,8 @@ getActivityWeeklyReport = async (req, res) => {
     ];
 
     let totalSample = 0;
+
+    // Gerando os indíces do relatório
 
     trabalhos.map(trabalho => {
         const vistorias = trabalho.vistorias;
@@ -367,6 +398,12 @@ getActivityWeeklyReport = async (req, res) => {
     });
 
     const resultado = {
+        epiWeek: {
+            semana,
+            ano, 
+            inicio: format(parseISO(data_inicio), 'dd-MM-yyyy'),
+            fim: format(parseISO(data_fim), 'dd-MM-yyyy'),
+        },
         propertiesByType,
         propertiesByStatus,
         propertiesByPendency,

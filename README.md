@@ -18,6 +18,7 @@
       - [*Request*](#request-2)
       - [*Response*](#response-2)
   - [Rotas](#rotas)
+    - [Planejar Rota de um Agente](#planejar-rota-de-um-agente)
     - [Check Rota Iniciada](#check-rota-iniciada)
       - [*Request*](#request-3)
       - [*Response*](#response-3)
@@ -423,6 +424,40 @@ curl --request GET \
 ## Rotas
 
 Controladora das rotas dos usuários, um tempo associado a rota é o termo trabalho diário, usado no frontend da aplicação. Uma rota representa os quarteirões e lados que um determinado agente irá trabalhar ou trabalhou em um determinado dia. As rotas são planejadas pelos supervisores e consumidas pelos agentes.
+
+### Planejar Rota de um Agente
+
+Esta rota recebe um conjunto de lados e dados da equipe, supervisor e agente para planejar uma rota de trabalho individual.
+
+*Request*
+
+```
+curl --request POST \
+  --url __base_URL__/rotas/planejamento \
+  --header 'Authorization: Bearer __TOKEN__' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "equipe_id": 9,
+    "supervisor_id": 3,
+    "usuario_id": 10,
+    "lados": [ 4, 3, 2, 1, 8, 7, 10, 9 ]
+  }'
+```
+
+*Response*
+```
+{
+  "id": 35,
+  "data": "2021-03-22",
+  "supervisor_id": 3,
+  "usuario_id": 10,
+  "equipe_id": 9,
+  "updatedAt": "2021-03-22T22:05:15.360Z",
+  "createdAt": "2021-03-22T22:05:15.360Z",
+  "horaInicio": null,
+  "horaFim": null
+}
+```
 
 ### Check Rota Iniciada 
 

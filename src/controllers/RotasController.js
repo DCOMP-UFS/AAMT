@@ -1,16 +1,17 @@
-const authMiddleware = require('../middlewares/auth');
-const express = require('express');
-const { Op } = require('sequelize');
-const Usuario = require('../models/Usuario');
-const TrabalhoDiario = require('../models/TrabalhoDiario');
-const Rota = require('../models/Rota');
-const Lado = require('../models/Lado');
-const Quarteirao = require('../models/Quarteirao');
-const Vistoria = require('../models/Vistoria');
-const Deposito = require('../models/Deposito');
-const Tratamento = require('../models/Tratamento');
-const Amostra = require('../models/Amostra');
-const Imovel = require('../models/Imovel');
+const authMiddleware  = require('../middlewares/auth');
+const express         = require('express');
+const { Op }          = require('sequelize');
+const Usuario         = require('../models/Usuario');
+const TrabalhoDiario  = require('../models/TrabalhoDiario');
+const Rota            = require('../models/Rota');
+const Lado            = require('../models/Lado');
+const Quarteirao      = require('../models/Quarteirao');
+const Vistoria        = require('../models/Vistoria');
+const Deposito        = require('../models/Deposito');
+const Tratamento      = require('../models/Tratamento');
+const Amostra         = require('../models/Amostra');
+const Imovel          = require('../models/Imovel');
+const Equipe          = require('../models/Equipe');
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
@@ -112,88 +113,92 @@ getRoute = async ( req, res ) => {
   });
 }
 
-plain = async ( req, res ) => {
-  const { usuario_id } = req.params;
-  const { supervisor_id, planejamento } = req.body;
+planejarRota = async ( req, res ) => {
+  const { supervisor_id, usuario_id, equipe_id, lados } = req.body;
   const userId = req.userId;
 
   // Iniciando validação
-  const supervisor = await Usuario.findByPk( userId );
+  const usuario_req = await Usuario.findByPk( userId );
 
-  const allow = await allowFunction( supervisor.id, 'definir_trabalho_diario' );
+  const allow = await allowFunction( usuario_req.id, 'definir_trabalho_diario' );
   if( !allow )
     return res.status(403).json({ error: 'Acesso negado' });
 
-  const usuario = await Usuario.findByPk( supervisor_id, {
+  const supervisor = await Usuario.findByPk( supervisor_id, {
     include: {
       association: "atuacoes"
     }
   });
 
   let fl_supervisor = false;
-  usuario.atuacoes.forEach( at => {
+  supervisor.atuacoes.forEach( at => {
     if( at.tipoPerfil === 3 )
       fl_supervisor = true;
   });
 
   if( !fl_supervisor )
     return res.status(400).json({ error: "Usuário informado não é um supervisor!" });
+
+  const usuario = await Usuario.findByPk( usuario_id );
+  if( !usuario )
+    return res.status(400).json({ error: "Usuário não existe" });
+
+  const equipe = await Equipe.findByPk( equipe_id, {
+    include: {
+      association: 'membros',
+      where: {
+        usuario_id
+      }
+    }
+  });
+  if( !equipe )
+    return res.status(400).json({ error: "Equipe não existe ou usuário não pertence a esta equipe" });
   // Fim validação
 
   // en-GB: d/m/Y
   const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split('/');
   const current_date = `${ Y }-${ m }-${ d }`;
 
-  planejamento.forEach( async p => {
-    await p.rotas.forEach( async rota => {
-      const td = await TrabalhoDiario.findOne({
-        where: {
-          [Op.and]: [
-            {
-              data: {
-                [Op.eq]: current_date
-              }
-            },
-            { usuario_id: rota.usuario_id },
-            { equipe_id: p.idEquipe }
-          ]
-        }
-      });
-
-      if( !td ) {
-        await TrabalhoDiario.create({
-          data: current_date,
-          supervisor_id: usuario.id,
-          usuario_id: rota.usuario_id,
-          equipe_id: p.idEquipe
-        }).then( trabalho => {
-          rota.lados.forEach( async l => {
-            await Rota.create({
-              lado_id: l.id,
-              trabalho_diario_id: trabalho.id
-            });
-          });
-        });
-      } else {
-        await Rota.destroy({
-          where: {
-            trabalho_diario_id: td.id
+  const td = await TrabalhoDiario.findOne({
+    where: {
+      [Op.and]: [
+        {
+          data: {
+            [Op.eq]: current_date
           }
-        });
+        },
+        { usuario_id },
+        { equipe_id }
+      ]
+    }
+  });
 
-        rota.lados.forEach( async l => {
-          await Rota.create({
-            lado_id: l.id,
-            trabalho_diario_id: td.id
-          });
-        });
+  let trabalho_diario = {};
+  if( !td ) {
+    trabalho_diario = await TrabalhoDiario.create({
+      data: current_date,
+      supervisor_id,
+      usuario_id,
+      equipe_id
+    });
+  } else {
+    trabalho_diario = td;
+
+    await Rota.destroy({
+      where: {
+        trabalho_diario_id: trabalho_diario.id
       }
     });
-  });
+  }
 
-  return res.json({
-    planejamento
-  });
+  const rota = lados.map( lado_id => ({
+    lado_id,
+    trabalho_diario_id: trabalho_diario.id
+  }));
+
+  Rota.bulkCreate( rota );
+
+  return res.json( trabalho_diario );
 }
 
 getPlain = async ( req, res ) => {
@@ -564,7 +569,7 @@ router.use(authMiddleware);
 
 router.get('/:usuario_id/usuarios/:data/data', getRoute);
 router.get('/planejamento/:usuario_id/usuarios', getPlain);
-router.post('/planejamento', plain);
+router.post('/planejamento', planejarRota);
 router.post('/iniciar', startRoute);
 router.post('/finalizar', endRoute);
 router.get('/check/:trabalhoDiario_id/trabalhoDiario', isStarted);

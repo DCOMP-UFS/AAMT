@@ -5,7 +5,7 @@ version = async (req, res) => {
   res.send({ 
     name: 'API AAMT',
     description: 'support application to combat endemic diseases',
-    version: '0.1'
+    version: 'v1.20210322'
   });
 }
 

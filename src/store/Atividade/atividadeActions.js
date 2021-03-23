@@ -6,6 +6,7 @@ export const ActionTypes = {
   SET_INDEX_EQUIPE: "SET_INDEX_EQUIPE",
   SET_INDEX_MEMBRO: "SET_INDEX_MEMBRO",
   TOGGLE_LADO: "TOGGLE_LADO",
+  LIMPAR_EQUIPE: "LIMPAR_EQUIPE",
 }
 
 export const getResponsabilityActivitiesRequest = (usuario_id, ciclo_id) => {
@@ -69,6 +70,15 @@ export const toggleLado = ( indexQuarteirao, indexLado ) => {
     payload: {
       indexQuarteirao,
       indexLado
+    }
+  }
+}
+
+export const limparEquipe = indexEquipe => {
+  return {
+    type: ActionTypes.LIMPAR_EQUIPE,
+    payload: {
+      indexEquipe
     }
   }
 }

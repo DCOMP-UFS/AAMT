@@ -31,3 +31,12 @@ export const closeRouteRequest = data => {
     ...headerAuthorization()
   });
 }
+
+export const planejarRotaRequest = data => {
+  const { rota } = data;
+
+  return api.post('rotas/planejamento', { ...rota },
+  {
+    ...headerAuthorization()
+  });
+}

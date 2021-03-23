@@ -23,6 +23,7 @@ import { ActionTypes as TrabalhoDiarioActions } from '../actions/trabalhoDiario'
 
 // Nova Estrutura
 import { ActionTypes as NW_AtividadeActions } from '../Atividade/atividadeActions';
+import { ActionTypes as NW_RotaActions } from '../Rota/rotaActions';
 
 import {
   authenticate,
@@ -61,6 +62,7 @@ import * as TrabalhoDiarioSagas from './TrabalhoDiarioSagas';
 
 // Nova Estrutura
 import * as NW_AtividadeSagas from '../Atividade/atividadeSagas';
+import * as NW_RotaSagas from '../Rota/rotaSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -159,6 +161,8 @@ export default function* rootSaga() {
     takeLatest( RotaActions.CHECK_ROTA_INICIADA_REQUEST, RotaSagas.isStarted ),
     takeLatest( RotaActions.INICIAR_ROTA_REQUEST, RotaSagas.startRoute ),
     takeLatest( RotaActions.ENCERRAR_ROTA_REQUEST, RotaSagas.closeRoute ),
+    // Nova Estrutura
+    takeLatest( NW_RotaActions.PLANEJAR_ROTA_REQUEST, NW_RotaSagas.planejarRota ),
 
     // Gerir Vistoria
     takeLatest( VistoriaActions.CONSULTAR_VISTORIAS_REQUEST, VistoriaSagas.getInspects ),

@@ -8,7 +8,8 @@ import SelecionarQuarteiroes from '../components/SelecionarQuarteiroes';
 
 // ACTIONS
 import { getOpenCycleRequest } from '../../../store/actions/CicloActions';
-import { getResponsabilityActivitiesRequest } from '../../../store/Atividade/atividadeActions';
+import { getResponsabilityActivitiesRequest, setIndexEquipe, setIndexMembro, limparEquipe } from '../../../store/Atividade/atividadeActions';
+import { planejarRotaRequest } from '../../../store/Rota/rotaActions';
 import { showNotifyToast } from '../../../store/actions/appConfig';
 
 // STYLES
@@ -16,7 +17,18 @@ import { PageIcon, PageHeader, PagePopUp, Steps, StepControl } from '../../../st
 import { Button } from '../../../styles/global';
 import { Container } from './styles';
 
-export const PlanejarRota = ({ indexMembro, indexAtividade, atividades, ciclo, regionalSaude_id, usuario, ...props }) => {
+export const PlanejarRota = ({
+  fl_rota_planejada,
+  indexEquipe,
+  indexMembro,
+  indexAtividade,
+  equipes,
+  atividades,
+  ciclo,
+  regionalSaude_id,
+  usuario,
+  ...props
+}) => {
   const [ currentDate, setCurrentDate] = useState( '' );
   const [ steps, setSteps ] = useState([
     { valid: false, name: 'Atividades', slug: 'selecionar_atividade', content: <SelecionarAtividade /> },
@@ -38,6 +50,17 @@ export const PlanejarRota = ({ indexMembro, indexAtividade, atividades, ciclo, r
     }
   }, [ ciclo ]);
 
+  useEffect(() => {
+    if( fl_rota_planejada ) {
+      const iEquipe = indexEquipe;
+      props.showNotifyToast( "Rota salva com sucesso", "success" );
+      props.limparEquipe( iEquipe );
+      setIndexStep( 1 );
+      props.setIndexEquipe( -1 );
+      props.setIndexMembro( -1 );
+    }
+  }, [ fl_rota_planejada ])
+
   const next = () => {
     let [ valido, mensagem ] = [ false, '' ];
 
@@ -45,15 +68,21 @@ export const PlanejarRota = ({ indexMembro, indexAtividade, atividades, ciclo, r
       [ valido, mensagem ] = validarAtividade();
     if( indexStep === 1 )
       [ valido, mensagem ] = validarAgente();
+    if( indexStep === 2 )
+      [ valido, mensagem ] = validarRota();
 
     if( valido ) {
-      let s     = steps,
-          index = indexStep + 1 < steps.length ? indexStep + 1 : indexStep;
+      if( indexStep === 2 ) {
+        submit();
+      } else {
+        let s     = steps,
+            index = indexStep + 1 < steps.length ? indexStep + 1 : indexStep;
 
-      s[ indexStep ].valid = true;
+        s[ indexStep ].valid = true;
 
-      setSteps( s );
-      setIndexStep( index );
+        setSteps( s );
+        setIndexStep( index );
+      }
     } else {
       let s = steps;
 
@@ -72,6 +101,39 @@ export const PlanejarRota = ({ indexMembro, indexAtividade, atividades, ciclo, r
 
   const validarAgente = () => {
     return indexMembro > -1 ? [ true, '' ] : [ false, 'Selecione um agente antes de prosseguir' ];
+  }
+
+  const validarRota = () => {
+    let fl_um_selecionado = false; // se for false o supervisor não selecionou nenhum quarteirão.
+
+    equipes[ indexEquipe ].quarteiroes.forEach( quarteirao => {
+      quarteirao.lados.forEach( lado => {
+        if( lado.selected ) fl_um_selecionado = true;
+      });
+    });
+
+    return fl_um_selecionado ? [ true, '' ] : [ false, 'Selecione ao menos uma rua para rota do agente!' ];
+  }
+
+  const submit = () => {
+    const supervisor_id = usuario.id,
+          equipe = equipes[ indexEquipe ],
+          usuario_id = equipe.membros[ indexMembro ].usuario_id,
+          equipe_id = equipe.id;
+
+    let lados = [];
+    equipe.quarteiroes.forEach( quarteirao => {
+      quarteirao.lados.forEach( lado => {
+        if( lado.selected ) lados.push( lado.id );
+      });
+    });
+
+    props.planejarRotaRequest({
+      supervisor_id,
+      usuario_id,
+      equipe_id,
+      lados
+    });
   }
 
   return (
@@ -176,13 +238,20 @@ const mapStateToProps = (state) => ({
   regionalSaude_id: state.appConfig.usuario.municipio.regional.id,
   usuario: state.appConfig.usuario,
   indexAtividade: state.nw_atividade.indexAtividade,
-  indexMembro: state.nw_atividade.indexMembro
+  indexMembro: state.nw_atividade.indexMembro,
+  equipes: state.nw_atividade.equipes,
+  indexEquipe: state.nw_atividade.indexEquipe,
+  fl_rota_planejada: state.nw_rota.fl_rota_planejada,
 });
 
 const mapDispatchToProps = {
   getOpenCycleRequest,
   getResponsabilityActivitiesRequest,
-  showNotifyToast
+  showNotifyToast,
+  planejarRotaRequest,
+  setIndexEquipe,
+  setIndexMembro,
+  limparEquipe
 }
 
 export default connect(

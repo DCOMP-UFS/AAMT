@@ -42,6 +42,25 @@ export default function Vistoria(state = INITIAL_STATE, action) {
       indexMembro: action.payload.index
     };
 
+  case ActionTypes.LIMPAR_EQUIPE: {
+    const indexEquipe = action.payload.indexEquipe;
+    let equipes       = state.equipes;
+
+    equipes[ indexEquipe ].quarteiroes = equipes[ indexEquipe ].quarteiroes.map( quarteirao => {
+      let q = quarteirao,
+          l = quarteirao.lados.map( lado => ({ ...lado, selected: undefined }));
+
+      q.lados = l;
+
+      return q;
+    });
+
+    return {
+      ...state,
+      equipes
+    };
+  }
+
   case ActionTypes.TOGGLE_LADO: {
     let equipes           = state.equipes;
     const indexEquipe     = state.indexEquipe,

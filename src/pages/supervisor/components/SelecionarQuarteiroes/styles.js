@@ -10,7 +10,15 @@ export const Usuario = styled.div`
   top: 0;
   right: 0;
   padding: 8px;
+  background: #fff;
+  z-index: 2;
   box-shadow: 0px 0px 5px ${ Color.shadow_light };
+  display: flex;
+  align-items: center;
+  border-top-left-radius: 50px;
+  border-bottom-left-radius: 50px;
+  border-top-right-radius: 50px;
+  border-bottom-right-radius: 50px;
 `;
 
 export const Avatar = styled.div`

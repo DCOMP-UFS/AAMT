@@ -31,6 +31,7 @@ import vistoria from './Vistoria';
 import vistoriaCache from './VistoriaCache';
 import nw_vistoria from '../Vistoria/vistoriaReduce';
 import nw_atividade from '../Atividade/atividadeReduce';
+import nw_rota from '../Rota/rotaReduce';
 
 export default combineReducers({
   sidebarCoordGeral,
@@ -63,5 +64,6 @@ export default combineReducers({
   vistoria,
   vistoriaCache,
   nw_vistoria,
-  nw_atividade
+  nw_atividade,
+  nw_rota
 });

@@ -29,13 +29,12 @@ export const SelecionarAgente = ({ equipes, ...props }) => {
             />
           </h4>
         </Col>
-        <Col>
-          {
-            equipes.map( ( equipe, indexEquipe ) => (
-              <EquipeCard
-                key={ 'eq_' + equipe.id }
-                className="col-12 col-sm-6 col-md-4 p-0"
-              >
+      </Row>
+      <Row>
+        {
+          equipes.map( ( equipe, indexEquipe ) => (
+            <Col key={ 'eq_' + equipe.id } className="col-12 col-sm-6 col-md-4">
+              <EquipeCard>
                 <div className="ag-header">
                   <FaUsers className="icon icon-md" />
                   <input
@@ -49,7 +48,9 @@ export const SelecionarAgente = ({ equipes, ...props }) => {
                       equipe.membros.map( ( membro, indexMembro ) => (
                         <li
                           key={ "membro_" + membro.usuario_id }
-                          className={ `membro ${ indexMembro === props.indexMembro ? 'active' : '' }` }
+                          className={
+                            `membro ${ (indexEquipe === props.indexEquipe && indexMembro === props.indexMembro) ? 'active' : '' }`
+                          }
                           onClick={ () => handlerMembro( indexEquipe, indexMembro ) }
                         >
                           <div className="foto">
@@ -64,9 +65,9 @@ export const SelecionarAgente = ({ equipes, ...props }) => {
                   </ul>
                 </div>
               </EquipeCard>
-            ))
-          }
-        </Col>
+            </Col>
+          ))
+        }
       </Row>
     </Container>
   )
@@ -74,6 +75,7 @@ export const SelecionarAgente = ({ equipes, ...props }) => {
 
 const mapStateToProps = state => ({
   equipes: state.nw_atividade.equipes,
+  indexEquipe: state.nw_atividade.indexEquipe,
   indexMembro: state.nw_atividade.indexMembro
 })
 

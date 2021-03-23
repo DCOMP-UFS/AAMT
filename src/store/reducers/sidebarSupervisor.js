@@ -26,7 +26,7 @@ const INITIAL_STATE = {
   currentNav: [ 1, 0 ],
   menu: [
     createCategory( "Ações" ),
-    createLink( 2, "Rotas de Trabalho", false, FaMapSigns, "/sup/rotas"),
+    createLink( 2, "Rotas de Trabalho", false, FaMapSigns, "/sup/planejar_rota"),
     createCategory( "Cadastros Básicos" ),
     createLink( 1, "Quarteirões", false, BorderAllIcon, "/sup/quarteiroes"),
     // createCategory( "Recursos de Interface" ),

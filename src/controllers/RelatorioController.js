@@ -3,20 +3,15 @@ const express = require('express');
 const { Op } = require('sequelize');
 const Atividade = require('../models/Atividade');
 const Ciclo = require('../models/Ciclo');
-const Municipio = require('../models/Municipio');
-const Localidade = require('../models/Localidade');
-const Zona = require('../models/Zona');
 const Quarteirao = require('../models/Quarteirao');
-const Estrato = require('../models/Estrato');
-const SituacaoQuarteirao = require('../models/SituacaoQuarteirao');
 const Equipe = require('../models/Equipe');
-const EquipeQuarteirao = require('../models/EquipeQuarteirao');
-const Membro = require('../models/Membro');
 const Usuario = require('../models/Usuario');
 const TrabalhoDiario = require('../models/TrabalhoDiario');
 const Rota = require('../models/Rota');
 
 const getEpiWeek = require('../util/getEpiWeek');
+const allowFunction = require('../util/allowFunction');
+
 const { format, parseISO } = require('date-fns');
 
 const router = express.Router();
@@ -187,24 +182,11 @@ getActivityWeeklyReport = async (req, res) => {
 
     // Validação da rota
 
-    const usuario = await Usuario.findByPk( userId, {
-        include: {
-          association: "atuacoes"
-        }
-    });
+    const supervisor = await Usuario.findByPk( userId );
 
-    if ( !usuario )
-        return res.status(400).json({ error: "Usuário não existe" });
-
-    let fl_agente = false;
-    usuario.atuacoes.forEach( at => {
-        if( at.tipoPerfil === 3 )
-        fl_agente = true;
-    });
-
-    if ( !fl_agente )
-        return res.status(400).json({ error: "Acesso negado" });
-
+    const allow = await allowFunction( supervisor.id, 'definir_trabalho_diario' );
+		if( !allow )
+			return res.status(403).json({ error: 'Acesso negado' });
 
     const semanaEpidemiologica = getEpiWeek(semana, ano);
 

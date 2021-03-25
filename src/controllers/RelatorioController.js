@@ -182,9 +182,9 @@ getActivityWeeklyReport = async (req, res) => {
 
     // Validação da rota
 
-    const supervisor = await Usuario.findByPk( userId );
+    const user_request = await Usuario.findByPk( userId );
 
-    const allow = await allowFunction( supervisor.id, 'definir_trabalho_diario' );
+    const allow = await allowFunction( user_request.id, 'definir_trabalho_diario' );
 		if( !allow )
 			return res.status(403).json({ error: 'Acesso negado' });
 

@@ -447,6 +447,7 @@ endRoute = async ( req, res ) => {
       horaEntrada: v.horaEntrada,
       pendencia: v.pendencia,
       sequencia: v.sequencia,
+      justificativa: v.justificativa,
       imovel_id: v.imovel.id,
       trabalho_diario_id: v.trabalhoDiario_id
     })

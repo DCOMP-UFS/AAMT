@@ -24,6 +24,14 @@ const ReportHomePage = () => {
       goTo: 'Atividades',
       observation: 'diary-report-team',
     },
+    {
+      title: 'Relatório semanal da atividade',
+      description: 'Relatório da semana epidemiológica',
+      icon: 'description',
+      iconColor: '#ef476f',
+      goTo: 'Atividades',
+      observation: 'weekly-report',
+    },
   ];
 
   const navigation = useNavigation();

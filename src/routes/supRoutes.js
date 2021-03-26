@@ -11,6 +11,8 @@ import ActivitiesList from '../pages/Reports/Supervisor/ActivitiesList';
 import AcitivitySummary from '../pages/Activities/AcitivitySummary';
 import ChooseDay from '../pages/Reports/Supervisor/ChooseDay';
 import ActivityDiaryTeam from '../pages/Reports/Supervisor/ActivityDiaryTeam';
+import ChooseWeek from '../pages/Reports/Supervisor/ChooseWeek';
+import WeeklyReport from '../pages/Reports/Supervisor/WeeklyReport';
 
 const SupDrawer = createDrawerNavigator();
 const SupStack = createStackNavigator();
@@ -59,6 +61,16 @@ const reportsRoutes = () => {
         name="Escolher a data"
         options={{ title: 'Digite a data' }}
         component={ChooseDay}
+      />
+      <SupStack.Screen
+        name="Escolher a semana"
+        options={{ title: 'Digite a semana' }}
+        component={ChooseWeek}
+      />
+      <SupStack.Screen
+        name="Relatorio semanal"
+        options={{ title: 'Relatório semanal' }}
+        component={WeeklyReport}
       />
     </SupStack.Navigator>
   );

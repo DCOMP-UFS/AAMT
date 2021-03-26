@@ -12,6 +12,8 @@ import {
 
 import api from '../../../../services/api';
 
+import Button from '../../../../components/Button';
+
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import {
@@ -67,6 +69,11 @@ const ChooseActivity = () => {
         id,
       });
     }
+    if (observation === 'weekly-report') {
+      return navigation.navigate('Escolher a semana', {
+        id,
+      });
+    }
   }
 
   return (
@@ -83,32 +90,40 @@ const ChooseActivity = () => {
           <Smaller>
             {format(parseISO(activity.createdAt), 'dd/MM/yyyy')}
           </Smaller>
-          {activity.equipes.map((team, index) => (
-            <Collapse key={index} style={{ margin: 5 }}>
-              <CollapseHeader>
-                <AccordionHeader>
-                  <AccordionTitle>{`Equipe ${index + 1}`}</AccordionTitle>
-                </AccordionHeader>
-              </CollapseHeader>
-              <CollapseBody>
-                <Box>
-                  {team.membros.map(
-                    member =>
-                      member.tipo_perfil === 3 && (
-                        <TouchableWithoutFeedback
-                          key={member.usuario.id}
-                          onPress={() => navigationTo(member.usuario.id)}
-                        >
-                          <AccordionItemText>
-                            {member.usuario.nome}
-                          </AccordionItemText>
-                        </TouchableWithoutFeedback>
-                      )
-                  )}
-                </Box>
-              </CollapseBody>
-            </Collapse>
-          ))}
+
+          {observation === 'weekly-report' && (
+            <Button onPress={() => navigationTo(activity.id)}>
+              Selecionar atividade
+            </Button>
+          )}
+
+          {observation !== 'weekly-report' &&
+            activity.equipes.map((team, index) => (
+              <Collapse key={index} style={{ margin: 5 }}>
+                <CollapseHeader>
+                  <AccordionHeader>
+                    <AccordionTitle>{`Equipe ${index + 1}`}</AccordionTitle>
+                  </AccordionHeader>
+                </CollapseHeader>
+                <CollapseBody>
+                  <Box>
+                    {team.membros.map(
+                      member =>
+                        member.tipo_perfil === 3 && (
+                          <TouchableWithoutFeedback
+                            key={member.usuario.id}
+                            onPress={() => navigationTo(member.usuario.id)}
+                          >
+                            <AccordionItemText>
+                              {member.usuario.nome}
+                            </AccordionItemText>
+                          </TouchableWithoutFeedback>
+                        )
+                    )}
+                  </Box>
+                </CollapseBody>
+              </Collapse>
+            ))}
         </Card>
       ))}
     </Container>

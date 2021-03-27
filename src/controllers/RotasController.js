@@ -565,6 +565,72 @@ isStarted = async ( req, res ) => {
   return res.json( true );
 }
 
+const getOpenRouteByTeam = async ( req, res ) => {
+  const { equipe_id } = req.params;
+
+  // Consultando os quarteiroes de uma equipe.
+  let quarteiroes = await Quarteirao.findAll({
+    include: [
+      {
+        association: 'lados',
+        include: {
+          association: 'imoveis'
+        }
+      },
+      {
+        association: 'equipes',
+        where: {
+          id: equipe_id
+        }
+      }
+    ]
+  });
+
+  /**
+   * Consultando o número de vistorias normais realizados em cada lado,
+   * de uma determinada equipe
+   */
+  const vistoria_lado = await Lado.findAll({
+    include: [
+      {
+        association: 'imoveis',
+        include: {
+          association: 'vistorias',
+          include: {
+            association: 'trabalhoDiario',
+            where: {
+              equipe_id
+            }
+          }
+        }
+      }
+    ]
+  }); 
+
+  const vistorias = await Vistoria.findAll({
+    where: {
+      situacaoVistoria: "N",
+      pendencia: null
+    },
+    include: [
+      {
+        association: 'imovel',
+        include: {
+          association: 'lado'
+        }
+      },
+      {
+        association: 'trabalhoDiario',
+        where: {
+          equipe_id: equipe_id
+        }
+      }
+    ]
+  });
+
+  return res.json( vistoria_lado );
+}
+
 const router = express.Router();
 router.use(authMiddleware);
 
@@ -574,5 +640,6 @@ router.post('/planejamento', planejarRota);
 router.post('/iniciar', startRoute);
 router.post('/finalizar', endRoute);
 router.get('/check/:trabalhoDiario_id/trabalhoDiario', isStarted);
+router.get('/abertas/:equipe_id/equipes', getOpenRouteByTeam);
 
 module.exports = app => app.use('/rotas', router);

@@ -39,7 +39,12 @@ const ActivitiesList = () => {
         setActivities(response.data.data);
       }
     } catch (err) {
-      Alert.alert('Ocorreu um erro', 'Não foi possível carregar as atividades');
+      if (err.response.status === 400) {
+        Alert.alert(
+          'Ocorreu um erro',
+          'Não foi possível carregar as atividades'
+        );
+      }
     }
   }, []);
 

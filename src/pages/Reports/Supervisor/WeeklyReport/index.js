@@ -37,7 +37,12 @@ const WeeklyReport = () => {
 
         setReport(response.data);
       } catch (err) {
-        Alert.alert('Ocorreu um erro', 'Não foi possível carregar o relatório');
+        if (err.response.status === 400) {
+          Alert.alert(
+            'Ocorreu um erro',
+            'Não foi possível carregar o relatório'
+          );
+        }
       }
       setLoading(false);
     }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Alert } from 'react-native';
+import { View, Alert, StatusBar } from 'react-native';
 import { format, parseISO } from 'date-fns';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -39,8 +39,12 @@ const ActivitiesList = () => {
         setActivities(response.data.data);
       }
     } catch (err) {
-      Alert.alert('Ocorreu um erro', 'Não foi possível carregar as atividades');
-      console.log(err.response.data);
+      if (err.response.status === 400) {
+        Alert.alert(
+          'Ocorreu um erro',
+          'Não foi possível carregar as atividades'
+        );
+      }
     }
   }, []);
 
@@ -53,61 +57,64 @@ const ActivitiesList = () => {
   }
 
   return (
-    <Container>
-      <List
-        data={activities}
-        keyExtractor={activity => String(activity.id)}
-        renderItem={({ item }) => (
-          <Card>
-            <Header>
-              <TitleContainer>
-                <Icon size={23} name="house" color="#3a3c4e" />
-                <PropertyTitle>Atividade {item.id}</PropertyTitle>
-              </TitleContainer>
-            </Header>
-            <Label>Data</Label>
-            <Small>{parseDate(item.data)}</Small>
-            <CardRow>
-              <DetailsColumn>
-                <Label>Hora início</Label>
-                {item.horaInicio ? (
-                  <Small>{item.horaInicio}</Small>
-                ) : (
-                  <Small>-- : -- : --</Small>
-                )}
-              </DetailsColumn>
-              <DetailsColumn>
-                <Label>Hora fim</Label>
-                {item.horaFim ? (
-                  <Small>{item.horaFim}</Small>
-                ) : (
-                  <Small>-- : -- : --</Small>
-                )}
-              </DetailsColumn>
-            </CardRow>
-            <CardRow>
-              <DetailsColumn>
-                <Label>Metodologia</Label>
-                <Small>{item.equipe.atividade.metodologia.sigla}</Small>
-              </DetailsColumn>
-              <DetailsColumn>
-                <Label>Objetivo</Label>
-                <Small>{item.equipe.atividade.objetivo.sigla}</Small>
-              </DetailsColumn>
-            </CardRow>
-            {item.horaFim && (
-              <Button
-                onPress={() =>
-                  navigation.navigate('Resumo da atividade', { id: item.id })
-                }
-              >
-                Resumo da atividade
-              </Button>
-            )}
-          </Card>
-        )}
-      />
-    </Container>
+    <>
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      <Container>
+        <List
+          data={activities}
+          keyExtractor={activity => String(activity.id)}
+          renderItem={({ item }) => (
+            <Card>
+              <Header>
+                <TitleContainer>
+                  <Icon size={23} name="house" color="#3a3c4e" />
+                  <PropertyTitle>Atividade {item.id}</PropertyTitle>
+                </TitleContainer>
+              </Header>
+              <Label>Data</Label>
+              <Small>{parseDate(item.data)}</Small>
+              <CardRow>
+                <DetailsColumn>
+                  <Label>Hora início</Label>
+                  {item.horaInicio ? (
+                    <Small>{item.horaInicio}</Small>
+                  ) : (
+                    <Small>-- : -- : --</Small>
+                  )}
+                </DetailsColumn>
+                <DetailsColumn>
+                  <Label>Hora fim</Label>
+                  {item.horaFim ? (
+                    <Small>{item.horaFim}</Small>
+                  ) : (
+                    <Small>-- : -- : --</Small>
+                  )}
+                </DetailsColumn>
+              </CardRow>
+              <CardRow>
+                <DetailsColumn>
+                  <Label>Metodologia</Label>
+                  <Small>{item.equipe.atividade.metodologia.sigla}</Small>
+                </DetailsColumn>
+                <DetailsColumn>
+                  <Label>Objetivo</Label>
+                  <Small>{item.equipe.atividade.objetivo.sigla}</Small>
+                </DetailsColumn>
+              </CardRow>
+              {item.horaFim && (
+                <Button
+                  onPress={() =>
+                    navigation.navigate('Resumo da atividade', { id: item.id })
+                  }
+                >
+                  Resumo da atividade
+                </Button>
+              )}
+            </Card>
+          )}
+        />
+      </Container>
+    </>
   );
 };
 

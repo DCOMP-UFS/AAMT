@@ -24,10 +24,12 @@ export function* getRoute({ payload }) {
       yield put(getRouteFailure());
     }
   } catch (err) {
-    Alert.alert(
-      'Houve um problema',
-      'Não foi possível buscar atividades disponíveis para hoje'
-    );
+    if (err.response.status === 400) {
+      Alert.alert(
+        'Houve um problema',
+        'Não foi possível buscar atividades disponíveis para hoje'
+      );
+    }
     yield put(getRouteFailure());
   }
 }
@@ -48,10 +50,12 @@ export function* startRoute({ payload }) {
       'Tenha um bom dia de trabalho!'
     );
   } catch (err) {
-    Alert.alert(
-      'Ocorreu um erro',
-      'Não foi possível iniciar o trabalho diário'
-    );
+    if (err.response.status === 400) {
+      Alert.alert(
+        'Ocorreu um erro',
+        'Não foi possível iniciar o trabalho diário'
+      );
+    }
   }
 }
 
@@ -67,10 +71,12 @@ export function* endRoute({ payload }) {
 
     Alert.alert('Parabéns!', 'O trabalho diário foi finalizado com sucesso!');
   } catch (err) {
-    Alert.alert(
-      'Houve um problema',
-      'Algo deu errado ao finalizar o trabalho diário'
-    );
+    if (err.response.status === 400) {
+      Alert.alert(
+        'Houve um problema',
+        'Algo deu errado ao finalizar o trabalho diário'
+      );
+    }
   }
 }
 

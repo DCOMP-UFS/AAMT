@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Alert, StatusBar } from 'react-native';
+import { View, Alert } from 'react-native';
 import { format, parseISO } from 'date-fns';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -58,7 +58,6 @@ const ActivitiesList = () => {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <Container>
         <List
           data={activities}

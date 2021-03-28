@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StatusBar, TouchableWithoutFeedback } from 'react-native';
+import { View, TouchableWithoutFeedback } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { signOut } from '../../store/modules/auth/actions';
@@ -26,7 +26,6 @@ const Profile = () => {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <Container>
         <ProfileContainer>
           <Small>Nome</Small>

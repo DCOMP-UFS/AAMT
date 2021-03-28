@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StatusBar } from 'react-native';
+import { View } from 'react-native';
 
 import StartActivityButton from '../../../components/StartActivityButton';
 import BlocksList from '../../../components/BlocksList';
@@ -10,7 +10,6 @@ const AgentHomePage = () => {
   return (
     <>
       <Container>
-        <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
         <StartActivityButton />
       </Container>
     </>

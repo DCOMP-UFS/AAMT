@@ -1,5 +1,5 @@
 import React from 'react';
-import { StatusBar, TouchableWithoutFeedback } from 'react-native';
+import { TouchableWithoutFeedback } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import OptionMenu from '../../../components/OptionMenu';
@@ -38,7 +38,6 @@ const ReportHomePage = () => {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <Container>
         {reportsContent.map(item => (
           <TouchableWithoutFeedback

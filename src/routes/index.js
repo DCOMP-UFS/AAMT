@@ -1,10 +1,28 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, StatusBar } from 'react-native';
 import { connect } from 'react-redux';
 
 import AuthRoutes from './authRoutes';
-import AppRoutes from './appRoutes';
-import SupRoutes from './supRoutes';
+import App from './appRoutes';
+import Sup from './supRoutes';
+
+const AppRoutes = () => {
+  return (
+    <>
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      <App />
+    </>
+  );
+};
+
+const SupRoutes = () => {
+  return (
+    <>
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      <Sup />
+    </>
+  );
+};
 
 const routes: React.FC = ({ signed, profile }) => {
   if (signed) {

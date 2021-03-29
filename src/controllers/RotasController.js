@@ -568,67 +568,101 @@ isStarted = async ( req, res ) => {
 const getOpenRouteByTeam = async ( req, res ) => {
   const { equipe_id } = req.params;
 
-  // Consultando os quarteiroes de uma equipe.
-  let quarteiroes = await Quarteirao.findAll({
-    include: [
-      {
-        association: 'lados',
-        include: {
-          association: 'imoveis'
-        }
-      },
-      {
-        association: 'equipes',
-        where: {
-          id: equipe_id
-        }
-      }
-    ]
+  const quarteirao_equipe = await Equipe.findByPk(equipe_id, {
+    include: {
+      association: 'quarteiroes'
+    }
+  }).then( equipe => {
+    return equipe.quarteiroes;
   });
 
-  /**
-   * Consultando o número de vistorias normais realizados em cada lado,
-   * de uma determinada equipe
-   */
-  const vistoria_lado = await Lado.findAll({
-    include: [
-      {
-        association: 'imoveis',
-        include: {
-          association: 'vistorias',
-          include: {
-            association: 'trabalhoDiario',
-            where: {
-              equipe_id
-            }
-          }
-        }
-      }
-    ]
-  }); 
+  let sql = 
+    'SELECT ' +
+      'q.*, ' +
+      'l.id AS lado_id, ' +
+      'l.numero AS lado_numero, ' +
+      'l.rua_id AS lado_rua_id, ' +
+      'l.quarteirao_id AS lado_quarteirao_id, ' +
+      'CAST( ' +
+        '(SELECT COUNT(*) FROM imoveis WHERE lado_id = l.id) ' +
+      ' AS INTEGER ) AS imoveis, ' +
+      'CAST( ' +
+        '( ' +
+          'SELECT ' +
+            'COUNT(*) ' +
+          'FROM ' +
+            'vistorias AS v ' +
+            'JOIN imoveis AS i ON(v.imovel_id = i.id) ' +
+          'WHERE ' +
+            'i.lado_id = l.id ' +
+            'AND v.pendencia IS NULL ' +
+        ') ' +
+      ' AS INTEGER ) AS vistorias ' +
+    'FROM ' +
+      'quarteiroes AS q ' +
+      'JOIN lados AS l ON(q.id = l.quarteirao_id) ' +
+    'WHERE ';
+      // 'q.id = 1 ' +
+      // 'OR q.id = 2';
 
-  const vistorias = await Vistoria.findAll({
-    where: {
-      situacaoVistoria: "N",
-      pendencia: null
-    },
-    include: [
-      {
-        association: 'imovel',
-        include: {
-          association: 'lado'
-        }
-      },
-      {
-        association: 'trabalhoDiario',
-        where: {
-          equipe_id: equipe_id
-        }
-      }
-    ]
+  const q = quarteirao_equipe.map((quarteirao, index) => {
+    if( index === 0 )
+      sql += 'q.id = $' + ( index + 1 ) + ' ';
+    else
+      sql += 'OR q.id = $' + ( index + 1 ) + ' ';
+
+    return quarteirao.id;
   });
 
-  return res.json( vistoria_lado );
+  const rota = await Quarteirao.sequelize.query(
+    sql, 
+    {
+      bind: q,
+      logging: console.log,
+    }
+  ).then( data => {
+    const [ rows ] = data;
+
+    let rota          = [],
+        quarteirao_id = rows[ 0 ].id,
+        quarteirao    = {
+          id: rows[ 0 ].id,
+          numero: rows[ 0 ].numero,
+          ativo: rows[ 0 ].ativo,
+          localidade_id: rows[ 0 ].localidade_id,
+          zona_id: rows[ 0 ].zona_id,
+          lados: []
+        };
+    
+    rows.forEach(row => {
+      if( row.id !== quarteirao_id ) {
+        rota.push( quarteirao );
+        quarteirao_id = row.id;
+        quarteirao    = {
+          id: row.id,
+          numero: row.numero,
+          ativo: row.ativo,
+          localidade_id: row.localidade_id,
+          zona_id: row.zona_id,
+          lados: []
+        };
+      }
+
+      quarteirao.lados.push({
+        id: row.lado_id,
+        numero: row.lado_numero,
+        rua_id: row.lado_rua_id,
+        quarteirao_id: row.lado_quarteirao_id,
+        imoveis: row.imoveis,
+        vistorias: row.vistorias,
+        situacao: row.imoveis === row.vistorias ? 3 : ( row.vistorias > 0 ? 2 : 1 )
+      });
+    });
+
+    return rota;
+  });
+
+  return res.json( rota );
 }
 
 const router = express.Router();

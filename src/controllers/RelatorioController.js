@@ -11,7 +11,6 @@ const Rota = require('../models/Rota');
 
 const getEpiWeek = require('../util/getEpiWeek');
 const allowFunction = require('../util/allowFunction');
-const checkBlockSituation = require('../util/checkBlockSituation');
 
 const { format, parseISO } = require('date-fns');
 
@@ -398,15 +397,8 @@ getActivityWeeklyReport = async (req, res) => {
     return res.json(resultado)
 }
 
-getBlockTest = async (req, res) => {
-    const result = await checkBlockSituation(42);
-
-    return res.json(result);
-};
-
 router.get('/equipe/:equipe_id/data/:dia', getTeamDailyActivity);
 router.get('/ciclo/:ciclo_id/equipe/:equipe_id', getTeamCycleActivity);
 router.get('/semanal', getActivityWeeklyReport);
-router.get('/teste/quarteirao', getBlockTest);
 
 module.exports = app => app.use('/relatorios', router);

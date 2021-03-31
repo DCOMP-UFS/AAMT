@@ -15,6 +15,7 @@ const Equipe          = require('../models/Equipe');
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
+const checkBlockSituation = require('../util/checkBlockSituation');
 
 getRoute = async ( req, res ) => {
   const { usuario_id, data } = req.params;
@@ -519,7 +520,10 @@ endRoute = async ( req, res ) => {
     });
   // Finalizar rota
 
-  // Salvando Vistorias
+  // Atualizando a situação dos quarteirões
+
+  await checkBlockSituation(trabalhoDiario_id);
+
   // Salvando Vistorias
 
   return res.json({ 

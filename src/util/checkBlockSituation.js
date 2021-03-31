@@ -22,6 +22,10 @@ module.exports = async (trabalho_diario_id) => {
         ],
     });
 
+    if (!trabalho) {
+        return;
+    }
+
     const { atividade_id } = trabalho.equipe;
 
     // Selecion a quantidade de imóveis nos 
@@ -113,8 +117,7 @@ module.exports = async (trabalho_diario_id) => {
         }
     });
 
-    (async () => {
+    return (async () => {
         await Promise.all(promises);
     })();
-    return quarteiroes_trabalhados;
 }

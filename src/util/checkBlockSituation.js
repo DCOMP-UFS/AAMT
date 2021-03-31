@@ -8,7 +8,7 @@ const SituacaoQuarteirao = require('../models/SituacaoQuarteirao');
 
 const { Op } = require('sequelize');
 
-module.exports = async (quarteiroes_trabalhados, trabalho_diario_id) => {
+module.exports = async (trabalho_diario_id) => {
     // Seleciona a atividade associada ao trabalho diário
     const trabalho = await TrabalhoDiario.findOne({
         where: {
@@ -23,6 +23,27 @@ module.exports = async (quarteiroes_trabalhados, trabalho_diario_id) => {
     });
 
     const { atividade_id } = trabalho.equipe;
+
+    // Selecion a quantidade de imóveis nos 
+    // quarteirões trabalhados
+    let sql_quarteiroes = 
+        'SELECT ' +
+            'l.quarteirao_id, ' +
+            'count( l.* ) ' +
+        'FROM ' +
+            'trabalhos_diarios as td ' +
+            'JOIN equipes as e ON (td.equipe_id = e.id) ' +
+            'JOIN rotas as r ON (r.trabalho_diario_id = td.id) ' +
+            'JOIN lados as l ON (l.id = r.lado_id) ' +
+            'JOIN imoveis as i ON (i.lado_id = l.id) ' +
+        'WHERE ' +
+            'td.id = ' + trabalho_diario_id +
+        ' GROUP BY ' +
+            'l.quarteirao_id';
+
+    const quarteiroes = await Quarteirao.sequelize.query(sql_quarteiroes);
+
+    const quarteiroes_trabalhados = quarteiroes[1].rows.map(({ quarteirao_id }) => quarteirao_id);
 
     // Seleciona o estrato
     const estrato = await Estrato.findOne({
@@ -43,23 +64,6 @@ module.exports = async (quarteiroes_trabalhados, trabalho_diario_id) => {
         attributes: { exclude: ['createdAt', 'updatedAt'] }
     });
 
-    // Selecion a quantidade de imóveis nos 
-    // quarteirões trabalhados
-    let sql_quarteiroes = 
-        'SELECT ' +
-            'q.id, ' +
-            'count( q.* ) ' +
-        'FROM ' +
-            'quarteiroes as q ' +
-            'JOIN lados as l ON (q.id = l.quarteirao_id) ' +
-            'JOIN imoveis as i ON (l.id = i.lado_id) ' +
-        'WHERE ' +
-            'q.id IN ' + '(' + quarteiroes_trabalhados + ') ' +
-        'GROUP BY ' +
-            'q.id';
-
-    const quarteiroes = await Quarteirao.sequelize.query(sql_quarteiroes);
-
     // Seleciona as vistorias trabalhadas nos 
     // quarteirões indicados.
     let sql_vistoria = 
@@ -75,7 +79,8 @@ module.exports = async (quarteiroes_trabalhados, trabalho_diario_id) => {
         'JOIN lados as l ON (i.lado_id = l.id) ' +
         'WHERE ' +
 	        `atv.id = ${atividade_id} ` + 'AND ' + 
-            `v.situacao_vistoria = 'N'` + 'AND ' +
+            `v.situacao_vistoria = 'N' ` + 
+            'AND ' +
             'l.quarteirao_id IN ' + '(' + quarteiroes_trabalhados + ') ' +
         'GROUP BY ' +
             'l.quarteirao_id';
@@ -90,7 +95,7 @@ module.exports = async (quarteiroes_trabalhados, trabalho_diario_id) => {
     /*
         Compara a quantidade de imóveis do quarteirão com a
         quantidade de vistorias realizadas neles durante a atividade.
-        Ao fim, atualiza a situação do quarteirão.
+        Para cada caso, atualiza a situação do quarteirão.
     */
     const promises = totalImoveisQuarteirao.map(async q => {
         const v = totalVistoriasQuarteirao.find(p => p.quarteirao_id === q.id);
@@ -99,11 +104,11 @@ module.exports = async (quarteiroes_trabalhados, trabalho_diario_id) => {
         if (v && s) {
             // Quarteirão completo
             if (parseInt(v.count) >= parseInt(q.count) && parseInt(s.situacaoQuarteiraoId) !== 3) {
-                const quart_atualizado = await s.update({ situacaoQuarteiraoId: 3 });
+                await s.update({ situacaoQuarteiraoId: 3 });
             }
             // Quarteirão em "aberto" para "fazendo"
             if (parseInt(v.count) > 0 && parseInt(s.situacaoQuarteiraoId) === 1) {
-                const quart_atualizado = await s.update({ situacaoQuarteiraoId: 2 });
+                await s.update({ situacaoQuarteiraoId: 2 });
             }
         }
     });
@@ -111,6 +116,5 @@ module.exports = async (quarteiroes_trabalhados, trabalho_diario_id) => {
     (async () => {
         await Promise.all(promises);
     })();
-
-    return totalImoveisQuarteirao;
+    return quarteiroes_trabalhados;
 }

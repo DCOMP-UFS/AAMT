@@ -399,7 +399,7 @@ getActivityWeeklyReport = async (req, res) => {
 }
 
 getBlockTest = async (req, res) => {
-    const result = await checkBlockSituation([11, 12], 42);
+    const result = await checkBlockSituation(42);
 
     return res.json(result);
 };

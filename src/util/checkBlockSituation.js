@@ -83,8 +83,7 @@ module.exports = async (trabalho_diario_id) => {
         'JOIN lados as l ON (i.lado_id = l.id) ' +
         'WHERE ' +
 	        `atv.id = ${atividade_id} ` + 'AND ' + 
-            `v.situacao_vistoria = 'N' ` + 
-            'AND ' +
+            'v.pendencia IS NULL ' + 'AND ' +
             'l.quarteirao_id IN ' + '(' + quarteiroes_trabalhados + ') ' +
         'GROUP BY ' +
             'l.quarteirao_id';

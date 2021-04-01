@@ -81,3 +81,10 @@ export const tecnicaTratamentoEnum = {
   focal: { id: 1, label: "Focal" },
   perifocal: { id: 2, label: "Perifocal" },
 }
+
+export const situacaoLadoEnum = [
+  { id: 1, label: "Em aberto" },
+  { id: 2, label: "Fazendo" },
+  { id: 3, label: "Concluído" },
+  { id: 4, label: "Planejado" }
+];

@@ -8,7 +8,7 @@ import SelecionarQuarteiroes from '../components/SelecionarQuarteiroes';
 
 // ACTIONS
 import { getOpenCycleRequest } from '../../../store/actions/CicloActions';
-import { getResponsabilityActivitiesRequest, setIndexEquipe, setIndexMembro, limparEquipe } from '../../../store/Atividade/atividadeActions';
+import { getResponsabilityActivitiesRequest, setIndexEquipe, setIndexMembro } from '../../../store/Atividade/atividadeActions';
 import { planejarRotaRequest } from '../../../store/Rota/rotaActions';
 import { showNotifyToast } from '../../../store/actions/appConfig';
 
@@ -27,6 +27,7 @@ export const PlanejarRota = ({
   ciclo,
   regionalSaude_id,
   usuario,
+  rota_equipe,
   ...props
 }) => {
   const [ currentDate, setCurrentDate] = useState( '' );
@@ -54,8 +55,7 @@ export const PlanejarRota = ({
     if( fl_rota_planejada ) {
       const iEquipe = indexEquipe;
       props.showNotifyToast( "Rota salva com sucesso", "success" );
-      props.limparEquipe( iEquipe );
-      setIndexStep( 1 );
+      setIndexStep( 0 );
       props.setIndexEquipe( -1 );
       props.setIndexMembro( -1 );
     }
@@ -106,7 +106,7 @@ export const PlanejarRota = ({
   const validarRota = () => {
     let fl_um_selecionado = false; // se for false o supervisor não selecionou nenhum quarteirão.
 
-    equipes[ indexEquipe ].quarteiroes.forEach( quarteirao => {
+    rota_equipe.forEach( quarteirao => {
       quarteirao.lados.forEach( lado => {
         if( lado.selected ) fl_um_selecionado = true;
       });
@@ -122,7 +122,7 @@ export const PlanejarRota = ({
           equipe_id = equipe.id;
 
     let lados = [];
-    equipe.quarteiroes.forEach( quarteirao => {
+    rota_equipe.forEach( quarteirao => {
       quarteirao.lados.forEach( lado => {
         if( lado.selected ) lados.push( lado.id );
       });
@@ -242,6 +242,7 @@ const mapStateToProps = (state) => ({
   equipes: state.nw_atividade.equipes,
   indexEquipe: state.nw_atividade.indexEquipe,
   fl_rota_planejada: state.nw_rota.fl_rota_planejada,
+  rota_equipe: state.nw_atividade.rota_equipe,
 });
 
 const mapDispatchToProps = {
@@ -250,8 +251,7 @@ const mapDispatchToProps = {
   showNotifyToast,
   planejarRotaRequest,
   setIndexEquipe,
-  setIndexMembro,
-  limparEquipe
+  setIndexMembro
 }
 
 export default connect(

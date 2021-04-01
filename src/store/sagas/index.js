@@ -149,6 +149,7 @@ export default function* rootSaga() {
     takeLatest( AtividadeActions.PLAN_ACTIVITY_REQUEST, AtividadeSagas.planActivity ),
     // Nova Estrutura
     takeLatest( NW_AtividadeActions.GET_RESPONSABILITY_ACTIVITIES_REQUEST, NW_AtividadeSagas.getResponsabilityActivities ),
+    takeLatest( NW_AtividadeActions.GET_ROTA_EQUIPE_REQUEST, NW_AtividadeSagas.getRotaEquipe ),
 
     // Gerir Equipes
     takeLatest( DefinirRotaActions.GET_ACTIVITIES_SUPERVISED_REQUEST, DefinirRotaSagas.getActivitiesSup ),

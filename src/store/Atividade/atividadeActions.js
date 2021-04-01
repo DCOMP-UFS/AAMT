@@ -6,7 +6,10 @@ export const ActionTypes = {
   SET_INDEX_EQUIPE: "SET_INDEX_EQUIPE",
   SET_INDEX_MEMBRO: "SET_INDEX_MEMBRO",
   TOGGLE_LADO: "TOGGLE_LADO",
-  LIMPAR_EQUIPE: "LIMPAR_EQUIPE",
+  GET_ROTA_EQUIPE_REQUEST: "GET_ROTA_EQUIPE_REQUEST",
+  SET_ROTA_EQUIPE: "SET_ROTA_EQUIPE",
+  SET_FL_LOADING: "SET_FL_LOADING",
+  CHECAR_ROTA: "CHECAR_ROTA",
 }
 
 export const getResponsabilityActivitiesRequest = (usuario_id, ciclo_id) => {
@@ -74,11 +77,40 @@ export const toggleLado = ( indexQuarteirao, indexLado ) => {
   }
 }
 
-export const limparEquipe = indexEquipe => {
+export const getRotaEquipeRequest = equipe_id => {
   return {
-    type: ActionTypes.LIMPAR_EQUIPE,
+    type: ActionTypes.GET_ROTA_EQUIPE_REQUEST,
     payload: {
-      indexEquipe
+      equipe_id
     }
+  }
+}
+
+export const setRotaEquipe = quarteiroes => {
+  return {
+    type: ActionTypes.SET_ROTA_EQUIPE,
+    payload: {
+      quarteiroes
+    }
+  }
+}
+
+export const setFl_loading = fl_loading => {
+  return {
+    type: ActionTypes.SET_FL_LOADING,
+    payload: {
+      fl_loading
+    }
+  }
+}
+
+/**
+ * Esta função tem o objetivo de mapear o array rota_equipe e verificar
+ * se o usuário selecionado (indexMembro) é o mesmo usuário já planejado
+ * nos lados vindo do banco de dados.
+ */
+export const checarRota = () => {
+  return {
+    type: ActionTypes.CHECAR_ROTA,
   }
 }

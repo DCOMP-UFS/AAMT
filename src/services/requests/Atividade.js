@@ -75,3 +75,11 @@ export const planActivityRequest = data => {
     ...headerAuthorization()
   });
 }
+
+
+export const getRotaEquipeRequest = data => {
+  const { equipe_id } = data;
+  return api.get(`/rotas/abertas/${ equipe_id }/equipes`, {
+    ...headerAuthorization()
+  });
+}

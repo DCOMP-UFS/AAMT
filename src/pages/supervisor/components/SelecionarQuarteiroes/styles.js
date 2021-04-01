@@ -5,6 +5,32 @@ export const Container = styled.div`
   position: relative;
 `;
 
+export const StreetCard = styled.div`
+  div.body {
+    padding: 4px 8px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: left;
+  }
+
+  div.footer {
+    padding: 4px 8px 4px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba( 0, 0, 0, .03 );
+  }
+
+  &.success .footer {
+    background-color: ${ Color.success };
+  }
+
+  &.warning .footer {
+    background-color: ${ Color.warning };
+  }
+`;
+
 export const Usuario = styled.div`
   position: absolute;
   top: 0;
@@ -60,13 +86,15 @@ export const Block = styled.div`
     padding: 0;
     margin: 0;
     flex-wrap: wrap;
+    display: flex;
+    justify-content: space-between;
 
     li {
-      padding: 4px 8px;
+      width: calc( 50% - 5px );
+      text-align: left;
       margin-bottom: 10px;
       border: 1px solid ${ Color.border_input };
       border-radius: 4px;
-      margin-right: 10px;
       text-align: center;
       line-height: 20px;
       cursor: pointer;

@@ -6,7 +6,10 @@ const INITIAL_STATE = {
   indexEquipe: -1,
   indexMembro: -1,
   equipes: [],
-  reload: false
+  // Lista de quarteirões com as situações dos lados
+  rota_equipe: [],
+  reload: false,
+  fl_loading: false
 }
 
 export default function Vistoria(state = INITIAL_STATE, action) {
@@ -24,10 +27,44 @@ export default function Vistoria(state = INITIAL_STATE, action) {
         equipes: action.payload.equipes
       };
 
+    case ActionTypes.SET_ROTA_EQUIPE:
+      let rota_equipe = action.payload.quarteiroes;
+      const equipes = state.equipes,
+            indexEquipe = state.indexEquipe,
+            indexMembro = state.indexMembro;
+
+      rota_equipe = rota_equipe.map( quarteirao => {
+        let q = quarteirao;
+
+        q.lados = q.lados.map( lado => {
+          let l = lado;
+
+          if( indexEquipe > -1 && indexMembro > -1 && lado.situacao === 4 ) {
+            if( equipes[ indexEquipe ].membros[ indexMembro ].usuario_id === lado.usuario_id )
+              l.selected = true;
+          }
+
+          return l;
+        });
+
+        return q;
+      });
+
+      return {
+        ...state,
+        rota_equipe
+      };
+
     case ActionTypes.SET_INDEX:
       return {
         ...state,
         indexAtividade: action.payload.index
+      };
+
+    case ActionTypes.SET_FL_LOADING:
+      return {
+        ...state,
+        fl_loading: action.payload.fl_loading
       };
 
     case ActionTypes.SET_INDEX_EQUIPE:
@@ -36,46 +73,58 @@ export default function Vistoria(state = INITIAL_STATE, action) {
         indexEquipe: action.payload.index
       };
 
-  case ActionTypes.SET_INDEX_MEMBRO:
-    return {
-      ...state,
-      indexMembro: action.payload.index
-    };
+    case ActionTypes.SET_INDEX_MEMBRO:
+      return {
+        ...state,
+        indexMembro: action.payload.index
+      };
 
-  case ActionTypes.LIMPAR_EQUIPE: {
-    const indexEquipe = action.payload.indexEquipe;
-    let equipes       = state.equipes;
+    case ActionTypes.TOGGLE_LADO: {
+      let rota_equipe       = state.rota_equipe;
+      const indexQuarteirao = action.payload.indexQuarteirao,
+            indexLado       = action.payload.indexLado,
+            selected        = rota_equipe[ indexQuarteirao ].lados[ indexLado ].selected;
 
-    equipes[ indexEquipe ].quarteiroes = equipes[ indexEquipe ].quarteiroes.map( quarteirao => {
-      let q = quarteirao,
-          l = quarteirao.lados.map( lado => ({ ...lado, selected: undefined }));
+      rota_equipe[ indexQuarteirao ].lados[ indexLado ].selected = !selected;
 
-      q.lados = l;
+      return {
+        ...state,
+        rota_equipe,
+        reload: !state.reload
+      };
+    }
 
-      return q;
-    });
+    case ActionTypes.CHECAR_ROTA: {
+      let rota_equipe = state.rota_equipe;
+      const equipes = state.equipes,
+            indexEquipe = state.indexEquipe,
+            indexMembro = state.indexMembro;
 
-    return {
-      ...state,
-      equipes
-    };
-  }
+      rota_equipe = rota_equipe.map( quarteirao => {
+        let q = quarteirao;
 
-  case ActionTypes.TOGGLE_LADO: {
-    let equipes           = state.equipes;
-    const indexEquipe     = state.indexEquipe,
-          indexQuarteirao = action.payload.indexQuarteirao,
-          indexLado       = action.payload.indexLado,
-          selected        = equipes[ indexEquipe ].quarteiroes[ indexQuarteirao ].lados[ indexLado ].selected;
+        q.lados = q.lados.map( lado => {
+          let l = lado;
 
-    equipes[ indexEquipe ].quarteiroes[ indexQuarteirao ].lados[ indexLado ].selected = !selected;
+          if( indexEquipe > -1 && indexMembro > -1 && lado.situacao === 4 ) {
+            if( equipes[ indexEquipe ].membros[ indexMembro ].usuario_id === lado.usuario_id ) {
+              l.selected = true;
+            } else {
+              l.selected = false;
+            }
+          }
 
-    return {
-      ...state,
-      equipes,
-      reload: !state.reload
-    };
-  }
+          return l;
+        });
+
+        return q;
+      });
+
+      return {
+        ...state,
+        rota_equipe
+      }
+    }
 
     default:
       return {...state};

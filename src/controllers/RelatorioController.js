@@ -397,8 +397,24 @@ getActivityWeeklyReport = async (req, res) => {
     return res.json(resultado)
 }
 
+getCurrentActivityReport = async (req, res) => {
+    const { atividade_id } = req.params;
+
+    let equipes = await Equipe.findAll({
+        where: {
+            atividade_id
+        },
+        attributes: ['id']
+    }).then(equipe => {
+        return equipe.map(({ id }) => id);
+    });
+
+    return res.json(equipes);
+}
+
 router.get('/equipe/:equipe_id/data/:dia', getTeamDailyActivity);
 router.get('/ciclo/:ciclo_id/equipe/:equipe_id', getTeamCycleActivity);
 router.get('/semanal', getActivityWeeklyReport);
+router.get('/atividade/:atividade_id', getCurrentActivityReport);
 
 module.exports = app => app.use('/relatorios', router);

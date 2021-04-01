@@ -591,6 +591,10 @@ const getOpenRouteByTeam = async ( req, res ) => {
       'l.numero AS lado_numero, ' +
       'l.rua_id AS lado_rua_id, ' +
       'l.quarteirao_id AS lado_quarteirao_id, ' +
+      'r.id AS rua_id, ' +
+      'r.nome AS rua_nome, ' +
+      'r.cep AS rua_cep, ' +
+      'r.localidade_id AS rua_localidade_id, ' +
       'CAST( ' +
         '(SELECT COUNT(*) FROM imoveis WHERE lado_id = l.id) ' +
       ' AS INTEGER ) AS imoveis, ' +
@@ -609,6 +613,7 @@ const getOpenRouteByTeam = async ( req, res ) => {
     'FROM ' +
       'quarteiroes AS q ' +
       'JOIN lados AS l ON(q.id = l.quarteirao_id) ' +
+      'JOIN ruas AS r ON(l.rua_id = r.id) ' +
     'WHERE ';
       // 'q.id = 1 ' +
       // 'OR q.id = 2';
@@ -663,6 +668,12 @@ const getOpenRouteByTeam = async ( req, res ) => {
         numero: row.lado_numero,
         rua_id: row.lado_rua_id,
         quarteirao_id: row.lado_quarteirao_id,
+        rua: {
+          id: row.rua_id,
+          nome: row.rua_nome,
+          cep: row.rua_cep,
+          localidade_id: row.rua_localidade_id
+        },
         imoveis: row.imoveis,
         vistorias: row.vistorias,
         situacao: row.imoveis === row.vistorias ? 3 : ( row.vistorias > 0 ? 2 : 1 )

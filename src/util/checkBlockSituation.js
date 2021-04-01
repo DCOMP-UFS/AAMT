@@ -107,7 +107,7 @@ module.exports = async (trabalho_diario_id) => {
 
         if (v && s) {
             // Quarteirão completo
-            if (parseInt(v.count) >= parseInt(q.count) && parseInt(s.situacaoQuarteiraoId) !== 3) {
+            if (parseInt(v.count) === parseInt(q.count) && parseInt(s.situacaoQuarteiraoId) !== 3) {
                 await s.update({ situacaoQuarteiraoId: 3 });
             }
             // Quarteirão em "aberto" para "fazendo"

@@ -565,9 +565,17 @@ isStarted = async ( req, res ) => {
   return res.json( true );
 }
 
+/**
+ * Esta rota consulta as rotas já planejadas de uma equipe e retorna
+ * um array de quarteirões com seus lados e a situação de cada lado.
+ * 
+ * @param int equipe_id
+ * @returns array quarteiroes
+ */
 const getOpenRouteByTeam = async ( req, res ) => {
   const { equipe_id } = req.params;
 
+  // Consultando quarteirões de responsabilidade da equipe.
   const quarteirao_equipe = await Equipe.findByPk(equipe_id, {
     include: {
       association: 'quarteiroes'
@@ -614,7 +622,9 @@ const getOpenRouteByTeam = async ( req, res ) => {
     return quarteirao.id;
   });
 
-  const rota = await Quarteirao.sequelize.query(
+
+  // Consultando quarteirões e verificando a situação dos lados.
+  let quarteirao_situacao = await Quarteirao.sequelize.query(
     sql, 
     {
       bind: q,
@@ -662,7 +672,38 @@ const getOpenRouteByTeam = async ( req, res ) => {
     return rota;
   });
 
-  return res.json( rota );
+  // Consultando lados já planejando do dia de uma equipe.
+  const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split('/');
+  const current_date = `${Y}-${m}-${d}`;
+
+  const rotas = await Rota.findAll({
+    include: {
+      association: "trabalhoDiario",
+      where: {
+        data: current_date,
+        equipe_id
+      }
+    }
+  });
+
+  quarteirao_situacao = quarteirao_situacao.map(quarteirao => {
+    let q = quarteirao;
+
+    q.lados = quarteirao.lados.map(lado => {
+      rotas.forEach(r => {
+        if( lado.id === r.lado_id ) {
+          lado.situacao = 4;
+          lado.usuario_id = r.trabalhoDiario.usuario_id
+        }
+      });
+
+      return lado;
+    });
+
+    return q;
+  });
+
+  return res.json( quarteirao_situacao );
 }
 
 const router = express.Router();

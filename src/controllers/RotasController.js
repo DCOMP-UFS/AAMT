@@ -605,9 +605,11 @@ const getOpenRouteByTeam = async ( req, res ) => {
           'FROM ' +
             'vistorias AS v ' +
             'JOIN imoveis AS i ON(v.imovel_id = i.id) ' +
+            'JOIN trabalhos_diarios AS td ON( v.trabalho_diario_id = td.id ) ' +
           'WHERE ' +
             'i.lado_id = l.id ' +
             'AND v.pendencia IS NULL ' +
+            'AND td.equipe_id = ' + equipe_id +
         ') ' +
       ' AS INTEGER ) AS vistorias ' +
     'FROM ' +
@@ -626,7 +628,6 @@ const getOpenRouteByTeam = async ( req, res ) => {
 
     return quarteirao.id;
   });
-
 
   // Consultando quarteirões e verificando a situação dos lados.
   let quarteirao_situacao = await Quarteirao.sequelize.query(

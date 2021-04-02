@@ -10,6 +10,8 @@
     - [Autenticação](#autenticação)
       - [*Request*](#request)
       - [*Response*](#response)
+  - [Equipe](#equipe)
+    - [Alterar Apelido](#alterar-apelido)
   - [Usuário](#usuário)
     - [Consultar usuários](#consultar-usuários)
       - [*Request*](#request-1)
@@ -223,6 +225,44 @@ curl --request POST \
     ]
   },
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNjA2MTM3NjAwLCJleHAiOjE2MDYyMjQwMDB9.frHWuo8Wdz6D2o89TRXZTlmRt0k4JOPI7EEKURgLU2Y"
+}
+```
+
+## Equipe
+
+Controladora das requisições referentes as equipes.
+
+### Alterar Apelido
+
+(/equipes/apelido/:id)
+
+Esta rota recebe como parametro o id da equipe e atualiza o apelido da mesma.
+
+*Request*
+
+```
+curl --request PUT \
+  --url __base_URL__/equipes/apelido/:id \
+  --header 'Authorization: Bearer __TOKEN__' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "apelido": "Nick da Equipe"
+  }'
+```
+
+*Response*
+
+```
+{
+  "status": "success",
+  "mensage": "Equipe Atualizada com sucesso",
+  "data": {
+    "id": 10,
+    "apelido": "Equipe Furia",
+    "createdAt": "2021-03-07T15:57:00.356Z",
+    "updatedAt": "2021-03-07T15:57:00.356Z",
+    "atividade_id": 21
+  }
 }
 ```
 

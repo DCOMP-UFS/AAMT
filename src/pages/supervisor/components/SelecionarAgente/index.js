@@ -6,6 +6,7 @@ import { FaUsers, FaUser } from 'react-icons/fa';
 
 // ACTIONS
 import { setIndexEquipe, setIndexMembro } from '../../../../store/Atividade/atividadeActions';
+import { setApelidoEquipeRequest } from '../../../../store/Equipe/equipeActions';
 
 // STYLES
 import { Container, EquipeCard } from './styles';
@@ -39,7 +40,8 @@ export const SelecionarAgente = ({ equipes, ...props }) => {
                   <FaUsers className="icon icon-md" />
                   <input
                     type="text"
-                    placeholder={ equipe.apelido ? '' : 'Equipe' }
+                    placeholder={ equipe.apelido ? equipe.apelido : 'Equipe' }
+                    // onBlur={ e => props.setApelidoEquipeRequest( equipe.id, e.target.value ) }
                   />
                 </div>
                 <div className="ag-body">
@@ -81,7 +83,11 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   setIndexEquipe,
-  setIndexMembro
+  setIndexMembro,
+  setApelidoEquipeRequest
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SelecionarAgente)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)( SelecionarAgente );

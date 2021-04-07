@@ -174,7 +174,7 @@ export const PlanejarRota = ({
         <Row>
           <Col>
             <Tabs
-              defaultActiveKey="rotas"
+              defaultActiveKey="planejar"
               className="nav-page"
               onSelect={ e => { if( e === 'rotas' ) consultarRotas(); } }
             >

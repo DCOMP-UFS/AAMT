@@ -12,6 +12,7 @@ const Tratamento      = require('../models/Tratamento');
 const Amostra         = require('../models/Amostra');
 const Imovel          = require('../models/Imovel');
 const Equipe          = require('../models/Equipe');
+const Atividade       = require('../models/Atividade');
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
@@ -718,6 +719,125 @@ const getOpenRouteByTeam = async ( req, res ) => {
   return res.json( quarteirao_situacao );
 }
 
+/**
+ * Retorna um array de atividades com as equipes com todas as rotas planejadas
+ * da equipe do dia.
+ */
+const consultarRotasPlanejadas = async ( req, res ) => {
+  const { usuario_id, ciclo_id } = req.params;
+
+  const allow = await allowFunction( req.userId, 'definir_trabalho_diario' );
+  if( !allow )
+    return res.status(403).json({ error: 'Acesso negado' });
+
+  const supervisor = await Usuario.findByPk( usuario_id, {
+    include: {
+      association: "atuacoes"
+    }
+  });
+  if( !supervisor )
+    return res.status(400).json({ error: "Usuário não existe" });
+
+  if( supervisor.atuacoes[ 0 ].escopo !== 2 )
+    return res.json([]);
+
+  const atividades = await Atividade.findAll({
+    where: {
+      ciclo_id,
+      municipio_id: supervisor.atuacoes[ 0 ].local_id
+    },
+    attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+    include: [
+      {
+        association: 'metodologia',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+      },
+      {
+        association: 'objetivo',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+      },
+      {
+        association: 'equipes',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+        include: [
+          {
+            association: 'membros',
+            attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+            include: {
+              association: 'usuario',
+              attributes: { exclude: [ 'createdAt', 'updatedAt' ] } 
+            }
+          }
+        ]
+      }
+    ]
+  });
+
+  const atividadesSupervisor = [];
+
+  const promise_atividades = atividades.map(async atividade => {
+    let act = atividade;
+
+    let teams = act.equipes.filter( (team, index) => {
+      let fl_team = false;
+      
+      team.membros.forEach( member => {
+        if( member.usuario_id === supervisor.id && member.tipoPerfil === 4 )
+          fl_team = true;
+      });
+
+      return fl_team;
+    });
+
+    if( teams.length > 0 ) {
+      const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split('/');
+      const current_date = `${ Y }-${ m }-${ d }`;
+
+      let equipes = [];
+      const promises = teams.map( async equipe => {
+        let e = equipe;
+        
+        e.dataValues.rota = await TrabalhoDiario.findAll({
+          where: {
+            equipe_id: equipe.id,
+            data: current_date
+          },
+          include: [
+            {
+              association: 'usuario',
+              attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+            },
+            {
+              association: 'rota',
+              attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+              include: {
+                association: 'imoveis',
+                attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+                include: {
+                  association: 'vistorias',
+                  attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+                }
+              }
+            }
+          ]
+        });
+
+        e.dataValues.membros = undefined;
+        equipes.push( e );
+      });
+
+      await Promise.all( promises );
+      
+      act.dataValues.equipes = equipes;
+      atividadesSupervisor.push( act );
+    }
+  });
+
+  await Promise.all( promise_atividades );
+
+  return res.json( atividadesSupervisor );
+}
+
 const router = express.Router();
 router.use(authMiddleware);
 
@@ -728,5 +848,6 @@ router.post('/iniciar', startRoute);
 router.post('/finalizar', endRoute);
 router.get('/check/:trabalhoDiario_id/trabalhoDiario', isStarted);
 router.get('/abertas/:equipe_id/equipes', getOpenRouteByTeam);
+router.get('/planejadas/:ciclo_id/ciclo/:usuario_id/supervisor', consultarRotasPlanejadas);
 
 module.exports = app => app.use('/rotas', router);

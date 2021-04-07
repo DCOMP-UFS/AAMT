@@ -7,6 +7,13 @@ export const getRouteRequest = data => {
   });
 }
 
+export const getRotasPlanejadasRequest = data => {
+  const { usuario_id, ciclo_id } = data;
+  return api.get(`/rotas/planejadas/${ ciclo_id }/ciclo/${ usuario_id }/supervisor`, {
+    ...headerAuthorization()
+  });
+}
+
 export const isStartedRequest = data => {
   const { trabalhoDiario_id } = data;
   return api.get(`/rotas/check/${ trabalhoDiario_id }/trabalhoDiario`, {

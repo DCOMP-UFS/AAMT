@@ -1,6 +1,9 @@
 export const ActionTypes = {
   PLANEJAR_ROTA_REQUEST: "PLANEJAR_ROTA_REQUEST",
-  SET_ROTA_PLANEJADA: "SET_ROTA_PLANEJADA"
+  SET_ROTA_PLANEJADA: "SET_ROTA_PLANEJADA",
+  SET_CARREGANDO_ROTA: "SET_CARREGANDO_ROTA",
+  GET_ROTAS_PLANEJADAS_REQUEST: "GET_ROTAS_PLANEJADAS_REQUEST",
+  SET_ROTAS_PLANEJADAS: "SET_ROTAS_PLANEJADAS",
 }
 
 /**
@@ -25,7 +28,7 @@ export const planejarRotaRequest = rota => {
  * true - requisição de planejamento de rota realizada com sucesso
  * false || undefined - falha ou não houve requisição.
  *
- * @param {*} fl_rota_planejada
+ * @param {Bollean} fl_rota_planejada
  * @returns
  */
 export const setRotaPlanejada = fl_rota_planejada => {
@@ -33,6 +36,41 @@ export const setRotaPlanejada = fl_rota_planejada => {
     type: ActionTypes.SET_ROTA_PLANEJADA,
     payload: {
       fl_rota_planejada
+    }
+  }
+}
+
+/**
+ * true - esta ocorrendo uma requisição das rotas planejadas no dia
+ * false || undefined - requisição finalizada.
+ *
+ * @param {Bollean} fl_carregando_rota
+ * @returns
+ */
+export const setCarregandoRota = fl_carregando_rota => {
+  return {
+    type: ActionTypes.SET_CARREGANDO_ROTA,
+    payload: {
+      fl_carregando_rota
+    }
+  }
+}
+
+export const getRotasPlanejadasRequest = ( ciclo_id, usuario_id ) => {
+  return {
+    type: ActionTypes.GET_ROTAS_PLANEJADAS_REQUEST,
+    payload: {
+      usuario_id,
+      ciclo_id
+    }
+  }
+}
+
+export const setRotasPlanejadas = rotas_planejadas => {
+  return {
+    type: ActionTypes.SET_ROTAS_PLANEJADAS,
+    payload: {
+      rotas_planejadas
     }
   }
 }

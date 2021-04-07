@@ -164,6 +164,7 @@ export default function* rootSaga() {
     takeLatest( RotaActions.ENCERRAR_ROTA_REQUEST, RotaSagas.closeRoute ),
     // Nova Estrutura
     takeLatest( NW_RotaActions.PLANEJAR_ROTA_REQUEST, NW_RotaSagas.planejarRota ),
+    takeLatest( NW_RotaActions.GET_ROTAS_PLANEJADAS_REQUEST, NW_RotaSagas.getRotasPlanejadas ),
 
     // Gerir Vistoria
     takeLatest( VistoriaActions.CONSULTAR_VISTORIAS_REQUEST, VistoriaSagas.getInspects ),

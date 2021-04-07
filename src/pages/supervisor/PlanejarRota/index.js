@@ -5,11 +5,12 @@ import { Row, Col, Tabs, Tab } from 'react-bootstrap';
 import SelecionarAtividade from '../components/SelecionarAtividade';
 import SelecionarAgente from '../components/SelecionarAgente';
 import SelecionarQuarteiroes from '../components/SelecionarQuarteiroes';
+import MapaRotas from '../components/MapaRotas';
 
 // ACTIONS
 import { getOpenCycleRequest } from '../../../store/actions/CicloActions';
 import { getResponsabilityActivitiesRequest, setIndexEquipe, setIndexMembro } from '../../../store/Atividade/atividadeActions';
-import { planejarRotaRequest } from '../../../store/Rota/rotaActions';
+import { planejarRotaRequest, setCarregandoRota, getRotasPlanejadasRequest } from '../../../store/Rota/rotaActions';
 import { showNotifyToast } from '../../../store/actions/appConfig';
 
 // STYLES
@@ -136,6 +137,11 @@ export const PlanejarRota = ({
     });
   }
 
+  const consultarRotas = () => {
+    props.setCarregandoRota( true );
+    props.getRotasPlanejadasRequest( ciclo.id, usuario.id );
+  }
+
   return (
     <Container>
       <PageHeader>
@@ -167,7 +173,11 @@ export const PlanejarRota = ({
 
         <Row>
           <Col>
-            <Tabs defaultActiveKey="planejar" className="nav-page">
+            <Tabs
+              defaultActiveKey="rotas"
+              className="nav-page"
+              onSelect={ e => { if( e === 'rotas' ) consultarRotas(); } }
+            >
               <Tab eventKey="planejar" title="Planejar">
                 <article>
                   <div className="card p-0">
@@ -223,7 +233,7 @@ export const PlanejarRota = ({
                 </article>
               </Tab>
               <Tab eventKey="rotas" title="Rotas">
-                Rotas
+                <MapaRotas id="container-rotas" />
               </Tab>
             </Tabs>
           </Col>
@@ -251,7 +261,9 @@ const mapDispatchToProps = {
   showNotifyToast,
   planejarRotaRequest,
   setIndexEquipe,
-  setIndexMembro
+  setIndexMembro,
+  setCarregandoRota,
+  getRotasPlanejadasRequest
 }
 
 export default connect(

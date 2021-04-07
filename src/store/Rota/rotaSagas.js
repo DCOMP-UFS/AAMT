@@ -1,6 +1,7 @@
 import { call, put } from 'redux-saga/effects';
 import {
-  planejarRotaRequest
+  planejarRotaRequest,
+  getRotasPlanejadasRequest
 } from '../../services/requests/Rota';
 
 import * as RotaActions from './rotaActions';
@@ -17,5 +18,19 @@ export function* planejarRota(action) {
     }
   } catch (error) {
     yield put( AppConfigActions.showNotifyToast( "Erro ao planejar rota, favor verifique a conexão", "error" ) );
+  }
+}
+
+export function* getRotasPlanejadas(action) {
+  try {
+    const { data, status } = yield call( getRotasPlanejadasRequest, action.payload );
+
+    if( status === 200 ) {
+      yield put( RotaActions.setRotasPlanejadas( data ) );
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Falha ao consultar rotas planejadas: " + status, "error" ) );
+    }
+  } catch (error) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar rotas planejadas, favor verifique a conexão", "error" ) );
   }
 }

@@ -7,6 +7,7 @@ const Quarteirao = require('../models/Quarteirao');
 const Equipe = require('../models/Equipe');
 const Usuario = require('../models/Usuario');
 const TrabalhoDiario = require('../models/TrabalhoDiario');
+const SituacaoQuarteirao = require('../models/SituacaoQuarteirao');
 const Rota = require('../models/Rota');
 
 const getEpiWeek = require('../util/getEpiWeek');
@@ -399,17 +400,157 @@ getActivityWeeklyReport = async (req, res) => {
 
 getCurrentActivityReport = async (req, res) => {
     const { atividade_id } = req.params;
+    const userId = req.userId; 
+
+    // Validação da rota
+    const user_request = await Usuario.findByPk( userId );
+
+    const allow = await allowFunction( user_request.id, 'definir_trabalho_diario' );
+        if( !allow )
+            return res.status(403).json({ error: 'Acesso negado' });
+
+    // Situação dos quarteirões + qtd de imóveis totais
+    let sql_imoveis = 
+    'SELECT ' + 
+        'q.id, ' +
+        'sq.situacao_quarteirao_id, ' +
+        'count(i.*) as qtd_imoveis ' +
+    'FROM ' + 
+	    'estratos AS est ' +
+        'JOIN situacao_quarteiroes as sq ON (est.id = sq.estrato_id) ' +
+        'JOIN quarteiroes as q ON (q.id = sq.quarteirao_id) ' +
+        'JOIN lados as l ON (l.quarteirao_id = q.id) ' +
+        'JOIN imoveis as i ON (i.lado_id = l.id) ' +
+    'WHERE ' +
+ 	    `est.atividade_id = ${atividade_id} ` +
+    'GROUP BY ' + 
+        'q.id, sq.situacao_quarteirao_id';
+
+    let situacao_quarteiroes = await Atividade.sequelize.query(sql_imoveis).then(data => {
+        const [ rows ] = data;
+        
+        let aberto = 0;
+        let fazendo = 0;
+        let concluido = 0;
+        let totalImoveis = 0;
+
+        rows.map(row => {
+            switch(row.situacao_quarteirao_id) {
+                case 1:
+                    aberto++;
+                    break;
+                case 2:
+                    fazendo++;
+                    break;
+                case 3:
+                    concluido++;
+                    break;
+            }
+            totalImoveis += parseInt(row.qtd_imoveis)
+        });
+
+        objeto = {
+            aberto,
+            fazendo,
+            concluido,
+            totalImoveis
+        }
+
+        return objeto;
+    });
+
+    // const totalImoveis = situacao_quarteiroes.reduce((total, quarteirao) => {
+    //     return total + parseInt(quarteirao.qtd_imoveis)
+    // }, 0);
 
     let equipes = await Equipe.findAll({
         where: {
             atividade_id
         },
         attributes: ['id']
-    }).then(equipe => {
-        return equipe.map(({ id }) => id);
+    }).then(data => {
+        return data.map(({ id }) => id)
     });
 
-    return res.json(equipes);
+    let trabalhos = await TrabalhoDiario.findAll({
+        where: {
+            equipe_id: {
+                [Op.in]: equipes
+            },
+        }, 
+        include: [
+            {
+                association: 'vistorias',
+                attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+                include: [
+                    {
+                        association: 'depositos',
+                        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+                        include: [
+                          {
+                            association: 'tratamentos',
+                            attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+                          },
+                          {
+                            association: 'amostras',
+                            attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+                          }
+                        ]
+                    },
+                ]
+            },
+        ]
+    });
+
+    let imoveisRecusados = 0;
+    let imoveisFechados = 0;
+    let totalLarvicida = 0;
+    let totalVistorias = 0;
+    let amostrasPositivas = 0;
+    let amostrasNegativas = 0;
+
+    trabalhos.map(trabalho => {
+        const { vistorias } = trabalho;
+
+        vistorias.map(vistoria => {
+            switch(vistorias.pendencia) {
+                case 'R':
+                    imoveisRecusados++;
+                    break;
+                case 'F':
+                    imoveisFechados++;
+                    break;
+                default:
+                    break;
+            }
+
+            totalVistorias++;
+
+            const { depositos } = vistoria;
+
+            depositos.map(deposito => {
+                if (deposito.tratamentos[0]) {
+                    totalLarvicida += deposito.tratamentos[0].quantidade;
+                }
+            })
+        });
+    });
+
+    const { totalImoveis } = situacao_quarteiroes;
+    let percentualConclusao = totalVistorias/totalImoveis;
+
+    const relatorio = {
+        pendencia: {
+            imoveisFechados,
+            imoveisRecusados
+        },
+        situacao_quarteiroes,
+        totalVistorias,
+        percentualConclusao,
+        totalLarvicida,
+    }
+
+    return res.json(relatorio);
 }
 
 router.get('/equipe/:equipe_id/data/:dia', getTeamDailyActivity);

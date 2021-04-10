@@ -521,11 +521,8 @@ endRoute = async ( req, res ) => {
   // Finalizar rota
 
   // Atualizando a situação dos quarteirões
-
   await checkBlockSituation(trabalhoDiario_id);
-
-  // Salvando Vistorias
-
+  
   return res.json({ 
     status: 'success',
     mensage: 'Vistorias registradas com sucesso!'

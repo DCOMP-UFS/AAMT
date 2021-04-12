@@ -398,9 +398,9 @@ getActivityWeeklyReport = async (req, res) => {
     return res.json(resultado)
 }
 
-getCurrentActivityReport = async (req, res) => {
-    const { atividade_id } = req.params;
-    const userId = req.userId; 
+getCurrentActivityReport = async ( req, res ) => {
+    const { atividade_id }  = req.params;
+    const userId            = req.userId; 
 
     // Validação da rota
     const user_request = await Usuario.findByPk( userId );
@@ -411,28 +411,28 @@ getCurrentActivityReport = async (req, res) => {
 
     // Situação dos quarteirões + qtd de imóveis totais
     let sql_imoveis = 
-    'SELECT ' + 
-        'q.id, ' +
-        'sq.situacao_quarteirao_id, ' +
-        'count(i.*) as qtd_imoveis ' +
-    'FROM ' + 
-	    'estratos AS est ' +
-        'JOIN situacao_quarteiroes as sq ON (est.id = sq.estrato_id) ' +
-        'JOIN quarteiroes as q ON (q.id = sq.quarteirao_id) ' +
-        'JOIN lados as l ON (l.quarteirao_id = q.id) ' +
-        'JOIN imoveis as i ON (i.lado_id = l.id) ' +
-    'WHERE ' +
- 	    `est.atividade_id = ${atividade_id} ` +
-    'GROUP BY ' + 
-        'q.id, sq.situacao_quarteirao_id';
+        'SELECT ' + 
+            'q.id, ' +
+            'sq.situacao_quarteirao_id, ' +
+            'count(i.*) as qtd_imoveis ' +
+        'FROM ' + 
+            'estratos AS est ' +
+            'JOIN situacao_quarteiroes as sq ON (est.id = sq.estrato_id) ' +
+            'JOIN quarteiroes as q ON (q.id = sq.quarteirao_id) ' +
+            'JOIN lados as l ON (l.quarteirao_id = q.id) ' +
+            'JOIN imoveis as i ON (i.lado_id = l.id) ' +
+        'WHERE ' +
+            `est.atividade_id = ${atividade_id} ` +
+        'GROUP BY ' + 
+            'q.id, sq.situacao_quarteirao_id';
 
     let situacao_quarteiroes = await Atividade.sequelize.query(sql_imoveis).then(data => {
         const [ rows ] = data;
         
-        let aberto = 0;
-        let fazendo = 0;
-        let concluido = 0;
-        let totalImoveis = 0;
+        let aberto          = 0,
+            fazendo         = 0,
+            concluido       = 0,
+            totalImoveis    = 0;
 
         rows.map(row => {
             switch(row.situacao_quarteirao_id) {

@@ -56,7 +56,7 @@ update = async ( req, res ) => {
     }
   );
 
-  if( isRejected ){
+  if( isRejected ) {
     return res.status(400).json({ error: 'Não foi possível atualizar o imóvel' });
   }
 

@@ -10,6 +10,8 @@
     - [Autenticação](#autenticação)
       - [*Request*](#request)
       - [*Response*](#response)
+  - [Equipe](#equipe)
+    - [Alterar Apelido](#alterar-apelido)
   - [Usuário](#usuário)
     - [Consultar usuários](#consultar-usuários)
       - [*Request*](#request-1)
@@ -18,6 +20,7 @@
       - [*Request*](#request-2)
       - [*Response*](#response-2)
   - [Rotas](#rotas)
+    - [Consultar Rotas da Equipe](#consultar-rotas-da-equipe)
     - [Planejar Rota de um Agente](#planejar-rota-de-um-agente)
     - [Check Rota Iniciada](#check-rota-iniciada)
       - [*Request*](#request-3)
@@ -225,6 +228,44 @@ curl --request POST \
 }
 ```
 
+## Equipe
+
+Controladora das requisições referentes as equipes.
+
+### Alterar Apelido
+
+(/equipes/apelido/:id)
+
+Esta rota recebe como parametro o id da equipe e atualiza o apelido da mesma.
+
+*Request*
+
+```
+curl --request PUT \
+  --url __base_URL__/equipes/apelido/:id \
+  --header 'Authorization: Bearer __TOKEN__' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "apelido": "Nick da Equipe"
+  }'
+```
+
+*Response*
+
+```
+{
+  "status": "success",
+  "mensage": "Equipe Atualizada com sucesso",
+  "data": {
+    "id": 10,
+    "apelido": "Equipe Furia",
+    "createdAt": "2021-03-07T15:57:00.356Z",
+    "updatedAt": "2021-03-07T15:57:00.356Z",
+    "atividade_id": 21
+  }
+}
+```
+
 ## Usuário
 
 Controladora das requisições referentes aos usuários.
@@ -424,6 +465,51 @@ curl --request GET \
 ## Rotas
 
 Controladora das rotas dos usuários, um tempo associado a rota é o termo trabalho diário, usado no frontend da aplicação. Uma rota representa os quarteirões e lados que um determinado agente irá trabalhar ou trabalhou em um determinado dia. As rotas são planejadas pelos supervisores e consumidas pelos agentes.
+
+### Consultar Rotas da Equipe
+
+Esta rota consulta as rotas já planejadas de uma equipe e retorna um array de quarteirões com seus lados e a situação de cada lado.
+Enum de situação:
+  - 1 - Em aberto;
+  - 2 - Fazendo;
+  - 3 - Concluído;
+  - 4 - Planejado;
+
+*Request*
+
+```
+curl --request GET \
+  --url __base_URL__/rotas/abertas/:equipe_id/equipes \
+  --header 'Authorization: Bearer __token__'
+```
+
+*Response*
+
+```
+[
+  {
+    "id": 10,
+    "numero": 2,
+    "ativo": 1,
+    "localidade_id": 10,
+    "zona_id": null,
+    "lados": [
+      {
+        "id": 40,
+        "numero": 4,
+        "rua_id": 24,
+        "quarteirao_id": 10,
+        "imoveis": 2,
+        "vistorias": 0,
+        "situacao": 4,
+        "usuario_id": 4
+      },
+      ...
+    ]
+  },
+  ...
+]
+```
 
 ### Planejar Rota de um Agente
 

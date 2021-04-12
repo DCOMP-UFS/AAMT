@@ -185,10 +185,59 @@ getTeams = async ( req, res ) => {
   return res.json( equipes );
 }
 
+/**
+ * Esta rota recebe como parametro o id da equipe e atualiza o apelido da mesma.
+ */
+atualizarApelido = async (req, res) => {
+  const { apelido } = req.body;
+  const { id }      = req.params;
+
+  const usuario = await Usuario.findByPk( req.userId, {
+    include: {
+      association: "atuacoes"
+    }
+  });
+
+  const allow = await allowFunction( usuario.id, 'definir_trabalho_diario' );
+  if( !allow )
+    return res.status(403).json({ error: 'Acesso negado' });
+
+  let equipe = await Equipe.findByPk( id );
+  if( !equipe )
+    return res.status(400).json({ error: 'Equipe não existe' });
+
+  const { fl_rejeitado } = await Equipe.update(
+    {
+      apelido
+    },
+    {
+      where: {
+        id
+      }
+    }
+  )
+
+  if( fl_rejeitado )
+    return res.status(502).json({ 
+      status: 'error',
+      mensage: 'Falha ao atualizar a Equipe',
+      data: equipe
+    });
+
+  equipe.dataValues.apelido = apelido;
+
+  return res.json({ 
+    status: 'success',
+    mensage: 'Equipe Atualizada com sucesso',
+    data: equipe
+  });
+}
+
 const router = express.Router();
 router.use(authMiddleware);
 
 router.get('/sup/:id', getTeamsSupervised);
 router.get('/:atividade_id/atividades', getTeams);
+router.put('/apelido/:id', atualizarApelido)
 
 module.exports = app => app.use('/equipes', router);

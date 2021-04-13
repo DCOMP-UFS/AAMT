@@ -55,14 +55,16 @@ module.exports = async trabalho_diario_id => {
   });
 
   // Seleciona a situação dos quarteirões
-  const situacao_quarteirao = await SituacaoQuarteirao.findAll({
-    where: {
-      quarteirao_id: {
-        [ Op.in ]: quarteiroes_trabalhados,
-      },
-      estrato_id: estrato.id
-    },
-    attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+  let sql_situacao = 
+    'SELECT * FROM '  + 
+      'situacao_quarteiroes as sq ' +
+    'WHERE ' +
+      'sq.quarteirao_id IN ' + '(' + quarteiroes_trabalhados + ') ' +
+      `AND sq.estrato_id = ${estrato.id}`
+
+  let situacao_quarteirao = await SituacaoQuarteirao.sequelize.query( sql_situacao ).then(data => {
+    const [ rows ] = data;
+    return rows;
   });
 
   // Seleciona as vistorias trabalhadas nos 
@@ -98,17 +100,37 @@ module.exports = async trabalho_diario_id => {
       Para cada caso, atualiza a situação do quarteirão.
   */
   const promises = totalImoveisQuarteirao.map(async q => {
-    const v = totalVistoriasQuarteirao.find(p => p.quarteirao_id === q.id);
-    const s = situacao_quarteirao.find(p => p.quarteirao_id === q.id);
+    const v = totalVistoriasQuarteirao.find(p => p.quarteirao_id === q.quarteirao_id);
+    const s = situacao_quarteirao.find(p => p.quarteirao_id === q.quarteirao_id);
 
     if( v && s ) {
-      // Quarteirão completo
-      if( parseInt( v.count ) === parseInt( q.count ) && parseInt( s.situacaoQuarteiraoId ) !== 3 ) {
-        await s.update({ situacaoQuarteiraoId: 3 });
+      // Quarteirão em "aberto" -> "fazendo"
+      if( parseInt( v.count ) < parseInt( q.count ) && parseInt( s.situacao_quarteirao_id ) === 1 ) {
+        await SituacaoQuarteirao.update(
+          {
+            situacaoQuarteiraoId: 2,
+          },
+          {
+            where: {
+              id: s.id
+            }
+          }
+        );
       }
-      // Quarteirão em "aberto" para "fazendo"
-      if( parseInt( v.count ) > 0 && parseInt( s.situacaoQuarteiraoId ) === 1 ) {
-        await s.update({ situacaoQuarteiraoId: 2 });
+
+      // Quarteirão completo
+      if( parseInt( v.count ) === parseInt( q.count ) && parseInt( s.situacao_quarteirao_id ) !== 3 ) {
+        await SituacaoQuarteirao.update(
+          {
+            situacaoQuarteiraoId: 3,
+            dataConclusao: new Date()
+          },
+          {
+            where: {
+              id: s.id
+            }
+          }
+        );
       }
     }
   });

@@ -705,7 +705,8 @@ const getOpenRouteByTeam = async ( req, res ) => {
     q.lados = quarteirao.lados.map(lado => {
       rotas.forEach(r => {
         if( lado.id === r.lado_id ) {
-          lado.situacao = 4;
+          if( lado.situacao !== 3 )
+            lado.situacao = 4;
           lado.usuario_id = r.trabalhoDiario.usuario_id
         }
       });

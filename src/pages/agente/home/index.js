@@ -143,24 +143,26 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
   }, [ trabalhoDiario ]);
 
   useEffect(() => {
-    let imo = [];
+    if( rota.length > 0 ) {
+      let imo = [];
 
-    rota.forEach(q => {
-      q.lados.forEach(l => {
-        let i = l.imoveis.map(imovel => ({ ...imovel, rua: l.rua.nome, quarteirao: q.numero }));
+      rota.forEach(q => {
+        q.lados.forEach(l => {
+          let i = l.imoveis.map(imovel => ({ ...imovel, rua: l.rua.nome, quarteirao: q.numero }));
 
-        imo = [ ...i, ...imo ];
+          imo = [ ...i, ...imo ];
+        });
       });
-    });
 
-    setViewport({
-      width: '100%',
-      height: '100%',
-      latitude: imo[0].lat ? parseFloat(imo[0].lat) : -15.7801,
-      longitude: imo[0].lng ? parseFloat(imo[0].lng) : -47.9292,
-      zoom: 14
-    });
-    setImoveis( imo );
+      setViewport({
+        width: '100%',
+        height: '100%',
+        latitude: imo[0].lat ? parseFloat(imo[0].lat) : -15.7801,
+        longitude: imo[0].lng ? parseFloat(imo[0].lng) : -47.9292,
+        zoom: 14
+      });
+      setImoveis( imo );
+    }
   }, [ rota ]);
 
   useEffect(() => {

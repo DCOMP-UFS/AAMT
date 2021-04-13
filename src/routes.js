@@ -41,7 +41,6 @@ import Zonas from './pages/coordenador/Zonas';
 import EditarZona from './pages/coordenador/Zonas/EditarZona';
 
 // Páginas do supervisor
-import DefinirRota from './pages/supervisor/DefinirRota';
 import Quarteiroes from './pages/supervisor/Quarteiroes';
 import EditarQuarteirao from './pages/supervisor/Quarteiroes/EditarQuarteirao';
 import PlanejarRota from './pages/supervisor/PlanejarRota';
@@ -193,7 +192,6 @@ const Routes = props => {
         <PrivateCoordenador path="/coord/localidades/:id" component={ EditarLocalidade } tipoPerfil={ perfil } />
 
         {/* Rotas de supervisor */}
-        <PrivateSupervisor exact path="/sup/rotas" component={ DefinirRota } tipoPerfil={ perfil } />
         <PrivateSupervisor exact path="/sup/planejar_rota" component={ PlanejarRota } tipoPerfil={ perfil } />
         <PrivateSupervisor exact path="/sup/quarteiroes" component={ Quarteiroes } tipoPerfil={ perfil } />
         <PrivateSupervisor path="/sup/quarteiroes/:id" component={ EditarQuarteirao } tipoPerfil={ perfil } />

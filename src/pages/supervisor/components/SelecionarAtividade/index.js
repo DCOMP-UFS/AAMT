@@ -39,7 +39,7 @@ export const SelecionarAtividade = ({ indexAtividade, atividades, ...props }) =>
                   onClick={ () => handleAtividade( atividade.equipes, index ) }
                 >
                   <div className="ca-header">
-                    <h4 className="ca-title">{ atividade.metodologia.sigla }</h4>
+                    <h4 className="ca-title">{ atividade.metodologia.sigla } - { atividade.id }</h4>
                     <span className="ca-sub-title">{ atividade.objetivo.sigla }</span>
                   </div>
                   <hr/>

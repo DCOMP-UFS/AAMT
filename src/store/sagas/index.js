@@ -15,8 +15,6 @@ import { ActionTypes as RuaActions } from '../actions/RuaActions';
 import { ActionTypes as CicloActions } from '../actions/CicloActions';
 import { ActionTypes as MetodologiaActions } from '../actions/MetodologiaActions';
 import { ActionTypes as AtividadeActions } from '../actions/AtividadeActions';
-import { ActionTypes as DefinirRotaActions } from '../actions/DefinirRotaActions';
-import { ActionTypes as DefinirRotaCacheActions } from '../actions/DefinirRotaCacheActions';
 import { ActionTypes as RotaActions } from '../actions/RotaActions';
 import { ActionTypes as VistoriaActions } from '../actions/VistoriaActions';
 import { ActionTypes as TrabalhoDiarioActions } from '../actions/trabalhoDiario';
@@ -54,8 +52,6 @@ import { getStreetByLocality, createStreet, updateStreet, deleteStreet } from '.
 import * as CicloSagas from './CicloSagas';
 import * as MetodologiaSagas from './MetodologiaSagas';
 import * as AtividadeSagas from './AtividadeSagas';
-import * as DefinirRotaSagas from './DefinirRotaSagas';
-import * as DefinirRotaCacheSagas from './DefinirRotaCacheSagas';
 import * as RotaSagas from './RotaSagas';
 import * as VistoriaSagas from './VistoriaSagas';
 import * as TrabalhoDiarioSagas from './TrabalhoDiarioSagas';
@@ -151,17 +147,12 @@ export default function* rootSaga() {
     takeLatest( NW_AtividadeActions.GET_RESPONSABILITY_ACTIVITIES_REQUEST, NW_AtividadeSagas.getResponsabilityActivities ),
     takeLatest( NW_AtividadeActions.GET_ROTA_EQUIPE_REQUEST, NW_AtividadeSagas.getRotaEquipe ),
 
-    // Gerir Equipes
-    takeLatest( DefinirRotaActions.GET_ACTIVITIES_SUPERVISED_REQUEST, DefinirRotaSagas.getActivitiesSup ),
-    takeLatest( DefinirRotaActions.GET_TEAMS_SUP_REQUEST, DefinirRotaSagas.getTeamsSup ),
-    takeLatest( DefinirRotaActions.ARMAZENAR_PLANEJAMENTO_REQUEST, DefinirRotaSagas.savePlain ),
-    takeLatest( DefinirRotaCacheActions.CONSULTAR_PLANEJAMENTO_REQUEST, DefinirRotaCacheSagas.getPlanning ),
-
     // Gerir Rotas
     takeLatest( RotaActions.GET_ROUTE_REQUEST, RotaSagas.getRoute ),
     takeLatest( RotaActions.CHECK_ROTA_INICIADA_REQUEST, RotaSagas.isStarted ),
     takeLatest( RotaActions.INICIAR_ROTA_REQUEST, RotaSagas.startRoute ),
     takeLatest( RotaActions.ENCERRAR_ROTA_REQUEST, RotaSagas.closeRoute ),
+
     // Nova Estrutura
     takeLatest( NW_RotaActions.PLANEJAR_ROTA_REQUEST, NW_RotaSagas.planejarRota ),
     takeLatest( NW_RotaActions.GET_ROTAS_PLANEJADAS_REQUEST, NW_RotaSagas.getRotasPlanejadas ),

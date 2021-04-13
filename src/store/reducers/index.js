@@ -22,8 +22,6 @@ import usuario from './Usuario';
 import zona from './Zona';
 import ciclo from './Ciclo';
 import metodologia from './Metodologia';
-import definirRota from './DefinirRota';
-import definirRotaCache from './DefinirRotaCache';
 import sidebarAgente from './sidebarAgente';
 import rota from './Rota';
 import rotaCache from './RotaCache';
@@ -56,8 +54,6 @@ export default combineReducers({
   imovel,
   ciclo,
   metodologia,
-  definirRota,
-  definirRotaCache,
   sidebarAgente,
   rota,
   rotaCache,

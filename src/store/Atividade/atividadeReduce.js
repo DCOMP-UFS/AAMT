@@ -12,7 +12,7 @@ const INITIAL_STATE = {
   fl_loading: false
 }
 
-export default function Vistoria(state = INITIAL_STATE, action) {
+export default function Atividade(state = INITIAL_STATE, action) {
   switch(action.type) {
     case ActionTypes.SET_ATIVIDADES:
       return {

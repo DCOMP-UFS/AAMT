@@ -746,7 +746,8 @@ export const FormGroup = styled.div`
   }
 
   .form-control.invalid,
-  .invalid .css-cenuji-Control {
+  .invalid .css-cenuji-Control,
+  .invalid > div:first-child {
     border: 1px solid #fe7c96;
   }
 `;

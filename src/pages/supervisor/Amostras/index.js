@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import Table from '../../../components/Table';
 import { FaVial } from 'react-icons/fa';
@@ -9,6 +9,11 @@ import Modal, { ModalBody, ModalFooter } from '../../../components/Modal';
 import Select from 'react-select';
 import ModalExaminar from './components/ModalExaminar';
 import $ from 'jquery';
+
+// ACTIONS
+import { changeSidebar } from '../../../store/actions/sidebarSupervisor';
+import { getAmostrasRequest, enviarAmostrasRequest } from '../../../store/Amostra/amostraActions';
+import { getLaboratoriosRequest } from '../../../store/Laboratorio/laboratorioActions';
 
 // STYLES
 import { Button, FormGroup, selectDefault } from '../../../styles/global';
@@ -55,47 +60,13 @@ const columns = [
   }
 ];
 
-export const Amostras = ({ ...props }) => {
-  const [ rows, setRows ] = useState([
-    [
-      '14042021.1.1.1.1',
-      '14/04/2021',
-      'PNCD',
-      'LI+T',
-      '2021.2',
-      'Coletada',
-      <Tooltip
-        className="bg-warning text-white"
-        title="Examinar"
-        onClick={ () => handlerSample( 0 ) }
-      >
-        <IconButton aria-label="Examinar">
-          <FaVial />
-        </IconButton>
-      </Tooltip>,
-    ],
-    [
-      '14042021.1.1.1.2',
-      '14/04/2021',
-      'PNCD',
-      'LI+T',
-      '2021.2',
-      'Coletada',
-      <Tooltip
-        className="bg-warning text-white"
-        title="Examinar"
-        onClick={ () => handlerSample( 1 ) }
-      >
-        <IconButton aria-label="Examinar">
-          <FaVial />
-        </IconButton>
-      </Tooltip>,
-    ]
-  ]);
-  const [ rowsSelected, setRowsSelected ] = useState([]);
+export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
+  const [ rows, setRows ] = useState( [] );
+  const [ rowsSelected, setRowsSelected ] = useState( [] );
+  const [ laboratoriosOptions, setLaboratoriosOptions ] = useState( [] );
+  const [ laboratorioSelect, setLaboratorioSelect ] = useState( {} );
   const options = {
     customToolbarSelect: ({ data }) => {
-      console.log( data );
       return (
         <Button
           type="button"
@@ -104,12 +75,84 @@ export const Amostras = ({ ...props }) => {
           data-target="#modal-encaminhar"
         >Encaminhar Amostras</Button>
       );
+    },
+    onRowsSelect : ( curRowSelected, allRowsSelected ) => {
+      setRowsSelected( allRowsSelected.map( ({ dataIndex }) => dataIndex ) );
     }
   };
+
+  useEffect(() => {
+    props.changeSidebar( 3, 1 );
+    props.getAmostrasRequest( usuario.id );
+    props.getLaboratoriosRequest( usuario.municipio.id );
+  }, []);
+
+  useEffect(() => {
+    if( laboratorios.length > 0 ) {
+      setLaboratoriosOptions( laboratorios.map( lab => ({
+        value: lab.id, label: lab.nome
+      })));
+    }
+  }, [ laboratorios ]);
+
+  useEffect(() => {
+    let r = rows;
+
+    r = amostras.map( ( amostra, index ) => {
+      const seqAmostra      = amostra.sequencia,
+            seqDeposito     = amostra.deposito.sequencia,
+            seqVistoria     = amostra.vistoria.sequencia,
+            trabalhoDiario  = amostra.trabalhoDiario,
+            ciclo           = amostra.ciclo,
+            metodologia     = amostra.atividade.metodologia,
+            objetivo        = amostra.atividade.objetivo,
+            data            = trabalhoDiario.data.split( '-' );
+
+      let situacaoAmostra = '';
+      if( amostra.situacaoAmostra === 1 )
+        situacaoAmostra = 'Coletada';
+      if( amostra.situacaoAmostra === 2 )
+        situacaoAmostra = 'Encaminhada';
+      if( amostra.situacaoAmostra === 3 )
+        situacaoAmostra = 'Positiva';
+      if( amostra.situacaoAmostra === 4 )
+        situacaoAmostra = 'Negativa';
+
+      return [
+        `${ data[ 2 ] + data[ 1 ] + data[ 0 ] }.1.${ seqVistoria }.${ seqDeposito }.${ seqAmostra }`,
+        `${ data[ 2 ] }/${ data[ 1 ] }/${ data[ 0 ] }`,
+        metodologia.sigla,
+        objetivo.sigla,
+        `${ ciclo.ano }.${ ciclo.sequencia }`,
+        situacaoAmostra,
+        <Tooltip
+          className="bg-warning text-white"
+          title="Examinar"
+          onClick={ () => handlerSample( index ) }
+        >
+          <IconButton aria-label="Examinar">
+            <FaVial />
+          </IconButton>
+        </Tooltip>,
+      ]
+    });
+
+    setRows( r );
+  }, [ amostras ]);
 
   const handlerSample = index => {
     console.log( index );
     $( '#modal-examinar' ).modal( 'show' );
+  }
+
+  const enviarAmostras = e => {
+    e.preventDefault();
+
+    if( laboratorioSelect.value ) {
+      const amostras_ids = rowsSelected.map( r => amostras[ r ].id );
+
+      props.enviarAmostrasRequest( laboratorioSelect.value, amostras_ids );
+    }
   }
 
   return (
@@ -132,21 +175,25 @@ export const Amostras = ({ ...props }) => {
 
             <ModalExaminar id="modal-examinar" />
             <Modal id="modal-encaminhar" title="Encaminhar amostras">
-              <ModalBody>
-                <FormGroup>
-                  <label htmlFor="laboratorio">Laboratório <code>*</code></label>
-                  <Select
-                    id="laboratorio"
-                    styles={ selectDefault }
-                    onChange={ e => {  }}
-                    required
-                  />
-                </FormGroup>
-              </ModalBody>
-              <ModalFooter>
-                <Button className="secondary" data-dismiss="modal">Cancelar</Button>
-                <Button className="info" onClick={ () => {} }>Salvar</Button>
-              </ModalFooter>
+              <form onSubmit={ e => enviarAmostras( e ) }>
+                <ModalBody>
+                  <FormGroup>
+                    <label htmlFor="laboratorio">Laboratório <code>*</code></label>
+                    <Select
+                      id="laboratorio"
+                      value={ laboratorioSelect }
+                      options={ laboratoriosOptions }
+                      styles={ selectDefault }
+                      onChange={ e => setLaboratorioSelect( e ) }
+                      className={ laboratorioSelect.value ? '' : 'invalid' }
+                    />
+                  </FormGroup>
+                </ModalBody>
+                <ModalFooter>
+                  <Button className="secondary" data-dismiss="modal">Cancelar</Button>
+                  <Button type="submit" className="info">Salvar</Button>
+                </ModalFooter>
+              </form>
             </Modal>
           </article>
         </Row>
@@ -156,11 +203,16 @@ export const Amostras = ({ ...props }) => {
 }
 
 const mapStateToProps = state => ({
-
+  usuario: state.appConfig.usuario,
+  amostras: state.nw_amostra.amostras,
+  laboratorios: state.nw_laboratorio.laboratorios
 })
 
 const mapDispatchToProps = {
-
+  changeSidebar,
+  getAmostrasRequest,
+  getLaboratoriosRequest,
+  enviarAmostrasRequest
 }
 
 export default connect(

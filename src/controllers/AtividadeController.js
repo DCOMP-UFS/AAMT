@@ -544,10 +544,10 @@ getResponsibilityActivities = async ( req, res ) => {
 
   const allow = await allowFunction( req.userId, 'definir_trabalho_diario' );
   if( !allow )
-    return res.status(403).json({ error: 'Acesso negado A' });
+    return res.status(403).json({ error: 'Acesso negado' });
 
   if( parseInt( user_id ) !== req.userId )
-    return res.status(403).json({ error: 'Acesso negado B' });
+    return res.status(403).json({ error: 'Acesso negado' });
 
   const supervisor = await Usuario.findByPk( user_id, {
     include: {

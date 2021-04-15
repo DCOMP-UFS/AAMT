@@ -7,6 +7,7 @@ const app = express();
 app.use( cors() );
 app.use( express.json() );
 
+require('./controllers/AmostraController')(app);
 require('./controllers/AuthController')(app);
 require('./controllers/UsuarioController')(app);
 require('./controllers/MunicipioController')(app);

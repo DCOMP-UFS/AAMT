@@ -1,5 +1,5 @@
 import BorderAllIcon from '@material-ui/icons/BorderAll';
-import { FaMapSigns } from 'react-icons/fa';
+import { FaMapSigns, FaVial } from 'react-icons/fa';
 
 import { ActionTypes } from '../actions/sidebarSupervisor';
 
@@ -27,6 +27,7 @@ const INITIAL_STATE = {
   menu: [
     createCategory( "Ações" ),
     createLink( 2, "Rotas de Trabalho", false, FaMapSigns, "/sup/planejar_rota"),
+    createLink( 3, "Amostras", false, FaVial, "/sup/amostras"),
     createCategory( "Cadastros Básicos" ),
     createLink( 1, "Quarteirões", false, BorderAllIcon, "/sup/quarteiroes"),
     // createCategory( "Recursos de Interface" ),

@@ -13,6 +13,7 @@ require('./controllers/UsuarioController')(app);
 require('./controllers/MunicipioController')(app);
 require('./controllers/ConfigController')(app);
 require('./controllers/CategoriaController')(app);
+require('./controllers/LaboratorioController')(app);
 require('./controllers/LocalidadeController')(app);
 require('./controllers/ZonaController')(app);
 require('./controllers/PaisController')(app);

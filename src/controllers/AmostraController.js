@@ -101,12 +101,20 @@ getSampleBySurpervision = async ( req, res ) => {
       ciclo_id: ciclo.id,
       municipio_id: supervisor.atuacoes[ 0 ].local_id
     },
-    include: {
-      association: 'equipes',
-      include: {
-        association: 'membros'
+    include: [
+      {
+        association: 'equipes',
+        include: {
+          association: 'membros'
+        }
+      },
+      {
+        association: 'metodologia'
+      },
+      {
+        association: 'objetivo'
       }
-    }
+    ]
   });
 
   let equipes = [];
@@ -119,7 +127,7 @@ getSampleBySurpervision = async ( req, res ) => {
     });
   });
 
-  const amostras = await Amostra.findAll({
+  let amostras = await Amostra.findAll({
     include: [
       {
         association: 'deposito',
@@ -130,11 +138,28 @@ getSampleBySurpervision = async ( req, res ) => {
             where: {
               supervisor_id: supervisor.id,
               equipe_id: equipes
+            },
+            include: {
+              association: 'equipe'
             }
           }
         }
       }
     ]
+  });
+
+  // Tratando resultados
+  amostras.forEach(async ( amostra, index ) => {
+    let a = amostra.dataValues;
+
+    amostras[ index ].dataValues.trabalhoDiario = a.deposito.dataValues.vistoria.dataValues.trabalhoDiario.dataValues;
+    a.deposito.dataValues.vistoria.dataValues.trabalhoDiario = undefined;
+    amostras[ index ].dataValues.vistoria = a.deposito.dataValues.vistoria.dataValues;
+    a.deposito.dataValues.vistoria = undefined;
+    amostras[ index ].dataValues.deposito = a.deposito.dataValues;
+    amostras[ index ].dataValues.ciclo = ciclo;
+
+    amostras[ index ].dataValues.atividade = atividades.find( atividade => atividade.id === amostras[ index ].dataValues.trabalhoDiario.equipe.dataValues.atividade_id );
   });
 
   return res.json( amostras );

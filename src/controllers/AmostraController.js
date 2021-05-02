@@ -1,11 +1,12 @@
-const authMiddleware = require('../middlewares/auth');
-const express = require('express');
-const Sequelize = require('sequelize');
-const Usuario = require('../models/Usuario');
-const Municipio = require('../models/Municipio');
-const Ciclo = require('../models/Ciclo');
-const Atividade = require('../models/Atividade');
-const Amostra = require('../models/Amostra');
+const authMiddleware  = require('../middlewares/auth');
+const Sequelize       = require('sequelize');
+const express         = require('express');
+const Usuario         = require('../models/Usuario');
+const Municipio       = require('../models/Municipio');
+const Ciclo           = require('../models/Ciclo');
+const Atividade       = require('../models/Atividade');
+const Amostra         = require('../models/Amostra');
+const Exemplar        = require('../models/Exemplar');
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
@@ -197,7 +198,28 @@ sendSample = async ( req, res ) => {
   });
 }
 
+insertExamination = async ( req, res ) => {
+  const exemplars = req.body;
+
+  const allow = await allowFunction( req.userId, 'definir_trabalho_diario' );
+  if( !allow )
+    return res.status( 403 ).json({ error: 'Acesso negado' });
+
+  if( exemplars.length == 0 )
+    return res.status( 500 ).json({ mensage: 'Não foi possível processar sua requisição' });
+
+  Exemplar.bulkCreate( exemplars );
+
+  res.json({
+    mensage: "Amostra examinada com sucesso",
+    data: {
+      exemplars
+    }
+  });
+}
+
 router.get( '/:id', getSampleBySurpervision );
 router.post( '/enviar', sendSample );
+router.post( '/examinar', insertExamination );
 
 module.exports = app => app.use('/amostras', router);

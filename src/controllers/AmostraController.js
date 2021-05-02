@@ -145,6 +145,9 @@ getSampleBySurpervision = async ( req, res ) => {
             }
           }
         }
+      },
+      {
+        association: 'exemplares'
       }
     ]
   });
@@ -199,22 +202,26 @@ sendSample = async ( req, res ) => {
 }
 
 insertExamination = async ( req, res ) => {
-  const exemplars = req.body;
+  const { id, situacaoAmostra, exemplares } = req.body;
 
   const allow = await allowFunction( req.userId, 'definir_trabalho_diario' );
   if( !allow )
     return res.status( 403 ).json({ error: 'Acesso negado' });
 
-  if( exemplars.length == 0 )
+  // Alterando a situação da amostra, 3 - Positiva, 4 - Negativa.
+  const simple = await Amostra.findByPk( id );
+
+  if( !simple )
     return res.status( 500 ).json({ mensage: 'Não foi possível processar sua requisição' });
 
-  Exemplar.bulkCreate( exemplars );
+  simple.situacao_amostra = situacaoAmostra;
+  await simple.save();
+
+  // Inserindo Exemplares do exame.
+  await Exemplar.bulkCreate( exemplares );
 
   res.json({
-    mensage: "Amostra examinada com sucesso",
-    data: {
-      exemplars
-    }
+    mensage: "Amostra examinada com sucesso"
   });
 }
 

@@ -214,13 +214,13 @@ insertExamination = async ( req, res ) => {
   if( !simple )
     return res.status( 500 ).json({ mensage: 'Não foi possível processar sua requisição' });
 
-  simple.situacao_amostra = situacaoAmostra;
+  simple.situacaoAmostra = situacaoAmostra;
   await simple.save();
 
   // Inserindo Exemplares do exame.
   await Exemplar.bulkCreate( exemplares );
 
-  res.json({
+  return res.json({
     mensage: "Amostra examinada com sucesso"
   });
 }

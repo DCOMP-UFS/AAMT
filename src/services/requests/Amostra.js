@@ -16,3 +16,10 @@ export const enviarAmostrasRequest = data => {
     ...headerAuthorization()
   });
 }
+
+export const registrarExameRequest = data => {
+  const { exame } = data;
+  return api.post(`/amostras/examinar`, exame, {
+    ...headerAuthorization()
+  });
+}

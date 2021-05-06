@@ -1,7 +1,9 @@
 export const ActionTypes = {
   GET_AMOSTRAS_REQUEST: "GET_AMOSTRAS_REQUEST",
   SET_AMOSTRAS: "SET_AMOSTRAS",
-  ENVIAR_AMOSTRAS_REQUEST: "ENVIAR_AMOSTRAS_REQUEST"
+  ENVIAR_AMOSTRAS_REQUEST: "ENVIAR_AMOSTRAS_REQUEST",
+  REGISTRAR_EXAME_REQUEST: "REGISTRAR_EXAME_REQUEST",
+  SET_AMOSTRA: "SET_AMOSTRA"
 }
 
 /**
@@ -42,6 +44,34 @@ export const setAmostras = amostras => {
     type: ActionTypes.SET_AMOSTRAS,
     payload: {
       amostras
+    }
+  }
+}
+
+/**
+ *
+ * @param {*} amostras
+ * @returns
+ */
+export const registrarExameRequest = exame => {
+  return {
+    type: ActionTypes.REGISTRAR_EXAME_REQUEST,
+    payload: {
+      exame
+    }
+  }
+}
+
+/**
+ *
+ * @param {*} amostra
+ * @returns
+ */
+ export const setAmostra = amostra => {
+  return {
+    type: ActionTypes.SET_AMOSTRA,
+    payload: {
+      amostra
     }
   }
 }

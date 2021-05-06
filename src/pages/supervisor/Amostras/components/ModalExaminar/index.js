@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { connect } from 'react-redux';
 import { Accordion, AccordionSummary, AccordionDetails } from '@material-ui/core';
@@ -6,23 +6,95 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Row, Col } from 'react-bootstrap';
 import Modal, { ModalBody, ModalFooter } from '../../../../../components/Modal';
 import ButtonNewObject from '../../../../../components/ButtonNewObject';
+import IconButton from '@material-ui/core/IconButton';
+import { FaTrash } from 'react-icons/fa';
+
+// ACTIONS
+import { registrarExameRequest } from '../../../../../store/Amostra/amostraActions';
+import { getMosquitosRequest } from '../../../../../store/Mosquito/mosquitoActions';
 
 // STYLES
 import { Button, FormGroup, selectDefault } from '../../../../../styles/global';
 import { PanelTitle, Container } from './styles';
 
-export const ModalExaminar = ({ ...props }) => {
+export const ModalExaminar = ({ mosquitos, amostra, ...props }) => {
   const [ sampleSituationOptions, setsampleSituationOptions ] = useState( [
-    { value: true, label: 'Sim' },
-    { value: false, label: 'Não' }
+    { value: 3, label: 'Sim' },
+    { value: 4, label: 'Não' }
   ] );
-  const [ gnatOptions, setGnatOptions ] = useState( [
-    { value: 'aedes_aegypti', label: 'Aedes aegypti' },
-    { value: 'aedes_albupictus', label: 'Aedes albupictus' }
-  ] );
+  const [ gnatOptions, setGnatOptions ] = useState( [] );
   const [ sampleSituation, setSampleSituation] = useState( {} );
   const [ examination, setExamination ] = useState( [] );
   const [ reload, setReload ] = useState( false );
+  const [ codAmostra, setCodAmostra ] = useState( '' );
+
+  useEffect(() => {
+    props.getMosquitosRequest();
+  }, []);
+
+  // Consultando os mosquitos na API e preenchendo as opções do select
+  useEffect(() => {
+    if( mosquitos.length > 0 ) {
+      setGnatOptions( mosquitos.map( m => ({ value: m.id, label: m.nome }) ) );
+    }
+  }, [ mosquitos ]);
+
+  // Calculando o código da amostra
+  useEffect(() => {
+    console.log('====================================');
+    console.log( amostra );
+    console.log('====================================');
+
+    if( Object.entries( amostra ).length > 0 ) {
+      const seqAmostra      = amostra.sequencia,
+            seqDeposito     = amostra.deposito.sequencia,
+            seqVistoria     = amostra.vistoria.sequencia,
+            trabalhoDiario  = amostra.trabalhoDiario,
+            data            = trabalhoDiario.data.split( '-' );
+
+      setCodAmostra( `${ data[ 2 ] + data[ 1 ] + data[ 0 ] }.1.${ seqVistoria }.${ seqDeposito }.${ seqAmostra }` );
+
+      // Preenchendo os dados da amostra caso já exista exame cadastrado
+      const option = sampleSituationOptions.find( option => option.value === amostra.situacaoAmostra );
+      if( option )
+        setSampleSituation( option );
+      else
+        setSampleSituation( {} );
+
+      if( amostra.exemplares.length > 0 ) {
+        let ex = examination;
+        amostra.exemplares.forEach( exemplar => {
+          const index = ex.findIndex( e => e.gnat.value === exemplar.mosquito_id );
+
+          if( index === -1 ) {
+            ex.push({
+              gnat: gnatOptions.find( option => option.value === exemplar.mosquito_id ),
+              eggs: exemplar.fase === 1 ? exemplar.quantidade : 0,
+              pulps: exemplar.fase === 2 ? exemplar.quantidade : 0,
+              pulpExuvia: exemplar.fase === 3 ? exemplar.quantidade : 0,
+              maggots: exemplar.fase === 4 ? exemplar.quantidade : 0,
+              adults: exemplar.fase === 5 ? exemplar.quantidade : 0
+            });
+          } else {
+            if( exemplar.fase === 1 )
+              ex[ index ].eggs = exemplar.quantidade;
+            if( exemplar.fase === 2 )
+              ex[ index ].pulps = exemplar.quantidade;
+            if( exemplar.fase === 3 )
+              ex[ index ].pulpExuvia = exemplar.quantidade;
+            if( exemplar.fase === 4 )
+              ex[ index ].maggots = exemplar.quantidade;
+            if( exemplar.fase === 5 )
+              ex[ index ].adults = exemplar.quantidade;
+          }
+        });
+
+        setExamination( ex );
+      } else {
+        setExamination( [] );
+      }
+    }
+  }, [ amostra ])
 
   const addExamination = () => {
     let e = examination;
@@ -88,10 +160,68 @@ export const ModalExaminar = ({ ...props }) => {
     setReload( !reload );
   }
 
+  const removerExame = index => {
+    let ex = examination;
+
+    ex.splice( index, 1 );
+
+    setExamination( ex );
+    setReload( !reload );
+  }
+
+  const submit = e => {
+    e.preventDefault();
+
+    const exemplary = examination.reduce(( exem, ex ) => {
+      const e = [
+        {
+          "amostra_id": amostra.id,
+          "quantidade": ex.eggs,
+          "fase": 1, // Ovo - Eggs
+          "mosquito_id": ex.gnat.value
+        },
+        {
+          "amostra_id": amostra.id,
+          "quantidade": ex.pulps,
+          "fase": 2, // Pulpa - Pulps
+          "mosquito_id": ex.gnat.value
+        },
+        {
+          "amostra_id": amostra.id,
+          "quantidade": ex.pulpExuvia,
+          "fase": 3, // Exúvia de Pulpa - Pulp Exuvia
+          "mosquito_id": ex.gnat.value
+        },
+        {
+          "amostra_id": amostra.id,
+          "quantidade": ex.maggots,
+          "fase": 4, // Larva - Maggots
+          "mosquito_id": ex.gnat.value
+        },
+        {
+          "amostra_id": amostra.id,
+          "quantidade": ex.adults,
+          "fase": 5, // Adulto - adults
+          "mosquito_id": ex.gnat.value
+        }
+      ];
+
+      return ([ ...exem, ...e ]);
+    }, [] );
+
+    const data = {
+      "id": amostra.id,
+      "situacaoAmostra": sampleSituation.value,
+      "exemplares": exemplary
+    };
+
+    props.registrarExameRequest( data );
+  }
+
   return (
-    <Modal id={ props.id } title="Encaminhar amostras">
+    <Modal id={ props.id } title={ `Examinar amostra cód. ${ codAmostra }`}>
       <Container>
-        <form>
+        <form onSubmit={ submit }>
           <ModalBody>
             <FormGroup>
               <label htmlFor="situacaoAmostra">Positivo para aedes aegypti?<code>*</code></label>
@@ -204,6 +334,18 @@ export const ModalExaminar = ({ ...props }) => {
                             </FormGroup>
                           </Col>
                         </Row>
+                        <Row>
+                          <Col md="12" className="text-right">
+                            <IconButton
+                              title="Remover"
+                              className="text-danger"
+                              aria-label="cart"
+                              onClick={ () => removerExame( index ) }
+                            >
+                              <FaTrash className="icon-sm" />
+                            </IconButton>
+                          </Col>
+                        </Row>
                       </div>
                     </AccordionDetails>
                   </Accordion>
@@ -211,12 +353,16 @@ export const ModalExaminar = ({ ...props }) => {
               }
             <hr/>
             <div>
-              <ButtonNewObject title="Adicionar Exame" onClick={ () => addExamination() } />
+              <ButtonNewObject
+                title="Adicionar Exame"
+                onClick={ () => addExamination() }
+                disabled={ examination.length == mosquitos.length ? true : false }
+              />
             </div>
           </ModalBody>
           <ModalFooter>
             <Button className="secondary" data-dismiss="modal">Cancelar</Button>
-            <Button className="info" onClick={ () => {} }>Salvar</Button>
+            <Button className="info" type="submit">Salvar</Button>
           </ModalFooter>
         </form>
       </Container>
@@ -225,11 +371,13 @@ export const ModalExaminar = ({ ...props }) => {
 }
 
 const mapStateToProps = state => ({
-
+  amostra: state.nw_amostra.amostra,
+  mosquitos: state.nw_mosquito.mosquitos,
 })
 
 const mapDispatchToProps = {
-
+  registrarExameRequest,
+  getMosquitosRequest
 }
 
 export default connect(

@@ -1,7 +1,8 @@
 import { call, put } from 'redux-saga/effects';
 import {
   getAmostrasRequest,
-  enviarAmostrasRequest
+  enviarAmostrasRequest,
+  registrarExameRequest
 } from '../../services/requests/Amostra';
 
 import * as AmostraActions from './amostraActions';
@@ -34,5 +35,20 @@ export function* enviarAmostras( action ) {
 
   } catch (error) {
     yield put( AppConfigActions.showNotifyToast( "Erro ao enviar amostras para o laboratório", "error" ) );
+  }
+}
+
+export function* registrarExame( action ) {
+  try {
+    const { status } = yield call( registrarExameRequest, action.payload );
+
+    if( status === 200 ) {
+      document.location.reload();
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Falha ao registrar exame: " + status, "error" ) );
+    }
+
+  } catch (error) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao registar exame", "error" ) );
   }
 }

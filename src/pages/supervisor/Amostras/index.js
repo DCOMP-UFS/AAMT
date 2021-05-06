@@ -12,7 +12,7 @@ import $ from 'jquery';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebarSupervisor';
-import { getAmostrasRequest, enviarAmostrasRequest } from '../../../store/Amostra/amostraActions';
+import { getAmostrasRequest, enviarAmostrasRequest, setAmostra } from '../../../store/Amostra/amostraActions';
 import { getLaboratoriosRequest } from '../../../store/Laboratorio/laboratorioActions';
 
 // STYLES
@@ -66,7 +66,7 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
   const [ laboratoriosOptions, setLaboratoriosOptions ] = useState( [] );
   const [ laboratorioSelect, setLaboratorioSelect ] = useState( {} );
   const options = {
-    customToolbarSelect: ({ data }) => {
+    customToolbarSelect: () => {
       return (
         <Button
           type="button"
@@ -141,7 +141,8 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
   }, [ amostras ]);
 
   const handlerSample = index => {
-    console.log( index );
+    props.setAmostra( amostras[ index ] );
+
     $( '#modal-examinar' ).modal( 'show' );
   }
 
@@ -212,7 +213,8 @@ const mapDispatchToProps = {
   changeSidebar,
   getAmostrasRequest,
   getLaboratoriosRequest,
-  enviarAmostrasRequest
+  enviarAmostrasRequest,
+  setAmostra
 }
 
 export default connect(

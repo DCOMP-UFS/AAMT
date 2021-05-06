@@ -24,6 +24,7 @@ import { ActionTypes as NW_AtividadeActions } from '../Atividade/atividadeAction
 import { ActionTypes as NW_RotaActions } from '../Rota/rotaActions';
 import { ActionTypes as NW_AmostraActions } from '../Amostra/amostraActions';
 import { ActionTypes as NW_LaboratorioActions } from '../Laboratorio/laboratorioActions';
+import { ActionTypes as NW_MosquitoActions } from '../Mosquito/mosquitoActions';
 
 import {
   authenticate,
@@ -63,6 +64,7 @@ import * as NW_AtividadeSagas from '../Atividade/atividadeSagas';
 import * as NW_RotaSagas from '../Rota/rotaSagas';
 import * as NW_AmostraSagas from '../Amostra/amostraSagas';
 import * as NW_LaboratorioSagas from '../Laboratorio/laboratorioSagas';
+import * as NW_MosquitoSagas from '../Mosquito/mosquitoSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -172,8 +174,12 @@ export default function* rootSaga() {
     // Gerir Amostra
     takeLatest( NW_AmostraActions.GET_AMOSTRAS_REQUEST, NW_AmostraSagas.getAmostras ),
     takeLatest( NW_AmostraActions.ENVIAR_AMOSTRAS_REQUEST, NW_AmostraSagas.enviarAmostras ),
+    takeLatest( NW_AmostraActions.REGISTRAR_EXAME_REQUEST, NW_AmostraSagas.registrarExame ),
 
     // Gerir Laboratório
     takeLatest( NW_LaboratorioActions.GET_LABORATORIOS_REQUEST, NW_LaboratorioSagas.getLaboratorios ),
+
+    // Gerir Mosquito
+    takeLatest( NW_MosquitoActions.GET_MOSQUITOS_REQUEST, NW_MosquitoSagas.getMosquitos ),
   ]);
 }

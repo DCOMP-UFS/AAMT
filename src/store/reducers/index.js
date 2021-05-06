@@ -32,6 +32,7 @@ import nw_atividade from '../Atividade/atividadeReduce';
 import nw_rota from '../Rota/rotaReduce';
 import nw_amostra from '../Amostra/amostraReduce';
 import nw_laboratorio from '../Laboratorio/laboratorioReduce';
+import nw_mosquito from '../Mosquito/mosquitoReduce';
 
 export default combineReducers({
   sidebarCoordGeral,
@@ -65,5 +66,6 @@ export default combineReducers({
   nw_atividade,
   nw_rota,
   nw_amostra,
-  nw_laboratorio
+  nw_laboratorio,
+  nw_mosquito
 });

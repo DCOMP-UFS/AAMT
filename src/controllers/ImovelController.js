@@ -3,6 +3,30 @@ const authMiddleware = require('../middlewares/auth');
 const Imovel = require('../models/Imovel');
 const Lado = require('../models/Lado');
 
+getImoveisMunicipio = async ( req, res ) => {
+  const { municipio_id } = req.params;
+
+  const imoveis = await Imovel.sequelize.query(
+    'SELECT ' +
+      'i.* ' +
+    'FROM ' +
+      'imoveis as i ' +
+      'JOIN lados as l ON( i.lado_id = l.id ) ' +
+      'JOIN quarteiroes as q ON( l.quarteirao_id = q.id ) ' +
+      'JOIN localidades as loc ON( q.localidade_id = loc.id ) ' +
+    'WHERE ' +
+      'loc.municipio_id = $1', 
+    {
+      bind: [ municipio_id ],
+      logging: console.log,
+      model: Imovel,
+      mapToModel: true
+    }
+  );
+
+  return res.json( imoveis );
+}
+
 index = async ( req, res ) => {
   const imoveis = await Imovel.findAll({
     order: [[ 'numero', 'asc' ]]
@@ -83,9 +107,10 @@ destroy = async ( req, res ) => {
 const router = express.Router();
 router.use(authMiddleware);
 
-router.get('/', index);
-router.post('/', store);
-router.delete('/:id', destroy);
-router.put('/:id', update);
+router.get( '/', index );
+router.get( '/:municipio_id/municipios', getImoveisMunicipio );
+router.post( '/', store );
+router.delete( '/:id', destroy );
+router.put( '/:id', update );
 
-module.exports = app => app.use('/imoveis', router);
+module.exports = app => app.use( '/imoveis', router );

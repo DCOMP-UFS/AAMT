@@ -9,7 +9,8 @@ getImoveisMunicipio = async ( req, res ) => {
   const imoveis = await Imovel.sequelize.query(
     'SELECT ' +
       'i.*, ' +
-      'r.nome as "logradouro" ' +
+      'r.nome as "logradouro", ' +
+      'q.numero as "quarteirao" ' +
     'FROM ' +
       'imoveis as i ' +
       'JOIN lados as l ON( i.lado_id = l.id ) ' +

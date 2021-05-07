@@ -8,6 +8,7 @@ class Imovel extends Model {
       responsavel: DataTypes.STRING,
       complemento: DataTypes.STRING,
       tipoImovel: DataTypes.INTEGER,
+      ativo: DataTypes.BOOLEAN,
       lng: DataTypes.DECIMAL,
       lat: DataTypes.DECIMAL
     }, {

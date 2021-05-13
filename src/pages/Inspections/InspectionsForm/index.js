@@ -17,7 +17,16 @@ import Button from '../../../components/Button';
 
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
-import { Container, Card, Title, Small, Item, ButtonContainer } from './styles';
+import {
+  Container,
+  Card,
+  Title,
+  Small,
+  Item,
+  ButtonContainer,
+  TextInput,
+  InputContainer,
+} from './styles';
 
 const InspectionsForm = ({
   sequencia,
@@ -40,6 +49,7 @@ const InspectionsForm = ({
   const [sequence, setSequence] = useState(sequencia);
   const [startHour, setStartHour] = useState('');
   const [recipients, setRecipients] = useState([]);
+  const [justification, setJustification] = useState('');
 
   const navigation = useNavigation();
   const route = useRoute();
@@ -87,7 +97,12 @@ const InspectionsForm = ({
       trabalhoDiario_id: trabalho_diario_id,
       horaEntrada: startHour === '' ? handleStartInspection() : startHour,
       recipientes: recipients,
+      ...(pendency === 'F' || pendency === 'R'
+        ? { justificativa: justification !== '' ? justification : null }
+        : {}),
     };
+
+    console.log(inspection);
 
     if (!house) {
       props.addInspection(inspection);
@@ -151,8 +166,22 @@ const InspectionsForm = ({
             </TouchableWithoutFeedback>
           ))}
         </ButtonContainer>
+        {(pendency === 'F' || pendency === 'R') && (
+          <>
+            <Small>Informe a justificativa da pendência:</Small>
+            <InputContainer>
+              <TextInput
+                style={{
+                  textAlignVertical: 'top',
+                }}
+                onChangeText={text => setJustification(text)}
+                defaultValue={justification}
+              />
+            </InputContainer>
+          </>
+        )}
         <Button onPress={() => formValidation()}>Prosseguir</Button>
-        <SecundaryButton>Cancelar</SecundaryButton>
+        {/* <SecundaryButton>Cancelar</SecundaryButton> */}
       </Card>
     </Container>
   );

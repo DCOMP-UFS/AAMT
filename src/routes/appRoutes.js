@@ -30,7 +30,7 @@ const AppStacker = () => {
 
   return (
     <AppStack.Navigator
-      initialRouteName="Página Inicial"
+      initialRouteName="Rotas Planejadas"
       screenOptions={{
         headerTitleAlign: 'center',
         headerTitleStyle: {
@@ -46,7 +46,7 @@ const AppStacker = () => {
       }}
     >
       <AppStack.Screen
-        name="Página Inicial"
+        name="Rotas Planejadas"
         component={AgentHomePage}
         options={{
           headerLeft: () => (
@@ -60,11 +60,11 @@ const AppStacker = () => {
           ),
         }}
       />
-      <AppStack.Screen name="Lista de Quarteirões" component={Blocks} />
+      <AppStack.Screen name="Rota" component={Blocks} />
       <AppStack.Screen name="Lista de Imóveis" component={PropertiesList} />
       <AppStack.Screen name="Vistoria" component={InspectionsForm} />
       <AppStack.Screen name="Depósitos" component={RecipientList} />
-      <AppStack.Screen name="Cadastrar Recipiente" component={RecipientForm} />
+      <AppStack.Screen name="Cadastrar Depósito" component={RecipientForm} />
       <AppStack.Screen name="Detalhes do Imóvel" component={PropertyDetails} />
       <AppStack.Screen name="Atualizar imóvel" component={UpdateProperty} />
     </AppStack.Navigator>
@@ -76,7 +76,7 @@ const ActivityStacker = () => {
 
   return (
     <ActivityStack.Navigator
-      initialRouteName="Lista de atividades"
+      initialRouteName="Boletins de campo"
       screenOptions={{
         headerTitleAlign: 'center',
         headerTitleStyle: {
@@ -104,7 +104,7 @@ const ActivityStacker = () => {
           ),
           headerShown: true,
         }}
-        name="Lista de atividades"
+        name="Boletins de campo"
         component={ActivitiesList}
       />
       <ActivityStack.Screen
@@ -133,8 +133,8 @@ const AppDrawer = () => (
       },
     }}
   >
-    <Drawer.Screen name="Página Inicial" component={AppStacker} />
-    <Drawer.Screen name="Minhas atividades" component={ActivityStacker} />
+    <Drawer.Screen name="Rotas Planejadas" component={AppStacker} />
+    <Drawer.Screen name="Boletins de campo" component={ActivityStacker} />
     {/* <Drawer.Screen
       name="Vistorias"
       component={Inspections}

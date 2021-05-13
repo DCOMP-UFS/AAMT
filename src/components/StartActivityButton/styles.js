@@ -63,3 +63,41 @@ export const ButtonRow = styled.View`
 export const RouteButton = styled(Button).attrs({})`
   width: 48%;
 `;
+
+export const InfoText = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.regular};
+  font-size: 16px;
+  color: ${({ theme }) => theme.colors.label};
+  align-self: center;
+`;
+
+export const OutsideBar = styled.View`
+  width: 100%;
+  background: #e8e8e8;
+  border-radius: 50px;
+  height: 20px;
+`;
+
+export const InsideBar = styled.View`
+  width: ${props => `${props.percentage}%`};
+  background: ${({ theme }) => theme.colors.blue};
+  height: 100%;
+  border-radius: 50px;
+`;
+
+export const BarContainer = styled.View`
+  flex-direction: column;
+  margin-top: 5px;
+`;
+
+export const DescriptionContainer = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 7px;
+`;
+
+export const PercentageText = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.regular};
+  font-size: 16px;
+  color: ${({ theme }) => theme.colors.label};
+`;

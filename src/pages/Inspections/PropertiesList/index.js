@@ -5,7 +5,7 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/Feather';
 
 import {
   Container,
@@ -20,6 +20,7 @@ import {
   MoreDetails,
   StatusContainer,
   StatusText,
+  DetailsContainer,
 } from './styles';
 
 const InspectionStatus = ({ data, property }) => {
@@ -59,7 +60,7 @@ const InspectionStatus = ({ data, property }) => {
           })
         }
       >
-        <Icon size={23} name="add" color="#0095da" />
+        <Icon size={23} name="plus" color="#0095da" />
       </TouchableOpacity>
     );
   }
@@ -91,7 +92,7 @@ const PropertiesList = ({ inspections, routes, ...props }) => {
         <Card key={property.id}>
           <Header>
             <TitleContainer>
-              <Icon size={23} name="house" color="#3a3c4e" />
+              <Icon size={23} name="home" color="#3a3c4e" />
               <PropertyTitle>Imóvel {property.id}</PropertyTitle>
             </TitleContainer>
             <InspectionStatus data={inspections} property={property} />
@@ -122,7 +123,15 @@ const PropertiesList = ({ inspections, routes, ...props }) => {
               })
             }
           >
-            <MoreDetails>Ver detalhes do imóvel</MoreDetails>
+            <DetailsContainer>
+              <Icon
+                size={23}
+                name="edit"
+                color="#0095da"
+                style={{ marginRight: 5 }}
+              />
+              <MoreDetails>Detalhes do imóvel</MoreDetails>
+            </DetailsContainer>
           </TouchableOpacity>
         </Card>
       ))}

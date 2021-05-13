@@ -6,11 +6,15 @@ export const Container = styled.SafeAreaView`
   background-color: #f7f7f7;
   flex: 1;
   flex-direction: column;
-  padding: 50px 35px;
+  padding: 10px;
 `;
 
 export const ProfileContainer = styled.View`
   flex-direction: column;
+  border-radius: 4px;
+  padding: 14px;
+  margin-bottom: 10px;
+  background: #fff;
 `;
 
 export const Small = styled.Text`

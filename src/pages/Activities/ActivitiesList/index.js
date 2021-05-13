@@ -6,9 +6,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 
 import api from '../../../services/api';
 
-import Icon from 'react-native-vector-icons/MaterialIcons';
-
-import Button from '../../../components/Button';
+import Icon from 'react-native-vector-icons/Feather';
 
 import {
   Container,
@@ -21,6 +19,7 @@ import {
   Label,
   Small,
   DetailsColumn,
+  ActivitySummaryButton,
 } from './styles';
 
 const ActivitiesList = () => {
@@ -66,48 +65,33 @@ const ActivitiesList = () => {
             <Card>
               <Header>
                 <TitleContainer>
-                  <Icon size={23} name="house" color="#3a3c4e" />
-                  <PropertyTitle>Atividade {item.id}</PropertyTitle>
+                  <Icon size={23} name="file-text" color="#3a3c4e" />
+                  <PropertyTitle>{parseDate(item.data)}</PropertyTitle>
                 </TitleContainer>
               </Header>
-              <Label>Data</Label>
-              <Small>{parseDate(item.data)}</Small>
               <CardRow>
                 <DetailsColumn>
-                  <Label>Hora início</Label>
-                  {item.horaInicio ? (
-                    <Small>{item.horaInicio}</Small>
-                  ) : (
-                    <Small>-- : -- : --</Small>
-                  )}
+                  <Label>Jornada de trabalho</Label>
+                  <Small>{`${item.horaInicio ? item.horaInicio : '-- : --'} à ${
+                    item.horaFim ? item.horaFim : '-- : -- '
+                  }`}</Small>
                 </DetailsColumn>
                 <DetailsColumn>
-                  <Label>Hora fim</Label>
-                  {item.horaFim ? (
-                    <Small>{item.horaFim}</Small>
-                  ) : (
-                    <Small>-- : -- : --</Small>
-                  )}
-                </DetailsColumn>
-              </CardRow>
-              <CardRow>
-                <DetailsColumn>
-                  <Label>Metodologia</Label>
-                  <Small>{item.equipe.atividade.metodologia.sigla}</Small>
-                </DetailsColumn>
-                <DetailsColumn>
-                  <Label>Objetivo</Label>
-                  <Small>{item.equipe.atividade.objetivo.sigla}</Small>
+                  <Label>Metodologia - Objetivo</Label>
+                  <Small>{`${item.equipe.atividade.metodologia.sigla} - ${item.equipe.atividade.objetivo.sigla}`}</Small>
                 </DetailsColumn>
               </CardRow>
               {item.horaFim && (
-                <Button
+                <ActivitySummaryButton
                   onPress={() =>
-                    navigation.navigate('Resumo da atividade', { id: item.id })
+                    navigation.navigate('Resumo da atividade', {
+                      id: item.id,
+                      date: parseDate(item.data),
+                    })
                   }
                 >
                   Resumo da atividade
-                </Button>
+                </ActivitySummaryButton>
               )}
             </Card>
           )}

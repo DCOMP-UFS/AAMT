@@ -39,6 +39,7 @@ const ChooseActivity = () => {
   const { observation } = route.params;
 
   console.log(observation);
+  console.log(userId);
 
   useEffect(() => {
     async function loadActivities() {
@@ -58,7 +59,9 @@ const ChooseActivity = () => {
     loadActivities();
   }, []);
 
-  function navigationTo(id) {
+  console.log(observation);
+
+  function navigationTo(id, equipe_id) {
     if (observation === 'diary-report-agent') {
       return navigation.navigate('Lista de atividades', {
         id,
@@ -72,6 +75,17 @@ const ChooseActivity = () => {
     if (observation === 'weekly-report') {
       return navigation.navigate('Escolher a semana', {
         id,
+      });
+    }
+    if (observation === 'current-activity-report') {
+      return navigation.navigate('Relatorio da atividade atual', {
+        id,
+      });
+    }
+    if (observation === 'team-activity-report') {
+      return navigation.navigate('Relatorio da equipe na atividade', {
+        id,
+        equipe_id,
       });
     }
   }
@@ -92,12 +106,19 @@ const ChooseActivity = () => {
           </Smaller>
 
           {observation === 'weekly-report' && (
-            <Button onPress={() => navigationTo(activity.id)}>
+            <Button onPress={() => navigationTo(activity.id, 0)}>
+              Selecionar atividade
+            </Button>
+          )}
+
+          {observation === 'current-activity-report' && (
+            <Button onPress={() => navigationTo(activity.id, 0)}>
               Selecionar atividade
             </Button>
           )}
 
           {observation !== 'weekly-report' &&
+            observation !== 'current-activity-report' &&
             activity.equipes.map((team, index) => (
               <Collapse key={index} style={{ margin: 5 }}>
                 <CollapseHeader>
@@ -112,7 +133,9 @@ const ChooseActivity = () => {
                         member.tipo_perfil === 3 && (
                           <TouchableWithoutFeedback
                             key={member.usuario.id}
-                            onPress={() => navigationTo(member.usuario.id)}
+                            onPress={() =>
+                              navigationTo(member.usuario.id, team.id)
+                            }
                           >
                             <AccordionItemText>
                               {member.usuario.nome}

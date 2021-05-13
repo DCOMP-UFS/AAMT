@@ -53,6 +53,7 @@ const SignIn = () => {
                   label="Usuário"
                   keyboardType="default"
                   returnKeyType="next"
+                  autoCapitalize="none"
                   onSubmitEditing={() => passwordRef.current?.focus()}
                   errors={errors.user}
                 />
@@ -62,6 +63,7 @@ const SignIn = () => {
                   onChangeText={handleChange('password')}
                   label="Senha"
                   secureTextEntry={true}
+                  autoCapitalize="none"
                   keyboardType="default"
                   returnKeyType="send"
                   onSubmitEditing={handleSubmit}

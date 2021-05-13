@@ -32,3 +32,18 @@ export const ButtonContainer = styled.View`
   flex-direction: row;
   margin-bottom: 10px;
 `;
+
+export const TextInput = styled.TextInput`
+  font-size: 16px;
+  font-family: 'Lato-Regular';
+  color: ${({ theme }) => theme.colors.textInput};
+`;
+
+export const InputContainer = styled.View`
+  width: 100%;
+  height: 100px;
+  padding: 6px 16px;
+  border-radius: 4px;
+  border: 1px solid ${({ theme }) => theme.colors.borderInput};
+  margin-bottom: 10px;
+`;

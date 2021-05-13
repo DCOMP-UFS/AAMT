@@ -50,6 +50,16 @@ const WeeklyReport = () => {
     loadReport();
   }, []);
 
+  const colors = [
+    '#8FDDE7',
+    '#FBE5C8',
+    '#B6E5D8',
+    '#FFC2C7',
+    '#D3B5E5',
+    '#E98980',
+    '#E9EAEC',
+  ];
+
   function Bar(data) {
     const CUT_OFF = 0;
     const Labels = ({ x, y, bandwidth, data }) =>
@@ -59,7 +69,7 @@ const WeeklyReport = () => {
           x={value.value > CUT_OFF ? x(0) + 10 : x(value.value) + 10}
           y={y(index) + bandwidth / 2}
           fontSize={14}
-          fill={value.value > CUT_OFF ? 'white' : 'black'}
+          fill={'black'}
           alignmentBaseline={'middle'}
         >
           {value.value}
@@ -84,7 +94,7 @@ const WeeklyReport = () => {
           data={data}
           horizontal={true}
           yAccessor={({ item }) => item.value}
-          svg={{ fill: '#0095DA' }}
+          svg={{ fill: colors[Math.floor(Math.random() * 6)] }}
           contentInset={{ top: 10, bottom: 10 }}
           spacing={0.2}
           gridMin={0}

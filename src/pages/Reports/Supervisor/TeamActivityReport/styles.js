@@ -1,7 +1,6 @@
 import styled from 'styled-components/native';
-import Button from '../../../components/Button';
 
-export const Container = styled.View`
+export const Container = styled.ScrollView`
   margin: 10px 10px;
   flex: 1;
   flex-direction: column;
@@ -10,7 +9,7 @@ export const Container = styled.View`
 export const Card = styled.View`
   flex-direction: column;
   border-radius: 4px;
-  padding: 14px;
+  padding: 10px;
   margin-bottom: 10px;
   background: #fff;
 `;
@@ -18,7 +17,6 @@ export const Card = styled.View`
 export const Header = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  padding: 5px 0px;
 `;
 
 export const TitleContainer = styled.View`
@@ -32,10 +30,6 @@ export const PropertyTitle = styled.Text`
   margin-bottom: 10px;
   margin-left: 7px;
 `;
-
-export const List = styled.FlatList.attrs({
-  showsVerticalScrollIndicator: false,
-})``;
 
 export const CardRow = styled.View`
   flex-direction: row;
@@ -60,5 +54,3 @@ export const Small = styled.Text`
   font-size: 16px;
   margin-bottom: 10px;
 `;
-
-export const ActivitySummaryButton = styled(Button).attrs({})``;

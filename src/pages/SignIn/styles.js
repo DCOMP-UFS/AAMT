@@ -1,10 +1,10 @@
 import styled from 'styled-components/native';
+import Platform from 'react-native';
 
 export const Container = styled.View`
   flex: 1;
-  /* align-items: center; */
   justify-content: center;
-  padding: 0 25px;
+  padding: 0 30px ${Platform.OS === 'android' ? 150 : 40}px;
   background-color: ${({ theme }) => theme.colors.background};
 `;
 
@@ -20,4 +20,13 @@ export const WelcomeDescription = styled.Text`
   font-size: 22px;
   color: ${({ theme }) => theme.colors.black};
   margin-bottom: 50px;
+`;
+
+export const Version = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.regular};
+  font-size: 14px;
+  color: ${({ theme }) => theme.colors.label};
+  justify-content: flex-end;
+  align-self: center;
+  margin-top: 60px;
 `;

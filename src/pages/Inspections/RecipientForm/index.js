@@ -211,7 +211,7 @@ const RecipientForm = ({
                   </TouchableWithoutFeedback>
                 ))}
               </ButtonContainer>
-              <Small>Informe a quantidade de inseticida utilizado</Small>
+              <Small>Informe a quantidade de larvicida utilizado</Small>
               <Input
                 keyboardType="number-pad"
                 value={quantity}

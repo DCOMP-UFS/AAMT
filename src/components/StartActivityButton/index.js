@@ -15,7 +15,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import NetInfo from '@react-native-community/netinfo';
-import Icon from 'react-native-vector-icons/Feather';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import api from '../../services/api';
 import getTotalProperties from '../../utils/getTotalProperties';
@@ -210,7 +210,7 @@ const StartActivityButton = ({
     return (
       <>
         <Header>
-          <Icon size={23} name="calendar" color="#3a3c4e" />
+          <FontAwesome5 name="route" size={23} color="#3a3c4e" />
           <Title>{formatDate(activity.trabalhoDiario.data)}</Title>
         </Header>
         <Pair>
@@ -232,7 +232,7 @@ const StartActivityButton = ({
     return (
       <>
         <Header>
-          <Icon size={23} name="check-circle" color="#3a3c4e" />
+          <FontAwesome5 size={23} name="check-circle" color="#3a3c4e" />
           <Title>Progresso da vistoria</Title>
         </Header>
         <BarContainer>

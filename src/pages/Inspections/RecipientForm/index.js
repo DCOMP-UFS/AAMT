@@ -132,8 +132,8 @@ const RecipientForm = ({
   return (
     <Container>
       <Card>
-        <Title>Recipiente</Title>
-        <Small>Informe o tipo de recipiente</Small>
+        <Title>Depósito</Title>
+        <Small>Informe o tipo do depósito</Small>
         <RecipientButtonContainer>
           {recipientOptions.map(item => (
             <TouchableWithoutFeedback
@@ -147,7 +147,7 @@ const RecipientForm = ({
             </TouchableWithoutFeedback>
           ))}
         </RecipientButtonContainer>
-        <Small>O recipiente possui foco de mosquito?</Small>
+        <Small>O depósito possui foco de mosquito?</Small>
         <ButtonContainer>
           {focusOptions.map(item => (
             <TouchableWithoutFeedback onPress={() => setFocus(item)} key={item}>
@@ -179,7 +179,7 @@ const RecipientForm = ({
             </ExtraContainer>
           </>
         )}
-        <Small>Qual o destino do recipiente?</Small>
+        <Small>Qual o destino do depósito?</Small>
         <ButtonContainer>
           {treatmentOptions.map(item => (
             <TouchableWithoutFeedback
@@ -211,7 +211,7 @@ const RecipientForm = ({
                   </TouchableWithoutFeedback>
                 ))}
               </ButtonContainer>
-              <Small>Informe a quantidade de inseticida utilizado</Small>
+              <Small>Informe a quantidade de larvicida utilizado</Small>
               <Input
                 keyboardType="number-pad"
                 value={quantity}
@@ -221,7 +221,7 @@ const RecipientForm = ({
           </>
         )}
         <Button onPress={() => handleSubmit()}>Concluir inspeção</Button>
-        <SecundaryButton>Cancelar</SecundaryButton>
+        {/* <SecundaryButton>Cancelar</SecundaryButton> */}
       </Card>
     </Container>
   );

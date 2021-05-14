@@ -61,7 +61,7 @@ const RecipientList = ({
           <HeaderTitle>Lista de depósitos</HeaderTitle>
           <TouchableWithoutFeedback
             onPress={() =>
-              navigation.navigate('Cadastrar Recipiente', {
+              navigation.navigate('Cadastrar Depósito', {
                 imovel_id,
               })
             }
@@ -75,7 +75,7 @@ const RecipientList = ({
               <RecipientItem key={index}>
                 <TouchableWithoutFeedback
                   onPress={() =>
-                    navigation.navigate('Cadastrar Recipiente', {
+                    navigation.navigate('Cadastrar Depósito', {
                       imovel_id,
                       recipientSequence: recipient.sequencia,
                       recipientExistent: recipient,

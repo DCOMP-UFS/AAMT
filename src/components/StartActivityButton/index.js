@@ -1,14 +1,25 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Alert, Text } from 'react-native';
+import {
+  View,
+  Alert,
+  Text,
+  StyleSheet,
+  Modal,
+  Image,
+  TouchableOpacity,
+  Animated,
+} from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { format, parseISO } from 'date-fns';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import NetInfo from '@react-native-community/netinfo';
-import Icon from 'react-native-vector-icons/Feather';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import api from '../../services/api';
+import getTotalProperties from '../../utils/getTotalProperties';
+import ModalComponent from '../../components/ModalComponent';
 
 import {
   getRouteRequest,
@@ -30,6 +41,12 @@ import {
   ButtonRow,
   RouteButton,
   MenuTitle,
+  InfoText,
+  OutsideBar,
+  InsideBar,
+  BarContainer,
+  DescriptionContainer,
+  PercentageText,
 } from './styles';
 import { cos } from 'react-native-reanimated';
 
@@ -44,6 +61,7 @@ const StartActivityButton = ({
   ...props
 }) => {
   const [connState, setConnState] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   const navigation = useNavigation();
 
@@ -161,11 +179,11 @@ const StartActivityButton = ({
 
   const RouteAvailableMessage = () => {
     return connState ? (
-      <Description>Você não possui uma rota planejada para hoje</Description>
+      <InfoText>Você não possui uma rota planejada para hoje</InfoText>
     ) : (
-      <Description>
+      <InfoText>
         Você não não está conectado a internet. Por favor, reconecte-se.
-      </Description>
+      </InfoText>
     );
   };
 
@@ -181,10 +199,8 @@ const StartActivityButton = ({
             Encerrar rota
           </RouteButton>
         )}
-        <RouteButton
-          onPress={() => navigation.navigate('Lista de Quarteirões')}
-        >
-          Ver rota
+        <RouteButton onPress={() => navigation.navigate('Rota')}>
+          {isStarted ? 'Vistorias' : 'Ver rota'}
         </RouteButton>
       </ButtonRow>
     );
@@ -194,19 +210,13 @@ const StartActivityButton = ({
     return (
       <>
         <Header>
-          <Icon size={23} name="calendar" color="#3a3c4e" />
+          <FontAwesome5 name="route" size={23} color="#3a3c4e" />
           <Title>{formatDate(activity.trabalhoDiario.data)}</Title>
         </Header>
         <Pair>
-          <Small>Metodologia</Small>
+          <Small>Metodologia - Objetivo</Small>
           <Description>
-            {activity.trabalhoDiario.atividade.metodologia.sigla}
-          </Description>
-        </Pair>
-        <Pair>
-          <Small>Objetivo</Small>
-          <Description>
-            {activity.trabalhoDiario.atividade.objetivo.sigla}
+            {`${activity.trabalhoDiario.atividade.metodologia.sigla} - ${activity.trabalhoDiario.atividade.objetivo.sigla}`}
           </Description>
         </Pair>
         <ButtonComponent />
@@ -214,19 +224,51 @@ const StartActivityButton = ({
     );
   };
 
+  const ProgressBarComponent = () => {
+    const inspectionsSize = inspections.length;
+    const propertiesSize = getTotalProperties();
+    const percentage = Math.ceil((inspectionsSize / propertiesSize) * 100);
+
+    return (
+      <>
+        <Header>
+          <FontAwesome5 size={23} name="check-circle" color="#3a3c4e" />
+          <Title>Progresso da vistoria</Title>
+        </Header>
+        <BarContainer>
+          <DescriptionContainer>
+            <PercentageText>{`${inspectionsSize} de ${propertiesSize} imóveis vistoriados`}</PercentageText>
+            <PercentageText>{`${percentage}%`}</PercentageText>
+          </DescriptionContainer>
+          <OutsideBar>
+            <InsideBar percentage={percentage} />
+          </OutsideBar>
+        </BarContainer>
+      </>
+    );
+  };
+
   return (
     <>
       <Container>
-        <MenuTitle>Planejamento do dia</MenuTitle>
-        <Card>
-          {loading ? (
-            <Loading />
-          ) : activity ? (
-            <ActivityComponent />
-          ) : (
+        {loading ? (
+          <Loading />
+        ) : activity ? (
+          <>
+            <Card>
+              <ActivityComponent />
+            </Card>
+            {isStarted && (
+              <Card>
+                <ProgressBarComponent />
+              </Card>
+            )}
+          </>
+        ) : (
+          <Card>
             <RouteAvailableMessage />
-          )}
-        </Card>
+          </Card>
+        )}
       </Container>
     </>
   );

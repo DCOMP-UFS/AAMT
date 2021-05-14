@@ -13,6 +13,8 @@ import ChooseDay from '../pages/Reports/Supervisor/ChooseDay';
 import ActivityDiaryTeam from '../pages/Reports/Supervisor/ActivityDiaryTeam';
 import ChooseWeek from '../pages/Reports/Supervisor/ChooseWeek';
 import WeeklyReport from '../pages/Reports/Supervisor/WeeklyReport';
+import CurrentActivityReport from '../pages/Reports/Supervisor/CurrentActivityReport';
+import TeamActivityReport from '../pages/Reports/Supervisor/TeamActivityReport';
 
 const SupDrawer = createDrawerNavigator();
 const SupStack = createStackNavigator();
@@ -71,6 +73,16 @@ const reportsRoutes = () => {
         name="Relatorio semanal"
         options={{ title: 'Relatório semanal' }}
         component={WeeklyReport}
+      />
+      <SupStack.Screen
+        name="Relatorio da atividade atual"
+        options={{ title: 'Relatório da atividade atual' }}
+        component={CurrentActivityReport}
+      />
+      <SupStack.Screen
+        name="Relatorio da equipe na atividade"
+        options={{ title: 'Relatório da equipe na atividade' }}
+        component={TeamActivityReport}
       />
     </SupStack.Navigator>
   );

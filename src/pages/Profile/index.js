@@ -36,10 +36,10 @@ const Profile = () => {
           <Item>{profile.usuario}</Item>
           <Small>Email</Small>
           <Item>{profile.email}</Item>
+          <TouchableWithoutFeedback onPress={logout}>
+            <LogoutButton>Desconectar</LogoutButton>
+          </TouchableWithoutFeedback>
         </ProfileContainer>
-        <TouchableWithoutFeedback onPress={logout}>
-          <LogoutButton>Desconectar</LogoutButton>
-        </TouchableWithoutFeedback>
       </Container>
     </>
   );

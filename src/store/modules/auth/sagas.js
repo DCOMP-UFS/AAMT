@@ -16,9 +16,16 @@ export function* signIn({ payload }) {
 
     const { user, token } = response.data;
 
-    api.defaults.headers.Authorization = `Bearer ${token}`;
-
-    yield put(signInSuccess(token, user));
+    if ([3, 4].includes(user.atuacoes[0].tipoPerfil)) {
+      api.defaults.headers.Authorization = `Bearer ${token}`;
+      yield put(signInSuccess(token, user));
+    } else {
+      Alert.alert(
+        'Atenção!',
+        'Você não possui autorização para utilizar o aplicativo.'
+      );
+      yield put(signInFailure());
+    }
   } catch (err) {
     Alert.alert('Autenticação falhou', 'Verifique seu usuário ou senha');
     yield put(signInFailure());

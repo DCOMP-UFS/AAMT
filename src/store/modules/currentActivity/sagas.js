@@ -18,7 +18,10 @@ export function* getRoute({ payload }) {
       `/rotas/${user_id}/usuarios/${date}/data`
     );
 
-    if (response.data.trabalhoDiario && !response.data.trabalhoDiario.horaFim) {
+    if (
+      response.data.trabalhoDiario &&
+      response.data.trabalhoDiario.horaFim === null
+    ) {
       yield put(getRouteSuccess(response.data));
     } else {
       yield put(getRouteFailure());

@@ -1,6 +1,11 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, {
+  useEffect,
+  useCallback,
+  useState,
+  useLayoutEffect,
+} from 'react';
 import { View, Alert } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
 import { BarChart, Grid, YAxis } from 'react-native-svg-charts';
 import * as scale from 'd3-scale';
@@ -46,6 +51,8 @@ const AcitivitySummary = () => {
     { label: 'Perifocal', value: 0 },
   ]);
   const [sampleNumber, setSampleNumber] = useState(0);
+
+  const navigation = useNavigation();
 
   function filter() {
     let pendencia = pendency;
@@ -166,7 +173,7 @@ const AcitivitySummary = () => {
   }
 
   const route = useRoute();
-  const { id } = route.params;
+  const { id, date } = route.params;
 
   const loadActivity = useCallback(async () => {
     try {
@@ -186,9 +193,23 @@ const AcitivitySummary = () => {
     loadActivity();
   }, [loadActivity]);
 
+  useLayoutEffect(() => {
+    navigation.setOptions({ headerTitle: `Boletim diário ${date}` });
+  }, []);
+
   useEffect(() => {
     filter();
   }, [activity]);
+
+  const colors = [
+    '#8FDDE7',
+    '#FBE5C8',
+    '#B6E5D8',
+    '#FFC2C7',
+    '#D3B5E5',
+    '#E98980',
+    '#E9EAEC',
+  ];
 
   function Bar(data) {
     const CUT_OFF = 0;
@@ -199,7 +220,7 @@ const AcitivitySummary = () => {
           x={value.value > CUT_OFF ? x(0) + 10 : x(value.value) + 10}
           y={y(index) + bandwidth / 2}
           fontSize={14}
-          fill={value.value > CUT_OFF ? 'white' : 'black'}
+          fill={'black'}
           alignmentBaseline={'middle'}
         >
           {value.value}
@@ -224,7 +245,7 @@ const AcitivitySummary = () => {
           data={data}
           horizontal={true}
           yAccessor={({ item }) => item.value}
-          svg={{ fill: '#0095DA' }}
+          svg={{ fill: colors[Math.floor(Math.random() * 6)] }}
           contentInset={{ top: 10, bottom: 10 }}
           spacing={0.2}
           gridMin={0}

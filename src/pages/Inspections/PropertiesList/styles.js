@@ -17,6 +17,7 @@ export const Card = styled.View`
 export const Header = styled.View`
   flex-direction: row;
   justify-content: space-between;
+  margin-bottom: 5px;
 `;
 
 export const PropertyTitle = styled.Text`
@@ -59,7 +60,6 @@ export const MoreDetails = styled.Text`
   font-family: 'Lato-Bold';
   color: #0095da;
   font-size: 16px;
-  justify-content: center;
   align-self: center;
 `;
 
@@ -76,4 +76,10 @@ export const StatusText = styled.Text`
   font-family: 'Lato-Normal';
   color: #fff;
   font-size: 14px;
+`;
+
+export const DetailsContainer = styled.View`
+  flex-direction: row;
+  justify-content: center;
+  align-self: center;
 `;

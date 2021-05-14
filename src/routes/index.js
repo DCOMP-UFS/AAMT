@@ -29,11 +29,17 @@ const routes: React.FC = ({ signed, profile }) => {
     const profileType = profile.atuacoes[0].tipoPerfil;
 
     switch (profileType) {
+      case 1:
+        break;
+      case 2:
+        break;
       case 4:
         return <AppRoutes />;
         break;
       case 3:
         return <SupRoutes />;
+        break;
+      default:
         break;
     }
   }

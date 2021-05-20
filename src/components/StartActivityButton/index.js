@@ -61,7 +61,7 @@ const StartActivityButton = ({
   currentDailyWork,
   ...props
 }) => {
-  const [connState, setConnState] = useState(false);
+  const [connState, setConnState] = useState(null);
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [activities, setActivities] = useState([]);
@@ -162,6 +162,18 @@ const StartActivityButton = ({
     };
   }, []);
 
+  // useEffect(() => {
+  //   const unsubscribe = NetInfo.addEventListener(state => {
+  //     if (state.isInternetReachable === false) {
+  //       setConnState(false);
+  //     } else {
+  //       setConnState(true);
+  //     }
+  //   });
+
+  //   return () => unsubscribe();
+  // }, []);
+
   async function getDailyWork() {
     try {
       const response = await api.get(`/rotas/${user_id}/usuarios/${date}/data`);
@@ -207,8 +219,9 @@ const StartActivityButton = ({
         p => p.trabalhoDiario.usuario_id === user_id
       );
 
+      console.log('index -> ' + index);
+
       if (index >= 0) {
-        console.log(index);
         const trabalho_diario_id = routes[index].trabalhoDiario.id;
 
         const route_date = routes[index].trabalhoDiario.data;
@@ -219,26 +232,33 @@ const StartActivityButton = ({
 
           if (isRouteOpen) {
             if (routeFromToday) {
+              console.log('1 -> entrou aqui');
               setActivities([routes[index]]);
             } else {
+              console.log('2 -> entrou aqui');
               // ROTA ANTIGA EM ABERTO - Informar que precisa encerrar a vistoria
             }
           } else {
+            console.log('3 -> entrou aqui');
             // ROTA ANTIGA ENCERRADA - Limpar cache do usuário
           }
-        } else {
-          console.log('net: ' + connState); // Rapidamente tá entrando aqui!
+        }
+        if (connState === false) {
           if (routeFromToday) {
+            console.log('4 -> entrou aqui');
             setActivities([routes[index]]);
           } else {
+            console.log('5 -> entrou aqui');
             // Tem que ativar a internet para finalizar vistoria
           }
         }
       } else {
         if (connState) {
+          console.log('6 -> entrou aqui');
           await getDailyWork();
         }
-        if (!connState) {
+        if (connState === false) {
+          console.log('7 -> entrou aqui');
           console.log('Você precisa se conectar a internet para ver trabalhos');
         }
       }

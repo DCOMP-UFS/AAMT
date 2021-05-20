@@ -1,6 +1,7 @@
 import styled from 'styled-components/native';
 
 import Button from '../../components/Button';
+import Loading from '../../components/Loading';
 
 export const Container = styled.ScrollView`
   margin: 10px 10px;
@@ -101,3 +102,5 @@ export const PercentageText = styled.Text`
   font-size: 16px;
   color: ${({ theme }) => theme.colors.label};
 `;
+
+export const LoadingComponent = styled(Loading).attrs({})``;

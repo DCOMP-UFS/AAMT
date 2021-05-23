@@ -288,9 +288,8 @@ disabled = async ( req, res ) => {
   const userId = req.userId;
 
   const allow = await allowFunction( userId, 'manter_quarteirao' );
-  if( !allow ) {
+  if( !allow )
     return res.status(403).json({ error: 'Acesso negado' });
-  }
 
   const quarteirao = await Quarteirao.findByPk( id );
   if( !quarteirao )
@@ -306,9 +305,8 @@ disabled = async ( req, res ) => {
     }
   );
 
-  if( isRejected ){
+  if( isRejected )
     return res.status(400).json({ error: 'Não foi possível atualizar o quarteirão' });
-  }
 
   const quarteiraoFind = await Quarteirao.findByPk( id, {
     include: [
@@ -322,13 +320,41 @@ disabled = async ( req, res ) => {
   return res.json( quarteiraoFind );
 }
 
+/**
+ * Consulta os lados de um quarteirão.
+ * 
+ * @params integer id
+ * @return array lados
+ */
+getLadosQuarteirao = async ( req, res ) => {
+  const { id } = req.params;
+
+  // Checando se o ID existe
+  const quarteirao = await Quarteirao.findByPk( id );
+
+  if( !quarteirao )
+    return res.status( 400 ).json({ error: 'Quarteirão não existe' });
+
+  const lados = await Lado.findAll({
+    where: {
+      quarteirao_id: id
+    },
+    include: {
+      association: 'rua'
+    }
+  });
+
+  res.json( lados );
+}
+
 const router = express.Router();
-router.use(authMiddleware);
+router.use( authMiddleware );
 
-router.get('/:id', index);
-router.get('/:municipio_id/municipios', getBlockByCity);
-router.post('/', store);
-router.put('/:id/desativar', disabled);
-router.put('/:id', update);
+router.get( '/:id', index );
+router.get(  '/lados/:id', getLadosQuarteirao  );
+router.get( '/:municipio_id/municipios', getBlockByCity );
+router.post( '/', store );
+router.put( '/:id/desativar', disabled );
+router.put( '/:id', update );
 
-module.exports = app => app.use('/quarteiroes', router);
+module.exports = app => app.use( '/quarteiroes', router );

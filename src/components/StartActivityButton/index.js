@@ -68,6 +68,7 @@ import {
 const StartActivityButton = ({
   user_id,
   routes,
+  loadingStartRoute,
   currentRouteIndex,
   ...props
 }) => {
@@ -243,6 +244,11 @@ const StartActivityButton = ({
           } else {
             console.log('3 -> entrou aqui');
             props.removeFinishedRoute(trabalho_diario_id);
+            setActivities([]);
+            Alert.alert(
+              'Atenção!',
+              'As vistorias que constavam neste dispositivo e já estão finalizadas foram excluídas deste dispositivo.'
+            );
             // ROTA ANTIGA ENCERRADA - Limpar cache do usuário
           }
         }
@@ -292,6 +298,7 @@ const StartActivityButton = ({
           {!activity.trabalhoDiario.horaInicio ? (
             <RouteButton
               type="confirm"
+              loading={loadingStartRoute}
               onPress={() => handleStartActivity(activity)}
             >
               Iniciar rota
@@ -410,6 +417,7 @@ const mapStateToProps = state => ({
   user_id: state.user.profile.id,
   routes: state.routes.routes,
   currentRouteIndex: state.routes.currentRouteIndex,
+  loadingStartRoute: state.routes.loadingStartRoute,
   // inspections: state.inspections.vistorias,
   // loading: state.currentActivity.loading,
 });

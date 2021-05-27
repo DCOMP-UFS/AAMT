@@ -41,10 +41,6 @@ export const ModalExaminar = ({ mosquitos, amostra, ...props }) => {
 
   // Calculando o código da amostra
   useEffect(() => {
-    console.log('====================================');
-    console.log( amostra );
-    console.log('====================================');
-
     if( Object.entries( amostra ).length > 0 ) {
       const seqAmostra      = amostra.sequencia,
             seqDeposito     = amostra.deposito.sequencia,

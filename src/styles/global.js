@@ -750,4 +750,69 @@ export const FormGroup = styled.div`
   .invalid > div:first-child {
     border: 1px solid #fe7c96;
   }
+
+  .form-collapse {
+    .collapse-input {
+      display: flex;
+      border: 1px solid ${ Color.border_input };
+      border-radius: 2px;
+      background: #fff;
+      margin-bottom: 8px;
+
+      &.loc-invalida {
+        border: 1px solid #fe7c96;
+      }
+
+      .control {
+        flex: 1;
+
+        .form-control {
+          width: 100%;
+          border: none;
+          height: 44px;
+          box-shadow: none;
+          padding-left: 0.81rem;
+        }
+      }
+
+      .toggle-control {
+        display: flex;
+
+        span.separator {
+          align-self: stretch;
+          background-color: hsl(0,0%,80%);
+          margin-bottom: 8px;
+          margin-top: 8px;
+          width: 1px;
+          box-sizing: border-box;
+        }
+
+        .toggle {
+          padding: 8px;
+          width: 44px;
+          height: 44px;
+          align-items: center;
+          display: flex;
+          justify-content: center;
+          transition: color .5s ease-in-out;
+          cursor: pointer;
+
+          &:hover > .icon {
+            color: hsl(0deg 0% 60%);
+          }
+
+          .icon {
+            color: hsl(0deg 0% 80%);
+            font-size: 14px;
+          }
+        }
+      }
+    }
+
+    .collapse-body {
+      padding: 8px;
+      border-radius: 2px;
+      border: 1px solid ${ Color.border_input };
+    }
+  }
 `;

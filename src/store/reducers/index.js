@@ -33,6 +33,8 @@ import nw_rota from '../Rota/rotaReduce';
 import nw_amostra from '../Amostra/amostraReduce';
 import nw_laboratorio from '../Laboratorio/laboratorioReduce';
 import nw_mosquito from '../Mosquito/mosquitoReduce';
+import nw_imovel from '../Imovel/imovelReduce';
+import nw_quarteirao from '../Quarteirao/quarteiraoReduce';
 
 export default combineReducers({
   sidebarCoordGeral,
@@ -67,5 +69,7 @@ export default combineReducers({
   nw_rota,
   nw_amostra,
   nw_laboratorio,
-  nw_mosquito
+  nw_mosquito,
+  nw_imovel,
+  nw_quarteirao
 });

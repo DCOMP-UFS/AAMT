@@ -1,5 +1,6 @@
 import BorderAllIcon from '@material-ui/icons/BorderAll';
 import { FaMapSigns, FaVial } from 'react-icons/fa';
+import { IoIosHome } from 'react-icons/io';
 
 import { ActionTypes } from '../actions/sidebarSupervisor';
 
@@ -29,6 +30,7 @@ const INITIAL_STATE = {
     createLink( 2, "Rotas de Trabalho", false, FaMapSigns, "/sup/planejar_rota"),
     createLink( 3, "Amostras", false, FaVial, "/sup/amostras"),
     createCategory( "Cadastros Básicos" ),
+    createLink( 4, "Imóveis", false, IoIosHome, "/sup/imoveis"),
     createLink( 1, "Quarteirões", false, BorderAllIcon, "/sup/quarteiroes"),
     // createCategory( "Recursos de Interface" ),
     // createNav( 8, "Elementos Básicos", false, IoIosCode, [

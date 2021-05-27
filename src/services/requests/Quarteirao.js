@@ -27,3 +27,10 @@ export const createCityBlockRequest = data => {
     ...headerAuthorization()
   });
 }
+
+export const getLadosQuarteiraoRequest = data => {
+  const { quarteirao_id } = data;
+  return api.get(`/quarteiroes/lados/${ quarteirao_id }`, {
+    ...headerAuthorization()
+  });
+}

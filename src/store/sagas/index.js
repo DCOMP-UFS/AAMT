@@ -25,6 +25,8 @@ import { ActionTypes as NW_RotaActions } from '../Rota/rotaActions';
 import { ActionTypes as NW_AmostraActions } from '../Amostra/amostraActions';
 import { ActionTypes as NW_LaboratorioActions } from '../Laboratorio/laboratorioActions';
 import { ActionTypes as NW_MosquitoActions } from '../Mosquito/mosquitoActions';
+import { ActionTypes as NW_ImovelActions } from '../Imovel/imovelActions';
+import { ActionTypes as NW_QuarteiraoActions } from '../Quarteirao/quarteiraoActions';
 
 import {
   authenticate,
@@ -65,6 +67,8 @@ import * as NW_RotaSagas from '../Rota/rotaSagas';
 import * as NW_AmostraSagas from '../Amostra/amostraSagas';
 import * as NW_LaboratorioSagas from '../Laboratorio/laboratorioSagas';
 import * as NW_MosquitoSagas from '../Mosquito/mosquitoSagas';
+import * as NW_ImovelSagas from '../Imovel/imovelSagas';
+import * as NW_QuarteiraoSagas from '../Quarteirao/quarteiraoSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -122,6 +126,9 @@ export default function* rootSaga() {
     takeLatest( QuarteiraoActions.ADD_HOUSE_REQUEST, addHouse ),
     takeLatest( QuarteiraoActions.DELETE_HOUSE_REQUEST, deleteHouse ),
     takeLatest( QuarteiraoActions.UPDATE_HOUSE_REQUEST, updateHouse ),
+    // Nova Estrutura
+    takeLatest( NW_QuarteiraoActions.GET_QUARTEIROES_MUNICIPIO_REQUEST, NW_QuarteiraoSagas.getQuarteiroes ),
+    takeLatest( NW_QuarteiraoActions.GET_LADOS_QUARTEIRAO, NW_QuarteiraoSagas.getLadosQuarteirao ),
 
     // Gerir Rua
     takeLatest( RuaActions.GET_STREET_BY_LOCALITY_REQUEST, getStreetByLocality ),
@@ -181,5 +188,10 @@ export default function* rootSaga() {
 
     // Gerir Mosquito
     takeLatest( NW_MosquitoActions.GET_MOSQUITOS_REQUEST, NW_MosquitoSagas.getMosquitos ),
+
+    // Gerir Imóvel
+    takeLatest( NW_ImovelActions.GET_IMOVEIS_MUNICIPIO_REQUEST, NW_ImovelSagas.getImoveis ),
+    takeLatest( NW_ImovelActions.ADD_IMOVEL_REQUEST, NW_ImovelSagas.addImovel ),
+    takeLatest( NW_ImovelActions.EDITAR_IMOVEL_REQUEST, NW_ImovelSagas.editarImovel ),
   ]);
 }

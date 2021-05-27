@@ -1,15 +1,29 @@
 import api, { headerAuthorization } from '../../services/api';
 
+/**
+ * Consulta a lista de imóveis de um município
+ * @returns
+ */
+export const getImoveisRequest = data => {
+  const { municipio_id } = data;
+
+  return api.get(`/imoveis/${ municipio_id }/municipios`, {
+    ...headerAuthorization()
+  });
+}
+
 export const createHouseRequest = data => {
-  const { numero, sequencia, responsavel, complemento, tipoImovel, lado_id } = data;
+  const { numero, sequencia, responsavel, complemento, tipoImovel, lado_id, lng, lat } = data;
 
   return api.post('/imoveis/', {
-    numero,
-    sequencia,
-    responsavel,
-    complemento,
-    tipoImovel,
-    lado_id
+      numero,
+      sequencia,
+      responsavel,
+      complemento,
+      tipoImovel,
+      lado_id,
+      lng,
+      lat
     },
     {
       ...headerAuthorization()
@@ -29,10 +43,8 @@ export const deleteHouseRequest = data => {
 
 export const updateHouseRequest = data => {
   const { id, ...body } = data;
-  // Pegando somente o que o body contém.
-  const attr = Object.entries(body);
 
-  return api.put(`/imoveis/${ id }`, { ...attr[0][1] }, {
+  return api.put(`/imoveis/${ id }`, body, {
     ...headerAuthorization()
   });
 }

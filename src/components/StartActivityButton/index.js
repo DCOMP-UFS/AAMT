@@ -21,7 +21,13 @@ import api from '../../services/api';
 import getTotalProperties from '../../utils/getTotalProperties';
 import ModalComponent from '../../components/ModalComponent';
 
-import { startRouteRequest } from '../../store/modules/routes/actions';
+import emptyState from '../../assets/empty-state.png';
+import noInternet from '../../assets/no-internet.png';
+
+import {
+  startRouteRequest,
+  removeFinishedRoute,
+} from '../../store/modules/routes/actions';
 
 import Button from '../../components/Button';
 
@@ -43,6 +49,9 @@ import {
   DescriptionContainer,
   PercentageText,
   LoadingComponent,
+  EmptyContainer,
+  EmptyTitle,
+  EmptyDescription,
 } from './styles';
 
 // const StartActivityButton = ({
@@ -162,18 +171,6 @@ const StartActivityButton = ({
     };
   }, []);
 
-  // useEffect(() => {
-  //   const unsubscribe = NetInfo.addEventListener(state => {
-  //     if (state.isInternetReachable === false) {
-  //       setConnState(false);
-  //     } else {
-  //       setConnState(true);
-  //     }
-  //   });
-
-  //   return () => unsubscribe();
-  // }, []);
-
   async function getDailyWork() {
     try {
       const response = await api.get(`/rotas/${user_id}/usuarios/${date}/data`);
@@ -200,7 +197,7 @@ const StartActivityButton = ({
     try {
       const response = await api.get(`/trabalhoDiario/${trabalho_diario_id}`);
 
-      if (response.data.data.horaFim === null) {
+      if (response.data.data && response.data.data.horaFim === null) {
         routeStatus = true;
       }
     } catch (err) {
@@ -223,7 +220,6 @@ const StartActivityButton = ({
 
       if (index >= 0) {
         const trabalho_diario_id = routes[index].trabalhoDiario.id;
-
         const route_date = routes[index].trabalhoDiario.data;
         const routeFromToday = isToday(parseISO(route_date));
 
@@ -240,6 +236,7 @@ const StartActivityButton = ({
             }
           } else {
             console.log('3 -> entrou aqui');
+            props.removeFinishedRoute(trabalho_diario_id);
             // ROTA ANTIGA ENCERRADA - Limpar cache do usuário
           }
         }
@@ -265,7 +262,7 @@ const StartActivityButton = ({
       setLoading(false);
     }
     verifyConditions();
-  }, [connState, currentDailyWork]);
+  }, [connState, currentDailyWork, routes]);
 
   function formatDate(date) {
     const formattedDate = format(parseISO(date), 'dd/MM/yyyy');
@@ -360,6 +357,51 @@ const StartActivityButton = ({
   //   );
   // };
 
+  const EmptyState = () => {
+    return (
+      <EmptyContainer>
+        {connState && (
+          <>
+            <Image
+              source={emptyState}
+              style={{
+                resizeMode: 'contain',
+                width: 270,
+                height: 160,
+                marginBottom: 20,
+                tintColor: '#999999',
+              }}
+            />
+            <EmptyTitle>Ohh... que pena!</EmptyTitle>
+            <EmptyDescription>
+              Você não possui rotas planejadas para hoje. Que tal voltar mais
+              tarde?
+            </EmptyDescription>
+          </>
+        )}
+        {connState === false && (
+          <>
+            <Image
+              source={noInternet}
+              style={{
+                resizeMode: 'contain',
+                width: 270,
+                height: 160,
+                marginBottom: 20,
+                tintColor: '#999999',
+              }}
+            />
+            <EmptyTitle>Ohh... não tem internet!</EmptyTitle>
+            <EmptyDescription>
+              Precisamos que conecte-se com a internet para sabermos se existe
+              uma rota planejada para você hoje.
+            </EmptyDescription>
+          </>
+        )}
+      </EmptyContainer>
+    );
+  };
+
   return (
     <>
       <Container>
@@ -368,9 +410,8 @@ const StartActivityButton = ({
         ) : activities.length > 0 ? (
           <ActivityComponent />
         ) : (
-          <Text>Olá trouxa</Text>
+          <EmptyState />
         )}
-        <Text>{JSON.stringify(currentDailyWork)}</Text>
       </Container>
     </>
   );
@@ -391,6 +432,7 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       startRouteRequest,
+      removeFinishedRoute,
     },
     dispatch
   );

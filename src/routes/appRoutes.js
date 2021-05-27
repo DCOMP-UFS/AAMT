@@ -1,6 +1,7 @@
 /* eslint-disable react/display-name */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
+import NetInfo from '@react-native-community/netinfo';
 
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -116,38 +117,37 @@ const ActivityStacker = () => {
   );
 };
 
-const AppDrawer = () => (
-  <Drawer.Navigator
-    initialRouteName="Root"
-    screenOptions={{
-      headerTitleAlign: 'center',
-      headerTitleStyle: {
-        fontSize: 20,
-        fontFamily: 'Lato-Bold',
-      },
-      headerTintColor: '#3A3C4E',
-      headerStyle: {
-        elevation: 0,
-        borderBottomEndRadius: 20,
-        borderBottomStartRadius: 20,
-      },
-    }}
-  >
-    <Drawer.Screen name="Rotas Planejadas" component={AppStacker} />
-    <Drawer.Screen name="Boletins de campo" component={ActivityStacker} />
-    {/* <Drawer.Screen
-      name="Vistorias"
-      component={Inspections}
-      options={{ headerShown: true }}
-    /> */}
-    <Drawer.Screen
-      name="Perfil"
-      component={Profile}
-      options={{ headerShown: true }}
-    />
-  </Drawer.Navigator>
-);
+const AppRoutes = () => {
+  const AppDrawer = () => {
+    return (
+      <Drawer.Navigator
+        initialRouteName="Root"
+        screenOptions={{
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            fontSize: 20,
+            fontFamily: 'Lato-Bold',
+          },
+          headerTintColor: '#3A3C4E',
+          headerStyle: {
+            elevation: 0,
+            borderBottomEndRadius: 20,
+            borderBottomStartRadius: 20,
+          },
+        }}
+      >
+        <Drawer.Screen name="Rotas Planejadas" component={AppStacker} />
+        <Drawer.Screen name="Boletins de campo" component={ActivityStacker} />
+        <Drawer.Screen
+          name="Perfil"
+          component={Profile}
+          options={{ headerShown: true }}
+        />
+      </Drawer.Navigator>
+    );
+  };
 
-const AppRoutes: React.FC = () => AppDrawer();
+  return <AppDrawer />;
+};
 
 export default AppRoutes;

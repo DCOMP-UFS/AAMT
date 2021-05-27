@@ -17,3 +17,10 @@ export function startRouteFailure() {
     type: '@routes/START_ROUTE_FAILURE',
   };
 }
+
+export function removeFinishedRoute(daily_work_id) {
+  return {
+    type: '@routes/REMOVE_FINISHED_ROUTE',
+    payload: { daily_work_id },
+  };
+}

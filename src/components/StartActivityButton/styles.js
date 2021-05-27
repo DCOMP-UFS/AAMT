@@ -4,9 +4,9 @@ import Button from '../../components/Button';
 import Loading from '../../components/Loading';
 
 export const Container = styled.ScrollView`
-  margin: 10px 10px;
   flex: 1;
   flex-direction: column;
+  margin: 10px 10px;
 `;
 
 export const Header = styled.View`
@@ -104,3 +104,25 @@ export const PercentageText = styled.Text`
 `;
 
 export const LoadingComponent = styled(Loading).attrs({})``;
+
+export const EmptyContainer = styled.View`
+  align-items: center;
+  justify-content: center;
+  margin-top: 40%;
+  padding: 0px 30px;
+`;
+
+export const EmptyTitle = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.bold};
+  font-size: 24px;
+  color: ${({ theme }) => theme.colors.textInput};
+  text-align: center;
+  margin-bottom: 15px;
+`;
+
+export const EmptyDescription = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.regular};
+  font-size: 18px;
+  color: ${({ theme }) => theme.colors.textInput};
+  text-align: center;
+`;

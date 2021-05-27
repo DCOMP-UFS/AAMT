@@ -23,6 +23,17 @@ export default function routes(state = INITIAL_STATE, action) {
       return produce(state, draft => {
         draft.loadingStartRoute = false;
       });
+    case '@routes/REMOVE_FINISHED_ROUTE':
+      return produce(state, draft => {
+        console.tron.log('Opa, deletou hein!!!!');
+        draft.routes = state.routes.filter(
+          p => p.trabalhoDiario.id !== action.payload.daily_work_id
+        );
+      });
+    case '@auth/SIGN_OUT':
+      return produce(state, draft => {
+        draft.currentDailyWork = -1;
+      });
     default:
       return state;
   }

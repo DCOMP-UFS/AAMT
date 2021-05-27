@@ -9,9 +9,9 @@ import { Container } from './styles';
 const AgentHomePage = () => {
   return (
     <>
-      <Container>
-        <StartActivityButton />
-      </Container>
+      {/* <Container> */}
+      <StartActivityButton />
+      {/* </Container> */}
     </>
   );
 };

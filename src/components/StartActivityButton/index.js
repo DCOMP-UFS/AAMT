@@ -27,6 +27,7 @@ import noInternet from '../../assets/no-internet.png';
 import {
   startRouteRequest,
   removeFinishedRoute,
+  setCurrentRoute,
 } from '../../store/modules/routes/actions';
 
 import Button from '../../components/Button';
@@ -67,7 +68,7 @@ import {
 const StartActivityButton = ({
   user_id,
   routes,
-  currentDailyWork,
+  currentRouteIndex,
   ...props
 }) => {
   const [connState, setConnState] = useState(null);
@@ -219,6 +220,7 @@ const StartActivityButton = ({
       console.log('index -> ' + index);
 
       if (index >= 0) {
+        props.setCurrentRoute(index);
         const trabalho_diario_id = routes[index].trabalhoDiario.id;
         const route_date = routes[index].trabalhoDiario.data;
         const routeFromToday = isToday(parseISO(route_date));
@@ -233,6 +235,10 @@ const StartActivityButton = ({
             } else {
               console.log('2 -> entrou aqui');
               // ROTA ANTIGA EM ABERTO - Informar que precisa encerrar a vistoria
+              Alert.alert(
+                'Atenção!',
+                'A rota exibida a seguir é de uma data anterior ao dia de hoje e ainda não foi finalizada. Por favor, encerre esta rota.'
+              );
             }
           } else {
             console.log('3 -> entrou aqui');
@@ -256,48 +262,18 @@ const StartActivityButton = ({
         }
         if (connState === false) {
           console.log('7 -> entrou aqui');
-          console.log('Você precisa se conectar a internet para ver trabalhos');
         }
       }
       setLoading(false);
     }
     verifyConditions();
-  }, [connState, currentDailyWork, routes]);
+  }, [connState, currentRouteIndex, routes]);
 
   function formatDate(date) {
     const formattedDate = format(parseISO(date), 'dd/MM/yyyy');
 
     return formattedDate;
   }
-
-  // const RouteAvailableMessage = () => {
-  //   return connState ? (
-  //     <InfoText>Você não possui uma rota planejada para hoje</InfoText>
-  //   ) : (
-  //     <InfoText>
-  //       Você não não está conectado a internet. Por favor, reconecte-se.
-  //     </InfoText>
-  //   );
-  // };
-
-  // const ButtonComponent = () => {
-  //   return (
-  //     <ButtonRow>
-  //       {!isStarted ? (
-  //         <RouteButton type="confirm" onPress={() => handleStartActivity()}>
-  //           Iniciar rota
-  //         </RouteButton>
-  //       ) : (
-  //         <RouteButton type="error" onPress={() => handleFinishActivity()}>
-  //           Encerrar rota
-  //         </RouteButton>
-  //       )}
-  //       <RouteButton onPress={() => navigation.navigate('Rota')}>
-  //         {isStarted ? 'Vistorias' : 'Ver rota'}
-  //       </RouteButton>
-  //     </ButtonRow>
-  //   );
-  // };
 
   const ActivityComponent = () => {
     return activities.map(activity => (
@@ -325,9 +301,19 @@ const StartActivityButton = ({
               Encerrar rota
             </RouteButton>
           )}
-          <RouteButton onPress={() => navigation.navigate('Rota')}>
-            {activity.trabalhoDiario.horaInicio ? 'Vistorias' : 'Ver rota'}
-          </RouteButton>
+          {activity.trabalhoDiario.horaInicio ? (
+            <RouteButton onPress={() => navigation.navigate('Rota')}>
+              Vistorias
+            </RouteButton>
+          ) : (
+            <RouteButton
+              onPress={() =>
+                navigation.navigate('Rota', { rota: activity.rota })
+              }
+            >
+              Ver rota
+            </RouteButton>
+          )}
         </ButtonRow>
       </Card>
     ));
@@ -423,7 +409,7 @@ const mapStateToProps = state => ({
   // isStarted: state.currentActivity.isStarted,
   user_id: state.user.profile.id,
   routes: state.routes.routes,
-  currentDailyWork: state.routes.currentDailyWork,
+  currentRouteIndex: state.routes.currentRouteIndex,
   // inspections: state.inspections.vistorias,
   // loading: state.currentActivity.loading,
 });
@@ -433,6 +419,7 @@ const mapDispatchToProps = dispatch =>
     {
       startRouteRequest,
       removeFinishedRoute,
+      setCurrentRoute,
     },
     dispatch
   );

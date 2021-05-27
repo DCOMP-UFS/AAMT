@@ -24,3 +24,10 @@ export function removeFinishedRoute(daily_work_id) {
     payload: { daily_work_id },
   };
 }
+
+export function setCurrentRoute(route_index) {
+  return {
+    type: '@routes/SET_CURRENT_ROUTE',
+    payload: { route_index },
+  };
+}

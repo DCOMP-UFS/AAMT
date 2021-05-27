@@ -37,7 +37,7 @@ function LoginScreen( props ) {
       }
 
       case perfil.supervisor.id: {
-        window.location = window.location.origin.toString() + "/sup/quarteiroes";
+        window.location = window.location.origin.toString() + "/sup/dashboard";
         break;
       }
 

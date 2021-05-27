@@ -199,6 +199,29 @@ export const GlobalStyle = createGlobalStyle`
       color: ${ Color.info };
     }
   }
+
+  .card2 {
+    background: #fff;
+    border-radius: 5px;
+    width: 100%;
+    box-shadow: 2px 2px 8px #c5baba;
+    position: relative;
+
+    .card2-header {
+      padding: 15px 20px;
+      border-bottom: 1px solid rgba(0, 0, 0, .2);
+
+      .title {
+        color: #3e4b5b;
+        font-size: 1.125rem;
+        margin-bottom: 0;
+      }
+    }
+
+    .card2-body {
+      padding: 15px 20px;
+    }
+  }
 `;
 
 export const ContainerBody = styled.div`

@@ -46,6 +46,12 @@ import Amostras from './pages/supervisor/Amostras';
 import Imoveis from './pages/supervisor/Imoveis';
 import EditarQuarteirao from './pages/supervisor/Quarteiroes/EditarQuarteirao';
 import PlanejarRota from './pages/supervisor/PlanejarRota';
+import HomeSupervisor from './pages/supervisor/home';
+import RelatorioDiario from './pages/supervisor/Relatorio/Diario';
+import RelatorioDiarioEquipe from './pages/supervisor/Relatorio/DiarioEquipe';
+import RelatorioSemanal from './pages/supervisor/Relatorio/Semanal';
+import RelatorioAtividade from './pages/supervisor/Relatorio/Atividade';
+import RelatorioAtividadeEquipe from './pages/supervisor/Relatorio/AtividadeEquipe';
 
 // Páginas do agente
 import HomeAgente from './pages/agente/home';
@@ -196,6 +202,12 @@ const Routes = props => {
         {/* Rotas de supervisor */}
         <PrivateSupervisor exact path="/sup/planejar_rota" component={ PlanejarRota } tipoPerfil={ perfil } />
         <PrivateSupervisor exact path="/sup/quarteiroes" component={ Quarteiroes } tipoPerfil={ perfil } />
+        <PrivateSupervisor exact path="/sup/dashboard" component={ HomeSupervisor } tipoPerfil={ perfil } />
+        <PrivateSupervisor exact path="/sup/relatorio/diario" component={ RelatorioDiario } tipoPerfil={ perfil } />
+        <PrivateSupervisor exact path="/sup/relatorio/diarioEquipe" component={ RelatorioDiarioEquipe } tipoPerfil={ perfil } />
+        <PrivateSupervisor exact path="/sup/relatorio/semanal" component={ RelatorioSemanal } tipoPerfil={ perfil } />
+        <PrivateSupervisor exact path="/sup/relatorio/atividade" component={ RelatorioAtividade } tipoPerfil={ perfil } />
+        <PrivateSupervisor exact path="/sup/relatorio/atividadeEquipe" component={ RelatorioAtividadeEquipe } tipoPerfil={ perfil } />
         <PrivateSupervisor path="/sup/quarteiroes/:id" component={ EditarQuarteirao } tipoPerfil={ perfil } />
         <PrivateSupervisor path="/sup/amostras" component={ Amostras } tipoPerfil={ perfil } />
         <PrivateSupervisor path="/sup/imoveis" component={ Imoveis } tipoPerfil={ perfil } />

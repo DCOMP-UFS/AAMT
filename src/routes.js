@@ -48,6 +48,7 @@ import EditarQuarteirao from './pages/supervisor/Quarteiroes/EditarQuarteirao';
 import PlanejarRota from './pages/supervisor/PlanejarRota';
 import HomeSupervisor from './pages/supervisor/home';
 import RelatorioDiario from './pages/supervisor/Relatorio/Diario';
+import VisualizarRelatorioDiario from './pages/supervisor/Relatorio/Diario/visualizarRelatorio';
 import RelatorioDiarioEquipe from './pages/supervisor/Relatorio/DiarioEquipe';
 import RelatorioSemanal from './pages/supervisor/Relatorio/Semanal';
 import RelatorioAtividade from './pages/supervisor/Relatorio/Atividade';
@@ -204,6 +205,7 @@ const Routes = props => {
         <PrivateSupervisor exact path="/sup/quarteiroes" component={ Quarteiroes } tipoPerfil={ perfil } />
         <PrivateSupervisor exact path="/sup/dashboard" component={ HomeSupervisor } tipoPerfil={ perfil } />
         <PrivateSupervisor exact path="/sup/relatorio/diario" component={ RelatorioDiario } tipoPerfil={ perfil } />
+        <PrivateSupervisor exact path="/sup/relatorio/diario/:trabalho_id" component={ VisualizarRelatorioDiario } tipoPerfil={ perfil } />
         <PrivateSupervisor exact path="/sup/relatorio/diarioEquipe" component={ RelatorioDiarioEquipe } tipoPerfil={ perfil } />
         <PrivateSupervisor exact path="/sup/relatorio/semanal" component={ RelatorioSemanal } tipoPerfil={ perfil } />
         <PrivateSupervisor exact path="/sup/relatorio/atividade" component={ RelatorioAtividade } tipoPerfil={ perfil } />

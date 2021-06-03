@@ -27,6 +27,8 @@ import { ActionTypes as NW_LaboratorioActions } from '../Laboratorio/laboratorio
 import { ActionTypes as NW_MosquitoActions } from '../Mosquito/mosquitoActions';
 import { ActionTypes as NW_ImovelActions } from '../Imovel/imovelActions';
 import { ActionTypes as NW_QuarteiraoActions } from '../Quarteirao/quarteiraoActions';
+import { ActionTypes as NW_CicloActions } from '../Ciclo/cicloActions';
+import { ActionTypes as NW_TrabalhoActions } from '../TrabalhoDiario/trabalhoDiarioActions';
 
 import {
   authenticate,
@@ -69,6 +71,8 @@ import * as NW_LaboratorioSagas from '../Laboratorio/laboratorioSagas';
 import * as NW_MosquitoSagas from '../Mosquito/mosquitoSagas';
 import * as NW_ImovelSagas from '../Imovel/imovelSagas';
 import * as NW_QuarteiraoSagas from '../Quarteirao/quarteiraoSagas';
+import * as NW_CicloSagas from '../Ciclo/cicloSagas';
+import * as NW_TrabalhoSagas from '../TrabalhoDiario/trabalhoDiarioSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -145,6 +149,8 @@ export default function* rootSaga() {
     takeLatest( CicloActions.CREATE_CYCLE_REQUEST, CicloSagas.createCycle ),
     takeLatest( CicloActions.UPDATE_CYCLE_REQUEST, CicloSagas.updateCycle ),
     takeLatest( CicloActions.DESTROY_CYCLE_REQUEST, CicloSagas.destroyCycle ),
+    // Nova Estrutura
+    takeLatest( NW_CicloActions.GET_CICLO_ABERTO_REQUEST, NW_CicloSagas.getCicloAberto ),
 
     // Gerir Metodologia
     takeLatest( MetodologiaActions.GET_METHODOLOGIES_REQUEST, MetodologiaSagas.getMethodologies ),
@@ -177,6 +183,8 @@ export default function* rootSaga() {
     // Gerir Trabalho Diario
     takeLatest( TrabalhoDiarioActions.GET_BY_USER_REQUEST, TrabalhoDiarioSagas.getByUser ),
     takeLatest( TrabalhoDiarioActions.GET_DAILY_WORK_BY_ID_REQUEST, TrabalhoDiarioSagas.getDailyWorkById ),
+    // Nova Estrutura
+    takeLatest( NW_TrabalhoActions.GET_TRABALHOS_USUARIO_REQUEST, NW_TrabalhoSagas.getTrabalhosUsuario ),
 
     // Gerir Amostra
     takeLatest( NW_AmostraActions.GET_AMOSTRAS_REQUEST, NW_AmostraSagas.getAmostras ),

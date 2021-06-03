@@ -12,7 +12,7 @@ export const ActionTypes = {
   CHECAR_ROTA: "CHECAR_ROTA",
 }
 
-export const getResponsabilityActivitiesRequest = (usuario_id, ciclo_id) => {
+export const getResponsabilityActivitiesRequest = ( usuario_id, ciclo_id ) => {
   return {
     type: ActionTypes.GET_RESPONSABILITY_ACTIVITIES_REQUEST,
     payload: {

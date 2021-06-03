@@ -35,6 +35,8 @@ import nw_laboratorio from '../Laboratorio/laboratorioReduce';
 import nw_mosquito from '../Mosquito/mosquitoReduce';
 import nw_imovel from '../Imovel/imovelReduce';
 import nw_quarteirao from '../Quarteirao/quarteiraoReduce';
+import nw_ciclo from '../Ciclo/cicloReduce';
+import nw_trabalho from '../TrabalhoDiario/trabalhoDiarioReduce';
 
 export default combineReducers({
   sidebarCoordGeral,
@@ -71,5 +73,7 @@ export default combineReducers({
   nw_laboratorio,
   nw_mosquito,
   nw_imovel,
-  nw_quarteirao
+  nw_quarteirao,
+  nw_ciclo,
+  nw_trabalho
 });

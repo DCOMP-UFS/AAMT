@@ -15,7 +15,7 @@ import { selectDefault, FormGroup } from '../../../styles/global';
 export const HomeSupervisor = ({ ...props }) => {
   const [ viewport, setViewport ] = useState({
     width: '100%',
-    height: '273px',
+    height: '423px',
     latitude: -15.7801,
     longitude: -47.9292,
     zoom: 2
@@ -36,8 +36,8 @@ export const HomeSupervisor = ({ ...props }) => {
 
       <section className="card-list">
         <Row>
-          <article className="col-12 col-md-6">
-            <div className="card2" style={{ height: '350px' }}>
+          <article className="col-12 col-md-8">
+            <div className="card2" style={{ height: '500px' }}>
               <div className="card2-header">
                 <Select
                   value={ {} }
@@ -53,8 +53,8 @@ export const HomeSupervisor = ({ ...props }) => {
               ></ReactMapGL>
             </div>
           </article>
-          <article className="col-12 col-md-6">
-            <div className="card2" style={{ height: '350px' }}>
+          <article className="col-12 col-md-4">
+            <div className="card2" style={{ height: '100%' }}>
               <div className="card2-header">
                 <h3 className="title">Situação dos imóveis</h3>
               </div>

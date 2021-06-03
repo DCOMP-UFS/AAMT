@@ -7,6 +7,8 @@ export const Container = styled.div`
     padding: 0;
     margin: 0;
     width: 100%;
+    max-height: 500px;
+    overflow-y: auto;
 
     li {
       padding: 8px 15px;

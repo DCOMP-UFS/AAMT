@@ -84,6 +84,10 @@ getById = async ( req, res ) => {
   const trabalhosDiario = await TrabalhoDiario.findByPk( id, {
     include: [
       {
+        association: 'usuario',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+      },
+      {
         association: 'vistorias',
         attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
         include: [

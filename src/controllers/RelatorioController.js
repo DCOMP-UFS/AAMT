@@ -19,158 +19,182 @@ const router = express.Router();
 router.use(authMiddleware);
 
 getTeamDailyActivity = async (req, res) => {
-    const {equipe_id, dia} = req.params;
+	const { equipe_id, dia } = req.params;
 
-    let trabalhos = await TrabalhoDiario.findAll({
-        where: {
-            equipe_id,
-            data: dia,
-        }, 
-        include: [
-            {
-                association: 'vistorias',
-                attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-                include: [
-                    {
-                        association: 'depositos',
-                        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-                        include: [
-                          {
-                            association: 'tratamentos',
-                            attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-                          },
-                          {
-                            association: 'amostras',
-                            attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-                          }
-                        ]
-                    },
-                ]
-            },
-            {
-                association: 'usuario', 
-                attributes: ["id", "nome"],
-            },
-            {
-                association: 'rota',
-                attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-                include: [
-                    {
-                        association: 'imoveis',
-                    }
-                ]
-            }
-        ]
-    });
+	let trabalhos = await TrabalhoDiario.findAll({
+		where: {
+			equipe_id,
+			data: dia,
+		}, 
+		include: [
+			{
+				association: 'vistorias',
+				attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+				include: [
+					{
+						association: 'depositos',
+						attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+						include: [
+							{
+								association: 'tratamentos',
+								attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+							},
+							{
+								association: 'amostras',
+								attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+							}
+						]
+					},
+					{
+						association: 'imovel',
+						attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+					}
+				]
+			},
+			{
+				association: 'usuario', 
+				attributes: [ "id", "nome" ],
+			},
+			{
+				association: 'rota',
+				attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+				include: [
+					{
+						association: 'imoveis',
+					}
+				]
+			}
+		]
+	});
 
-    if (!trabalhos) {
-        return res.status(200).json([]);
-    }
+	if( !trabalhos )
+		return res.status( 200 ).json( [] );
 
-    let imoveisFechados = 0;
-    let imoveisRecusados = 0;
-    let vistoriaNormal = 0;
-    let vistoriaRecuperada = 0;
-    let totalImoveisVisitados = 0;
-    let totalAmostras = 0;
-    let amostrasColetadas = 0;
-    let amostrasPendentes = 0;
-    let amostrasExaminadas = 0;
-    let imoveisPlanejados = 0;
-    let totalImoveisAgente = [];
-    let imoveisTrabalhados = [];
+	let imoveisFechados 			= 0,
+			imoveisRecusados 			= 0,
+			vistoriaNormal 				= 0,
+			vistoriaRecuperada 		= 0,
+			totalImoveisVisitados = 0,
+			totalAmostras 				= 0,
+			amostrasColetadas 		= 0,
+			amostrasPendentes 		= 0,
+			amostrasExaminadas 		= 0,
+			imoveisPlanejados 		= 0,
+			totalImoveisAgente 		= [],
+			imoveisTrabalhados 		= [],
+			imoveisTipo 					= {
+				residencial: 0,
+				terrenoBaldio: 0,
+				comercial: 0,
+				pontoEstrategico: 0
+			};
 
-    trabalhos.map(trabalho => {
-        const vistorias = trabalho.vistorias;
-        const rotas = trabalho.rota;
+	trabalhos.map( trabalho => {
+		const vistorias = trabalho.vistorias,
+					rotas 		= trabalho.rota;
 
-        totalImoveisVisitados += vistorias.length;
+		totalImoveisVisitados += vistorias.length;
 
-        const index = totalImoveisAgente.findIndex(p => p.usuario.id === trabalho.usuario.id);
+		const index = totalImoveisAgente.findIndex( p => p.usuario.id === trabalho.usuario.id );
 
-        if (index >= 0) {
-            imoveisPorAgente[index].imoveisVistoriados += vistorias.length;
-        } else {
-            const imoveisPorAgente = {
-                usuario: trabalho.usuario,
-                imoveisVistoriados: vistorias.length,
-            }
-    
-            totalImoveisAgente.push(imoveisPorAgente)
-        }
+		if( index >= 0 ) {
+			imoveisPorAgente[ index ].imoveisVistoriados += vistorias.length;
+		} else {
+			const imoveisPorAgente = {
+				usuario: trabalho.usuario,
+				imoveisVistoriados: vistorias.length,
+			}
 
-        rotas.map(rota => {
-            imoveisPlanejados += rota.imoveis.length;
-        })
+			totalImoveisAgente.push( imoveisPorAgente );
+		}
 
-        vistorias.map(vistoria => {
-            const depositos = vistoria.depositos;
+		rotas.map( rota => { imoveisPlanejados += rota.imoveis.length; } );
 
-            switch (vistoria.pendencia) {
-                case "R": 
-                    imoveisRecusados++;
-                    break;
-                case "F":
-                    imoveisFechados++;
-                    break;
-                case null:
-                    break;
-                default:
-                    break;
-            }
+		vistorias.map(vistoria => {
+			const depositos = vistoria.depositos;
 
-            switch (vistoria.situacaoVistoria) {
-                case "R": 
-                    vistoriaRecuperada++;
-                    break;
-                case "N":
-                    vistoriaNormal++;
-                    break;
-                default:
-                    break;
-            }
+			switch( vistoria.imovel.tipoImovel ) {
+				case 1: // Residencial
+					imoveisTipo.residencial += 1;
+					break;
+				case 2: // Terreno Baldio
+					imoveisTipo.terrenoBaldio += 1;
+					break;
+				case 3: // Comercial
+					imoveisTipo.comercial += 1;
+					break;
+			
+				default: // Ponto Estratégico
+					imoveisTipo.pontoEstrategico += 1;
+					break;
+			}
 
-            depositos.map(deposito => {
-                const amostras = deposito.amostras;
+			switch( vistoria.pendencia ) {
+				case "R": 
+					imoveisRecusados++;
+					break;
+				case "F":
+					imoveisFechados++;
+					break;
+				case null:
+					break;
+				default:
+					break;
+			}
 
-                amostras.map(amostra => {
-                    totalAmostras++;
+			switch( vistoria.situacaoVistoria ) {
+				case "R": 
+					vistoriaRecuperada++;
+					break;
+				case "N":
+					vistoriaNormal++;
+					break;
+				default:
+					break;
+			}
 
-                    switch (amostra.situacaoAmostra) {
-                        case 1:
-                            amostrasColetadas++;
-                            break;
-                        case 2:
-                            amostrasPendentes++;
-                            break;
-                        case 3:
-                            amostrasExaminadas++;
-                            break;
-                    }
-                })
-            })
-        })
-    })
+			depositos.map( deposito => {
+				const amostras = deposito.amostras;
 
-    const resultado = {
-        amostras: {
-            total: totalAmostras,
-            coletadas: amostrasColetadas,
-            pendentes: amostrasPendentes,
-            examinadas: amostrasExaminadas,
-        },
-        imoveis: {
-            totalVistoriado: totalImoveisVisitados,
-            naoVistoriados: imoveisPlanejados - totalImoveisVisitados,
-            fechados: imoveisFechados,
-            recusados: imoveisRecusados,
-            vistoriaNormal,
-            vistoriaRecuperada,
-        },
-        vistoriasPorAgentes: totalImoveisAgente,
-    }
+				amostras.map( amostra => {
+					totalAmostras++;
 
-    return res.json(resultado)
+					switch( amostra.situacaoAmostra ) {
+						case 1:
+							amostrasColetadas++;
+							break;
+						case 2:
+							amostrasPendentes++;
+							break;
+						case 3:
+							amostrasExaminadas++;
+							break;
+					}
+				});
+			});
+		});
+	});
+
+	const resultado = {
+		amostras: {
+			total: totalAmostras,
+			coletadas: amostrasColetadas,
+			pendentes: amostrasPendentes,
+			examinadas: amostrasExaminadas,
+		},
+		imoveis: {
+			totalVistoriado: totalImoveisVisitados,
+			naoVistoriados: imoveisPlanejados - totalImoveisVisitados,
+			fechados: imoveisFechados,
+			recusados: imoveisRecusados,
+			vistoriaNormal,
+			vistoriaRecuperada,
+		},
+		imoveisTipo,
+		vistoriasPorAgentes: totalImoveisAgente,
+	}
+
+	return res.json( resultado );
 }
 
 getActivityWeeklyReport = async (req, res) => {
@@ -185,98 +209,137 @@ getActivityWeeklyReport = async (req, res) => {
 		if( !allow )
 			return res.status(403).json({ error: 'Acesso negado' });
 
-    const semanaEpidemiologica = getEpiWeek(semana, ano);
+    const semanaEpidemiologica = getEpiWeek( semana, ano );
 
-    // O número máximo de semanas em um ano é 53, em situações
-    // específicas
+    // O número máximo de semanas em um ano é 53, em situações específicas
+    if( semanaEpidemiologica === -1 )
+      return res.status( 400 ).json( { error: `Este ano não possui ${ semana } semanas epidemiológicas` } );
 
-    if (semanaEpidemiologica === -1) {
-        return res.status(400).json({ error: `Este ano não possui ${semana} semanas epidemiológicas` })
-    }
+    const [ data_inicio, data_fim ] = semanaEpidemiologica;
 
-    const [data_inicio, data_fim] = semanaEpidemiologica;
-
-    // Selecionando todas as equipes daquela atividade
-
+    // Selecionando todas as equipes da atividade
     let equipes = await Equipe.findAll({
-        where: {
-            atividade_id
-        },
-        attributes: ['id']
+      where: {
+        atividade_id
+      },
+      attributes: [ 'id' ]
     });
 
     equipes = equipes.map(({ id }) => id);
 
-    // Selecionando todas as vistorias realizadas
-    // por aquelas equipes
-
+    // Selecionando todas as vistorias realizadas pelas equipes
     let trabalhos = await TrabalhoDiario.findAll({
-        where: {
-            equipe_id: {
-                [Op.in]: equipes
-            },
-            data: {
-                [Op.between]: [data_inicio, data_fim]
-            }
-        }, 
-        include: [
+      where: {
+        equipe_id: {
+          [Op.in]: equipes
+        },
+        data: {
+          [Op.between]: [data_inicio, data_fim]
+        }
+      }, 
+      include: [
+        {
+          association: 'vistorias',
+          attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+          include: [
             {
-                association: 'vistorias',
-                attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-                include: [
+              association: 'depositos',
+              attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+              include: [
+                {
+                  association: 'tratamentos',
+                  attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+                },
+                {
+                  association: 'amostras',
+                  attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+                  include: [
                     {
-                        association: 'depositos',
-                        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-                        include: [
-                          {
-                            association: 'tratamentos',
-                            attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-                          },
-                          {
-                            association: 'amostras',
-                            attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-                          }
-                        ]
-                    },
-                    {
-                        association: 'imovel',
-                        attributes: ['tipoImovel']
+                      association: 'exemplares',
+                      attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+                      include: [
+                        {
+                          association: 'mosquito',
+                          attributes: { include: [ 'nome' ], exclude: [ 'createdAt', 'updatedAt' ] },
+                        }
+                      ]
                     }
-                ]
+                  ]
+                }
+              ]
             },
-        ]
+            {
+              association: 'imovel',
+              attributes: ['tipoImovel']
+            }
+          ]
+        },
+      ]
+    });
+  
+    // Contabilizando quantos agentes trabalharam na semana
+    let numberAgents = await TrabalhoDiario.findAll({
+      where: {
+        equipe_id: {
+          [Op.in]: equipes
+        },
+        data: {
+          [Op.between]: [data_inicio, data_fim]
+        }
+      },
+      attributes: [ 'usuario_id' ]
+    }).then( trabalho => {
+      let users = [];
+
+      trabalho.forEach( t => {
+        if( !users.includes( t.usuario_id ) )
+          users.push( t.usuario_id )
+      });
+
+      return users.length;
     });
 
-    if (trabalhos.length === 0) {
-        return res.json([])
-    }
+    if( trabalhos.length === 0 )
+      return res.json( [] );
 
     let propertiesByType = [
-        { label: 'Residencial', sigla: 'R', value: 0 },
-        { label: 'Terreno Baldio', sigla: 'TB', value: 0 },
-        { label: 'Comercial', sigla: 'C', value: 0 },
-        { label: 'Ponto Estratégico', sigla: 'PE', value: 0 },
+      { label: 'Residencial', sigla: 'R', value: 0 },
+      { label: 'Terreno Baldio', sigla: 'TB', value: 0 },
+      { label: 'Comercial', sigla: 'C', value: 0 },
+      { label: 'Ponto Estratégico', sigla: 'PE', value: 0 },
+      { label: 'Total', sigla: 'T', value: 0 },
     ];
     
     let propertiesByStatus = [
-        { label: 'Normal', value: 0 },
-        { label: 'Recuperado', value: 0 },
+      { label: 'Normal', value: 0 },
+      { label: 'Recuperado', value: 0 },
+    ];
+
+    let properties = [
+      { label: 'Inspecionada', value: 0 },
+      { label: 'Tratada', value: 0 }
+    ];
+
+    let depositTreated = [
+      { label: 'Larvicida', sigla: 'T', value: 'TEMEPHÓS' },
+      { label: 'Gramas', value: 0 },
+      { label: 'Dep. Tratados', value: 0 },
     ];
 
     let propertiesByPendency = [
-        { label: 'Fechado', value: 0 },
-        { label: 'Recusado', value: 0 },
-        { label: 'Nenhuma', value: 0 },
+      { label: 'Fechado', value: 0 },
+      { label: 'Recusado', value: 0 },
+      { label: 'Nenhuma', value: 0 },
     ];
 
     let recipientsByType = [
-        { label: 'A1', value: 0 },
-        { label: 'A2', value: 0 },
-        { label: 'B', value: 0 },
-        { label: 'C', value: 0 },
-        { label: 'D1', value: 0 },
-        { label: 'D2', value: 0 },
-        { label: 'E', value: 0 },
+      { label: 'A1', value: 0 },
+      { label: 'A2', value: 0 },
+      { label: 'B', value: 0 },
+      { label: 'C', value: 0 },
+      { label: 'D1', value: 0 },
+      { label: 'D2', value: 0 },
+      { label: 'E', value: 0 },
     ];
 
     let recipientDestination = [
@@ -284,111 +347,327 @@ getActivityWeeklyReport = async (req, res) => {
         { label: 'Tratado', value: 0 },
     ];
 
+    let sampleByProperty = [
+      { 
+        label: 'Residência', 
+        sigla: 'R',
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 },
+          { label: 'Outros', value: 0 }
+        ] 
+      },
+      { 
+        label: 'Comércio', 
+        sigla: 'C',
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 },
+          { label: 'Outros', value: 0 }
+        ] 
+      },
+      { 
+        label: 'Terreno Baldio', 
+        sigla: 'TB',
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 },
+          { label: 'Outros', value: 0 }
+        ] 
+      },
+      { 
+        label: 'Ponto Estratégico', 
+        sigla: 'PE',
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 },
+          { label: 'Outros', value: 0 }
+        ] 
+      }
+    ];
+
+    let sampleByDeposit = [
+      { 
+        label: 'A1', 
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 }
+        ] 
+      },
+      { 
+        label: 'A2', 
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 }
+        ] 
+      },
+      { 
+        label: 'B', 
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 }
+        ] 
+      },
+      { 
+        label: 'C', 
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 }
+        ] 
+      },
+      { 
+        label: 'D1', 
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 }
+        ] 
+      },
+      { 
+        label: 'D2', 
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 }
+        ] 
+      },
+      { 
+        label: 'E', 
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 }
+        ] 
+      },
+    ]
+
     let totalSample = 0;
 
     // Gerando os indíces do relatório
 
     trabalhos.map(trabalho => {
-        const vistorias = trabalho.vistorias;
+      const vistorias = trabalho.vistorias;
 
-        vistorias.map(vistoria => {
-            const depositos = vistoria.depositos;
+      propertiesByType[ 4 ].value += vistorias.length;
+      vistorias.map(vistoria => {
+        const depositos = vistoria.depositos;
 
-            switch (vistoria.situacaoVistoria) {
-                case 'N':
-                    propertiesByStatus[0].value++;
-                    break;
-                case 'R':
-                    propertiesByStatus[1].value++;
-                    break;
+        switch (vistoria.situacaoVistoria) {
+          case 'N':
+            propertiesByStatus[0].value++;
+            break;
+          case 'R':
+            propertiesByStatus[1].value++;
+            break;
+        }
+
+        switch (vistoria.pendencia) {
+          case 'F':
+            propertiesByPendency[0].value++;
+            break;
+          case 'R':
+            propertiesByPendency[0].value++;
+            break;
+          case null:
+            propertiesByPendency[2].value++;
+            break;
+        }
+
+        switch (vistoria.imovel.tipoImovel) {
+          case 1:
+            propertiesByType[0].value++;
+            break;
+          case 2:
+            propertiesByType[1].value++;
+            break; 
+          case 3:
+            propertiesByType[2].value++;
+            break;
+          case 4:
+            propertiesByType[3].value++;
+            break;   
+        }
+
+        // Somando imóveis inspecionados
+        if( depositos.length > 0 )
+          properties[ 0 ].value++;
+
+        let property_is_trated          = false,
+            property_contain_aegypti    = false,
+            property_contain_albopictus = false,
+            property_contain_other      = false;
+
+        depositos.map(deposito => {
+          switch (deposito.tipoRecipiente) {
+            case 'A1':
+              recipientsByType[0].value++;
+              break;
+            case 'A2':
+              recipientsByType[1].value++;
+              break; 
+            case 'B':
+              recipientsByType[2].value++;
+              break;
+            case 'C':
+              recipientsByType[3].value++;
+              break; 
+            case 'D1':
+              recipientsByType[4].value++;
+              break;
+            case 'D2':
+              recipientsByType[5].value++;
+              break; 
+            case 'E':
+              recipientsByType[6].value++;
+              break;      
+          }
+
+          if( deposito.fl_eliminado )
+            recipientDestination[0].value++;
+
+          if( deposito.fl_tratado ) {
+            recipientDestination[1].value++;
+
+            // Contabilizando recipiente tratado e somando gastos de larvicida
+            depositTreated[ 1 ].value += deposito.tratamentos.reduce( ( accumulator, currentValue ) => accumulator + currentValue.quantidade, 0 );
+            depositTreated[ 2 ].value++;
+
+            // Setando imóvel como tratado
+            property_is_trated = true;
+          }
+
+          totalSample += deposito.amostras.length;
+          deposito.amostras.map( amostra => {
+            let aegypti     = amostra.exemplares.filter( exemplar => exemplar.mosquito.id === 1 ),
+                albopictus  = amostra.exemplares.filter( exemplar => exemplar.mosquito.id === 2 ),
+                other       = amostra.exemplares.filter( exemplar => exemplar.mosquito.id > 2 );
+
+            // Checando se o imóvel deu posítivo para aegypti
+            if( aegypti.length > 0 )
+              property_contain_aegypti = true;
+
+            // Checando se o imóvel deu posítivo para albopictus
+            if( albopictus.length > 0 )
+              property_contain_albopictus = true;
+
+            // Checando se o imóvel deu posítivo para outros
+            if( other.length > 0 )
+              property_contain_other = true;
+
+            switch( deposito.tipoRecipiente ) {
+              case 'A1':
+                sampleByDeposit[ 0 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
+                sampleByDeposit[ 0 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                break;
+              case 'A2':
+                sampleByDeposit[ 1 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
+                sampleByDeposit[ 1 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                break; 
+              case 'B':
+                sampleByDeposit[ 2 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
+                sampleByDeposit[ 2 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                break;
+              case 'C':
+                sampleByDeposit[ 3 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
+                sampleByDeposit[ 3 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                break; 
+              case 'D1':
+                sampleByDeposit[ 4 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
+                sampleByDeposit[ 4 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                break;
+              case 'D2':
+                sampleByDeposit[ 5 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
+                sampleByDeposit[ 5 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                break; 
+              case 'E':
+                sampleByDeposit[ 6 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
+                sampleByDeposit[ 6 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                break;      
             }
-
-            switch (vistoria.pendencia) {
-                case 'F':
-                    propertiesByPendency[0].value++;
-                    break;
-                case 'R':
-                    propertiesByPendency[0].value++;
-                    break;
-                case null:
-                    propertiesByPendency[2].value++;
-                    break;
-            }
-
-            switch (vistoria.imovel.tipoImovel) {
-                case 1:
-                    propertiesByType[0].value++;
-                    break;
-                case 2:
-                    propertiesByType[1].value++;
-                    break; 
-                case 3:
-                    propertiesByType[2].value++;
-                    break;
-                case 4:
-                    propertiesByType[3].value++;
-                    break;   
-            }
-
-            depositos.map(deposito => {
-                const amostras = deposito.amostras;
-
-                switch (deposito.tipoRecipiente) {
-                    case 'A1':
-                        recipientsByType[0].value++;
-                        break;
-                    case 'A2':
-                        recipientsByType[1].value++;
-                        break; 
-                    case 'B':
-                        recipientsByType[2].value++;
-                        break;
-                    case 'C':
-                        recipientsByType[3].value++;
-                        break; 
-                    case 'D1':
-                        recipientsByType[4].value++;
-                        break;
-                    case 'D2':
-                        recipientsByType[5].value++;
-                        break; 
-                    case 'E':
-                        recipientsByType[6].value++;
-                        break;      
-                }
-
-                switch (deposito.fl_eliminado) {
-                    case true:
-                        recipientDestination[0].value++;
-                        break;
-                }
-
-                switch (deposito.fl_tratado) {
-                    case true:
-                        recipientDestination[1].value++;
-                        break;
-                }
-
-                amostras.map(amostra => {
-                    totalSample++;
-                })
-            })
+          });
         })
+
+        // Somando imóveis tratados
+        if( property_is_trated )
+          properties[ 1 ].value++;
+
+        // Preenchendo resultados de laboratório por imóvel
+        switch( vistoria.imovel.tipoImovel ) {
+          case 1:
+            // Somando imóveis positivos para aegypti
+            if( property_contain_aegypti )
+              sampleByProperty[ 0 ].value[ 0 ].value += 1;
+
+            // Somando imóveis positivos para albopictus
+            if( property_contain_albopictus )
+              sampleByProperty[ 0 ].value[ 1 ].value += 1;
+
+            // Somando imóveis positivos para outros
+            if( property_contain_other )
+              sampleByProperty[ 0 ].value[ 2 ].value += 1;
+
+            break;
+          case 2:
+            // Somando imóveis positivos para aegypti
+            if( property_contain_aegypti )
+              sampleByProperty[ 1 ].value[ 0 ].value += 1;
+
+            // Somando imóveis positivos para albopictus
+            if( property_contain_albopictus )
+              sampleByProperty[ 1 ].value[ 1 ].value += 1;
+
+            // Somando imóveis positivos para outros
+            if( property_contain_other )
+              sampleByProperty[ 1 ].value[ 2 ].value += 1;
+
+            break; 
+          case 3:
+            // Somando imóveis positivos para aegypti
+            if( property_contain_aegypti )
+              sampleByProperty[ 2 ].value[ 0 ].value += 1;
+
+            // Somando imóveis positivos para albopictus
+            if( property_contain_albopictus )
+              sampleByProperty[ 2 ].value[ 1 ].value += 1;
+
+            // Somando imóveis positivos para outros
+            if( property_contain_other )
+              sampleByProperty[ 2 ].value[ 2 ].value += 1;
+
+            break;
+          case 4:
+            // Somando imóveis positivos para aegypti
+            if( property_contain_aegypti )
+              sampleByProperty[ 3 ].value[ 0 ].value += 1;
+
+            // Somando imóveis positivos para albopictus
+            if( property_contain_albopictus )
+              sampleByProperty[ 3 ].value[ 1 ].value += 1;
+
+            // Somando imóveis positivos para outros
+            if( property_contain_other )
+              sampleByProperty[ 3 ].value[ 2 ].value += 1;
+
+            break;   
+        }
+      })
     });
 
     const resultado = {
-        epiWeek: {
-            semana,
-            ano, 
-            inicio: format(parseISO(data_inicio), 'dd-MM-yyyy'),
-            fim: format(parseISO(data_fim), 'dd-MM-yyyy'),
-        },
-        propertiesByType,
-        propertiesByStatus,
-        propertiesByPendency,
-        recipientsByType,
-        recipientDestination,
-        totalSample
+      epiWeek: {
+        semana,
+        ano, 
+        inicio: format(parseISO(data_inicio), 'dd-MM-yyyy'),
+        fim: format(parseISO(data_fim), 'dd-MM-yyyy'),
+        totalAgentes: numberAgents
+      },
+      propertiesByType,
+      propertiesByStatus,
+      propertiesByPendency,
+      recipientsByType,
+      recipientDestination,
+      totalSample,
+      properties,
+      depositTreated,
+      sampleByDeposit,
+      sampleByProperty
     }
 
     return res.json(resultado)

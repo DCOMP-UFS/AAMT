@@ -38,6 +38,7 @@ export const Street = styled.View`
   margin-top: 5px;
   padding: 10px;
   flex-direction: row;
+  justify-content: space-between;
 `;
 
 export const Box = styled.View`

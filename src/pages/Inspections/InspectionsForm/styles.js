@@ -1,6 +1,8 @@
 import styled from 'styled-components/native';
 
-export const Container = styled.View`
+import TextInput from '../../../components/TextInput';
+
+export const Container = styled.ScrollView`
   margin: 10px 10px;
   flex: 1;
   flex-direction: column;
@@ -18,11 +20,11 @@ export const Title = styled.Text`
   font-family: 'Lato-Bold';
   color: #3a3c4e;
   font-size: 20px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 `;
 
 export const Small = styled.Text`
-  font-family: 'Lato-Regular';
+  font-family: 'Lato-Bold';
   color: #3a3c4e;
   font-size: 16px;
   margin-bottom: 10px;
@@ -30,13 +32,7 @@ export const Small = styled.Text`
 
 export const ButtonContainer = styled.View`
   flex-direction: row;
-  margin-bottom: 10px;
-`;
-
-export const TextInput = styled.TextInput`
-  font-size: 16px;
-  font-family: 'Lato-Regular';
-  color: ${({ theme }) => theme.colors.textInput};
+  margin-bottom: 20px;
 `;
 
 export const InputContainer = styled.View`
@@ -47,3 +43,5 @@ export const InputContainer = styled.View`
   border: 1px solid ${({ theme }) => theme.colors.borderInput};
   margin-bottom: 10px;
 `;
+
+export const TInput = styled(TextInput)``;

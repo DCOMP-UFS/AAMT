@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { View, Text, TouchableWithoutFeedback, Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
@@ -24,35 +24,32 @@ import {
   NoRecipientContainer,
 } from './styles';
 
-const RecipientList = ({
-  sequencia,
-  inspections,
-  trabalho_diario_id,
-  ...props
-}) => {
-  const [recipients, setRecipients] = useState([]);
+const RecipientList = ({ ...props }) => {
+  const { setStep, step, steps, form, setForm } = props;
+  const { recipientes } = form;
 
   const navigation = useNavigation();
-  const route = useRoute();
-  const { imovel_id, house } = route.params;
 
-  function removeRecipient(recipientSequence) {
-    const propertyIndex = inspections.findIndex(p => p.imovel.id === imovel_id);
-    props.removeRecipient(propertyIndex, recipientSequence);
+  function removeRecipient(sequencia) {
+    setForm(recipientes.findIndex(p => p.sequencia === sequencia));
   }
 
-  function finishInspection() {
-    navigation.navigate('Lista de Imóveis');
-    Alert.alert('Operação concluída!', 'Você finalizou uma vistoria');
-  }
+  // function finishInspection() {
+  //   navigation.navigate('Lista de Imóveis');
+  //   Alert.alert('Operação concluída!', 'Você finalizou uma vistoria');
+  // }
 
   useEffect(() => {
-    const index = inspections.findIndex(p => p.imovel.id === imovel_id);
+    const unsubscribe = navigation.addListener('beforeRemove', e => {
+      e.preventDefault();
+      unsubscribe();
+      setStep(step - 1);
+    });
+  }, []);
 
-    if (index >= 0) {
-      setRecipients(inspections[index].recipientes);
-    }
-  }, [inspections]);
+  useLayoutEffect(() => {
+    navigation.setOptions({ headerTitle: steps[step - 1].id });
+  }, []);
 
   return (
     <Container>
@@ -60,33 +57,21 @@ const RecipientList = ({
         <Header>
           <HeaderTitle>Lista de depósitos</HeaderTitle>
           <TouchableWithoutFeedback
-            onPress={() =>
-              navigation.navigate('Cadastrar Depósito', {
-                imovel_id,
-              })
-            }
+            onPress={() => navigation.navigate('Cadastrar Depósito')}
           >
             <Icon size={23} name="add" color="#0095da" />
           </TouchableWithoutFeedback>
         </Header>
         <RecipientContainer>
-          {recipients.length !== 0 ? (
-            recipients.map((recipient, index) => (
+          {recipientes.length !== 0 ? (
+            recipientes.map((recipiente, index) => (
               <RecipientItem key={index}>
-                <TouchableWithoutFeedback
-                  onPress={() =>
-                    navigation.navigate('Cadastrar Depósito', {
-                      imovel_id,
-                      recipientSequence: recipient.sequencia,
-                      recipientExistent: recipient,
-                    })
-                  }
-                >
-                  <RecipientText>{`Depósito ${recipient.sequencia}`}</RecipientText>
+                <TouchableWithoutFeedback onPress={() => setStep(step + 1)}>
+                  <RecipientText>{`Depósito ${recipiente.sequencia}`}</RecipientText>
                 </TouchableWithoutFeedback>
                 <RecipientOptions>
                   <TouchableWithoutFeedback
-                    onPress={() => removeRecipient(recipient.sequencia)}
+                    onPress={() => removeRecipient(recipiente.sequencia)}
                   >
                     <Icon size={23} name="close" color="#E74040" />
                   </TouchableWithoutFeedback>
@@ -103,23 +88,9 @@ const RecipientList = ({
           )}
         </RecipientContainer>
       </Card>
-      <Button onPress={() => finishInspection()}>Concluir vistoria</Button>
+      {/* <Button onPress={() => finishInspection()}>Concluir vistoria</Button> */}
     </Container>
   );
 };
 
-const mapStateToProps = state => ({
-  sequencia: state.inspections.sequenciaVistoria,
-  inspections: state.inspections.vistorias,
-  trabalho_diario_id: state.currentActivity.dailyActivity.trabalhoDiario.id,
-});
-
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      removeRecipient,
-    },
-    dispatch
-  );
-
-export default connect(mapStateToProps, mapDispatchToProps)(RecipientList);
+export default RecipientList;

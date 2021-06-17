@@ -27,21 +27,17 @@ import {
 } from './styles';
 import { useEffect } from 'react/cjs/react.development';
 
-const BlocksList = () => {
+const BlocksList = ({ currentIndex, routes }) => {
   const navigation = useNavigation();
   const route = useRoute();
+  const { isStarted, rota } = route.params;
+
   const [currentRoute, setCurrentRoute] = useState([]);
-  const currentIndex = useSelector(state => state.routes.currentRouteIndex);
-  const routes =
-    currentIndex >= 0
-      ? useSelector(state => state.routes.routes[currentIndex].rota)
-      : null;
 
   useEffect(() => {
-    if (routes) {
-      setCurrentRoute(routes);
+    if (currentIndex >= 0) {
+      setCurrentRoute(routes[currentIndex].rota);
     } else {
-      const { rota } = route.params;
       setCurrentRoute(rota);
     }
   }, []);
@@ -50,7 +46,7 @@ const BlocksList = () => {
     <Container>
       <Card>
         {currentRoute.length > 0 ? (
-          currentRoute.map(block => (
+          currentRoute.map((block, blockIndex) => (
             <Collapse key={block.id} style={{ margin: 5 }}>
               <CollapseHeader>
                 <Header>
@@ -59,10 +55,24 @@ const BlocksList = () => {
               </CollapseHeader>
               <CollapseBody>
                 <Box>
-                  {block.lados.map(street => (
-                    <TouchableOpacity key={street.id}>
+                  {block.lados.map((street, streetIndex) => (
+                    <TouchableOpacity
+                      key={street.id}
+                      onPress={() =>
+                        isStarted
+                          ? navigation.navigate('Lista de Imóveis', {
+                              street: street.rua.nome,
+                              blockIndex,
+                              streetIndex,
+                            })
+                          : null
+                      }
+                    >
                       <Street>
                         <StreetText>{street.rua.nome}</StreetText>
+                        <StreetText>{`${street.imoveis.length} ${
+                          street.imoveis.length === 1 ? 'imóvel' : 'imóveis'
+                        }`}</StreetText>
                       </Street>
                     </TouchableOpacity>
                   ))}
@@ -76,56 +86,11 @@ const BlocksList = () => {
       </Card>
     </Container>
   );
-
-  // return (
-  //   <Container>
-  //     <Card>
-  //       {routes ? (
-  //         Object.keys(routes).map((block, i) => (
-  //           <Collapse key={i} style={{ margin: 5 }}>
-  //             <CollapseHeader>
-  //               <Header>
-  //                 <Title>{`Quarteirão ${routes[block].numero}`}</Title>
-  //               </Header>
-  //             </CollapseHeader>
-  //             <CollapseBody>
-  //               <Box>
-  //                 {routes[block].lados.map((lado, j) => (
-  //                   <TouchableWithoutFeedback
-  //                     key={lado.id}
-  //                     onPress={() =>
-  //                       activityStarted
-  //                         ? navigation.navigate('Lista de Imóveis', {
-  //                             street: lado.rua.nome,
-  //                             street_id: lado.id,
-  //                             block_number: routes[block].numero,
-  //                             blockIndex: i,
-  //                             streetIndex: j,
-  //                           })
-  //                         : ''
-  //                     }
-  //                   >
-  //                     <Street>
-  //                       <StreetText>{lado.rua.nome}</StreetText>
-  //                     </Street>
-  //                   </TouchableWithoutFeedback>
-  //                 ))}
-  //               </Box>
-  //             </CollapseBody>
-  //           </Collapse>
-  //         ))
-  //       ) : (
-  //         <Text>Não há rotas disponíveis</Text>
-  //       )}
-  //     </Card>
-  //   </Container>
-  // );
 };
 
 const mapStateToProps = state => ({
-  // currentIndex: state.routes.currentRouteIndex,
-  // routes: state.routes.routes[currentIndex].rota,
-  // activityStarted: state.currentActivity.start_hour,
+  currentIndex: state.routes.currentRouteIndex,
+  routes: state.routes.routes,
 });
 
 export default connect(mapStateToProps)(BlocksList);

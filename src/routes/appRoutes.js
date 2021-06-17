@@ -21,6 +21,7 @@ import UpdateProperty from '../pages/Inspections/UpdateProperty';
 import AcitivitySummary from '../pages/Activities/AcitivitySummary';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import MultiStepForm from '../components/MultiStepForm';
 
 const AppStack = createStackNavigator();
 const ActivityStack = createStackNavigator();
@@ -68,6 +69,7 @@ const AppStacker = () => {
       <AppStack.Screen name="Cadastrar Depósito" component={RecipientForm} />
       <AppStack.Screen name="Detalhes do Imóvel" component={PropertyDetails} />
       <AppStack.Screen name="Atualizar imóvel" component={UpdateProperty} />
+      <AppStack.Screen name="MultiStepForm" component={MultiStepForm} />
     </AppStack.Navigator>
   );
 };

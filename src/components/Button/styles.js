@@ -16,7 +16,7 @@ const containerModifiers = {
 export const Container = styled(RectButton)`
   width: 100%;
   height: 50px;
-  border-radius: 8px;
+  border-radius: 4px;
   justify-content: center;
   align-items: center;
   ${props => props.type && containerModifiers[props.type]}

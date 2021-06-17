@@ -309,13 +309,22 @@ const StartActivityButton = ({
             </RouteButton>
           )}
           {activity.trabalhoDiario.horaInicio ? (
-            <RouteButton onPress={() => navigation.navigate('Rota')}>
+            <RouteButton
+              onPress={() =>
+                navigation.navigate('Rota', {
+                  isStarted: activity.trabalhoDiario.horaInicio,
+                })
+              }
+            >
               Vistorias
             </RouteButton>
           ) : (
             <RouteButton
               onPress={() =>
-                navigation.navigate('Rota', { rota: activity.rota })
+                navigation.navigate('Rota', {
+                  rota: activity.rota,
+                  isStarted: activity.trabalhoDiario.horaInicio,
+                })
               }
             >
               Ver rota

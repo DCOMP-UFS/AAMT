@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 
@@ -80,22 +80,39 @@ const InspectionStatus = ({ data, property }) => {
   );
 };
 
-const PropertiesList = ({ inspections, routes, ...props }) => {
+const PropertiesList = ({ currentIndex, inspections, routes, ...props }) => {
   const route = useRoute();
   const { street, blockIndex, streetIndex } = route.params;
-  const properties = routes[blockIndex].lados[streetIndex].imoveis;
+  const [properties, setProperties] = useState(
+    routes[currentIndex].rota[blockIndex].lados[streetIndex].imoveis
+  );
   const navigation = useNavigation();
 
   return (
     <Container>
-      {properties.map((property, i) => (
+      {properties.map((property, propertyIndex) => (
         <Card key={property.id}>
           <Header>
             <TitleContainer>
               <Icon size={23} name="home" color="#3a3c4e" />
               <PropertyTitle>Imóvel {property.id}</PropertyTitle>
             </TitleContainer>
-            <InspectionStatus data={inspections} property={property} />
+            <TouchableOpacity
+              onPress={() =>
+                // navigation.navigate('Vistoria', {
+                //   address: {
+                //     street,
+                //     blockIndex,
+                //     streetIndex,
+                //   },
+                //   propertyIndex,
+                // })
+                navigation.navigate('MultiStepForm')
+              }
+            >
+              <Icon size={23} name="plus" color="#0095da" />
+            </TouchableOpacity>
+            {/* <InspectionStatus data={inspections} property={property} /> */}
           </Header>
           <Label>Rua</Label>
           <Small>{street}</Small>
@@ -116,10 +133,12 @@ const PropertiesList = ({ inspections, routes, ...props }) => {
           <TouchableOpacity
             onPress={() =>
               navigation.navigate('Detalhes do Imóvel', {
-                street,
-                blockIndex,
-                streetIndex,
-                propertyIndex: i,
+                address: {
+                  street,
+                  blockIndex,
+                  streetIndex,
+                },
+                propertyIndex,
               })
             }
           >
@@ -141,7 +160,8 @@ const PropertiesList = ({ inspections, routes, ...props }) => {
 
 const mapStateToProps = state => ({
   inspections: state.inspections.vistorias,
-  routes: state.currentActivity.routes,
+  routes: state.routes.routes,
+  currentIndex: state.routes.currentRouteIndex,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({}, dispatch);

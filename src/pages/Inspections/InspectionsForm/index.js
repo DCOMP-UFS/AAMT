@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { View, Text, Alert } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -14,6 +16,7 @@ import {
 import SelectButton from '../../../components/SelectButton';
 import SecundaryButton from '../../../components/SecundaryButton';
 import Button from '../../../components/Button';
+import Input from '../../../components/Input';
 
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
@@ -26,15 +29,10 @@ import {
   ButtonContainer,
   TextInput,
   InputContainer,
+  TInput,
 } from './styles';
 
-const InspectionsForm = ({
-  sequencia,
-  inspections,
-  trabalho_diario_id,
-  metodologia,
-  ...props
-}) => {
+const InspectionsForm = ({ ...props }) => {
   const [optionStatus, setOptionStatus] = useState([
     { value: 'N', label: 'Normal' },
     { value: 'R', label: 'Recuperada' },
@@ -44,37 +42,17 @@ const InspectionsForm = ({
     { value: 'F', label: 'Fechada' },
     { value: 'R', label: 'Recusada' },
   ]);
-  const [status, setStatus] = useState('');
-  const [pendency, setPendency] = useState('');
-  const [sequence, setSequence] = useState(sequencia);
-  const [startHour, setStartHour] = useState('');
-  const [recipients, setRecipients] = useState([]);
-  const [justification, setJustification] = useState('');
+  const formRef = useRef();
 
   const navigation = useNavigation();
-  const route = useRoute();
-  const { house, property } = route.params;
 
-  const imovel_id = property.id;
+  const { setStep, steps, step, form, setForm } = props;
+  const { situacaoVistoria, pendencia, justificativa } = form;
 
-  function changePendency(item) {
-    setPendency(item);
-  }
-
-  function changeStatus(item) {
-    setStatus(item);
-  }
-
-  function formValidation() {
-    if (status === '' || pendency === '') {
-      Alert.alert(
-        'Houve um erro!',
-        'Verifique se todos os campos foram respondidas'
-      );
-    } else {
-      handleSubmit();
-    }
-  }
+  // const statusValidationSchema = Yup.object().shape({
+  //   status: Yup.string().required('Selecione o status da vistoria'),
+  //   pendency: Yup.string().required('Selecione a pendência da vistoria'),
+  // });
 
   function handleStartInspection() {
     var today = new Date();
@@ -88,121 +66,121 @@ const InspectionsForm = ({
     return today;
   }
 
-  function handleSubmit() {
-    const inspection = {
-      situacaoVistoria: status,
-      pendencia: pendency,
-      sequencia: sequence,
-      imovel: property,
-      trabalhoDiario_id: trabalho_diario_id,
-      horaEntrada: startHour === '' ? handleStartInspection() : startHour,
-      recipientes: recipients,
-      ...(pendency === 'F' || pendency === 'R'
-        ? { justificativa: justification !== '' ? justification : null }
-        : {}),
-    };
+  // useEffect(() => {
+  //   if (methodology === 'LIRAa') {
+  //     console.log(methodology);
 
-    console.log(inspection);
+  //     /**
+  //      * Altera os dados iniciais do formulário
+  //      * dependendo da metodologia ou se é uma edição
+  //      */
+  //   }
+  // }, []);
 
-    if (!house) {
-      props.addInspection(inspection);
-    } else {
-      console.log('entrou lá!');
-      props.editInspection(inspection, imovel_id);
-    }
-
-    if ((status === 'N' || 'R') && pendency === null) {
-      navigation.navigate('Depósitos', { imovel_id, house });
-    } else {
+  function handleStatusSubmit(data) {
+    const temporaryData = form;
+    temporaryData.situacaoVistoria = data.status;
+    temporaryData.pendencia = data.pendency;
+    temporaryData.horaEntrada =
+      temporaryData.horaEntrada === ''
+        ? handleStartInspection()
+        : temporaryData.horaEntrada;
+    if (data.pendency === 'F' || data.pendency === 'R') {
+      temporaryData.justificativa =
+        data.justification !== '' ? data.justification : null;
+      setForm(temporaryData);
       navigation.goBack();
-      Alert.alert('Operação concluída!', 'Você finalizou uma vistoria'); // TEM DE ALTERAR PARA SALVAR A ROTA!!!!!!!!
+      Alert.alert(
+        'Operação concluída com sucesso!',
+        'Você finalizou a vistoria deste imóvel'
+      );
+    } else {
+      delete temporaryData.justificativa;
+      setForm(temporaryData);
+      setStep(step + 1);
     }
   }
 
-  useEffect(() => {
-    if (house) {
-      setStatus(house.situacaoVistoria);
-      setPendency(house.pendencia);
-      setSequence(house.sequencia);
-      setRecipients(house.recipientes);
-      setStartHour(house.horaEntrada);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (metodologia === 'LIRAa') {
-      setStatus('N');
-      setPendency(null);
-    }
+  useLayoutEffect(() => {
+    navigation.setOptions({ headerTitle: steps[step - 1].id });
   }, []);
 
   return (
     <Container>
       <Card>
-        <Title>Situação da vistoria</Title>
-        <Small>Informe o status da vistoria:</Small>
-        <ButtonContainer>
-          {optionStatus.map(item => (
-            <TouchableWithoutFeedback
-              onPress={() => changeStatus(item.value)}
-              key={item.label}
-            >
-              <SelectButton select={status === item.value ? true : false}>
-                {item.label}
-              </SelectButton>
-            </TouchableWithoutFeedback>
-          ))}
-        </ButtonContainer>
-        <Small>Informe a pendência:</Small>
-        <ButtonContainer>
-          {optionPendency.map(item => (
-            <TouchableWithoutFeedback
-              onPress={() => changePendency(item.value)}
-              key={item.label}
-            >
-              <SelectButton select={pendency === item.value ? true : false}>
-                {item.label}
-              </SelectButton>
-            </TouchableWithoutFeedback>
-          ))}
-        </ButtonContainer>
-        {(pendency === 'F' || pendency === 'R') && (
-          <>
-            <Small>Informe a justificativa da pendência:</Small>
-            <InputContainer>
-              <TextInput
-                style={{
-                  textAlignVertical: 'top',
-                }}
-                onChangeText={text => setJustification(text)}
-                defaultValue={justification}
-              />
-            </InputContainer>
-          </>
-        )}
-        <Button onPress={() => formValidation()}>Prosseguir</Button>
-        {/* <SecundaryButton>Cancelar</SecundaryButton> */}
+        <Formik
+          // validationSchema={statusValidationSchema}
+          innerRef={formRef}
+          validateOnChange={false}
+          validateOnBlur={false}
+          initialValues={{
+            status: situacaoVistoria,
+            pendency: pendencia,
+            justification: justificativa,
+          }}
+          onSubmit={values => handleStatusSubmit(values)}
+        >
+          {({ handleChange, handleSubmit, errors, values }) => (
+            <>
+              <Title>Situação da vistoria</Title>
+
+              <Small>Status da vistoria</Small>
+              <ButtonContainer>
+                {optionStatus.map(item => (
+                  <TouchableWithoutFeedback
+                    onPress={() =>
+                      formRef.current.setFieldValue('status', item.value)
+                    }
+                    key={item.label}
+                  >
+                    <SelectButton
+                      select={values.status === item.value ? true : false}
+                    >
+                      {item.label}
+                    </SelectButton>
+                  </TouchableWithoutFeedback>
+                ))}
+              </ButtonContainer>
+
+              <Small>Pendência</Small>
+              <ButtonContainer>
+                {optionPendency.map(item => (
+                  <TouchableWithoutFeedback
+                    onPress={() =>
+                      formRef.current.setFieldValue('pendency', item.value)
+                    }
+                    key={item.label}
+                  >
+                    <SelectButton
+                      select={values.pendency === item.value ? true : false}
+                    >
+                      {item.label}
+                    </SelectButton>
+                  </TouchableWithoutFeedback>
+                ))}
+              </ButtonContainer>
+
+              {(values.pendency === 'F' || values.pendency === 'R') && (
+                <>
+                  <Small>Justificativa da pendência</Small>
+                  <TInput
+                    value={values.justification}
+                    onChangeText={handleChange('justification')}
+                    keyboardType="default"
+                    autoCorrect={false}
+                    autoCapitalize="none"
+                    errors={errors.justification}
+                  />
+                </>
+              )}
+
+              <Button onPress={handleSubmit}>Prosseguir</Button>
+            </>
+          )}
+        </Formik>
       </Card>
     </Container>
   );
 };
 
-const mapStateToProps = state => ({
-  sequencia: state.inspections.sequenciaVistoria,
-  inspections: state.inspections.vistorias,
-  trabalho_diario_id: state.currentActivity.dailyActivity.trabalhoDiario.id,
-  metodologia:
-    state.currentActivity.dailyActivity.trabalhoDiario.atividade.metodologia
-      .sigla,
-});
-
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      addInspection,
-      editInspection,
-    },
-    dispatch
-  );
-
-export default connect(mapStateToProps, mapDispatchToProps)(InspectionsForm);
+export default InspectionsForm;

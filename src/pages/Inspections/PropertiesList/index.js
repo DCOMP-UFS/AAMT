@@ -23,62 +23,65 @@ import {
   DetailsContainer,
 } from './styles';
 
-const InspectionStatus = ({ data, property }) => {
-  const navigation = useNavigation();
+// const InspectionStatus = ({ property }) => {
+//   const inspections = property.inspections;
 
-  const index = data.findIndex(p => p.imovel.id === property.id);
-  const message = [
-    {
-      text: 'Vistoriado',
-      color: '#0095da',
-    },
-    {
-      text: 'Fechado',
-      color: '#FAA33F',
-    },
-    {
-      text: 'Recusado',
-      color: '#E5454C',
-    },
-  ];
+//   const message = [
+//     {
+//       text: 'Vistoriado',
+//       color: '#0095da',
+//     },
+//     {
+//       text: 'Fechado',
+//       color: '#FAA33F',
+//     },
+//     {
+//       text: 'Recusado',
+//       color: '#E5454C',
+//     },
+//   ];
 
-  var status = {};
+//   var status = {};
 
-  if (index !== -1) {
-    const pendencia = data[index].pendencia;
+//   if (inspections) {
+//     const pendencia = inspections.pendencia;
 
-    pendencia === null ? (status = message[0]) : {};
-    pendencia === 'R' ? (status = message[2]) : {};
-    pendencia === 'F' ? (status = message[1]) : {};
-  } else {
-    return (
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate('Vistoria', {
-            house: data[index],
-            property,
-          })
-        }
-      >
-        <Icon size={23} name="plus" color="#0095da" />
-      </TouchableOpacity>
-    );
-  }
-  return (
-    <TouchableOpacity
-      onPress={() =>
-        navigation.navigate('Vistoria', {
-          house: data[index],
-          property,
-        })
-      }
-    >
-      <StatusContainer color={status.color}>
-        <StatusText>{status.text}</StatusText>
-      </StatusContainer>
-    </TouchableOpacity>
-  );
-};
+//     pendencia === null ? (status = message[0]) : {};
+//     pendencia === 'R' ? (status = message[2]) : {};
+//     pendencia === 'F' ? (status = message[1]) : {};
+
+//     return (
+
+//     )
+//   } else {
+//     return (
+//       <TouchableOpacity
+//         onPress={() =>
+//           navigation.navigate('Vistoria', {
+//             house: data[index],
+//             property,
+//           })
+//         }
+//       >
+//         <Icon size={23} name="plus" color="#0095da" />
+//       </TouchableOpacity>
+//     );
+//   }
+//   return (
+//     <TouchableOpacity
+//       onPress={() =>
+//         navigation.navigate('Vistoria', {
+//           house: data[index],
+//           property,
+//         })
+//       }
+//     >
+//       <StatusContainer color={status.color}>
+//         <StatusText>{status.text}</StatusText>
+//       </StatusContainer>
+//     </TouchableOpacity>
+//   );
+// };
 
 const PropertiesList = ({ currentIndex, inspections, routes, ...props }) => {
   const route = useRoute();
@@ -99,20 +102,16 @@ const PropertiesList = ({ currentIndex, inspections, routes, ...props }) => {
             </TitleContainer>
             <TouchableOpacity
               onPress={() =>
-                // navigation.navigate('Vistoria', {
-                //   address: {
-                //     street,
-                //     blockIndex,
-                //     streetIndex,
-                //   },
-                //   propertyIndex,
-                // })
-                navigation.navigate('MultiStepForm')
+                navigation.navigate('MultiStepForm', {
+                  blockIndex,
+                  streetIndex,
+                  propertyIndex,
+                })
               }
             >
               <Icon size={23} name="plus" color="#0095da" />
             </TouchableOpacity>
-            {/* <InspectionStatus data={inspections} property={property} /> */}
+            {/* <InspectionStatus property={property} /> */}
           </Header>
           <Label>Rua</Label>
           <Small>{street}</Small>

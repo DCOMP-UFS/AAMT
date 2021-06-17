@@ -184,6 +184,10 @@ const StartActivityButton = ({
         setActivities([response.data]);
       }
 
+      if (response.data.trabalhoDiario.horaInicio) {
+        handleStartActivity(response.data);
+      }
+
       console.log(JSON.stringify(response.data));
     } catch (err) {
       Alert.alert(
@@ -198,6 +202,8 @@ const StartActivityButton = ({
 
     try {
       const response = await api.get(`/trabalhoDiario/${trabalho_diario_id}`);
+
+      console.log(response.data);
 
       if (response.data.data && response.data.data.horaFim === null) {
         routeStatus = true;

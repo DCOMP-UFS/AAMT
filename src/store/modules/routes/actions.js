@@ -31,3 +31,24 @@ export function setCurrentRoute(route_index) {
     payload: { route_index },
   };
 }
+
+export function addSampleSequence() {
+  return {
+    type: '@routes/ADD_SAMPLE',
+    payload: {},
+  };
+}
+
+export function addRecipient() {
+  return {
+    type: '@routes/ADD_RECIPIENT',
+    payload: {},
+  };
+}
+
+export function addInspection(inspection, address) {
+  return {
+    type: '@routes/ADD_INSPECTION',
+    payload: { inspection, address },
+  };
+}

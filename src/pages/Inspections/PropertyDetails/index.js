@@ -96,7 +96,7 @@ const PropertyDetails = ({ inspections, routes, ...props }) => {
             <Small>-</Small>
           )}
         </Small>
-        <Label>Responsável</Label>
+        <Label>Responsável do imóvel</Label>
         <Small>
           {property.responsavel ? (
             <Small>{property.responsavel}</Small>

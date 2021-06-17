@@ -1,22 +1,22 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { View, Text } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 
 import SelectButton from '../../../components/SelectButton';
 import SecundaryButton from '../../../components/SecundaryButton';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 
-import Icon from 'react-native-vector-icons/MaterialIcons';
-
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-
 import {
+  addSampleSequence,
   addRecipient,
-  editRecipient,
-} from '../../../store/modules/inspections/actions';
+} from '../../../store/modules/routes/actions';
+
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import {
   Container,
@@ -34,7 +34,32 @@ import {
 } from './styles';
 
 const RecipientForm = ({ ...props }) => {
-  const { setStep, steps, step, form, setForm } = props;
+  const {
+    setStep,
+    steps,
+    step,
+    form,
+    setForm,
+    trab_diario_id,
+    totalInspections,
+  } = props;
+  const currentIndex = useSelector(state => state.routes.currentRouteIndex);
+  const methodology = useSelector(
+    state =>
+      state.routes.routes[currentIndex].trabalhoDiario.atividade.metodologia
+        .sigla
+  );
+  const objective = useSelector(
+    state =>
+      state.routes.routes[currentIndex].trabalhoDiario.atividade.objetivo.sigla
+  );
+  const recipientSequence = useSelector(
+    state => state.routes.recipientSequence
+  );
+  const sampleSequence = useSelector(state => state.routes.sampleSequence);
+  const dispatch = useDispatch();
+
+  const formRef = useRef(null);
 
   const [recipientOptions, setRecipientOptions] = useState([
     'A1',
@@ -45,68 +70,74 @@ const RecipientForm = ({ ...props }) => {
     'D2',
     'E',
   ]);
-  const [focusOptions, setFocusOptions] = useState(['Sim', 'Não']);
+  const [focusOptions, setFocusOptions] = useState([
+    { id: true, label: 'Sim' },
+    { id: false, label: 'Não' },
+  ]);
   const [treatmentOptions, setTreatmentOptions] = useState([
-    'Tratado',
-    'Eliminado',
+    { id: true, label: 'Tratado' },
+    { id: false, label: 'Eliminado' },
   ]);
   const [treatmentTypeOptions, setTreatmentTypeOptions] = useState([
-    'Focal',
-    'Perifocal',
+    { id: 1, label: 'Focal' },
+    { id: 2, label: 'Perifocal' },
   ]);
 
   const navigation = useNavigation();
 
-  // const [sequence, setSequence] = useState(sequenciaRecipiente);
-  // const [recipientType, setRecipientType] = useState('');
-  // const [focus, setFocus] = useState('');
-  // const [treatment, setTreatment] = useState('');
-  // const [treatmentType, setTreatmentType] = useState('');
-  // const [quantity, setQuantity] = useState('');
-  // const [sample, setSample] = useState([]);
-  // const [sampleNumber, setSampleNumber] = useState(0);
+  function handleRecipientSubmit(data) {
+    const recipient = {
+      fl_comFoco: data.focus,
+      tipoRecipiente: data.recipientType,
+      fl_tratado: data.treatment,
+      fl_eliminado: !data.treatment,
+      sequencia: recipientSequence,
+      tratamento: {
+        quantidade: parseFloat(data.quantity ? data.quantity : 0),
+        tecnica: data.treatmentType,
+      },
+      amostras: data.samples,
+      idUnidade:
+        trab_diario_id + '.' + (totalInspections + 1) + '.' + recipientSequence,
+    };
 
-  // const navigation = useNavigation();
-  // const route = useRoute();
-  // const { imovel_id, recipientSequence, recipientExistent } = route.params;
+    const copyForm = form;
+    copyForm.recipientes.push(recipient);
+    setForm(copyForm);
 
-  // function handleSubmit() {
-  //   const recipient = {
-  //     fl_comFoco: focus === 'Sim' ? true : false,
-  //     tipoRecipiente: recipientType,
-  //     fl_tratado: treatment === 'Tratado' ? true : false,
-  //     fl_eliminado: treatment === 'Eliminado' ? true : false,
-  //     sequencia: recipientExistent ? sequence : sequence + 1,
-  //     tratamento: {
-  //       quantidade: quantity,
-  //       tecnica: treatmentType === 'Focal' ? 1 : 2,
-  //     },
-  //     amostras: sample,
-  //   };
+    dispatch(addRecipient());
+    setStep(step - 1);
+  }
 
-  //   if (!recipientExistent) {
-  //     props.addRecipient(recipient, imovel_id);
-  //   } else {
-  //     props.editRecipient(recipient, imovel_id, recipient.sequencia);
-  //   }
+  function addSample() {
+    const samplesCopy = formRef.current.values.samples;
 
-  //   navigation.navigate('Depósitos');
-  // }
+    const unity = sampleSequence + 1;
 
-  // function addSample() {
-  //   setSample([
-  //     ...sample,
-  //     {
-  //       situacao: 1,
-  //       sequencia: sampleNumber + 1,
-  //     },
-  //   ]);
-  //   setSampleNumber(sampleNumber + 1);
-  // }
+    samplesCopy.push({
+      idUnidade:
+        trab_diario_id +
+        '.' +
+        (totalInspections + 1) +
+        '.' +
+        recipientSequence +
+        '.' +
+        unity,
+      situacao: 1,
+      sequencia: unity,
+    });
 
-  // function removeSample(sampleSequence) {
-  //   setSample(sample.filter(item => item.sequencia !== sampleSequence));
-  // }
+    formRef.current.setFieldValue('samples', samplesCopy);
+    dispatch(addSampleSequence());
+  }
+
+  function removeSample(sampleSequence) {
+    const samples = formRef.current.values.samples;
+    formRef.current.setFieldValue(
+      'samples',
+      samples.filter(p => p.sequencia !== sampleSequence)
+    );
+  }
 
   // useEffect(() => {
   //   if (recipientExistent) {
@@ -126,105 +157,166 @@ const RecipientForm = ({ ...props }) => {
   //   }
   // }, []);
 
-  // useLayoutEffect(() => {
-  //   navigation.setOptions({ headerTitle: steps[step - 1].id });
+  // useEffect(() => {
+
   // }, []);
 
-  console.log('ola');
+  useLayoutEffect(() => {
+    navigation.setOptions({ headerTitle: steps[step - 1].id });
+  }, []);
+
+  console.log(form);
 
   return (
     <Container>
-      {/* <Card>
-        <Title>Depósito</Title>
-        <Small>Informe o tipo do depósito</Small>
-        <RecipientButtonContainer>
-          {recipientOptions.map(item => (
-            <TouchableWithoutFeedback
-              onPress={() => setRecipientType(item)}
-              key={item}
-              style={{ marginBottom: 10 }}
-            >
-              <SelectButton select={recipientType === item ? true : false}>
-                {item}
-              </SelectButton>
-            </TouchableWithoutFeedback>
-          ))}
-        </RecipientButtonContainer>
-        <Small>O depósito possui foco de mosquito?</Small>
-        <ButtonContainer>
-          {focusOptions.map(item => (
-            <TouchableWithoutFeedback onPress={() => setFocus(item)} key={item}>
-              <SelectButton select={focus === item ? true : false}>
-                {item}
-              </SelectButton>
-            </TouchableWithoutFeedback>
-          ))}
-        </ButtonContainer>
-        {focus === 'Sim' && (
-          <>
-            <ExtraContainer>
-              <Header>
-                <HeaderTitle>{`Amostras (${sample.length})`}</HeaderTitle>
-                <TouchableWithoutFeedback onPress={() => addSample()}>
-                  <Icon size={23} name="add" color="#0095da" />
-                </TouchableWithoutFeedback>
-              </Header>
-              {sample.map(item => (
-                <SampleItem key={item.sequencia}>
-                  <SampleText>{`Amostra ${item.sequencia}`}</SampleText>
+      <Card>
+        <Formik
+          // validationSchema={statusValidationSchema}
+          innerRef={formRef}
+          validateOnChange={false}
+          validateOnBlur={false}
+          initialValues={{
+            recipientType: '',
+            focus: undefined,
+            samples: [],
+            treatment: undefined,
+            treatmentType: 0,
+            quantity: '',
+          }}
+          onSubmit={values => handleRecipientSubmit(values)}
+        >
+          {({ handleChange, handleSubmit, errors, values }) => (
+            <>
+              <Title>Depósito</Title>
+
+              <Small>Tipo do depósito</Small>
+              <RecipientButtonContainer>
+                {recipientOptions.map(item => (
                   <TouchableWithoutFeedback
-                    onPress={() => removeSample(item.sequencia)}
-                  >
-                    <Icon size={23} name="close" color="#E74040" />
-                  </TouchableWithoutFeedback>
-                </SampleItem>
-              ))}
-            </ExtraContainer>
-          </>
-        )}
-        <Small>Qual o destino do depósito?</Small>
-        <ButtonContainer>
-          {treatmentOptions.map(item => (
-            <TouchableWithoutFeedback
-              onPress={() => setTreatment(item)}
-              key={item}
-            >
-              <SelectButton select={treatment === item ? true : false}>
-                {item}
-              </SelectButton>
-            </TouchableWithoutFeedback>
-          ))}
-        </ButtonContainer>
-        {treatment === 'Tratado' && metodologia === 'PNCD' && (
-          <>
-            <ExtraContainer>
-              <Title>Tratamento</Title>
-              <Small>Qual a técnica de tratamento empregada?</Small>
-              <ButtonContainer>
-                {treatmentTypeOptions.map(item => (
-                  <TouchableWithoutFeedback
-                    onPress={() => setTreatmentType(item)}
+                    onPress={() =>
+                      formRef.current.setFieldValue('recipientType', item)
+                    }
                     key={item}
+                    style={{ marginBottom: 10 }}
                   >
                     <SelectButton
-                      select={treatmentType === item ? true : false}
+                      select={values.recipientType === item ? true : false}
                     >
                       {item}
                     </SelectButton>
                   </TouchableWithoutFeedback>
                 ))}
+              </RecipientButtonContainer>
+
+              <Small>Foco de mosquito</Small>
+              <RecipientButtonContainer>
+                {focusOptions.map(item => (
+                  <TouchableWithoutFeedback
+                    onPress={() =>
+                      formRef.current.setFieldValue('focus', item.id)
+                    }
+                    key={item.id}
+                    style={{ marginBottom: 10 }}
+                  >
+                    <SelectButton
+                      select={values.focus === item.id ? true : false}
+                    >
+                      {item.label}
+                    </SelectButton>
+                  </TouchableWithoutFeedback>
+                ))}
+              </RecipientButtonContainer>
+
+              {values.focus === true &&
+                (objective === 'PE' ||
+                  objective === 'DF' ||
+                  objective === 'LI' ||
+                  objective === 'LI+T') && (
+                  <ExtraContainer>
+                    <Header>
+                      <HeaderTitle>{`Amostras (${values.samples.length})`}</HeaderTitle>
+                      <TouchableWithoutFeedback onPress={() => addSample()}>
+                        <Icon size={23} name="add" color="#0095da" />
+                      </TouchableWithoutFeedback>
+                    </Header>
+                    {values.samples.map(item => (
+                      <SampleItem key={item.sequencia}>
+                        <SampleText>{`Amostra ${item.idUnidade}`}</SampleText>
+                        <TouchableWithoutFeedback
+                          onPress={() => removeSample(item.sequencia)}
+                        >
+                          <Icon size={23} name="close" color="#E74040" />
+                        </TouchableWithoutFeedback>
+                      </SampleItem>
+                    ))}
+                  </ExtraContainer>
+                )}
+
+              <Small>Destino do depósito</Small>
+              <ButtonContainer>
+                {treatmentOptions.map(item => (
+                  <TouchableWithoutFeedback
+                    onPress={() =>
+                      formRef.current.setFieldValue('treatment', item.id)
+                    }
+                    key={item.label}
+                  >
+                    <SelectButton
+                      select={values.treatment === item.id ? true : false}
+                    >
+                      {item.label}
+                    </SelectButton>
+                  </TouchableWithoutFeedback>
+                ))}
               </ButtonContainer>
-              <Small>Informe a quantidade de larvicida utilizado</Small>
-              <Input
-                keyboardType="number-pad"
-                value={quantity}
-                onChangeText={setQuantity}
-              />
-            </ExtraContainer>
-          </>
-        )}
-        <Button onPress={() => handleSubmit()}>Concluir inspeção</Button>
-      </Card> */}
+
+              {/* {values.treatment === true && <Text>Corno safado</Text>} */}
+
+              {values.treatment === true && methodology === 'PNCD' && (
+                <>
+                  <ExtraContainer>
+                    <Title>Tratamento</Title>
+                    <Small>Técnica de tratamento empregada</Small>
+                    <ButtonContainer>
+                      {treatmentTypeOptions.map(item => (
+                        <TouchableWithoutFeedback
+                          onPress={() =>
+                            formRef.current.setFieldValue(
+                              'treatmentType',
+                              item.id
+                            )
+                          }
+                          key={item.label}
+                        >
+                          <SelectButton
+                            select={
+                              values.treatmentType === item.id ? true : false
+                            }
+                          >
+                            {item.label}
+                          </SelectButton>
+                        </TouchableWithoutFeedback>
+                      ))}
+                    </ButtonContainer>
+                    <Small>Quantidade de larvicida usado</Small>
+                    <Input
+                      value={values.quantity}
+                      onChangeText={handleChange('quantity')}
+                      autoCapitalize="none"
+                      keyboardType="number-pad"
+                      returnKeyType="send"
+                      onSubmitEditing={handleSubmit}
+                      // errors={errors.password}
+                    />
+                  </ExtraContainer>
+                </>
+              )}
+
+              <Button onPress={handleSubmit}>Prosseguir</Button>
+            </>
+          )}
+        </Formik>
+      </Card>
     </Container>
   );
 };

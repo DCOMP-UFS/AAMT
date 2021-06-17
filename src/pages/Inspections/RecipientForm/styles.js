@@ -22,7 +22,7 @@ export const Title = styled.Text`
 `;
 
 export const Small = styled.Text`
-  font-family: 'Lato-Regular';
+  font-family: 'Lato-Bold';
   color: #3a3c4e;
   font-size: 16px;
   margin-bottom: 10px;
@@ -30,12 +30,13 @@ export const Small = styled.Text`
 
 export const ButtonContainer = styled.View`
   flex-direction: row;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 `;
 
 export const RecipientButtonContainer = styled.View`
   flex-direction: row;
   flex-wrap: wrap;
+  margin-bottom: 20px;
 `;
 
 export const Input = styled.View`

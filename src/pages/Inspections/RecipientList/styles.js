@@ -34,6 +34,7 @@ export const RecipientContainer = styled.ScrollView`
 export const RecipientItem = styled.View`
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   border-style: solid;
   border-top-width: 1px;
   border-top-color: #edf1f4;
@@ -48,6 +49,7 @@ export const RecipientText = styled.Text`
 
 export const RecipientOptions = styled.View`
   flex-direction: row;
+  justify-content: space-between;
 `;
 
 export const NoRecipientContainer = styled.View`

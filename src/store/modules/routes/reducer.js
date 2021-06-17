@@ -2,6 +2,9 @@ import produce from 'immer';
 
 const INITIAL_STATE = {
   currentRouteIndex: -1,
+  totalInspections: 0,
+  recipientSequence: 1,
+  sampleSequence: 0,
   loadingStartRoute: false,
   routes: [],
 };
@@ -20,7 +23,6 @@ export default function routes(state = INITIAL_STATE, action) {
         const index = draft.routes.findIndex(
           p => p.trabalhoDiario.id === action.payload.daily_work_id
         );
-        console.tron.log(index);
         if (index >= 0) {
           draft.currentRouteIndex = index;
         }
@@ -40,10 +42,31 @@ export default function routes(state = INITIAL_STATE, action) {
       return produce(state, draft => {
         draft.currentRouteIndex = action.payload.route_index;
       });
+    case '@routes/ADD_SAMPLE':
+      return produce(state, draft => {
+        draft.sampleSequence = state.sampleSequence + 1;
+      });
+    case '@routes/ADD_RECIPIENT':
+      return produce(state, draft => {
+        draft.sampleSequence = 0;
+        draft.recipientSequence = state.recipientSequence + 1;
+      });
+    case '@routes/ADD_INSPECTION':
+      return produce(state, draft => {
+        const { inspection, address } = action.payload;
+        const index = state.currentRouteIndex;
+        draft.routes[index].rota[address.blockIndex].lados[
+          address.streetIndex
+        ].imoveis[address.propertyIndex]['inspection'] = inspection;
+        draft.sampleSequence = 0;
+        draft.recipientSequence = 1;
+        totalInspections = state.totalInspections + 1;
+      });
     case '@auth/SIGN_OUT':
       return produce(state, draft => {
         draft.currentRouteIndex = -1;
       });
+
     default:
       return state;
   }

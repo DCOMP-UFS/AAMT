@@ -1,17 +1,14 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
-import { View, Text, Alert } from 'react-native';
+import { View, Text, Alert, StatusBar } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
 import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 
-import {
-  addInspection,
-  editInspection,
-} from '../../../store/modules/inspections/actions';
+import { addInspection } from '../../../store/modules/routes/actions';
 
 import SelectButton from '../../../components/SelectButton';
 import SecundaryButton from '../../../components/SecundaryButton';
@@ -43,10 +40,11 @@ const InspectionsForm = ({ ...props }) => {
     { value: 'R', label: 'Recusada' },
   ]);
   const formRef = useRef();
+  const dispatch = useDispatch();
 
   const navigation = useNavigation();
 
-  const { setStep, steps, step, form, setForm } = props;
+  const { setStep, steps, step, form, setForm, address } = props;
   const { situacaoVistoria, pendencia, justificativa } = form;
 
   // const statusValidationSchema = Yup.object().shape({
@@ -89,6 +87,7 @@ const InspectionsForm = ({ ...props }) => {
       temporaryData.justificativa =
         data.justification !== '' ? data.justification : null;
       setForm(temporaryData);
+      dispatch(addInspection(form, address));
       navigation.goBack();
       Alert.alert(
         'Operação concluída com sucesso!',

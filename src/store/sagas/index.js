@@ -29,6 +29,7 @@ import { ActionTypes as NW_ImovelActions } from '../Imovel/imovelActions';
 import { ActionTypes as NW_QuarteiraoActions } from '../Quarteirao/quarteiraoActions';
 import { ActionTypes as NW_CicloActions } from '../Ciclo/cicloActions';
 import { ActionTypes as NW_TrabalhoActions } from '../TrabalhoDiario/trabalhoDiarioActions';
+import { ActionTypes as NW_RelatorioActions } from '../Relatorio/relatorioActions';
 
 import {
   authenticate,
@@ -73,6 +74,7 @@ import * as NW_ImovelSagas from '../Imovel/imovelSagas';
 import * as NW_QuarteiraoSagas from '../Quarteirao/quarteiraoSagas';
 import * as NW_CicloSagas from '../Ciclo/cicloSagas';
 import * as NW_TrabalhoSagas from '../TrabalhoDiario/trabalhoDiarioSagas';
+import * as NW_RelatorioSagas from '../Relatorio/relatorioSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -201,5 +203,8 @@ export default function* rootSaga() {
     takeLatest( NW_ImovelActions.GET_IMOVEIS_MUNICIPIO_REQUEST, NW_ImovelSagas.getImoveis ),
     takeLatest( NW_ImovelActions.ADD_IMOVEL_REQUEST, NW_ImovelSagas.addImovel ),
     takeLatest( NW_ImovelActions.EDITAR_IMOVEL_REQUEST, NW_ImovelSagas.editarImovel ),
+
+    // Gerir Relatórios
+    takeLatest( NW_RelatorioActions.GET_BOLETIM_SEMANAL_REQUEST, NW_RelatorioSagas.getBoletimSemanal ),
   ]);
 }

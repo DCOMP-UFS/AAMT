@@ -174,6 +174,10 @@ export const GlobalStyle = createGlobalStyle`
     }
   }
 
+  .cursor-pointer {
+    cursor: pointer;
+  }
+
   h1 .pop-description,
   h2 .pop-description,
   h3 .pop-description,

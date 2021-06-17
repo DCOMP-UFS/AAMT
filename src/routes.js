@@ -50,7 +50,9 @@ import HomeSupervisor from './pages/supervisor/home';
 import RelatorioDiario from './pages/supervisor/Relatorio/Diario';
 import VisualizarRelatorioDiario from './pages/supervisor/Relatorio/Diario/visualizarRelatorio';
 import RelatorioDiarioEquipe from './pages/supervisor/Relatorio/DiarioEquipe';
+import VisualizarDiarioEquipe from './pages/supervisor/Relatorio/DiarioEquipe/visualizarRelatorio';
 import RelatorioSemanal from './pages/supervisor/Relatorio/Semanal';
+import VisualizarSemanal from './pages/supervisor/Relatorio/Semanal/visualizarRelatorio';
 import RelatorioAtividade from './pages/supervisor/Relatorio/Atividade';
 import RelatorioAtividadeEquipe from './pages/supervisor/Relatorio/AtividadeEquipe';
 
@@ -207,7 +209,9 @@ const Routes = props => {
         <PrivateSupervisor exact path="/sup/relatorio/diario" component={ RelatorioDiario } tipoPerfil={ perfil } />
         <PrivateSupervisor exact path="/sup/relatorio/diario/:trabalho_id" component={ VisualizarRelatorioDiario } tipoPerfil={ perfil } />
         <PrivateSupervisor exact path="/sup/relatorio/diarioEquipe" component={ RelatorioDiarioEquipe } tipoPerfil={ perfil } />
+        <PrivateSupervisor exact path="/sup/relatorio/diarioEquipe/:equipe_id/:data" component={ VisualizarDiarioEquipe } tipoPerfil={ perfil } />
         <PrivateSupervisor exact path="/sup/relatorio/semanal" component={ RelatorioSemanal } tipoPerfil={ perfil } />
+        <PrivateSupervisor exact path="/sup/relatorio/semanal/:semana/:atividade_id/:ano" component={ VisualizarSemanal } tipoPerfil={ perfil } />
         <PrivateSupervisor exact path="/sup/relatorio/atividade" component={ RelatorioAtividade } tipoPerfil={ perfil } />
         <PrivateSupervisor exact path="/sup/relatorio/atividadeEquipe" component={ RelatorioAtividadeEquipe } tipoPerfil={ perfil } />
         <PrivateSupervisor path="/sup/quarteiroes/:id" component={ EditarQuarteirao } tipoPerfil={ perfil } />

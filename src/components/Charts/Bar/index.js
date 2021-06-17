@@ -40,7 +40,8 @@ export default class BarChart extends Component {
       legend: {
         display: false
       },
-      type: "bar"
+      type: "bar",
+      ...this.props.options
     };
 
     return (

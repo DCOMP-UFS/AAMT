@@ -1,18 +1,37 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import Modal, { ModalBody, ModalFooter } from '../../../../../components/Modal';
 
 // STYLES
 import { Button } from '../../../../../styles/global';
 
-export const ModalDia = ({ ...props }) => {
+export const ModalDia = ({ equipe_id, ...props }) => {
+  const [ data, setData ] = useState( '' );
+
+  useEffect(() => {
+    console.log( equipe_id );
+  }, [ equipe_id ]);
+
+  const submit = e => {
+    e.preventDefault();
+    window.location = window.location.origin.toString() + '/sup/relatorio/diarioEquipe/' + equipe_id + '/' + data;
+  }
+
   return (
     <Modal { ...props }>
-      <form>
+      <form onSubmit={ submit }>
         <ModalBody>
           <div className="form-group">
             <label htmlFor="data">Data<code>*</code></label>
-            <input className="form-control" type="date" name="data" id="data" />
+            <input
+              className="form-control"
+              value={ data }
+              type="date"
+              name="data"
+              id="data"
+              required
+              onChange={ e => setData( e.target.value ) }
+            />
           </div>
         </ModalBody>
         <ModalFooter>

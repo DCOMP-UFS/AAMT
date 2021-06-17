@@ -438,6 +438,49 @@ getActivityWeeklyReport = async (req, res) => {
       },
     ]
 
+    let sampleExemplary = [
+      {
+        label: 'Ovo',
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 },
+          { label: 'Outros', value: 0 }
+        ]
+      },
+      {
+        label: 'Pupa',
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 },
+          { label: 'Outros', value: 0 }
+        ]
+      },
+      {
+        label: 'Exúvia de pupa',
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 },
+          { label: 'Outros', value: 0 }
+        ]
+      },
+      {
+        label: 'Larva',
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 },
+          { label: 'Outros', value: 0 }
+        ]
+      },
+      {
+        label: 'Adulto',
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 },
+          { label: 'Outros', value: 0 }
+        ]
+      },
+    ]
+
     let totalSample = 0;
 
     // Gerando os indíces do relatório
@@ -550,6 +593,65 @@ getActivityWeeklyReport = async (req, res) => {
             // Checando se o imóvel deu posítivo para outros
             if( other.length > 0 )
               property_contain_other = true;
+
+            // Preenchendo informações dos exemplares
+            amostra.exemplares.forEach( exemplar => {
+              switch( exemplar.fase ) {
+                case 1: // Ovo
+                  if( exemplar.mosquito_id === 1 )
+                    sampleExemplary[ 0 ].value[ 0 ].value += exemplar.quantidade;
+
+                  if( exemplar.mosquito_id === 2 )
+                    sampleExemplary[ 0 ].value[ 1 ].value += exemplar.quantidade;
+
+                  if( exemplar.mosquito_id > 2 )
+                    sampleExemplary[ 0 ].value[ 2 ].value += exemplar.quantidade;
+                  break;
+                case 2: // Pupa
+                  if( exemplar.mosquito_id === 1 )
+                    sampleExemplary[ 1 ].value[ 0 ].value += exemplar.quantidade;
+
+                  if( exemplar.mosquito_id === 2 )
+                    sampleExemplary[ 1 ].value[ 1 ].value += exemplar.quantidade;
+
+                  if( exemplar.mosquito_id > 2 )
+                    sampleExemplary[ 1 ].value[ 2 ].value += exemplar.quantidade;
+                  break;
+                case 3: // Exúvia de pupa
+                  if( exemplar.mosquito_id === 1 )
+                    sampleExemplary[ 2 ].value[ 0 ].value += exemplar.quantidade;
+
+                  if( exemplar.mosquito_id === 2 )
+                    sampleExemplary[ 2 ].value[ 1 ].value += exemplar.quantidade;
+
+                  if( exemplar.mosquito_id > 2 )
+                    sampleExemplary[ 2 ].value[ 2 ].value += exemplar.quantidade;
+                  break;
+                case 4: // Larva
+                  if( exemplar.mosquito_id === 1 )
+                    sampleExemplary[ 3 ].value[ 0 ].value += exemplar.quantidade;
+
+                  if( exemplar.mosquito_id === 2 )
+                    sampleExemplary[ 3 ].value[ 1 ].value += exemplar.quantidade;
+
+                  if( exemplar.mosquito_id > 2 )
+                    sampleExemplary[ 3 ].value[ 2 ].value += exemplar.quantidade;
+                  break;
+                case 5: // Adulto
+                  if( exemplar.mosquito_id === 1 )
+                    sampleExemplary[ 4 ].value[ 0 ].value += exemplar.quantidade;
+
+                  if( exemplar.mosquito_id === 2 )
+                    sampleExemplary[ 4 ].value[ 1 ].value += exemplar.quantidade;
+
+                  if( exemplar.mosquito_id > 2 )
+                    sampleExemplary[ 4 ].value[ 2 ].value += exemplar.quantidade;
+                  break;
+              
+                default:
+                  break;
+              }
+            } );
 
             switch( deposito.tipoRecipiente ) {
               case 'A1':
@@ -667,7 +769,8 @@ getActivityWeeklyReport = async (req, res) => {
       properties,
       depositTreated,
       sampleByDeposit,
-      sampleByProperty
+      sampleByProperty,
+      sampleExemplary
     }
 
     return res.json(resultado)

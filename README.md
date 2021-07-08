@@ -1,6 +1,8 @@
 ﻿# Sumário
 
 - [Sumário](#sumário)
+- [Tutorial](#tutorial)
+  - [Comandos Sequilize](#comandos-sequilize)
 - [Iniciando o banco](#iniciando-o-banco)
 - [Documentação da API](#documentação-da-api)
   - [Atividades](#atividades)
@@ -31,6 +33,33 @@
     - [Finalizar Rota](#finalizar-rota)
       - [*Request*](#request-5)
       - [*Response*](#response-5)
+
+# Tutorial
+
+Segue informações básicas da API AaMT.
+
+## Comandos Sequilize
+
+- **Executar migrate**: este comando executa as migrates de construção da base de dados.
+```
+yarn sequelize db:migrate
+```
+- **Executar retorno de migrate**: este comando reverte a última migrate executada na base.
+```
+yarn sequelize db:migrate:undo
+```
+- **Criar arquivo de seed**: este comando cria um arquivo de seed na pasta preconfigurada.
+```
+yarn sequelize seed:create --name name_seed
+```
+- **Executar seed**: este comando executa as seed de povoamento da base de dados, usado normalmente no ambiente de desenvolvimento.
+```
+yarn sequelize db:seed:all
+```
+- **Executar retorno de seed**: este comando reverte as seed executadas na base.
+```
+yarn sequelize db:seed:undo:all
+```
 
 # Iniciando o banco
 

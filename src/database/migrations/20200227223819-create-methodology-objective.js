@@ -33,12 +33,7 @@ module.exports = {
           allowNull: false,
         }
       }
-    ).then(() => {
-      return queryInterface.addConstraint('metodologias_objetivos', ['metodologia_id', 'objetivo_id'], {
-        type: 'unique',
-        name: 'metodologias_objetivos_unique'
-      });
-    });
+    );
   },
 
   down: (queryInterface, Sequelize) => {

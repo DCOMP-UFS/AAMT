@@ -42,12 +42,7 @@ module.exports = {
           allowNull: false,
         }
       }
-    ).then(() => {
-      return queryInterface.addConstraint('ciclos', ['ano', 'sequencia'], {
-        type: 'unique',
-        name: 'ciclos_unique'
-      });
-    });;
+    );
   },
 
   down: (queryInterface, Sequelize) => {

@@ -4,7 +4,8 @@ const faker   = require( 'faker' );
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    const date = new Date();
+    const date        = new Date();
+    const open_cicle  = 4;
 
     return queryInterface.bulkInsert( 'atividades', [
       {
@@ -12,7 +13,7 @@ module.exports = {
         situacao: 2, // 1 - Aguadando Planejamento, 2 - Em aberto, 3 - Concluída
         fl_todos_imoveis: false,
         objetivo_atividade: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-        ciclo_id: 3,
+        ciclo_id: open_cicle,
         responsabilidade: 1,
         metodologia_id: 1, // 1 - LIRAa, 2 - PNCD
         objetivo_id: 1, // 1 - LI, 2 - LI+T
@@ -25,7 +26,7 @@ module.exports = {
         situacao: 2, // 1 - Aguadando Planejamento, 2 - Em aberto, 3 - Concluída
         fl_todos_imoveis: true,
         objetivo_atividade: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-        ciclo_id: 3,
+        ciclo_id: open_cicle,
         responsabilidade: 1,
         metodologia_id: 2, // 1 - LIRAa, 2 - PNCD
         objetivo_id: 2, // 1 - LI, 2 - LI+T
@@ -38,7 +39,7 @@ module.exports = {
         situacao: 2, // 1 - Aguadando Planejamento, 2 - Em aberto, 3 - Concluída
         fl_todos_imoveis: false,
         objetivo_atividade: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-        ciclo_id: 3,
+        ciclo_id: open_cicle,
         responsabilidade: 1,
         metodologia_id: 1, // 1 - LIRAa, 2 - PNCD
         objetivo_id: 1, // 1 - LI, 2 - LI+T
@@ -51,7 +52,7 @@ module.exports = {
         situacao: 2, // 1 - Aguadando Planejamento, 2 - Em aberto, 3 - Concluída
         fl_todos_imoveis: true,
         objetivo_atividade: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-        ciclo_id: 3,
+        ciclo_id: open_cicle,
         responsabilidade: 1,
         metodologia_id: 2, // 1 - LIRAa, 2 - PNCD
         objetivo_id: 2, // 1 - LI, 2 - LI+T

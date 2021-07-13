@@ -2,9 +2,10 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    let data    = [],
-        amount  = 30,
-        date    = new Date( '2021-07-02' );
+    let data        = [];
+    let amount      = 30;
+    let cicle_open  = '2021-07-02';
+    let date        = new Date( cicle_open );
 
     // LIRAa Simão Dias
     while( amount-- ) {
@@ -25,7 +26,7 @@ module.exports = {
       date = new Date( date.getTime() + 1000 * 60 * 60 * 24 );
     }
 
-    date    = new Date( '2021-05-02' );
+    date    = new Date( cicle_open );
     amount  = 30;
     // PNCD Simão Dias
     while( amount-- ) {

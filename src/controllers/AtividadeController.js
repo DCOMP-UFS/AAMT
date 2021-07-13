@@ -612,7 +612,7 @@ getResponsibilityActivities = async ( req, res ) => {
       let fl_team = false;
       
       team.membros.forEach( member => {
-        if( member.usuario_id === supervisor.id && member.tipoPerfil === 4 )
+        if( member.usuario_id === supervisor.id && member.tipoPerfil === 3 )
           fl_team = true;
       });
 

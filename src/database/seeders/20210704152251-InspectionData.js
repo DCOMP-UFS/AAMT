@@ -1,5 +1,4 @@
 'use strict';
-const { datatype } = require('faker');
 const faker = require( 'faker' );
 
 module.exports = {

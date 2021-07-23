@@ -5,8 +5,9 @@ import { connect } from 'react-redux';
 import { IoIosPaper } from 'react-icons/io';
 import { Row } from 'react-bootstrap';
 import Select from 'react-select';
-import { situacaoAtividade } from '../../../config/enumerate';
 import tasksIcon from '../../../assets/tasks-icons.png';
+import { situacaoAtividadeEnum } from '../../../config/enumerate';
+import { showNotifyToast } from '../../../store/actions/appConfig';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebar';
@@ -94,17 +95,20 @@ function PlanejarAtividade({ ciclos, atividades, ...props }) {
         <Row>
           {
             atividades.map( (atv, index) => {
+              const situacao = situacaoAtividadeEnum.find( situacao => situacao.id === atv.situacao );
+
               return (
                 <ContainerAtividade
                   key={ index }
                   className="theme-article col-md-4 stretch-card"
                   onClick={
                     () => {
-                      switch( atv.situacao ) {
-                        case situacaoAtividade.aberta.id:
+                      switch( situacao.id ) {
+                        case 1: // Em aberto
                           window.location = `${ window.location.origin.toString() }/coord/atividades/planejamento/${ atv.id }`;
                           break;
                         default:
+                          props.showNotifyToast( "Somente é possível planejar atividades em aberto.", "warning" );
                           break;
                       }
                     }
@@ -132,6 +136,10 @@ function PlanejarAtividade({ ciclos, atividades, ...props }) {
                         <label>Responsabilidade: </label>
                         <p>{ atv.responsabilidade === 1 ? "Regional" : "Municipal" }</p>
                       </div>
+                      <div className="info-group">
+                        <label>Situação: </label>
+                        <p>{ situacaoAtividadeEnum.find( situacao => situacao.id === atv.situacao ).label }</p>
+                      </div>
                     </Body>
                   </div>
                 </ContainerAtividade>
@@ -155,7 +163,8 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators({
     changeSidebar,
     getAllowedCyclesRequest,
-    getActivitiesByCityRequest
+    getActivitiesByCityRequest,
+    showNotifyToast
   }, dispatch);
 
 export default connect(

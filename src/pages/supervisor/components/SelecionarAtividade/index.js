@@ -29,26 +29,26 @@ export const SelecionarAtividade = ({ indexAtividade, atividades, ...props }) =>
             />
           </h4>
         </Col>
-        <Col>
-          {
-            atividades.map( ( atividade, index ) => {
-              return (
+        {
+          atividades.map( ( atividade, index ) => {
+            return (
+              <Col md="4" sm="6" xs="12">
                 <AtividadeCard
                   key={ atividade.id }
-                  className={ `col-12 col-sm-6 col-md-4 p-0 ${ indexAtividade === index ? 'active' : '' }` }
+                  className={ indexAtividade === index ? 'active' : '' }
                   onClick={ () => handleAtividade( atividade.equipes, index ) }
                 >
                   <div className="ca-header">
-                    <h4 className="ca-title">{ atividade.metodologia.sigla } - { atividade.id }</h4>
+                    <h4 className="ca-title">{ atividade.metodologia.sigla }</h4>
                     <span className="ca-sub-title">{ atividade.objetivo.sigla }</span>
                   </div>
                   <hr/>
                   <div className="ca-info">
-                    <div className="ca-label">Trabalhar todos imóveis</div>
+                    <div className="ca-label font-weight-bold">Trabalhar todos imóveis</div>
                     <div className="ca-value">{ atividade.flTodosImoveis ? 'Sim' : 'Não' }</div>
                   </div>
                   <div className="ca-info">
-                    <div className="ca-label">Abrangência</div>
+                    <div className="ca-label font-weight-bold">Abrangência</div>
                     <div className="ca-value">
                       {
                         abrangenciaEnum.find( a => a.id === atividade.abrangencia ).label
@@ -56,7 +56,7 @@ export const SelecionarAtividade = ({ indexAtividade, atividades, ...props }) =>
                     </div>
                   </div>
                   <div className="ca-info">
-                    <div className="ca-label">Responsabilidade</div>
+                    <div className="ca-label font-weight-bold">Responsabilidade</div>
                     <div className="ca-value">
                       {
                         responsabilidadeEnum.find( r => r.id === atividade.responsabilidade ).label
@@ -64,14 +64,14 @@ export const SelecionarAtividade = ({ indexAtividade, atividades, ...props }) =>
                     </div>
                   </div>
                   <div className="ca-row-info">
-                    <div className="ca-label">Objetivo da Atividade</div>
+                    <div className="ca-label font-weight-bold">Objetivo da Atividade</div>
                     <div className="ca-value">{ atividade.objetivoAtividade }</div>
                   </div>
                 </AtividadeCard>
-              )
-            })
-          }
-        </Col>
+              </Col>
+            )
+          })
+        }
       </Row>
     </Container>
   )

@@ -61,11 +61,17 @@ export const abrangenciaEnum = [
 
 export const situacaoAtividade = {
   aberta: { id: 1, label: "Em aberto" },
-  concluida: { id: 2, label: "Concluída" },
-  naoConcluida: { id: 3, label: "Não concluída" },
-  execucao: { id: 4, label: "Em execução" },
-  planejada: { id: 5, label: "Planejada" },
+  execucao: { id: 2, label: "Em execução" },
+  concluida: { id: 3, label: "Concluída" },
+  nao_concluida: { id: 4, label: "Não concluída" }
 }
+
+export const situacaoAtividadeEnum = [
+  { id: 1, label: "Em aberto" },
+  { id: 2, label: "Em execução" },
+  { id: 3, label: "Concluída" },
+  { id: 4, label: "Não concluída" },
+]
 
 export const responsabilidadeAtividade = {
   regional: { id: 1, label: "Regional" },

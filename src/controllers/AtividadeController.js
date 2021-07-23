@@ -536,6 +536,9 @@ plain = async ( req, res ) => {
     });
   });
 
+  atividade.situacao = 2;
+  await atividade.save();
+
   return res.json( atividade );
 }
 

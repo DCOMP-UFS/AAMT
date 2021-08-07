@@ -29,3 +29,16 @@ export const savePlainRequest = data => {
     ...headerAuthorization()
   });
 }
+
+/**
+ * Consulta na API os membros de uma equipe
+ * 
+ * @param {Object} data 
+ * @returns 
+ */
+export const getMembrosRequest = data => {
+  const { equipe_id } = data;
+  return api.get(`/equipes/membros/${ equipe_id }`, {
+    ...headerAuthorization()
+  });
+}

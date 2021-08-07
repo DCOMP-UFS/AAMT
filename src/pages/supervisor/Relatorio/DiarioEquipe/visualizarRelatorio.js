@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { FaChartPie } from 'react-icons/fa';
 import Bar from '../../../../components/Charts/Bar';
-import { tipoImovel as tipoImovelEnum, tipoRecipiente as tipoRecipienteEnum } from '../../../../config/enumerate';
+import { tipoImovelEnum, tipoRecipiente as tipoRecipienteEnum, situacao_imovel_enum } from '../../../../config/enumerate';
 import { Row, Col } from 'react-bootstrap';
 
 // ACTIONS
 import { changeSidebar } from '../../../../store/actions/sidebarSupervisor';
+import { getBoletimDiarioEquipeRequest } from '../../../../store/Relatorio/relatorioActions';
+import { getMembrosRequest } from '../../../../store/Equipe/equipeActions';
 
 // STYLES
 import { Container } from './styles';
@@ -15,12 +17,12 @@ import { Color } from '../../../../styles/global';
 
 const initVar = {
   imoveisTipoData: {
-    labels: Object.entries( tipoImovelEnum ).map(([ key, value ]) => ( value.sigla ) ),
+    labels: tipoImovelEnum.map( tipo => ( tipo.sigla ) ),
     reload: false,
     datasets: [
       {
         label: 'Total',
-        data: [ 8, 13, 8, 2 ],
+        data: [ 0, 0, 0, 0 ],
         backgroundColor: [
           Color.chartColor[ 0 ][ 0 ],
           Color.chartColor[ 0 ][ 0 ],
@@ -34,62 +36,11 @@ const initVar = {
           Color.chartColor[ 0 ][ 1 ]
         ],
         borderWidth: 1
-      },
-      {
-        label: 'Duarte',
-        data: [ 3, 6, 1, 0 ],
-        backgroundColor: [
-          Color.chartColor[ 1 ][ 0 ],
-          Color.chartColor[ 1 ][ 0 ],
-          Color.chartColor[ 1 ][ 0 ],
-          Color.chartColor[ 1 ][ 0 ]
-        ],
-        borderColor: [
-          Color.chartColor[ 1 ][ 1 ],
-          Color.chartColor[ 1 ][ 1 ],
-          Color.chartColor[ 1 ][ 1 ],
-          Color.chartColor[ 1 ][ 1 ]
-        ],
-        borderWidth: 1
-      },
-      {
-        label: 'Roseli',
-        data: [ 4, 5, 2, 1 ],
-        backgroundColor: [
-          Color.chartColor[ 2 ][ 0 ],
-          Color.chartColor[ 2 ][ 0 ],
-          Color.chartColor[ 2 ][ 0 ],
-          Color.chartColor[ 2 ][ 0 ]
-        ],
-        borderColor: [
-          Color.chartColor[ 2 ][ 1 ],
-          Color.chartColor[ 2 ][ 1 ],
-          Color.chartColor[ 2 ][ 1 ],
-          Color.chartColor[ 2 ][ 1 ]
-        ],
-        borderWidth: 1
-      },
-      {
-        label: 'Kyara',
-        data: [ 1, 2, 5, 1 ],
-        backgroundColor: [
-          Color.chartColor[ 3 ][ 0 ],
-          Color.chartColor[ 3 ][ 0 ],
-          Color.chartColor[ 3 ][ 0 ],
-          Color.chartColor[ 3 ][ 0 ]
-        ],
-        borderColor: [
-          Color.chartColor[ 3 ][ 1 ],
-          Color.chartColor[ 3 ][ 1 ],
-          Color.chartColor[ 3 ][ 1 ],
-          Color.chartColor[ 3 ][ 1 ]
-        ],
-        borderWidth: 1
       }
     ]
   },
   numeroImoveisData: {
-    labels: [ 'Trabalhados', 'Inspecionados', 'Com Foco', 'Tratados', 'Fechados/Recusados', 'Recuperados' ],
+    labels: situacao_imovel_enum.map( situacao => situacao.label ),
     reload: false,
     datasets: [
       {
@@ -110,69 +61,6 @@ const initVar = {
           Color.chartColor[ 0 ][ 1 ],
           Color.chartColor[ 0 ][ 1 ],
           Color.chartColor[ 0 ][ 1 ]
-        ],
-        borderWidth: 1
-      },
-      {
-        label: 'Duarte',
-        data: [ 1, 3, 5, 2, 8, 2 ],
-        backgroundColor: [
-          Color.chartColor[ 1 ][ 0 ],
-          Color.chartColor[ 1 ][ 0 ],
-          Color.chartColor[ 1 ][ 0 ],
-          Color.chartColor[ 1 ][ 0 ],
-          Color.chartColor[ 1 ][ 0 ],
-          Color.chartColor[ 1 ][ 0 ]
-        ],
-        borderColor: [
-          Color.chartColor[ 1 ][ 1 ],
-          Color.chartColor[ 1 ][ 1 ],
-          Color.chartColor[ 1 ][ 1 ],
-          Color.chartColor[ 1 ][ 1 ],
-          Color.chartColor[ 1 ][ 1 ],
-          Color.chartColor[ 1 ][ 1 ]
-        ],
-        borderWidth: 1
-      },
-      {
-        label: 'Roseli',
-        data: [ 6, 3, 5, 2, 0, 1 ],
-        backgroundColor: [
-          Color.chartColor[ 2 ][ 0 ],
-          Color.chartColor[ 2 ][ 0 ],
-          Color.chartColor[ 2 ][ 0 ],
-          Color.chartColor[ 2 ][ 0 ],
-          Color.chartColor[ 2 ][ 0 ],
-          Color.chartColor[ 2 ][ 0 ]
-        ],
-        borderColor: [
-          Color.chartColor[ 2 ][ 1 ],
-          Color.chartColor[ 2 ][ 1 ],
-          Color.chartColor[ 2 ][ 1 ],
-          Color.chartColor[ 2 ][ 1 ],
-          Color.chartColor[ 2 ][ 1 ],
-          Color.chartColor[ 2 ][ 1 ]
-        ],
-        borderWidth: 1
-      },
-      {
-        label: 'Kyara',
-        data: [ 4, 6, 7, 3, 0, 0 ],
-        backgroundColor: [
-          Color.chartColor[ 3 ][ 0 ],
-          Color.chartColor[ 3 ][ 0 ],
-          Color.chartColor[ 3 ][ 0 ],
-          Color.chartColor[ 3 ][ 0 ],
-          Color.chartColor[ 3 ][ 0 ],
-          Color.chartColor[ 3 ][ 0 ]
-        ],
-        borderColor: [
-          Color.chartColor[ 3 ][ 1 ],
-          Color.chartColor[ 3 ][ 1 ],
-          Color.chartColor[ 3 ][ 1 ],
-          Color.chartColor[ 3 ][ 1 ],
-          Color.chartColor[ 3 ][ 1 ],
-          Color.chartColor[ 3 ][ 1 ]
         ],
         borderWidth: 1
       }
@@ -209,7 +97,29 @@ const initVar = {
         borderWidth: 1
       }
     ]
-  }
+  },
+  larvicidaPorAgente: {
+    labels: [],
+    reload: false,
+    datasets: [
+      {
+        label: 'total',
+        data: [],
+        borderWidth: 1
+      }
+    ]
+  },
+  amostrasPorAgente: {
+    labels: [],
+    reload: false,
+    datasets: [
+      {
+        label: 'total',
+        data: [],
+        borderWidth: 1
+      }
+    ]
+  },
 }
 
 const options = {
@@ -218,10 +128,12 @@ const options = {
   }
 }
 
-export const VisualizarRelatorio = ({ ...props }) => {
+export const VisualizarRelatorio = ({ membros, boletimDiarioEquipe, ...props }) => {
   const [ imoveisTipoData, setImoveisTipoData ]           = useState( initVar.imoveisTipoData );
   const [ numeroImoveisData, setNumeroImoveisData ]       = useState( initVar.numeroImoveisData );
   const [ depositosTipoData, setDepositosTipoData ]       = useState( initVar.depositosTipoData );
+  const [ larvicidaPorAgente, setLarvicidaPorAgente ]     = useState( initVar.larvicidaPorAgente );
+  const [ amostrasPorAgente, setAmostrasPorAgente ]       = useState( initVar.amostrasPorAgente );
   const [ equipe_id, setEquipe_id ]                       = useState( undefined );
   const [ data, setData ]                                 = useState( '' );
   const [ qtdRecusa, setQtdRecusa ]                       = useState( 0 );
@@ -242,9 +154,293 @@ export const VisualizarRelatorio = ({ ...props }) => {
 
   useEffect(() => {
     if( equipe_id && data !== '' ) {
-      console.log( equipe_id, data );
+      props.getBoletimDiarioEquipeRequest( equipe_id, data );
+      props.getMembrosRequest( equipe_id );
     }
   }, [ data, equipe_id ]);
+
+  useEffect(() => {
+    if( membros.length > 0 )
+      loadChart();
+  }, [ boletimDiarioEquipe ]);
+
+  useEffect(() => {
+    if( membros.length > 0 ) {
+      let iTipo     = initVar.imoveisTipoData;
+      let datasets  = iTipo.datasets;
+
+      let data = membros.map( ( membro, index ) => {
+        let nome = membro.usuario.nome.split( " " );
+
+        if( nome.length > 2 )
+          nome = nome[ 0 ] + " " + nome[ nome.length - 1 ];
+        else
+          nome = nome[ 0 ];
+
+        return (
+          {
+            label: nome,
+            usuario_id: membro.usuario.id,
+            data: [ 0, 0, 0, 0 ],
+            backgroundColor: [
+              Color.chartColor[ index + 1 ][ 0 ],
+              Color.chartColor[ index + 1 ][ 0 ],
+              Color.chartColor[ index + 1 ][ 0 ],
+              Color.chartColor[ index + 1 ][ 0 ]
+            ],
+            borderColor: [
+              Color.chartColor[ index + 1 ][ 1 ],
+              Color.chartColor[ index + 1 ][ 1 ],
+              Color.chartColor[ index + 1 ][ 1 ],
+              Color.chartColor[ index + 1 ][ 1 ]
+            ],
+            borderWidth: 1
+          }
+        );
+      });
+
+      datasets = [ ...datasets, ...data ];
+
+      setImoveisTipoData({
+        labels: tipoImovelEnum.map( tipo => ( tipo.sigla ) ),
+        reload: false,
+        datasets
+      });
+
+      let iSituacao     = initVar.numeroImoveisData;
+      datasets          = iSituacao.datasets;
+
+      data = membros.map( ( membro, index ) => {
+        let nome = membro.usuario.nome.split( " " );
+
+        if( nome.length > 2 )
+          nome = nome[ 0 ] + " " + nome[ nome.length - 1 ];
+        else
+          nome = nome[ 0 ];
+
+        return (
+          {
+            label: nome,
+            usuario_id: membro.usuario.id,
+            data: [ 0, 0, 0, 0, 0, 0 ],
+            backgroundColor: [
+              Color.chartColor[ index + 1 ][ 0 ],
+              Color.chartColor[ index + 1 ][ 0 ],
+              Color.chartColor[ index + 1 ][ 0 ],
+              Color.chartColor[ index + 1 ][ 0 ],
+              Color.chartColor[ index + 1 ][ 0 ],
+              Color.chartColor[ index + 1 ][ 0 ]
+            ],
+            borderColor: [
+              Color.chartColor[ index + 1 ][ 1 ],
+              Color.chartColor[ index + 1 ][ 1 ],
+              Color.chartColor[ index + 1 ][ 1 ],
+              Color.chartColor[ index + 1 ][ 1 ],
+              Color.chartColor[ index + 1 ][ 1 ],
+              Color.chartColor[ index + 1 ][ 1 ]
+            ],
+            borderWidth: 1
+          }
+        );
+      });
+
+      datasets = [ ...datasets, ...data ];
+
+      setNumeroImoveisData({
+        labels: situacao_imovel_enum.map( situacao => situacao.label ),
+        reload: false,
+        datasets
+      });
+
+      let larvPorAgente = larvicidaPorAgente;
+      let labels        = [];
+      let cores         = [];
+      let cores_borda   = [];
+      let agentes       = [];
+      
+      data = membros.map( ( membro, index ) => {
+        let nome = membro.usuario.nome.split( " " );
+
+        if( nome.length > 2 )
+          nome = nome[ 0 ] + " " + nome[ nome.length - 1 ];
+        else
+          nome = nome[ 0 ];
+
+        labels.push( nome );
+        cores.push( Color.chartColor[ index ][ 0 ] );
+        cores_borda.push( Color.chartColor[ index ][ 1 ] );
+        agentes.push( membro.usuario.id );
+        return 0;
+      });
+
+      larvPorAgente.datasets[ 0 ].data            = data;
+      larvPorAgente.datasets[ 0 ].backgroundColor = cores;
+      larvPorAgente.datasets[ 0 ].borderColor     = cores_borda;
+      larvPorAgente.datasets[ 0 ].agentes         = agentes;
+
+      setLarvicidaPorAgente({
+        ...larvPorAgente,
+        labels,
+        reload: !larvPorAgente.reload
+      });
+
+      let ams_por_agente  = amostrasPorAgente;
+      let labels_ams      = [];
+      let cores_ams       = [];
+      let cores_borda_ams = [];
+      let agentes_ams     = [];
+      
+      let data_ams = membros.map( ( membro, index ) => {
+        let nome = membro.usuario.nome.split( " " );
+
+        if( nome.length > 2 )
+          nome = nome[ 0 ] + " " + nome[ nome.length - 1 ];
+        else
+          nome = nome[ 0 ];
+
+        labels_ams.push( nome );
+        cores_ams.push( Color.chartColor[ index ][ 0 ] );
+        cores_borda_ams.push( Color.chartColor[ index ][ 1 ] );
+        agentes_ams.push( membro.usuario.id );
+        return 0;
+      });
+
+      ams_por_agente.datasets[ 0 ].data            = data_ams;
+      ams_por_agente.datasets[ 0 ].backgroundColor = cores_ams;
+      ams_por_agente.datasets[ 0 ].borderColor     = cores_borda_ams;
+      ams_por_agente.datasets[ 0 ].agentes         = agentes_ams;
+
+      setAmostrasPorAgente({
+        ...ams_por_agente,
+        labels: labels_ams,
+        reload: !ams_por_agente.reload
+      });
+
+      loadChart();
+    }
+  }, [ membros ]);
+
+  const loadChart = () => {
+    if( Object.entries( boletimDiarioEquipe ).length > 0 ) {
+      const imPorTipo     = boletimDiarioEquipe.imoveisPorTipo;
+      const imPorSituacao = boletimDiarioEquipe.imoveisPorSituacao;
+      console.log( boletimDiarioEquipe );
+
+      // Alterando cardInfo númericos
+      setQtdAmostra( boletimDiarioEquipe.amostras.total );
+      setQtdRecusa( boletimDiarioEquipe.imoveis.recusados );
+      setQtdFechada( boletimDiarioEquipe.imoveis.fechados );
+      setQtdDepositoEliminado( boletimDiarioEquipe.depositos.eliminados );
+      setQtdDepositoTratado( boletimDiarioEquipe.depositos.tratados );
+      setQtdTratamentoGrama( boletimDiarioEquipe.depositos.qtd_larvicida );
+
+      // Alterando o gráfico larvicida por Agente
+      let larvPorAgente = larvicidaPorAgente;
+      boletimDiarioEquipe.larvicidaPorAgente.forEach( agente => {
+        let indexAgente = larvPorAgente.datasets[ 0 ].agentes.findIndex( ag => ag === agente.usuario.id );
+
+        if( indexAgente !== -1 ) {
+          larvPorAgente.datasets[ 0 ].data[ indexAgente ] += agente.value;
+        }
+      } );
+
+      setLarvicidaPorAgente( {
+        ...larvPorAgente,
+        reload: !larvPorAgente.reload
+      } );
+
+      // Alterando o gráfico amostras por Agente
+      let amsPorAgente = amostrasPorAgente;
+      boletimDiarioEquipe.amostrasPorAgente.forEach( agente => {
+        let indexAgente = amsPorAgente.datasets[ 0 ].agentes.findIndex( ag => ag === agente.usuario.id );
+
+        if( indexAgente !== -1 ) {
+          amsPorAgente.datasets[ 0 ].data[ indexAgente ] += agente.value;
+        }
+      } );
+
+      setAmostrasPorAgente( {
+        ...amsPorAgente,
+        reload: !amsPorAgente.reload
+      } );
+
+      // Alterando o gráfico depósitos por tipo
+      let depTipo = depositosTipoData;
+      depTipo.datasets[ 0 ].data = boletimDiarioEquipe.depositosPorTipo.map( qtd_deposito => qtd_deposito.value );
+
+      setDepositosTipoData({
+        ...depTipo,
+        reload: !depTipo.reload
+      });
+
+      // Alterando o gráfico imóveis por tipo
+      let datasets  = imoveisTipoData.datasets;
+
+      tipoImovelEnum.forEach( tipo => {
+        let data_index = 0; // Residencial
+
+        if( tipo.slug === 'terreno_baldio' )
+          data_index = 1;
+        if( tipo.slug === 'comercial' )
+          data_index = 2;
+        if( tipo.slug === 'ponto_estrategico' )
+          data_index = 3;
+
+        datasets[ 0 ].data[ data_index ] = imPorTipo[ tipo.slug ].total;
+
+        imPorTipo[ tipo.slug ].agentes.forEach( agente => {
+          datasets = datasets.map( dataset => {
+            if( dataset.usuario_id )
+              if( agente.usuario.id === dataset.usuario_id )
+                dataset.data[ data_index ] += agente.valor;
+            
+            return dataset;
+          } );
+        } );
+      } );
+
+      setImoveisTipoData({
+        labels: tipoImovelEnum.map( tipo => ( tipo.sigla ) ),
+        reload: !imoveisTipoData.reload,
+        datasets
+      });
+
+      // Alterando o gráfico imóveis por situacao
+      datasets  = numeroImoveisData.datasets;
+      situacao_imovel_enum.forEach( situacao => {
+        let data_index = 0; // Trabalhado
+
+        if( situacao.slug === 'inspecionado' )
+          data_index = 1;
+        if( situacao.slug === 'foco' )
+          data_index = 2;
+        if( situacao.slug === 'tratado' )
+          data_index = 3;
+        if( situacao.slug === 'pendencia' )
+          data_index = 4;
+        if( situacao.slug === 'recuperado' )
+          data_index = 5;
+
+        datasets[ 0 ].data[ data_index ] = imPorSituacao[ situacao.slug ].total;
+
+        imPorSituacao[ situacao.slug ].agentes.forEach( agente => {
+          datasets = datasets.map( dataset => {
+            if( dataset.usuario_id )
+              if( agente.usuario.id === dataset.usuario_id )
+                dataset.data[ data_index ] += agente.valor;
+            
+            return dataset;
+          } );
+        } );
+      } );
+
+      setNumeroImoveisData({
+        labels: situacao_imovel_enum.map( situacao => situacao.label ),
+        reload: !numeroImoveisData.reload,
+        datasets
+      });
+    }
+  }
 
   return (
     <Container>
@@ -278,7 +474,7 @@ export const VisualizarRelatorio = ({ ...props }) => {
             <article className="p-0">
               <div className="card">
                 <h2 className="title">Amostras por Agente</h2>
-                <Bar data={ imoveisTipoData } options={ options } />
+                <Bar data={ amostrasPorAgente } options={ { legend: { display: false } } } />
               </div>
             </article>
           </Col>
@@ -286,7 +482,7 @@ export const VisualizarRelatorio = ({ ...props }) => {
             <article className="p-0">
               <div className="card">
                 <h2 className="title">Larvicida por Agente</h2>
-                <Bar data={ numeroImoveisData } options={ options } />
+                <Bar data={ larvicidaPorAgente } options={ { legend: { display: false } } } />
               </div>
             </article>
           </Col>
@@ -296,7 +492,7 @@ export const VisualizarRelatorio = ({ ...props }) => {
             <article style={{ height: '100%', padding: '0 0 30px' }}>
               <div className="card h-100">
                 <h2 className="title">Depósitos por tipo</h2>
-                <Bar data={ depositosTipoData } options={ options } />
+                <Bar data={ depositosTipoData } options={ { legend: { display: false } } } />
               </div>
             </article>
           </Col>
@@ -382,11 +578,14 @@ export const VisualizarRelatorio = ({ ...props }) => {
 }
 
 const mapStateToProps = state => ({
-
+  boletimDiarioEquipe: state.nw_relatorio.boletimDiarioEquipe,
+  membros: state.nw_equipe.membros
 });
 
 const mapDispatchToProps = {
-  changeSidebar
+  changeSidebar,
+  getBoletimDiarioEquipeRequest,
+  getMembrosRequest
 }
 
 export default connect(

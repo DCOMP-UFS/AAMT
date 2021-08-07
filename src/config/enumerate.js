@@ -33,11 +33,20 @@ export const tipoImovel = {
 }
 
 export const tipoImovelEnum = [
-  { id: 1, sigla: "R", label: "Residencial" },
-  { id: 2, sigla: "TB", label: "Terreno Baldio" },
-  { id: 3, sigla: "C", label: "Comercial" },
-  { id: 4, sigla: "PE", label: "Ponto estratégico" }
+  { id: 1, sigla: "R", label: "Residencial", slug: "residencial" },
+  { id: 2, sigla: "TB", label: "Terreno Baldio", slug: "terreno_baldio" },
+  { id: 3, sigla: "C", label: "Comercial", slug: "comercial" },
+  { id: 4, sigla: "PE", label: "Ponto estratégico", slug: "ponto_estrategico" }
 ]
+
+export const situacao_imovel_enum = [
+  { id: 1, sigla: "T", label: "Trabalhado", slug: "trabalhado" },
+  { id: 2, sigla: "I", label: "Inspecionado", slug: "inspecionado" },
+  { id: 3, sigla: "CF", label: "Com Foco", slug: "foco" },
+  { id: 4, sigla: "TR", label: "Tratado", slug: "tratado" },
+  { id: 5, sigla: "P", label: "Fechado/Recusado", slug: "pendencia" },
+  { id: 6, sigla: "R", label: "Recuperado", slug: "recuperado" },
+];
 
 export const perfil = {
   agente: { id: 4, label: "Agente" },

@@ -9,3 +9,13 @@ export const getBoletimSemanalRequest = data => {
     ...headerAuthorization()
   });
 }
+
+/**
+ * Consulta na API do back-end aamt o relatório diário da equipe
+ */
+export const getBoletimDiarioEquipeRequest = args => {
+  const { equipe_id, data } = args;
+  return api.get(`/relatorios/equipe/${ equipe_id }?tipoRelatorio=diario&data=${ data }`, {
+    ...headerAuthorization()
+  });
+}

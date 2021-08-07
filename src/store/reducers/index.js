@@ -38,6 +38,7 @@ import nw_quarteirao from '../Quarteirao/quarteiraoReduce';
 import nw_ciclo from '../Ciclo/cicloReduce';
 import nw_trabalho from '../TrabalhoDiario/trabalhoDiarioReduce';
 import nw_relatorio from '../Relatorio/relatorioReduce';
+import nw_equipe from '../Equipe/equipeReduce';
 
 export default combineReducers({
   sidebarCoordGeral,
@@ -77,5 +78,6 @@ export default combineReducers({
   nw_quarteirao,
   nw_ciclo,
   nw_trabalho,
-  nw_relatorio
+  nw_relatorio,
+  nw_equipe
 });

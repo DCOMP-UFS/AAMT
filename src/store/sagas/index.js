@@ -30,6 +30,7 @@ import { ActionTypes as NW_QuarteiraoActions } from '../Quarteirao/quarteiraoAct
 import { ActionTypes as NW_CicloActions } from '../Ciclo/cicloActions';
 import { ActionTypes as NW_TrabalhoActions } from '../TrabalhoDiario/trabalhoDiarioActions';
 import { ActionTypes as NW_RelatorioActions } from '../Relatorio/relatorioActions';
+import { ActionTypes as NW_EquipeActions } from '../Equipe/equipeActions';
 
 import {
   authenticate,
@@ -75,6 +76,7 @@ import * as NW_QuarteiraoSagas from '../Quarteirao/quarteiraoSagas';
 import * as NW_CicloSagas from '../Ciclo/cicloSagas';
 import * as NW_TrabalhoSagas from '../TrabalhoDiario/trabalhoDiarioSagas';
 import * as NW_RelatorioSagas from '../Relatorio/relatorioSagas';
+import * as NW_EquipeSagas from '../Equipe/equipeSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -167,6 +169,7 @@ export default function* rootSaga() {
     // Nova Estrutura
     takeLatest( NW_AtividadeActions.GET_RESPONSABILITY_ACTIVITIES_REQUEST, NW_AtividadeSagas.getResponsabilityActivities ),
     takeLatest( NW_AtividadeActions.GET_ROTA_EQUIPE_REQUEST, NW_AtividadeSagas.getRotaEquipe ),
+    
 
     // Gerir Rotas
     takeLatest( RotaActions.GET_ROUTE_REQUEST, RotaSagas.getRoute ),
@@ -206,5 +209,9 @@ export default function* rootSaga() {
 
     // Gerir Relatórios
     takeLatest( NW_RelatorioActions.GET_BOLETIM_SEMANAL_REQUEST, NW_RelatorioSagas.getBoletimSemanal ),
+    takeLatest( NW_RelatorioActions.GET_BOLETIM_DIARIO_EQUIPE_REQUEST, NW_RelatorioSagas.getBoletimDiarioEquipe ),
+
+    // Gerir Equipe
+    takeLatest( NW_EquipeActions.GET_MEMBROS_REQUEST, NW_EquipeSagas.getMembros ),
   ]);
 }

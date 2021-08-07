@@ -1,6 +1,7 @@
 import { call, put } from 'redux-saga/effects';
 import {
-  getBoletimSemanalRequest
+  getBoletimSemanalRequest,
+  getBoletimDiarioEquipeRequest
 } from '../../services/requests/Relatorio';
 
 import * as RelatorioActions from './relatorioActions';
@@ -18,5 +19,20 @@ export function* getBoletimSemanal( action ) {
 
   } catch (error) {
     yield put( AppConfigActions.showNotifyToast( "Erro ao consultar boletim semanal, favor verifique a conexão", "error" ) );
+  }
+}
+
+export function* getBoletimDiarioEquipe( action ) {
+  try {
+    const { data, status } = yield call( getBoletimDiarioEquipeRequest, action.payload );
+
+    if( status === 200 ) {
+      yield put( RelatorioActions.setBoletimDiarioEquipe( data ) );
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Falha ao consultar boletim diário da equipe: " + status, "error" ) );
+    }
+
+  } catch (error) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar boletim diário da equipe, favor verifique a conexão", "error" ) );
   }
 }

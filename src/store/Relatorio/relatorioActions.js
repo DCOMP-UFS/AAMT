@@ -1,7 +1,41 @@
 export const ActionTypes = {
   GET_BOLETIM_SEMANAL_REQUEST: "GET_BOLETIM_SEMANAL_REQUEST",
   SET_BOLETIM_SEMANAL: "SET_BOLETIM_SEMANAL",
+  GET_BOLETIM_DIARIO_EQUIPE_REQUEST: "GET_BOLETIM_DIARIO_EQUIPE_REQUEST",
+  SET_BOLETIM_DIARIO_EQUIPE: "SET_BOLETIM_DIARIO_EQUIPE"
 }
+
+/**
+ * Aciona o sagas para consultar os dados do boletim diário
+ * de uma determinada equipe e um determinado dia
+ *
+ * @returns void
+ */
+export const getBoletimDiarioEquipeRequest = ( equipe_id, data ) => {
+  return {
+    type: ActionTypes.GET_BOLETIM_DIARIO_EQUIPE_REQUEST,
+    payload: {
+      equipe_id, 
+      data
+    }
+  }
+}
+
+/**
+ * Seta os dados de um boletim diário da equipe no reduce.
+ *
+ * @param Object data
+ * @returns
+ */
+ export const setBoletimDiarioEquipe = data => {
+  return {
+    type: ActionTypes.SET_BOLETIM_DIARIO_EQUIPE,
+    payload: {
+      data
+    }
+  }
+}
+
 
 /**
  * Aciona o sagas para consultar os dados do boletim diário

@@ -9,10 +9,10 @@ module.exports = {
     let fl_eliminado  = false;
     let amount;
     
-    for( let i = 1; i <= 200; i++ ) {
+    for( let i = 1; i <= 6000; i++ ) {
       amount = 10;
       while( amount-- ) {
-        fl_tratado    = Boolean( faker.datatype.number( { max: 1, min: 0 } ) );
+        fl_tratado    = faker.datatype.number( { max: 100, min: 1 } ) > 90 ? true : false;
         fl_eliminado  = !fl_tratado;
 
         data.push({

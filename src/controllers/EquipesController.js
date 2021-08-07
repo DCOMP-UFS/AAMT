@@ -6,6 +6,7 @@ const Municipio = require('../models/Municipio');
 const Ciclo = require('../models/Ciclo');
 const Atividade = require('../models/Atividade');
 const Equipe = require('../models/Equipe');
+const Membro = require('../models/Membro');
 const SituacaoQuarteirao = require('../models/SituacaoQuarteirao');
 
 // UTILITY
@@ -233,11 +234,32 @@ atualizarApelido = async (req, res) => {
   });
 }
 
+/**
+ * Consultando e retornando os membros de uma equipe
+ */
+getMembros = async ( req, res ) => {
+  const { equipe_id } = req.params;
+
+  const membros = await Membro.findAll({
+    where: {
+      equipe_id
+    },
+    attributes: [ 'tipoPerfil' ],
+    include: {
+      association: 'usuario',
+      attributes: [ 'id', 'nome' ]
+    }
+  });
+
+  res.json( membros );
+}
+
 const router = express.Router();
 router.use(authMiddleware);
 
-router.get('/sup/:id', getTeamsSupervised);
-router.get('/:atividade_id/atividades', getTeams);
-router.put('/apelido/:id', atualizarApelido)
+router.get( '/membros/:equipe_id', getMembros );
+router.get( '/sup/:id', getTeamsSupervised );
+router.get( '/:atividade_id/atividades', getTeams );
+router.put( '/apelido/:id', atualizarApelido );
 
 module.exports = app => app.use('/equipes', router);

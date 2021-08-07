@@ -105,10 +105,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete('inseticidas', {
-      id: {
-        [Op.gt]: 0
-      }
-    });
+    return queryInterface.bulkDelete( 'inseticidas', null, {});
   }
 };

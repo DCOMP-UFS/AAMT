@@ -5,7 +5,7 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     let data = [];
     
-    for( let i = 1; i <= 2000; i++ ) {
+    for( let i = 1; i <= 60000; i++ ) {
       data.push({
         quantidade: faker.datatype.number( { max: 4, min: 1 } ),
         tecnica: 1,

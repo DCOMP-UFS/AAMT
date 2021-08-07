@@ -14,7 +14,7 @@ module.exports = {
 
   down: (queryInterface, Sequelize) => {
     return Promise.all([ 
-      queryInterface.changeColumn('ciclos', 'tipo_imovel', {
+      queryInterface.changeColumn('ciclos', 'data_inicio', {
         type: Sequelize.DATE
       }),
       queryInterface.changeColumn('ciclos', 'data_fim', {

@@ -20,6 +20,14 @@ module.exports = {
         updated_at: new Date()
       },
       {
+        // LIRAa Simão Dias
+        tipo_perfil: 4, // Agente
+        equipe_id: 1,
+        usuario_id: 10,
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
         // PNCD Simão Dias
         tipo_perfil: 3, // Supervisor
         equipe_id: 2,
@@ -32,6 +40,14 @@ module.exports = {
         tipo_perfil: 4, // Agente
         equipe_id: 2,
         usuario_id: 4,
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
+        // PNCD Simão Dias
+        tipo_perfil: 4, // Agente
+        equipe_id: 2,
+        usuario_id: 10,
         created_at: new Date(),
         updated_at: new Date()
       },

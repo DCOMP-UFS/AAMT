@@ -95,6 +95,16 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date()
       },
+      {
+        nome:       'Weslan Rezende Alves',
+        cpf:        '999.111.222-01',
+        rg:         '1.222.333-2',
+        email:      'weslan.alves@aamt.com.br',
+        usuario:    'weslan',
+        senha:      bcrypt.hashSync( '123456', bcrypt.genSaltSync( 10 ) ),
+        created_at: new Date(),
+        updated_at: new Date()
+      },
     ]);
   },
 

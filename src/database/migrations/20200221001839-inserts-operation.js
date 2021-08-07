@@ -37,6 +37,14 @@ module.exports = {
         updated_at: new Date()
       },
       {
+        usuario_id: 10,
+        tipo_perfil: 4,
+        escopo: 2,
+        local_id: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
         usuario_id: 5,
         tipo_perfil: 5,
         escopo: 3,

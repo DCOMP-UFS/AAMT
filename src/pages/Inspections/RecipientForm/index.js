@@ -157,10 +157,6 @@ const RecipientForm = ({ ...props }) => {
   //   }
   // }, []);
 
-  // useEffect(() => {
-
-  // }, []);
-
   useLayoutEffect(() => {
     navigation.setOptions({ headerTitle: steps[step - 1].id });
   }, []);

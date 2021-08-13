@@ -28,6 +28,7 @@ import {
   startRouteRequest,
   removeFinishedRoute,
   setCurrentRoute,
+  finishDailyWork,
 } from '../../store/modules/routes/actions';
 
 import Button from '../../components/Button';
@@ -55,16 +56,6 @@ import {
   EmptyDescription,
 } from './styles';
 
-// const StartActivityButton = ({
-//   user_id,
-//   activity,
-//   isStarted,
-//   inspections,
-//   trabalho_diario_id,
-//   loading,
-//   routes,
-//   ...props
-// }) => {
 const StartActivityButton = ({
   user_id,
   routes,
@@ -108,56 +99,90 @@ const StartActivityButton = ({
     }
   }
 
-  // function handleFinishActivity() {
-  //   if (connState) {
-  //     const [routeLength, inspectionLength] = agentPerformance();
-  //     var confirmationMessage = '';
+  function handleFinishActivity() {
+    if (connState) {
+      const [routeLength, inspectionLength] = agentPerformance();
+      var confirmationMessage = '';
 
-  //     if (inspectionLength < routeLength) {
-  //       confirmationMessage = `Você ainda possui ${
-  //         routeLength - inspectionLength
-  //       } vistorias pendentes.`;
-  //     }
+      if (inspectionLength < routeLength) {
+        confirmationMessage = `Você ainda possui ${
+          routeLength - inspectionLength
+        } vistorias pendentes.`;
+      }
 
-  //     const time = getActualHours();
+      Alert.alert(
+        'Atenção!',
+        `Tem certeza que deseja finalizar esta rota? ${confirmationMessage}`,
+        [
+          {
+            text: 'Não',
+            style: 'cancel',
+          },
+          {
+            text: 'Sim',
+            onPress: () => createInspectionsArray(),
+          },
+        ],
+        { cancelable: false }
+      );
+    } else {
+      Alert.alert(
+        'Ocorreu um erro!',
+        'Você precisa estar conectado á internet para finalizar esta rota'
+      );
+    }
+  }
 
-  //     Alert.alert(
-  //       'Atenção!',
-  //       `Tem certeza que deseja finalizar esta rota? ${confirmationMessage}`,
-  //       [
-  //         {
-  //           text: 'Não',
-  //           style: 'cancel',
-  //         },
-  //         {
-  //           text: 'Sim',
-  //           onPress: () =>
-  //             props.endActivity(activity.trabalhoDiario.id, time, inspections),
-  //         },
-  //       ],
-  //       { cancelable: false }
-  //     );
-  //   } else {
-  //     Alert.alert(
-  //       'Ocorreu um erro!',
-  //       'Você precisa estar conectado á internet para finalizar esta rota'
-  //     );
-  //   }
-  // }
+  function agentPerformance() {
+    var routeLength = 0;
+    var inspectionsLength = 0;
 
-  // function agentPerformance() {
-  //   var routeLength = 0;
-  //   var inspectionsLength = inspections.length;
+    const rota = routes[currentRouteIndex].rota;
 
-  //   routes.map(route => {
-  //     var lados = route.lados;
-  //     lados.map(lado => {
-  //       routeLength += lado.imoveis.length;
-  //     });
-  //   });
+    rota.map(route => {
+      const lados = route.lados;
+      lados.map(lado => {
+        routeLength += lado.imoveis.length;
+        const imoveis = lado.imoveis;
+        imoveis.map(imovel => {
+          if (imovel.inspection) {
+            inspectionsLength += 1;
+          }
+        });
+      });
+    });
 
-  //   return [routeLength, inspectionsLength];
-  // }
+    return [routeLength, inspectionsLength];
+  }
+
+  function createInspectionsArray() {
+    const time = getActualHours();
+    const dailyWorkId = routes[currentRouteIndex].trabalhoDiario.id;
+    const route = routes[currentRouteIndex].rota;
+    const inspections = [];
+
+    route.map(block => {
+      const streets = block.lados;
+      streets.map(street => {
+        const properties = street.imoveis;
+        properties.map(property => {
+          if (property.inspection) {
+            const imovel = {
+              id: property.id,
+              numero: property.numero,
+              sequencia: property.sequencia,
+              responsavel: property.responsavel,
+              complemento: property.complemento,
+              tipoImovel: property.tipoImovel,
+            };
+            const inspection = { ...property.inspection, imovel };
+            inspections.push(inspection);
+          }
+        });
+      });
+    });
+    props.finishDailyWork(inspections, time, dailyWorkId, currentRouteIndex);
+  }
 
   useEffect(() => {
     NetInfo.fetch().then(state => {
@@ -177,19 +202,22 @@ const StartActivityButton = ({
     try {
       const response = await api.get(`/rotas/${user_id}/usuarios/${date}/data`);
 
+      console.log(response.data);
+
       if (
-        response.data.trabalhoDiario &&
+        response.data.trabalhoDiario
+         &&
         response.data.trabalhoDiario.horaFim === null
       ) {
-        setActivities([response.data]);
-      }
-
-      if (response.data.trabalhoDiario.horaInicio) {
-        handleStartActivity(response.data);
+      setActivities([response.data]);
+        if (response.data.trabalhoDiario.horaInicio) {
+          handleStartActivity(response.data);
+        }
       }
 
       console.log(JSON.stringify(response.data));
     } catch (err) {
+      console.log(err);
       Alert.alert(
         'Ocorreu um erro',
         'Não foi possível listar o trabalho diário'
@@ -241,6 +269,7 @@ const StartActivityButton = ({
               setActivities([routes[index]]);
             } else {
               console.log('2 -> entrou aqui');
+              setActivities([routes[index]]);
               // ROTA ANTIGA EM ABERTO - Informar que precisa encerrar a vistoria
               Alert.alert(
                 'Atenção!',
@@ -341,29 +370,28 @@ const StartActivityButton = ({
     ));
   };
 
-  // const ProgressBarComponent = () => {
-  //   const inspectionsSize = inspections.length;
-  //   const propertiesSize = getTotalProperties();
-  //   const percentage = Math.ceil((inspectionsSize / propertiesSize) * 100);
+  const ProgressBarComponent = () => {
+    const [propertiesSize, inspectionsSize] = agentPerformance();
+    const percentage = Math.ceil((inspectionsSize / propertiesSize) * 100);
 
-  //   return (
-  //     <>
-  //       <Header>
-  //         <FontAwesome5 size={23} name="check-circle" color="#3a3c4e" />
-  //         <Title>Progresso da vistoria</Title>
-  //       </Header>
-  //       <BarContainer>
-  //         <DescriptionContainer>
-  //           <PercentageText>{`${inspectionsSize} de ${propertiesSize} imóveis vistoriados`}</PercentageText>
-  //           <PercentageText>{`${percentage}%`}</PercentageText>
-  //         </DescriptionContainer>
-  //         <OutsideBar>
-  //           <InsideBar percentage={percentage} />
-  //         </OutsideBar>
-  //       </BarContainer>
-  //     </>
-  //   );
-  // };
+    return (
+      <Card>
+        <Header>
+          <FontAwesome5 size={23} name="check-circle" color="#3a3c4e" />
+          <Title>Progresso da vistoria</Title>
+        </Header>
+        <BarContainer>
+          <DescriptionContainer>
+            <PercentageText>{`${inspectionsSize} / ${propertiesSize} imóveis`}</PercentageText>
+            <PercentageText>{`${percentage}%`}</PercentageText>
+          </DescriptionContainer>
+          <OutsideBar>
+            <InsideBar percentage={percentage} />
+          </OutsideBar>
+        </BarContainer>
+      </Card>
+    );
+  };
 
   const EmptyState = () => {
     return (
@@ -416,7 +444,10 @@ const StartActivityButton = ({
         {loading ? (
           <LoadingComponent />
         ) : activities.length > 0 ? (
-          <ActivityComponent />
+          <>
+            <ActivityComponent />
+            {currentRouteIndex >= 0 && <ProgressBarComponent />}
+          </>
         ) : (
           <EmptyState />
         )}
@@ -426,15 +457,10 @@ const StartActivityButton = ({
 };
 
 const mapStateToProps = state => ({
-  // activity: state.currentActivity.dailyActivity,
-  // routes: state.currentActivity.routes,
-  // isStarted: state.currentActivity.isStarted,
   user_id: state.user.profile.id,
   routes: state.routes.routes,
   currentRouteIndex: state.routes.currentRouteIndex,
   loadingStartRoute: state.routes.loadingStartRoute,
-  // inspections: state.inspections.vistorias,
-  // loading: state.currentActivity.loading,
 });
 
 const mapDispatchToProps = dispatch =>
@@ -443,6 +469,7 @@ const mapDispatchToProps = dispatch =>
       startRouteRequest,
       removeFinishedRoute,
       setCurrentRoute,
+      finishDailyWork,
     },
     dispatch
   );

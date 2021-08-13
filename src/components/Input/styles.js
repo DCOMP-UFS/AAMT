@@ -10,7 +10,7 @@ export const TextContainer = styled.View`
   width: 100%;
   height: 60px;
   padding: 0 16px;
-  background: #fff;
+  background: ${({ theme }) => theme.colors.input};
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.colors.borderInput};
   ${props =>

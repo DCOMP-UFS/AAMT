@@ -52,3 +52,29 @@ export function addInspection(inspection, address) {
     payload: { inspection, address },
   };
 }
+
+export function finishDailyWork(
+  inspections,
+  end_hour,
+  daily_work_id,
+  current_route_index
+) {
+  return {
+    type: '@routes/FINISH_DAILY_WORK',
+    payload: { inspections, end_hour, daily_work_id, current_route_index },
+  };
+}
+
+export function finishDailyWorkSuccess(current_route_index) {
+  return {
+    type: '@routes/FINISH_DAILY_WORK_SUCCESS',
+    payload: { current_route_index },
+  };
+}
+
+export function editProperty(blockIndex, streetIndex, propertyIndex, property) {
+  return {
+    type: '@routes/EDIT_PROPERTY',
+    payload: { blockIndex, streetIndex, propertyIndex, property },
+  };
+}

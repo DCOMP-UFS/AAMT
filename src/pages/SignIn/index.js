@@ -36,7 +36,7 @@ const SignIn = () => {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor="#F9F9F9" />
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <Container>
         <KeyboardAvoidingView
           style={{ flex: 1 }}

@@ -50,16 +50,6 @@ const WeeklyReport = () => {
     loadReport();
   }, []);
 
-  const colors = [
-    '#8FDDE7',
-    '#FBE5C8',
-    '#B6E5D8',
-    '#FFC2C7',
-    '#D3B5E5',
-    '#E98980',
-    '#E9EAEC',
-  ];
-
   function Bar(data) {
     const CUT_OFF = 0;
     const Labels = ({ x, y, bandwidth, data }) =>
@@ -69,7 +59,7 @@ const WeeklyReport = () => {
           x={value.value > CUT_OFF ? x(0) + 10 : x(value.value) + 10}
           y={y(index) + bandwidth / 2}
           fontSize={14}
-          fill={'black'}
+          fill={value.value > CUT_OFF ? 'white' : 'black'}
           alignmentBaseline={'middle'}
         >
           {value.value}
@@ -94,7 +84,7 @@ const WeeklyReport = () => {
           data={data}
           horizontal={true}
           yAccessor={({ item }) => item.value}
-          svg={{ fill: colors[Math.floor(Math.random() * 6)] }}
+          svg={{ fill: '#0095DA' }}
           contentInset={{ top: 10, bottom: 10 }}
           spacing={0.2}
           gridMin={0}
@@ -160,6 +150,118 @@ const WeeklyReport = () => {
                 <PropertyTitle>Tipo de tratamento</PropertyTitle>
               </Header>
               {Bar(report.recipientDestination)}
+            </Card>
+            <Card>
+              <Header>
+                <PropertyTitle>Situação por imóvel</PropertyTitle>
+              </Header>
+              {Bar(report.properties)}
+            </Card>
+            <Card>
+              <Header>
+                <PropertyTitle>Amostras por depósito - Tipo A1</PropertyTitle>
+              </Header>
+              {Bar(report.sampleByDeposit[0].value)}
+            </Card>
+            <Card>
+              <Header>
+                <PropertyTitle>Amostras por depósito - Tipo A2</PropertyTitle>
+              </Header>
+              {Bar(report.sampleByDeposit[1].value)}
+            </Card>
+            <Card>
+              <Header>
+                <PropertyTitle>Amostras por depósito - Tipo B</PropertyTitle>
+              </Header>
+              {Bar(report.sampleByDeposit[2].value)}
+            </Card>
+            <Card>
+              <Header>
+                <PropertyTitle>Amostras por depósito - Tipo C</PropertyTitle>
+              </Header>
+              {Bar(report.sampleByDeposit[3].value)}
+            </Card>
+            <Card>
+              <Header>
+                <PropertyTitle>Amostras por depósito - Tipo D1</PropertyTitle>
+              </Header>
+              {Bar(report.sampleByDeposit[4].value)}
+            </Card>
+            <Card>
+              <Header>
+                <PropertyTitle>Amostras por depósito - Tipo D2</PropertyTitle>
+              </Header>
+              {Bar(report.sampleByDeposit[4].value)}
+            </Card>
+            <Card>
+              <Header>
+                <PropertyTitle>Amostras por depósito - Tipo E</PropertyTitle>
+              </Header>
+              {Bar(report.sampleByDeposit[4].value)}
+            </Card>
+            <Card>
+              <Header>
+                <PropertyTitle>
+                  Amostras por tipo de imóvel - Residência
+                </PropertyTitle>
+              </Header>
+              {Bar(report.sampleByProperty[0].value)}
+            </Card>
+            <Card>
+              <Header>
+                <PropertyTitle>
+                  Amostras por tipo de imóvel - Comércio
+                </PropertyTitle>
+              </Header>
+              {Bar(report.sampleByProperty[1].value)}
+            </Card>
+            <Card>
+              <Header>
+                <PropertyTitle>
+                  Amostras por tipo de imóvel - Terreno Baldio
+                </PropertyTitle>
+              </Header>
+              {Bar(report.sampleByProperty[2].value)}
+            </Card>
+            <Card>
+              <Header>
+                <PropertyTitle>
+                  Amostras por tipo de imóvel - Ponto Estratégico
+                </PropertyTitle>
+              </Header>
+              {Bar(report.sampleByProperty[3].value)}
+            </Card>
+            <Card>
+              <Header>
+                <PropertyTitle>Amostras por exemplar - Ovo</PropertyTitle>
+              </Header>
+              {Bar(report.sampleExemplary[0].value)}
+            </Card>
+            <Card>
+              <Header>
+                <PropertyTitle>Amostras por exemplar - Pupa</PropertyTitle>
+              </Header>
+              {Bar(report.sampleExemplary[1].value)}
+            </Card>
+            <Card>
+              <Header>
+                <PropertyTitle>
+                  Amostras por exemplar - Exúvia de Pupa
+                </PropertyTitle>
+              </Header>
+              {Bar(report.sampleExemplary[2].value)}
+            </Card>
+            <Card>
+              <Header>
+                <PropertyTitle>Amostras por exemplar - Larva</PropertyTitle>
+              </Header>
+              {Bar(report.sampleExemplary[3].value)}
+            </Card>
+            <Card>
+              <Header>
+                <PropertyTitle>Amostras por exemplar - Adulto</PropertyTitle>
+              </Header>
+              {Bar(report.sampleExemplary[4].value)}
             </Card>
           </>
         )}

@@ -27,6 +27,7 @@ export function* signIn({ payload }) {
       yield put(signInFailure());
     }
   } catch (err) {
+    console.log(err);
     Alert.alert('Autenticação falhou', 'Verifique seu usuário ou senha');
     yield put(signInFailure());
   }

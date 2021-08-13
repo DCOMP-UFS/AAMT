@@ -3,6 +3,7 @@ import {
   View,
   Text,
   TouchableWithoutFeedback,
+  TouchableOpacity,
   Alert,
   StatusBar,
 } from 'react-native';
@@ -16,6 +17,7 @@ import { addInspection } from '../../../store/modules/routes/actions';
 import Icon from 'react-native-vector-icons/Feather';
 
 import Button from '../../../components/Button';
+import Input from '../../../components/Input';
 import ModalComponent from '../../../components/ModalComponent';
 
 import {
@@ -29,6 +31,18 @@ import {
   RecipientOptions,
   NoRecipientText,
   NoRecipientContainer,
+  HeaderModal,
+  TitleModal,
+  DetailsModal,
+  RowContainer,
+  ColumnContainer,
+  SmallModal,
+  DescriptionModal,
+  SubtitleModal,
+  SubContainer,
+  SampleDescriptionModal,
+  RepeatButton,
+  RepeatInput,
 } from './styles';
 
 const RecipientList = ({ ...props }) => {
@@ -51,6 +65,131 @@ const RecipientList = ({ ...props }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
+  const [repetitions, setRepetitions] = useState('');
+
+  function handleRepetitions(index) {
+    console.log(recipientes[index]);
+
+    const copy_recipientes = recipientes;
+    for (let i = 1; i <= parseInt(repetitions); i += 1) {
+      const [first, second, third] = recipientes[index].idUnidade.split('.');
+      const newRecipient = {
+        fl_comFoco: recipientes[index].fl_comFoco,
+        fl_eliminado: recipientes[index].fl_eliminado,
+        fl_tratado: recipientes[index].fl_tratado,
+        amostras: recipientes[index].amostras,
+        tipoRecipiente: recipientes[index].tipoRecipiente,
+        tratamento: recipientes[index].tratamento,
+        sequencia: `${copy_recipientes.length + 1}`,
+        idUnidade:
+          first + '.' + second + '.' + `${copy_recipientes.length + 1}`,
+      };
+      copy_recipientes.push(newRecipient);
+    }
+    setRecipientes(copy_recipientes);
+    setVisible(false);
+  }
+
+  const RecipientModal = ({ recipient, index }) => {
+    return (
+      <>
+        <HeaderModal>
+          <TouchableOpacity onPress={() => setVisible(false)}>
+            <Icon size={23} name="x" color="#a6a8ad" />
+          </TouchableOpacity>
+        </HeaderModal>
+        <TitleModal>{`Depósito ${recipient.idUnidade}`}</TitleModal>
+        <DetailsModal>
+          <SubtitleModal>Informações do depósito</SubtitleModal>
+          <SubContainer>
+            <RowContainer>
+              <ColumnContainer>
+                <SmallModal>Tipo do recipiente</SmallModal>
+                <DescriptionModal>{recipient.tipoRecipiente}</DescriptionModal>
+              </ColumnContainer>
+              <ColumnContainer>
+                <SmallModal>Depósito com foco?</SmallModal>
+                <DescriptionModal>
+                  {recipient.fl_comFoco ? `Sim` : `Não`}
+                </DescriptionModal>
+              </ColumnContainer>
+            </RowContainer>
+            <RowContainer>
+              <ColumnContainer>
+                <SmallModal>Depósito eliminado?</SmallModal>
+                <DescriptionModal>
+                  {recipient.fl_eliminado ? `Sim` : `Não`}
+                </DescriptionModal>
+              </ColumnContainer>
+              <ColumnContainer>
+                <SmallModal>Depósito tratado?</SmallModal>
+                <DescriptionModal>
+                  {recipient.fl_tratado ? `Sim` : `Não`}
+                </DescriptionModal>
+              </ColumnContainer>
+            </RowContainer>
+          </SubContainer>
+          {recipient.fl_tratado && (
+            <>
+              <SubtitleModal>Informações do tratamento</SubtitleModal>
+              <SubContainer>
+                <RowContainer>
+                  <ColumnContainer>
+                    <SmallModal>Técnica empregada</SmallModal>
+                    <DescriptionModal>
+                      {recipient.tratamento.tecnica === 1
+                        ? 'Focal'
+                        : 'Perifocal'}
+                    </DescriptionModal>
+                  </ColumnContainer>
+                </RowContainer>
+                <RowContainer>
+                  <ColumnContainer>
+                    <SmallModal>Quantidade de larvicida</SmallModal>
+                    <DescriptionModal>{`${recipient.tratamento.quantidade} g`}</DescriptionModal>
+                  </ColumnContainer>
+                </RowContainer>
+              </SubContainer>
+            </>
+          )}
+          {recipient.amostras.length > 0 && (
+            <>
+              <SubtitleModal>Amostras</SubtitleModal>
+              <SubContainer>
+                <ColumnContainer>
+                  {recipient.amostras.map(amostra => (
+                    <SampleDescriptionModal
+                      key={amostra.sequencia}
+                    >{`Amostra ${amostra.idUnidade}`}</SampleDescriptionModal>
+                  ))}
+                </ColumnContainer>
+              </SubContainer>
+            </>
+          )}
+          {recipient.amostras.length === 0 && (
+            <>
+              <SubtitleModal>Repetir inspeção</SubtitleModal>
+              <SubContainer>
+                <ColumnContainer>
+                  <Input
+                    value={repetitions}
+                    onChangeText={value => setRepetitions(value)}
+                    keyboardType="number-pad"
+                  />
+                  <TouchableWithoutFeedback
+                    onPress={() => handleRepetitions(index)}
+                  >
+                    <RepeatButton>Repetir</RepeatButton>
+                  </TouchableWithoutFeedback>
+                </ColumnContainer>
+              </SubContainer>
+            </>
+          )}
+        </DetailsModal>
+      </>
+    );
+  };
+
   function removeRecipient(sequencia, index) {
     const newRecipients = recipientes.filter(p => p.sequencia !== sequencia);
     setRecipientes(newRecipients);
@@ -62,11 +201,7 @@ const RecipientList = ({ ...props }) => {
   function finishInspection() {
     dispatch(addInspection(form, address));
     Alert.alert('Operação concluída!', 'Você finalizou esta vistoria');
-    navigation.navigate('Lista de Imóveis', {
-      street: address.street,
-      blockIndex: address.blockIndex,
-      streetIndex: address.streetIndex,
-    });
+    setStep(-1);
   }
 
   useEffect(() => {
@@ -88,7 +223,6 @@ const RecipientList = ({ ...props }) => {
         backgroundColor={visible ? 'rgba(0,0,0,0.5)' : '#fff'}
       />
       <Container>
-        <ModalComponent visible={visible} />
         <Card>
           <Header>
             <HeaderTitle>Lista de depósitos</HeaderTitle>
@@ -99,23 +233,25 @@ const RecipientList = ({ ...props }) => {
           <RecipientContainer>
             {recipientes.length !== 0 ? (
               recipientes.map((recipiente, index) => (
-                <RecipientItem key={index} onPress={() => setVisible(true)}>
-                  <TouchableWithoutFeedback>
-                    <RecipientText>{`Depósito ${recipiente.idUnidade}`}</RecipientText>
-                  </TouchableWithoutFeedback>
-                  <RecipientOptions>
-                    <TouchableWithoutFeedback>
-                      <Icon size={23} name="edit" color="#a6a8ad" />
+                <View key={index}>
+                  <ModalComponent visible={visible}>
+                    <RecipientModal recipient={recipiente} index={index} />
+                  </ModalComponent>
+                  <RecipientItem>
+                    <TouchableWithoutFeedback onPress={() => setVisible(true)}>
+                      <RecipientText>{`Depósito ${recipiente.idUnidade}`}</RecipientText>
                     </TouchableWithoutFeedback>
-                    <TouchableWithoutFeedback
-                      onPress={() =>
-                        removeRecipient(recipiente.sequencia, index)
-                      }
-                    >
-                      <Icon size={23} name="x" color="#E74040" />
-                    </TouchableWithoutFeedback>
-                  </RecipientOptions>
-                </RecipientItem>
+                    <RecipientOptions>
+                      <TouchableWithoutFeedback
+                        onPress={() =>
+                          removeRecipient(recipiente.sequencia, index)
+                        }
+                      >
+                        <Icon size={23} name="x" color="#E74040" />
+                      </TouchableWithoutFeedback>
+                    </RecipientOptions>
+                  </RecipientItem>
+                </View>
               ))
             ) : (
               <NoRecipientContainer>

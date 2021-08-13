@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
 import InspectionsForm from '../../pages/Inspections/InspectionsForm';
 import RecipientList from '../../pages/Inspections/RecipientList';
@@ -30,7 +30,13 @@ const MultiStepForm = () => {
   const [form, setForm] = useState(defaultData);
 
   const route = useRoute();
-  const { blockIndex, streetIndex, propertyIndex } = route.params;
+  const {
+    blockIndex,
+    streetIndex,
+    propertyIndex,
+    property,
+    street,
+  } = route.params;
 
   const address = {
     blockIndex,
@@ -48,6 +54,14 @@ const MultiStepForm = () => {
     totalInspections,
     address,
   };
+
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    if (step === -1) {
+      navigation.goBack();
+    }
+  }, [step]);
 
   switch (step) {
     case 1:

@@ -8,9 +8,10 @@ const defaultTheme: DefaultTheme = {
     blue: '#0095DA',
     black: '#3a3c4e',
     gray: '#8f9bb3',
-    label: '#a6a8ad',
+    label: '#3a3c4e',
+    input: '#F7F6FB',
     textInput: '#999999',
-    borderInput: '#dddddd',
+    borderInput: '#e4e9f2',
     cardBackground: '#ffffff',
 
     confirm: '#22c6b8',

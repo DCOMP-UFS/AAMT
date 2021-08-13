@@ -52,7 +52,7 @@ export const Small = styled.Text`
 export const Description = styled.Text`
   font-family: ${({ theme }) => theme.fonts.regular};
   font-size: 16px;
-  color: ${({ theme }) => theme.colors.label};
+  color: ${({ theme }) => theme.colors.textInput};
 `;
 
 export const ButtonRow = styled.View`
@@ -100,7 +100,7 @@ export const DescriptionContainer = styled.View`
 export const PercentageText = styled.Text`
   font-family: ${({ theme }) => theme.fonts.regular};
   font-size: 16px;
-  color: ${({ theme }) => theme.colors.label};
+  color: ${({ theme }) => theme.colors.textInput};
 `;
 
 export const LoadingComponent = styled(Loading).attrs({})``;

@@ -36,14 +36,15 @@ const ModalComponent = ({ visible, children }) => {
   return (
     <Modal transparent visible={showModal}>
       <View style={styles.modalBackGround}>
-        <Animated.View
+        <Animated.ScrollView
+          showsVerticalScrollIndicator={false}
           style={[
             styles.modalContainer,
             { transform: [{ scale: scaleValue }] },
           ]}
         >
           {children}
-        </Animated.View>
+        </Animated.ScrollView>
       </View>
     </Modal>
   );
@@ -60,9 +61,10 @@ const styles = StyleSheet.create({
     width: '90%',
     backgroundColor: 'white',
     paddingHorizontal: 20,
-    paddingVertical: 30,
-    borderRadius: 10,
+    paddingVertical: 20,
+    borderRadius: 5,
     elevation: 20,
+    maxHeight: '80%',
   },
   header: {
     width: '100%',

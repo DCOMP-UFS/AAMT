@@ -21,74 +21,60 @@ import {
   StatusContainer,
   StatusText,
   DetailsContainer,
+  AddContainer,
+  AddText,
 } from './styles';
 
-// const InspectionStatus = ({ property }) => {
-//   const inspections = property.inspections;
+const InspectionStatus = ({ property }) => {
+  const inspection = property.inspection;
 
-//   const message = [
-//     {
-//       text: 'Vistoriado',
-//       color: '#0095da',
-//     },
-//     {
-//       text: 'Fechado',
-//       color: '#FAA33F',
-//     },
-//     {
-//       text: 'Recusado',
-//       color: '#E5454C',
-//     },
-//   ];
+  const message = [
+    {
+      text: 'Vistoriado',
+      pendencia: null,
+      color: '#0095da',
+    },
+    {
+      text: 'Fechado',
+      pendencia: 'F',
+      color: '#FAA33F',
+    },
+    {
+      text: 'Recusado',
+      pendencia: 'R',
+      color: '#E5454C',
+    },
+  ];
 
-//   var status = {};
+  var status = {};
 
-//   if (inspections) {
-//     const pendencia = inspections.pendencia;
+  if (inspection) {
+    const pendencia = inspection.pendencia;
 
-//     pendencia === null ? (status = message[0]) : {};
-//     pendencia === 'R' ? (status = message[2]) : {};
-//     pendencia === 'F' ? (status = message[1]) : {};
+    pendencia === null && (status = message[0]);
+    pendencia === 'R' && (status = message[2]);
+    pendencia === 'F' && (status = message[1]);
 
-//     return (
-
-//     )
-//   } else {
-//     return (
-//       <TouchableOpacity
-//         onPress={() =>
-//           navigation.navigate('Vistoria', {
-//             house: data[index],
-//             property,
-//           })
-//         }
-//       >
-//         <Icon size={23} name="plus" color="#0095da" />
-//       </TouchableOpacity>
-//     );
-//   }
-//   return (
-//     <TouchableOpacity
-//       onPress={() =>
-//         navigation.navigate('Vistoria', {
-//           house: data[index],
-//           property,
-//         })
-//       }
-//     >
-//       <StatusContainer color={status.color}>
-//         <StatusText>{status.text}</StatusText>
-//       </StatusContainer>
-//     </TouchableOpacity>
-//   );
-// };
+    return (
+      <StatusContainer color={status.color}>
+        <StatusText>{status.text}</StatusText>
+      </StatusContainer>
+    );
+  } else {
+    return (
+      <AddContainer>
+        <Icon size={23} name="plus" color="#0095da" />
+        <AddText>Vistoriar</AddText>
+      </AddContainer>
+    );
+  }
+};
 
 const PropertiesList = ({ currentIndex, inspections, routes, ...props }) => {
   const route = useRoute();
   const { street, blockIndex, streetIndex } = route.params;
-  const [properties, setProperties] = useState(
-    routes[currentIndex].rota[blockIndex].lados[streetIndex].imoveis
-  );
+  const properties =
+    routes[currentIndex].rota[blockIndex].lados[streetIndex].imoveis;
   const navigation = useNavigation();
 
   return (
@@ -106,12 +92,13 @@ const PropertiesList = ({ currentIndex, inspections, routes, ...props }) => {
                   blockIndex,
                   streetIndex,
                   propertyIndex,
+                  property,
+                  street,
                 })
               }
             >
-              <Icon size={23} name="plus" color="#0095da" />
+              <InspectionStatus property={property} />
             </TouchableOpacity>
-            {/* <InspectionStatus property={property} /> */}
           </Header>
           <Label>Rua</Label>
           <Small>{street}</Small>
@@ -133,11 +120,11 @@ const PropertiesList = ({ currentIndex, inspections, routes, ...props }) => {
             onPress={() =>
               navigation.navigate('Detalhes do Imóvel', {
                 address: {
-                  street,
                   blockIndex,
                   streetIndex,
+                  propertyIndex,
+                  street,
                 },
-                propertyIndex,
               })
             }
           >

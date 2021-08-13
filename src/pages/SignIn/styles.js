@@ -5,7 +5,7 @@ export const Container = styled.View`
   flex: 1;
   justify-content: center;
   padding: 0 30px ${Platform.OS === 'android' ? 150 : 40}px;
-  background-color: ${({ theme }) => theme.colors.background};
+  background-color: #ffffff;
 `;
 
 export const WelcomeTitle = styled.Text`

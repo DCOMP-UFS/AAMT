@@ -83,3 +83,15 @@ export const DetailsContainer = styled.View`
   justify-content: center;
   align-self: center;
 `;
+
+export const AddContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+
+export const AddText = styled.Text`
+  font-family: 'Lato-Bold';
+  color: #0095da;
+  font-size: 16px;
+  margin-left: 5px;
+`;

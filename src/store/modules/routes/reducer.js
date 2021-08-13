@@ -7,6 +7,7 @@ const INITIAL_STATE = {
   sampleSequence: 0,
   loadingStartRoute: false,
   routes: [],
+  inspections: [],
 };
 
 export default function routes(state = INITIAL_STATE, action) {
@@ -61,6 +62,45 @@ export default function routes(state = INITIAL_STATE, action) {
         draft.sampleSequence = 0;
         draft.recipientSequence = 1;
         totalInspections = state.totalInspections + 1;
+      });
+    case '@routes/FINISH_DAILY_WORK':
+      return produce(state, draft => {
+        const { inspections } = action.payload;
+        draft.inspections = inspections;
+      });
+    case '@routes/FINISH_DAILY_WORK_SUCCESS':
+      return produce(state, draft => {
+        const { current_route_index } = action.payload;
+        console.log('ola');
+        // draft.inspections = [];
+        // draft.sampleSequence = 0;
+        // draft.recipientSequence = 1;
+        // draft.routes.splice(current_route_index, 1);
+      });
+    case '@routes/EDIT_PROPERTY':
+      return produce(state, draft => {
+        const {
+          blockIndex,
+          streetIndex,
+          propertyIndex,
+          property,
+        } = action.payload;
+        const { currentRouteIndex } = state;
+        draft.routes[currentRouteIndex].rota[blockIndex].lados[
+          streetIndex
+        ].imoveis[propertyIndex].numero = property.number;
+        draft.routes[currentRouteIndex].rota[blockIndex].lados[
+          streetIndex
+        ].imoveis[propertyIndex].complemento = property.complement;
+        draft.routes[currentRouteIndex].rota[blockIndex].lados[
+          streetIndex
+        ].imoveis[propertyIndex].tipoImovel = property.propertyType;
+        draft.routes[currentRouteIndex].rota[blockIndex].lados[
+          streetIndex
+        ].imoveis[propertyIndex].responsavel = property.responsible;
+        draft.routes[currentRouteIndex].rota[blockIndex].lados[
+          streetIndex
+        ].imoveis[propertyIndex].sequencia = property.sequence;
       });
     case '@auth/SIGN_OUT':
       return produce(state, draft => {

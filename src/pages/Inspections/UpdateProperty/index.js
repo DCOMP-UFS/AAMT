@@ -1,55 +1,80 @@
-import React, { useState, useEffect } from 'react';
-import { View } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, ScrollView, Alert } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { editProperty } from '../../../store/modules/currentActivity/actions';
+import { editProperty } from '../../../store/modules/routes/actions';
 
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 
 import { Container, Card, TextContainer, Label } from './styles';
 
-const UpdateProperty = ({ routes, ...props }) => {
-  const [number, setNumber] = useState(null);
-  const [sequence, setSequence] = useState(null);
-  const [responsible, setResponsible] = useState(null);
-  const [complement, setComplement] = useState(null);
-  const [propertyType, setPropertyType] = useState(null);
-
+const UpdateProperty = ({ routes, currentIndex, ...props }) => {
   const route = useRoute();
   const navigation = useNavigation();
   const { blockIndex, streetIndex, propertyIndex } = route.params;
 
-  const property = routes[blockIndex].lados[streetIndex].imoveis[propertyIndex];
+  const formRef = useRef(null);
+  const numberRef = useRef(null);
+  const sequenceRef = useRef(null);
+  const responsibleRef = useRef(null);
+  const complementRef = useRef(null);
+  const propertyTypeRef = useRef(null);
+
+  const property =
+    routes[currentIndex].rota[blockIndex].lados[streetIndex].imoveis[
+      propertyIndex
+    ];
 
   useEffect(() => {
-    setNumber(property.numero ? property.numero.toString() : null);
-    setSequence(property.sequencia ? property.sequencia.toString() : null);
-    setResponsible(property.responsavel);
-    setComplement(property.complemento);
-    setPropertyType(
-      property.tipoImovel ? property.tipoImovel.toString() : null
+    formRef.current.setFieldValue(
+      'number',
+      property.numero ? property.numero.toString() : ''
+    );
+    formRef.current.setFieldValue(
+      'sequence',
+      property.sequencia ? property.sequencia.toString() : ''
+    );
+    formRef.current.setFieldValue(
+      'responsible',
+      property.responsavel ? property.responsavel.toString() : ''
+    );
+    formRef.current.setFieldValue(
+      'complement',
+      property.complemento ? property.complemento.toString() : ''
+    );
+    formRef.current.setFieldValue(
+      'propertyType',
+      property.tipoImovel ? property.tipoImovel.toString() : ''
     );
   }, []);
 
-  function handleSubmit() {
-    const propertyData = {
-      number,
-      sequence,
-      responsible,
-      complement,
-      propertyType,
-    };
-    const property_id = property.id;
-    props.editProperty(
-      property_id,
-      blockIndex,
-      streetIndex,
-      propertyIndex,
-      propertyData
+  function handleEditProperty(data) {
+    console.log(data);
+    props.editProperty(blockIndex, streetIndex, propertyIndex, data);
+    // const propertyData = {
+    //   number,
+    //   sequence,
+    //   responsible,
+    //   complement,
+    //   propertyType,
+    // };
+    // const property_id = property.id;
+    // props.editProperty(
+    //   property_id,
+    //   blockIndex,
+    //   streetIndex,
+    //   propertyIndex,
+    //   propertyData
+    // );
+    Alert.alert(
+      'Operação realizada com sucesso!',
+      'As informações do imóvel foram alteradas'
     );
     navigation.goBack();
   }
@@ -57,65 +82,96 @@ const UpdateProperty = ({ routes, ...props }) => {
   return (
     <Container>
       <Card>
-        <TextContainer>
-          <Label>Número</Label>
-          <Input
-            value={number}
-            onChangeText={setNumber}
-            keyboardType="number-pad"
-            returnKeyType="send"
-          />
-        </TextContainer>
-        <TextContainer>
-          <Label>Sequência (Imóvel)</Label>
-          <Input
-            value={sequence}
-            onChangeText={setSequence}
-            keyboardType="default"
-            returnKeyType="send"
-          />
-        </TextContainer>
-        <TextContainer>
-          <Label>Tipo de imóvel</Label>
-          <Input
-            value={propertyType}
-            onChangeText={setPropertyType}
-            keyboardType="default"
-            returnKeyType="send"
-          />
-        </TextContainer>
-        <TextContainer>
-          <Label>Complemento</Label>
-          <Input
-            value={complement}
-            onChangeText={setComplement}
-            keyboardType="default"
-            returnKeyType="send"
-          />
-        </TextContainer>
-        <TextContainer>
-          <Label>Responsável</Label>
-          <Input
-            value={responsible}
-            onChangeText={setResponsible}
-            keyboardType="default"
-            returnKeyType="send"
-          />
-        </TextContainer>
-        <Button onPress={() => handleSubmit()}>Concluir</Button>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ flex: 1, justifyContent: 'center' }}
+        >
+          <Formik
+            // validationSchema={signInValidationSchema}
+            validateOnChange={false}
+            validateOnBlur={false}
+            initialValues={{
+              number: '',
+              sequence: '',
+              responsible: '',
+              complement: '',
+              propertyType: '',
+            }}
+            innerRef={formRef}
+            onSubmit={values => handleEditProperty(values)}
+          >
+            {({ handleChange, handleSubmit, errors, values }) => (
+              <>
+                <Input
+                  value={values.number}
+                  onChangeText={handleChange('number')}
+                  label="Número"
+                  keyboardType="default"
+                  returnKeyType="next"
+                  autoCapitalize="none"
+                  onSubmitEditing={() => sequenceRef.current?.focus()}
+                  errors={errors.number}
+                />
+                <Input
+                  forwardRef={sequenceRef}
+                  value={values.sequence}
+                  onChangeText={handleChange('sequence')}
+                  label="Sequencia"
+                  autoCapitalize="none"
+                  keyboardType="default"
+                  returnKeyType="send"
+                  onSubmitEditing={() => responsibleRef.current?.focus()}
+                  errors={errors.sequence}
+                />
+                <Input
+                  forwardRef={responsibleRef}
+                  value={values.responsible}
+                  onChangeText={handleChange('responsible')}
+                  label="Responsável"
+                  autoCapitalize="none"
+                  keyboardType="default"
+                  returnKeyType="send"
+                  onSubmitEditing={() => complementRef.current?.focus()}
+                  errors={errors.responsible}
+                />
+                <Input
+                  forwardRef={complementRef}
+                  value={values.complement}
+                  onChangeText={handleChange('complement')}
+                  label="Complemento"
+                  autoCapitalize="none"
+                  keyboardType="default"
+                  returnKeyType="send"
+                  onSubmitEditing={() => propertyTypeRef.current?.focus()}
+                  errors={errors.complement}
+                />
+                <Input
+                  forwardRef={propertyTypeRef}
+                  value={values.propertyType}
+                  onChangeText={handleChange('propertyType')}
+                  label="Tipo de imóvel"
+                  autoCapitalize="none"
+                  keyboardType="default"
+                  returnKeyType="send"
+                  onSubmitEditing={handleSubmit}
+                  errors={errors.propertyType}
+                />
+                <Button onPress={handleSubmit}>Atualizar</Button>
+              </>
+            )}
+          </Formik>
+        </ScrollView>
       </Card>
     </Container>
   );
 };
 
-const mapStateToProps = state => ({ routes: state.currentActivity.routes });
+const mapStateToProps = state => ({
+  routes: state.routes.routes,
+  currentIndex: state.routes.currentRouteIndex,
+});
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      editProperty,
-    },
-    dispatch
-  );
+  bindActionCreators({ editProperty }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(UpdateProperty);

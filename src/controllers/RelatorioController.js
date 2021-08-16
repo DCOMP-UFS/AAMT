@@ -14,187 +14,429 @@ const getEpiWeek = require('../util/getEpiWeek');
 const allowFunction = require('../util/allowFunction');
 
 const { format, parseISO } = require('date-fns');
+const { compareSync } = require('bcryptjs');
 
 const router = express.Router();
 router.use(authMiddleware);
 
+/**
+ * Boletim diário da equipe
+ * @param String equipe_id
+ * @params String data
+ * @return Object
+ */
+
 getTeamDailyActivity = async (req, res) => {
-	const { equipe_id, dia } = req.params;
+  const { equipe_id, data } = req.params;
 
-	let trabalhos = await TrabalhoDiario.findAll({
-		where: {
-			equipe_id,
-			data: dia,
-		}, 
-		include: [
-			{
-				association: 'vistorias',
-				attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-				include: [
-					{
-						association: 'depositos',
-						attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-						include: [
-							{
-								association: 'tratamentos',
-								attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-							},
-							{
-								association: 'amostras',
-								attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-							}
-						]
-					},
-					{
-						association: 'imovel',
-						attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-					}
-				]
-			},
-			{
-				association: 'usuario', 
-				attributes: [ "id", "nome" ],
-			},
-			{
-				association: 'rota',
-				attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-				include: [
-					{
-						association: 'imoveis',
-					}
-				]
-			}
-		]
-	});
+  if (!data) {
+    return res.status(400).json({ error: 'É necessário informar uma data para o relatório diário' });
+  };
 
-	if( !trabalhos )
-		return res.status( 200 ).json( [] );
+  if (!equipe_id) {
+    return res.status(400).json({ error: 'É necessário informar o id da equipe' });
+  }
 
-	let imoveisFechados 			= 0,
-			imoveisRecusados 			= 0,
-			vistoriaNormal 				= 0,
-			vistoriaRecuperada 		= 0,
-			totalImoveisVisitados = 0,
-			totalAmostras 				= 0,
-			amostrasColetadas 		= 0,
-			amostrasPendentes 		= 0,
-			amostrasExaminadas 		= 0,
-			imoveisPlanejados 		= 0,
-			totalImoveisAgente 		= [],
-			imoveisTrabalhados 		= [],
-			imoveisTipo 					= {
-				residencial: 0,
-				terrenoBaldio: 0,
-				comercial: 0,
-				pontoEstrategico: 0
-			};
+  let trabalhos = await TrabalhoDiario.findAll({
+    where: {
+      data,
+    }, 
+    include: [
+      {
+        association: 'vistorias',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+        include: [
+          {
+            association: 'imovel',
+            attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+          },
+          {
+            association: 'depositos',
+            attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+            include: [
+              {
+                association: 'tratamentos',
+                attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+              },
+              {
+                association: 'amostras',
+                attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+              }
+            ]
+          },
+        ]
+      },
+      {
+        association: 'usuario', 
+        attributes: ["id", "nome"],
+      },
+      {
+        association: 'rota',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+        include: [
+          {
+            association: 'imoveis',
+          }
+        ]
+      }
+    ]
+  });
 
-	trabalhos.map( trabalho => {
-		const vistorias = trabalho.vistorias,
-					rotas 		= trabalho.rota;
+  if( !trabalhos )
+    return res.status( 200 ).json( [] );
 
-		totalImoveisVisitados += vistorias.length;
+  let imoveisFechados       = 0;
+  let imoveisRecusados      = 0;
+  let vistoriaNormal        = 0;
+  let vistoriaRecuperada    = 0;
+  let totalImoveisVisitados = 0;
+  let totalAmostras         = 0;
+  let amostrasColetadas     = 0;
+  let amostrasPendentes     = 0;
+  let amostrasPositivas     = 0;
+  let amostrasNegativas     = 0;
+  let imoveisPlanejados     = 0;
+  let totalImoveisAgente    = [];
+  let imoveisTrabalhados    = [];
+  let situacao_depositos    = {
+    eliminados: 0,
+    tratados: 0,
+    qtd_larvicida: 0
+  };
+  let depositosPorTipo      = [
+    { id: 1, label: 'A1', value: 0 },
+    { id: 2, label: 'A2', value: 0 },
+    { id: 3, label: 'B', value: 0 },
+    { id: 4, label: 'C', value: 0 },
+    { id: 5, label: 'D1', value: 0 },
+    { id: 6, label: 'D2', value: 0 },
+    { id: 7, label: 'E', value: 0 },
+  ];
+  let imoveisPorTipo        = {
+    residencial: {
+      total: 0,
+      agentes: []
+    },
+    terreno_baldio: {
+      total: 0,
+      agentes: []
+    },
+    comercial: {
+      total: 0,
+      agentes: []
+    },
+    ponto_estrategico: {
+      total: 0,
+      agentes: []
+    }
+  };
+  let imoveisPorSituacao    = {
+    trabalhado: {
+      total: 0,
+      agentes: []
+    },
+    inspecionado: {
+      total: 0,
+      agentes: []
+    },
+    foco: {
+      total: 0,
+      agentes: []
+    },
+    tratado: {
+      total: 0,
+      agentes: []
+    },
+    pendencia: {
+      total: 0,
+      agentes: []
+    },
+    recuperado: {
+      total: 0,
+      agentes: []
+    }
+  };
+  let larvicidaPorAgente    = [];
+  let amostrasPorAgente     = [];
 
-		const index = totalImoveisAgente.findIndex( p => p.usuario.id === trabalho.usuario.id );
+  trabalhos.map(trabalho => {
+    const vistorias = trabalho.vistorias;
+    const rotas     = trabalho.rota;
+    const agente    = trabalho.usuario;
 
-		if( index >= 0 ) {
-			imoveisPorAgente[ index ].imoveisVistoriados += vistorias.length;
-		} else {
-			const imoveisPorAgente = {
-				usuario: trabalho.usuario,
-				imoveisVistoriados: vistorias.length,
-			}
+    totalImoveisVisitados += vistorias.length;
 
-			totalImoveisAgente.push( imoveisPorAgente );
-		}
+    const index = totalImoveisAgente.findIndex(p => p.usuario.id === agente.id);
 
-		rotas.map( rota => { imoveisPlanejados += rota.imoveis.length; } );
+    if (index >= 0) {
+      totalImoveisAgente[ index ].imoveisVistoriados += vistorias.length;
+    } else {
+      const imoveisPorAgente = {
+        usuario: trabalho.usuario,
+        imoveisVistoriados: vistorias.length,
+      }
 
-		vistorias.map(vistoria => {
-			const depositos = vistoria.depositos;
+      totalImoveisAgente.push( imoveisPorAgente );
+    }
 
-			switch( vistoria.imovel.tipoImovel ) {
-				case 1: // Residencial
-					imoveisTipo.residencial += 1;
-					break;
-				case 2: // Terreno Baldio
-					imoveisTipo.terrenoBaldio += 1;
-					break;
-				case 3: // Comercial
-					imoveisTipo.comercial += 1;
-					break;
-			
-				default: // Ponto Estratégico
-					imoveisTipo.pontoEstrategico += 1;
-					break;
-			}
+    rotas.map(rota => {
+      imoveisPlanejados += rota.imoveis.length;
+    });
 
-			switch( vistoria.pendencia ) {
-				case "R": 
-					imoveisRecusados++;
-					break;
-				case "F":
-					imoveisFechados++;
-					break;
-				case null:
-					break;
-				default:
-					break;
-			}
+    vistorias.map(vistoria => {
+      const depositos = vistoria.depositos;
+      const tipoImovel = vistoria.imovel.tipoImovel;
+      let index = -1;
 
-			switch( vistoria.situacaoVistoria ) {
-				case "R": 
-					vistoriaRecuperada++;
-					break;
-				case "N":
-					vistoriaNormal++;
-					break;
-				default:
-					break;
-			}
+      // Calculando Dash Imóveis Por Tipo.
+      switch( tipoImovel ) {
+        case 1: // Residencial
+          imoveisPorTipo.residencial.total += 1;
+          index = imoveisPorTipo.residencial.agentes.findIndex( ag => ag.usuario.id === agente.id );
 
-			depositos.map( deposito => {
-				const amostras = deposito.amostras;
+          if( index === -1 ) {
+            imoveisPorTipo.residencial.agentes.push({
+              usuario: agente,
+              valor: 1
+            });
+          } else {
+            imoveisPorTipo.residencial.agentes[ index ].valor += 1;
+          }
+          break;
+        case 2: // Terreno Baldio
+          imoveisPorTipo.terreno_baldio.total += 1;
+          index = imoveisPorTipo.terreno_baldio.agentes.findIndex( ag => ag.usuario.id === agente.id );
 
-				amostras.map( amostra => {
-					totalAmostras++;
+          if( index === -1 ) {
+            imoveisPorTipo.terreno_baldio.agentes.push({
+              usuario: agente,
+              valor: 1
+            });
+          } else {
+            imoveisPorTipo.terreno_baldio.agentes[ index ].valor += 1;
+          }
+          break;
+        case 3: // Comercial
+          imoveisPorTipo.comercial.total += 1;
+          index = imoveisPorTipo.comercial.agentes.findIndex( ag => ag.usuario.id === agente.id );
 
-					switch( amostra.situacaoAmostra ) {
-						case 1:
-							amostrasColetadas++;
-							break;
-						case 2:
-							amostrasPendentes++;
-							break;
-						case 3:
-							amostrasExaminadas++;
-							break;
-					}
-				});
-			});
-		});
-	});
+          if( index === -1 ) {
+            imoveisPorTipo.comercial.agentes.push({
+              usuario: agente,
+              valor: 1
+            });
+          } else {
+            imoveisPorTipo.comercial.agentes[ index ].valor += 1;
+          }
+          break;
+      
+        default: // Ponto Estratégico
+          imoveisPorTipo.ponto_estrategico.total += 1;
+          index = imoveisPorTipo.ponto_estrategico.agentes.findIndex( ag => ag.usuario.id === agente.id );
 
-	const resultado = {
-		amostras: {
-			total: totalAmostras,
-			coletadas: amostrasColetadas,
-			pendentes: amostrasPendentes,
-			examinadas: amostrasExaminadas,
-		},
-		imoveis: {
-			totalVistoriado: totalImoveisVisitados,
-			naoVistoriados: imoveisPlanejados - totalImoveisVisitados,
-			fechados: imoveisFechados,
-			recusados: imoveisRecusados,
-			vistoriaNormal,
-			vistoriaRecuperada,
-		},
-		imoveisTipo,
-		vistoriasPorAgentes: totalImoveisAgente,
-	}
+          if( index === -1 ) {
+            imoveisPorTipo.ponto_estrategico.agentes.push({
+              usuario: agente,
+              valor: 1
+            });
+          } else {
+            imoveisPorTipo.ponto_estrategico.agentes[ index ].valor += 1;
+          }
+          break;
+      }
 
-	return res.json( resultado );
+      // Calculando dash imóveis por situação
+      imoveisPorSituacao.trabalhado.total += 1;
+      index = imoveisPorSituacao.trabalhado.agentes.findIndex( ag => ag.usuario.id === agente.id );
+      if( index === -1 ) {
+        imoveisPorSituacao.trabalhado.agentes.push({
+          usuario: agente,
+          valor: 1
+        });
+      } else {
+        imoveisPorSituacao.trabalhado.agentes[ index ].valor += 1;
+      }
+
+      if( depositos.length > 0 ) {
+        imoveisPorSituacao.inspecionado.total += 1;
+        index = imoveisPorSituacao.inspecionado.agentes.findIndex( ag => ag.usuario.id === agente.id );
+        if( index === -1 ) {
+          imoveisPorSituacao.inspecionado.agentes.push({
+            usuario: agente,
+            valor: 1
+          });
+        } else {
+          imoveisPorSituacao.inspecionado.agentes[ index ].valor += 1;
+        }
+      }
+
+      if( vistoria.pendencia === null ) {
+        imoveisPorSituacao.pendencia.total += 1;
+        index = imoveisPorSituacao.pendencia.agentes.findIndex( ag => ag.usuario.id === agente.id );
+        if( index === -1 ) {
+          imoveisPorSituacao.pendencia.agentes.push({
+            usuario: agente,
+            valor: 1
+          });
+        } else {
+          imoveisPorSituacao.pendencia.agentes[ index ].valor += 1;
+        }
+      }
+
+      if( vistoria.situacaoVistoria === "R" ) {
+        imoveisPorSituacao.recuperado.total += 1;
+        index = imoveisPorSituacao.recuperado.agentes.findIndex( ag => ag.usuario.id === agente.id );
+        if( index === -1 ) {
+          imoveisPorSituacao.recuperado.agentes.push({
+            usuario: agente,
+            valor: 1
+          });
+        } else {
+          imoveisPorSituacao.recuperado.agentes[ index ].valor += 1;
+        }
+      }
+
+      switch( vistoria.pendencia ) {
+        case "R": // Recusada
+          imoveisRecusados++;
+          break;
+        case "F": // Fechada
+          imoveisFechados++;
+          break;
+        case null:
+          break;
+        default:
+          break;
+      }
+
+      switch( vistoria.situacaoVistoria ) {
+        case "R": // Recuperada
+          vistoriaRecuperada++;
+          break;
+        case "N": // Normal
+          vistoriaNormal++;
+          break;
+        default:
+          break;
+      }
+
+      let fl_foco     = false;
+      let fl_tratado  = false;
+
+      depositos.map(deposito => {
+        const amostras      = deposito.amostras;
+        const indexDeposito = depositosPorTipo.findIndex( d => d.label === deposito.tipoRecipiente );
+        let qtd_larvicida   = 0;
+
+        depositosPorTipo[ indexDeposito ].value++;
+
+        if( amostras.length > 0 )
+          fl_foco = true;
+        
+        if( deposito.fl_tratado ) {
+          situacao_depositos.tratados++;
+          fl_tratado    = true;
+          qtd_larvicida = deposito.tratamentos.reduce( ( total, tratamento ) => ( total + tratamento.quantidade ), 0 )
+          
+          index = larvicidaPorAgente.findIndex( ag => ag.usuario.id === agente.id );
+          if( index === -1 ) {
+            larvicidaPorAgente.push({
+              usuario: agente,
+              value: qtd_larvicida
+            });
+          } else {
+            larvicidaPorAgente[ index ].value += qtd_larvicida;
+          }
+
+          situacao_depositos.qtd_larvicida += qtd_larvicida;
+        } else if( deposito.fl_eliminado ) {
+          situacao_depositos.eliminados++;
+        }
+
+        amostras.map(amostra => {
+          totalAmostras++;
+
+          index = amostrasPorAgente.findIndex( ag => ag.usuario.id === agente.id );
+          if( index === -1 ) {
+            amostrasPorAgente.push({
+              usuario: agente,
+              value: 1
+            });
+          } else {
+            amostrasPorAgente[ index ].value += 1;
+          }
+
+          switch( amostra.situacaoAmostra ) {
+            case 1:
+              amostrasColetadas++;
+              break;
+            case 2:
+              amostrasPendentes++;
+              break;
+            case 3:
+              amostrasPositivas++;
+              break;
+            case 4:
+              amostrasNegativas++;
+              break;
+          }
+        });
+      });
+
+      if( fl_foco ) {
+        imoveisPorSituacao.foco.total += 1;
+        index = imoveisPorSituacao.foco.agentes.findIndex( ag => ag.usuario.id === agente.id );
+        if( index === -1 ) {
+          imoveisPorSituacao.foco.agentes.push({
+            usuario: agente,
+            valor: 1
+          });
+        } else {
+          imoveisPorSituacao.foco.agentes[ index ].valor += 1;
+        }
+      }
+
+      if( fl_tratado ) {
+        imoveisPorSituacao.tratado.total += 1;
+        index = imoveisPorSituacao.tratado.agentes.findIndex( ag => ag.usuario.id === agente.id );
+        if( index === -1 ) {
+          imoveisPorSituacao.tratado.agentes.push({
+            usuario: agente,
+            valor: 1
+          });
+        } else {
+          imoveisPorSituacao.tratado.agentes[ index ].valor += 1;
+        }
+      }
+    });
+  });
+
+  const resultado = {
+    amostras: {
+      total: totalAmostras,
+      coletadas: amostrasColetadas,
+      pendentes: amostrasPendentes,
+      positivas: amostrasPositivas,
+      negativas: amostrasNegativas,
+    },
+    imoveis: {
+      totalVistoriado: totalImoveisVisitados,
+      naoVistoriados: imoveisPlanejados - totalImoveisVisitados,
+      fechados: imoveisFechados,
+      recusados: imoveisRecusados,
+      vistoriaNormal,
+      vistoriaRecuperada,
+    },
+    vistoriasPorAgentes: totalImoveisAgente,
+    imoveisPorTipo,
+    imoveisPorSituacao,
+    depositosPorTipo,
+    depositos: situacao_depositos,
+    larvicidaPorAgente,
+    amostrasPorAgente
+  }
+
+  return res.json(resultado);
 }
 
 getActivityWeeklyReport = async (req, res) => {
@@ -980,24 +1222,19 @@ getCurrentActivityReport = async ( req, res ) => {
 
 
 /**
- * O supervisor pode ver o relatório da equipe para
- * toda a atividade ou ver por um dia específico
+ * Evolução atual da equipe
+ * @param String equipe_id
+ * @return Object
  */
+
 getTeamActivityReport = async (req, res) => {
-  const { equipe_id }           = req.params;
-  const { data, tipoRelatorio } = req.query;
+  const { equipe_id } = req.params;
 
-  if (tipoRelatorio === 'diario' && !data) {
-    return res.status(400).json({error: 'Você precisa informar uma data para o relatório diário'})
-  };
-
-  const filtroQuery = {
-    equipe_id,
-    ...(tipoRelatorio === 'diario' ? { data } : {}),
+  if (!equipe_id) {
+    return res.status(400).json({ error: 'É necessário informar o id da equipe' });
   };
 
   let trabalhos = await TrabalhoDiario.findAll({
-    where: filtroQuery, 
     include: [
       {
         association: 'vistorias',
@@ -1396,7 +1633,7 @@ getTeamActivityReport = async (req, res) => {
   return res.json(resultado);
 }
 
-router.get('/equipe/:equipe_id/data/:dia', getTeamDailyActivity);
+router.get('/equipe/:equipe_id/data/:data', getTeamDailyActivity);
 router.get('/equipe/:equipe_id', getTeamActivityReport);
 router.get('/semanal', getActivityWeeklyReport);
 router.get('/atividade/:atividade_id', getCurrentActivityReport);

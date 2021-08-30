@@ -17,13 +17,17 @@ export const RelatorioAtividadeEquipe = ({ atividades, ciclo, usuario, ...props 
   useEffect(() => {
     props.changeSidebar( 6, 5 );
     props.getCicloAbertoRequest( usuario.municipio.regional.id );
-  }, []);
+  }, [props, usuario.municipio.regional.id]);
 
   useEffect(() => {
     if( Object.entries( ciclo ).length > 0 ) {
       props.getResponsabilityActivitiesRequest( usuario.id, ciclo.id );
     }
-  }, [ ciclo ]);
+  }, [ciclo, props, usuario.id]);
+
+  const clickTeam = (equipe_id) => {
+    window.location = window.location.origin.toString() + '/sup/relatorio/atividadeEquipe/' + equipe_id;
+  }
 
   return (
     <Container>
@@ -55,7 +59,7 @@ export const RelatorioAtividadeEquipe = ({ atividades, ciclo, usuario, ...props 
                     <ul className="lista-equipes">
                       {
                         atividade.equipes.map( equipe => (
-                          <li key={ 'eq-' + equipe.id }>{ equipe.apelido ? equipe.apelido : 'Equipe' }</li>
+                          <li key={ 'eq-' + equipe.id } onClick={() => clickTeam(equipe.id)}>{ equipe.apelido ? equipe.apelido : 'Equipe' }</li>
                         ) )
                       }
                     </ul>

@@ -40,6 +40,7 @@ getTeamDailyActivity = async (req, res) => {
   let trabalhos = await TrabalhoDiario.findAll({
     where: {
       data,
+      equipe_id
     }, 
     include: [
       {
@@ -1235,6 +1236,9 @@ getTeamActivityReport = async (req, res) => {
   };
 
   let trabalhos = await TrabalhoDiario.findAll({
+    where: {
+      equipe_id
+    }, 
     include: [
       {
         association: 'vistorias',

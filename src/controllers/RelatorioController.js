@@ -37,6 +37,13 @@ getTeamDailyActivity = async (req, res) => {
     return res.status(400).json({ error: 'É necessário informar o id da equipe' });
   }
 
+  let equipe = await Equipe.findOne({
+    where: {
+      id: equipe_id,
+    }
+  });
+
+
   let trabalhos = await TrabalhoDiario.findAll({
     where: {
       data,
@@ -413,6 +420,10 @@ getTeamDailyActivity = async (req, res) => {
   });
 
   const resultado = {
+    equipe: {
+      id: equipe.id,
+      apelido: equipe.apelido,
+    },
     amostras: {
       total: totalAmostras,
       coletadas: amostrasColetadas,
@@ -1235,6 +1246,12 @@ getTeamActivityReport = async (req, res) => {
     return res.status(400).json({ error: 'É necessário informar o id da equipe' });
   };
 
+  let equipe = await Equipe.findOne({
+    where: {
+      id: equipe_id,
+    }
+  });
+
   let trabalhos = await TrabalhoDiario.findAll({
     where: {
       equipe_id
@@ -1610,6 +1627,10 @@ getTeamActivityReport = async (req, res) => {
   });
 
   const resultado = {
+    equipe: {
+      id: equipe.id, 
+      apelido: equipe.apelido,
+    },
     amostras: {
       total: totalAmostras,
       coletadas: amostrasColetadas,

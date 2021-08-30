@@ -15,7 +15,17 @@ export const getBoletimSemanalRequest = data => {
  */
 export const getBoletimDiarioEquipeRequest = args => {
   const { equipe_id, data } = args;
-  return api.get(`/relatorios/equipe/${ equipe_id }?tipoRelatorio=diario&data=${ data }`, {
+  return api.get(`/relatorios/equipe/${ equipe_id }/data/${ data }`, {
+    ...headerAuthorization()
+  });
+}
+
+/**
+ * Consulta na API do back-end aamt o relatório da atividade por equipe
+ */
+ export const getBoletimAtividadeEquipeRequest = args => {
+  const { equipe_id } = args;
+  return api.get(`/relatorios/equipe/${ equipe_id }`, {
     ...headerAuthorization()
   });
 }

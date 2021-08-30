@@ -3,6 +3,7 @@ import { ActionTypes } from './relatorioActions';
 const INITIAL_STATE = {
   boletimSemanal: {},
   boletimDiarioEquipe: {},
+  boletimAtividadeEquipe: {},
   reload: false
 }
 
@@ -18,6 +19,12 @@ export default function Relatorio( state = INITIAL_STATE, action ) {
       return {
         ...state,
         boletimDiarioEquipe: action.payload.data,
+      };
+
+    case ActionTypes.SET_BOLETIM_ATIVIDADE_EQUIPE:
+      return {
+        ...state,
+        boletimAtividadeEquipe: action.payload.data,
       };
 
     default:

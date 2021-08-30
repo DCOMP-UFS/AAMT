@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { FaChartLine } from 'react-icons/fa';
@@ -17,13 +18,13 @@ export const RelatorioAtividadeEquipe = ({ atividades, ciclo, usuario, ...props 
   useEffect(() => {
     props.changeSidebar( 6, 5 );
     props.getCicloAbertoRequest( usuario.municipio.regional.id );
-  }, [props, usuario.municipio.regional.id]);
+  }, []);
 
   useEffect(() => {
     if( Object.entries( ciclo ).length > 0 ) {
       props.getResponsabilityActivitiesRequest( usuario.id, ciclo.id );
     }
-  }, [ciclo, props, usuario.id]);
+  }, [ ciclo ]);
 
   const clickTeam = (equipe_id) => {
     window.location = window.location.origin.toString() + '/sup/relatorio/atividadeEquipe/' + equipe_id;

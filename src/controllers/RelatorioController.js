@@ -530,6 +530,10 @@ getActivityWeeklyReport = async (req, res) => {
         },
       ]
     });
+
+    
+    if( trabalhos.length === 0 )
+      return res.json( [] );
   
     // Contabilizando quantos agentes trabalharam na semana
     let numberAgents = await TrabalhoDiario.findAll({
@@ -553,8 +557,34 @@ getActivityWeeklyReport = async (req, res) => {
       return users.length;
     });
 
-    if( trabalhos.length === 0 )
-      return res.json( [] );
+    let sql_situacao_quarteirao = 
+      'SELECT ' + 
+        'qrt.numero, stq.situacao_quarteirao_id ' +
+      'FROM ' + 
+        'trabalhos_diarios as td ' + 
+      'JOIN equipes as eqp ON (td.equipe_id = eqp.id) ' + 
+      'JOIN atividades as atv ON (eqp.atividade_id = atv.id) ' +
+      'JOIN estratos as est ON (est.atividade_id = atv.id) ' +
+      'JOIN situacao_quarteiroes as stq ON (stq.estrato_id = est.id) ' +
+      'JOIN quarteiroes as qrt ON (stq.quarteirao_id = qrt.id) ' +
+      'WHERE ' +
+        `td.data >= '` + `${data_inicio}'` + ` AND td.data <= '` + `${data_fim}' ` + 
+      `AND atv.id = ${atividade_id} ` + 
+      'GROUP BY qrt.numero, stq.situacao_quarteirao_id';
+
+    let situacao_quarteirao = await SituacaoQuarteirao.sequelize.query( sql_situacao_quarteirao )
+    .then(data => {
+      const [ rows ] = data;
+      let quarteiroes = { trabalhados: [], concluidos: [] };
+      rows.map(quarteirao => {
+        if (quarteirao.situacao_quarteirao_id === 3) {
+          quarteiroes.concluidos.push( quarteirao );
+        } else {
+          quarteiroes.trabalhados.push( quarteirao );
+        }
+      })
+      return quarteiroes;
+    });
 
     let propertiesByType = [
       { label: 'Residencial', sigla: 'R', value: 0 },
@@ -1014,6 +1044,7 @@ getActivityWeeklyReport = async (req, res) => {
         fim: format(parseISO(data_fim), 'dd-MM-yyyy'),
         totalAgentes: numberAgents
       },
+      situacao_quarteirao,
       propertiesByType,
       propertiesByStatus,
       propertiesByPendency,

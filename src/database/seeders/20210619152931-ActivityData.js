@@ -5,7 +5,7 @@ const faker   = require( 'faker' );
 module.exports = {
   up: (queryInterface, Sequelize) => {
     const date        = new Date();
-    const open_cicle  = 4;
+    const open_cicle  = 5;
 
     return queryInterface.bulkInsert( 'atividades', [
       {

@@ -4,7 +4,7 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     let data        = [];
     let amount      = 30;
-    let cicle_open  = '2021-07-02';
+    let cicle_open  = '2021-09-02';
     let date        = new Date( cicle_open );
 
     // LIRAa Simão Dias

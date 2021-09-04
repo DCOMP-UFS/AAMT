@@ -35,7 +35,7 @@ export const RelatorioAtividadeEquipe = ({ atividades, ciclo, usuario, ...props 
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaChartLine /></PageIcon>
-          Relatório da Atividade por Equipe
+          Relatório da Equipe por Atividade
         </h3>
       </PageHeader>
 
@@ -60,7 +60,7 @@ export const RelatorioAtividadeEquipe = ({ atividades, ciclo, usuario, ...props 
                     <ul className="lista-equipes">
                       {
                         atividade.equipes.map( equipe => (
-                          <li key={ 'eq-' + equipe.id } onClick={() => clickTeam(equipe.id)}>{ equipe.apelido ? equipe.apelido : 'Equipe' }</li>
+                          <li key={ 'eq-' + equipe.id } onClick={() => clickTeam(equipe.id)}>{ equipe.apelido ? `Equipe ${equipe.apelido}` : 'Equipe' }</li>
                         ) )
                       }
                     </ul>

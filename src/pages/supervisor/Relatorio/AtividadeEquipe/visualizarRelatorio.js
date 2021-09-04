@@ -136,6 +136,7 @@ export const VisualizarRelatorio = ({ membros, boletimAtividadeEquipe, ...props 
   const [ larvicidaPorAgente, setLarvicidaPorAgente ]     = useState( initVar.larvicidaPorAgente );
   const [ amostrasPorAgente, setAmostrasPorAgente ]       = useState( initVar.amostrasPorAgente );
   const [ equipe_id, setEquipe_id ]                       = useState( undefined );
+  const [ apelidoEquipe, setApelidoEquipe ]               = useState( '' )
   const [ qtdRecusa, setQtdRecusa ]                       = useState( 0 );
   const [ qtdFechada, setQtdFechada ]                     = useState( 0 );
   const [ qtdAmostra, setQtdAmostra ]                     = useState( 0 );
@@ -148,7 +149,7 @@ export const VisualizarRelatorio = ({ membros, boletimAtividadeEquipe, ...props 
 
     setEquipe_id( eq );
 
-    props.changeSidebar( 6, 2 );
+    props.changeSidebar( 6, 5 );
   }, []);
 
   useEffect(() => {
@@ -162,6 +163,13 @@ export const VisualizarRelatorio = ({ membros, boletimAtividadeEquipe, ...props 
     if( membros.length > 0 )
       loadChart();
   }, [ boletimAtividadeEquipe ]);
+
+  useEffect(() => {
+    if ( boletimAtividadeEquipe.equipe ) {
+      console.log(boletimAtividadeEquipe.equipe);
+      setApelidoEquipe( boletimAtividadeEquipe.equipe.apelido );
+    }
+  }, [ boletimAtividadeEquipe ])
 
   useEffect(() => {
     if( membros.length > 0 ) {
@@ -446,7 +454,9 @@ export const VisualizarRelatorio = ({ membros, boletimAtividadeEquipe, ...props 
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaChartPie /></PageIcon>
-          Boletim Diário da Equipe Furia
+          { apelidoEquipe
+              ? `Relatório da Equipe por Atividade - Equipe ${ apelidoEquipe }`
+              : `Relatório da Equipe por Atividade` }
         </h3>
       </PageHeader>
       <section className="card-list">

@@ -113,6 +113,17 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
   const [ amostrasPorDepositos, setAmostrasPorDepositos ] = useState( [] );
   const [ amostrasPorImoveis, setAmostrasPorImoveis ]     = useState( [] );
   const [ amostrasPorExemplar, setAmostrasPorExemplar ]     = useState( [] );
+  const [ quarteiroesConcluidos, setQuarteiroesConcluidos ] = useState( [] );
+  const [ quarteiroesTrabalhados, setQuarteiroesTrabalhados ] = useState( [] );
+
+  function sliceIntoSubArrays (array, size) {
+    const res = [];
+    for (let i = 0; i < array.length; i += size) {
+      const sub_array = array.slice(i, i + size);
+      res.push(sub_array);
+    };
+    return res;
+  }
 
   useEffect(() => {
     const { semana, atividade_id, ano } = props.match.params;
@@ -122,6 +133,7 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
     setAtividade_id( atividade_id );
     setAno( ano );
     props.getBoletimSemanalRequest( semana, atividade_id, ano );
+    console.log(boletimSemanal);
   }, []);
 
   useEffect(() => {
@@ -134,6 +146,12 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
       setAmostrasPorDepositos( boletimSemanal.sampleByDeposit );
       setAmostrasPorImoveis( boletimSemanal.sampleByProperty );
       setAmostrasPorExemplar( boletimSemanal.sampleExemplary );
+
+      const qrt_concluidos = boletimSemanal.situacao_quarteirao.concluidos;
+      const qrt_trabalhados = boletimSemanal.situacao_quarteirao.trabalhados;
+
+      setQuarteiroesTrabalhados( sliceIntoSubArrays(qrt_trabalhados, 10) );
+      setQuarteiroesConcluidos( sliceIntoSubArrays(qrt_concluidos, 10) );
 
       let iTipoData         = imoveisTipoData,
           nImoveisData      = numeroImoveisData,
@@ -196,7 +214,7 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaChartPie /></PageIcon>
-          Boletim Semanal - semana epidemiológica { semana } de { ano }
+          Boletim Semanal - Semana Epidemiológica { semana } de { ano }
         </h3>
       </PageHeader>
       <section className="card-list">
@@ -303,6 +321,78 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
           </Col>
         </Row>
         <Row>
+        <Col md="12">
+            <article className="p-0">
+              <div className="card">
+                <h2 className="title">Nº dos quarteirões trabalhados</h2>
+                <table className="table table-striped table-hover">
+                  <thead className="thead-dark">
+                    <tr>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {
+                      quarteiroesTrabalhados.map( ( row, index ) => (
+                        <tr key={ 'qrt-trab-' + index }>
+                          {
+                            row.map( ( quarteirao, index ) => (
+                              <td>{quarteirao.numero}</td>
+                            ) )
+                          }
+                        </tr>
+                      ) )
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          </Col>
+          <Col md="12">
+            <article className="p-0">
+              <div className="card">
+                <h2 className="title">Nº dos quarteirões concluídos</h2>
+                <table className="table table-striped table-hover">
+                  <thead className="thead-dark">
+                    <tr>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {
+                      quarteiroesConcluidos.map( ( row, index ) => (
+                        <tr key={ 'qrt-conc-' + index }>
+                          {
+                            row.map( ( quarteirao, index ) => (
+                              <td>{quarteirao.numero}</td>
+                            ) )
+                          }
+                        </tr>
+                      ) )
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          </Col>
           <Col md="12">
             <article className="p-0">
               <div className="card">

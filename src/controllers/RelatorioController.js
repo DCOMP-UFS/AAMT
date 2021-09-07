@@ -524,13 +524,24 @@ getActivityWeeklyReport = async (req, res) => {
             },
             {
               association: 'imovel',
-              attributes: ['tipoImovel']
-            }
+              attributes: ['tipoImovel'],
+              include: [
+                {
+                  association: 'lado',
+                  attributes: ['quarteirao_id'],
+                  include: [
+                    {
+                      association: 'quarteirao',
+                      attributes: ['numero'],
+                    }
+                  ],
+                },
+              ],
+            },
           ]
         },
       ]
     });
-
     
     if( trabalhos.length === 0 )
       return res.json( [] );
@@ -630,6 +641,10 @@ getActivityWeeklyReport = async (req, res) => {
         { label: 'Eliminado', value: 0 },
         { label: 'Tratado', value: 0 },
     ];
+
+    let quarteiroesAedesAegypti = [];
+
+    let quarteiroesAedesAlbopictus = [];
 
     let sampleByProperty = [
       { 
@@ -775,6 +790,7 @@ getActivityWeeklyReport = async (req, res) => {
       propertiesByType[ 4 ].value += vistorias.length;
       vistorias.map(vistoria => {
         const depositos = vistoria.depositos;
+        const num_quarteirao = vistoria.imovel.lado.quarteirao.numero;
 
         switch (vistoria.situacaoVistoria) {
           case 'N':
@@ -869,10 +885,12 @@ getActivityWeeklyReport = async (req, res) => {
             // Checando se o imóvel deu posítivo para aegypti
             if( aegypti.length > 0 )
               property_contain_aegypti = true;
+              quarteiroesAedesAegypti.push(num_quarteirao);
 
             // Checando se o imóvel deu posítivo para albopictus
             if( albopictus.length > 0 )
               property_contain_albopictus = true;
+              quarteiroesAedesAlbopictus.push(num_quarteirao);
 
             // Checando se o imóvel deu posítivo para outros
             if( other.length > 0 )
@@ -1055,7 +1073,11 @@ getActivityWeeklyReport = async (req, res) => {
       depositTreated,
       sampleByDeposit,
       sampleByProperty,
-      sampleExemplary
+      sampleExemplary,
+      quarteiroesPositivos: {
+        aedesAegypti: [...new Set(quarteiroesAedesAegypti)],
+        aedesAlbopictus: [...new Set(quarteiroesAedesAlbopictus)]
+      },
     }
 
     return res.json(resultado)

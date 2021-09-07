@@ -115,6 +115,8 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
   const [ amostrasPorExemplar, setAmostrasPorExemplar ]     = useState( [] );
   const [ quarteiroesConcluidos, setQuarteiroesConcluidos ] = useState( [] );
   const [ quarteiroesTrabalhados, setQuarteiroesTrabalhados ] = useState( [] );
+  const [ quarteiroesAedesAegypti, setQuarteiroesAedesAegypti ] = useState( [] );
+  const [ quarteiroesAedesAlbopictus, setQuarteiroesAedesAlbopictus ] = useState( [] );
 
   function sliceIntoSubArrays (array, size) {
     const res = [];
@@ -149,9 +151,13 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
 
       const qrt_concluidos = boletimSemanal.situacao_quarteirao.concluidos;
       const qrt_trabalhados = boletimSemanal.situacao_quarteirao.trabalhados;
+      const qrt_pstv_aegypti = boletimSemanal.quarteiroesPositivos.aedesAegypti;
+      const qrt_pstv_albopictus = boletimSemanal.quarteiroesPositivos.aedesAlbopictus;
 
       setQuarteiroesTrabalhados( sliceIntoSubArrays(qrt_trabalhados, 10) );
       setQuarteiroesConcluidos( sliceIntoSubArrays(qrt_concluidos, 10) );
+      setQuarteiroesAedesAegypti( sliceIntoSubArrays(qrt_pstv_aegypti, 10) );
+      setQuarteiroesAedesAlbopictus( sliceIntoSubArrays(qrt_pstv_albopictus, 10) );
 
       let iTipoData         = imoveisTipoData,
           nImoveisData      = numeroImoveisData,
@@ -523,6 +529,78 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
                         ))
                       }
                     </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          </Col>
+          <Col md="12">
+            <article className="p-0">
+              <div className="card">
+                <h2 className="title">Nº dos quarteirões com Aedes aegypti</h2>
+                <table className="table table-striped table-hover">
+                  <thead className="thead-dark">
+                    <tr>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {
+                      quarteiroesAedesAegypti.map( ( row, index ) => (
+                        <tr key={ 'qrt-pos-aedes-' + index }>
+                          {
+                            row.map( ( quarteirao, index ) => (
+                              <td>{quarteirao}</td>
+                            ) )
+                          }
+                        </tr>
+                      ) )
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          </Col>
+          <Col md="12">
+            <article className="p-0">
+              <div className="card">
+                <h2 className="title">Nº dos quarteirões com Aedes albopictus</h2>
+                <table className="table table-striped table-hover">
+                  <thead className="thead-dark">
+                    <tr>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {
+                      quarteiroesAedesAlbopictus.map( ( row, index ) => (
+                        <tr key={ 'qrt-pos-aedes-' + index }>
+                          {
+                            row.map( ( quarteirao, index ) => (
+                              <td>{quarteirao}</td>
+                            ) )
+                          }
+                        </tr>
+                      ) )
+                    }
                   </tbody>
                 </table>
               </div>

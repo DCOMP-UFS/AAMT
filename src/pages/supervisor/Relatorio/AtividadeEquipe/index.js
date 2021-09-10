@@ -35,7 +35,7 @@ export const RelatorioAtividadeEquipe = ({ atividades, ciclo, usuario, ...props 
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaChartLine /></PageIcon>
-          Relatório da Equipe por Atividade
+          Boletim da Equipe por Atividade
         </h3>
       </PageHeader>
 

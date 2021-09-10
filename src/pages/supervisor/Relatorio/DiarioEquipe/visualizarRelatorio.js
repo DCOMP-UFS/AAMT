@@ -257,7 +257,7 @@ export const VisualizarRelatorio = ({ membros, boletimDiarioEquipe, ...props }) 
       let cores         = [];
       let cores_borda   = [];
       let agentes       = [];
-      
+
       data = membros.map( ( membro, index ) => {
         let nome = membro.usuario.nome.split( " " );
 
@@ -289,7 +289,7 @@ export const VisualizarRelatorio = ({ membros, boletimDiarioEquipe, ...props }) 
       let cores_ams       = [];
       let cores_borda_ams = [];
       let agentes_ams     = [];
-      
+
       let data_ams = membros.map( ( membro, index ) => {
         let nome = membro.usuario.nome.split( " " );
 
@@ -393,7 +393,7 @@ export const VisualizarRelatorio = ({ membros, boletimDiarioEquipe, ...props }) 
             if( dataset.usuario_id )
               if( agente.usuario.id === dataset.usuario_id )
                 dataset.data[ data_index ] += agente.valor;
-            
+
             return dataset;
           } );
         } );
@@ -428,7 +428,7 @@ export const VisualizarRelatorio = ({ membros, boletimDiarioEquipe, ...props }) 
             if( dataset.usuario_id )
               if( agente.usuario.id === dataset.usuario_id )
                 dataset.data[ data_index ] += agente.valor;
-            
+
             return dataset;
           } );
         } );
@@ -447,7 +447,7 @@ export const VisualizarRelatorio = ({ membros, boletimDiarioEquipe, ...props }) 
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaChartPie /></PageIcon>
-          Boletim Diário da Equipe Furia - 17/05/2021
+          Boletim Diário por Equipe Furia - 17/05/2021
         </h3>
       </PageHeader>
       <section className="card-list">

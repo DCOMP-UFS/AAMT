@@ -455,8 +455,8 @@ export const VisualizarRelatorio = ({ membros, boletimAtividadeEquipe, ...props 
         <h3 className="page-title">
           <PageIcon><FaChartPie /></PageIcon>
           { apelidoEquipe
-              ? `Relatório da Equipe por Atividade - Equipe ${ apelidoEquipe }`
-              : `Relatório da Equipe por Atividade` }
+              ? `Boletim da Equipe por Atividade - Equipe ${ apelidoEquipe }`
+              : `Boletim da Equipe por Atividade` }
         </h3>
       </PageHeader>
       <section className="card-list">

@@ -1083,6 +1083,12 @@ getActivityWeeklyReport = async (req, res) => {
     return res.json(resultado)
 }
 
+/**
+ * Boletim de acompanhamento da atividade
+ * @param String atividade_id
+ * @return Object
+ */
+
 getCurrentActivityReport = async ( req, res ) => {
     const { atividade_id }  = req.params;
     const userId            = req.userId; 
@@ -1094,195 +1100,581 @@ getCurrentActivityReport = async ( req, res ) => {
         if( !allow )
             return res.status(403).json({ error: 'Acesso negado' });
 
-    // Situação dos quarteirões + qtd de imóveis totais
-    let sql_imoveis = 
-        'SELECT ' + 
-            'q.id, ' +
-            'sq.situacao_quarteirao_id, ' +
-            'count(i.*) as qtd_imoveis ' +
-        'FROM ' + 
-            'estratos AS est ' +
-            'JOIN situacao_quarteiroes as sq ON (est.id = sq.estrato_id) ' +
-            'JOIN quarteiroes as q ON (q.id = sq.quarteirao_id) ' +
-            'JOIN lados as l ON (l.quarteirao_id = q.id) ' +
-            'JOIN imoveis as i ON (i.lado_id = l.id) ' +
-        'WHERE ' +
-            `est.atividade_id = ${atividade_id} ` +
-        'GROUP BY ' + 
-            'q.id, sq.situacao_quarteirao_id';
-
-    let situacao_quarteiroes = await Atividade.sequelize.query(sql_imoveis).then(data => {
-        const [ rows ] = data;
-        
-        let aberto          = 0,
-            fazendo         = 0,
-            concluido       = 0,
-            totalImoveis    = 0;
-
-        rows.map(row => {
-            switch(row.situacao_quarteirao_id) {
-                case 1:
-                    aberto++;
-                    break;
-                case 2:
-                    fazendo++;
-                    break;
-                case 3:
-                    concluido++;
-                    break;
-            }
-            totalImoveis += parseInt(row.qtd_imoveis)
-        });
-
-        objeto = {
-            aberto,
-            fazendo,
-            concluido,
-            totalImoveis
-        }
-
-        return objeto;
-    });
-
-    // const totalImoveis = situacao_quarteiroes.reduce((total, quarteirao) => {
-    //     return total + parseInt(quarteirao.qtd_imoveis)
-    // }, 0);
-
+    // Selecionando todas as equipes da atividade
     let equipes = await Equipe.findAll({
-        where: {
-            atividade_id
-        },
-        attributes: ['id']
-    }).then(data => {
-        return data.map(({ id }) => id)
+      where: {
+        atividade_id
+      },
+      attributes: [ 'id' ]
     });
 
+    equipes = equipes.map(({ id }) => id);
+
+    // Selecionando todas as vistorias realizadas pelas equipes
     let trabalhos = await TrabalhoDiario.findAll({
-        where: {
-            equipe_id: {
-                [Op.in]: equipes
-            },
-        }, 
-        include: [
+      where: {
+        equipe_id: {
+          [Op.in]: equipes
+        },
+      },
+      include: [
+        {
+          association: 'vistorias',
+          attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+          include: [
             {
-                association: 'vistorias',
-                attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-                include: [
+              association: 'depositos',
+              attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+              include: [
+                {
+                  association: 'tratamentos',
+                  attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+                },
+                {
+                  association: 'amostras',
+                  attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+                  include: [
                     {
-                        association: 'depositos',
-                        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-                        include: [
-                          {
-                            association: 'tratamentos',
-                            attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-                          },
-                          {
-                            association: 'amostras',
-                            attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-                          }
-                        ]
-                    },
-                ]
+                      association: 'exemplares',
+                      attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+                      include: [
+                        {
+                          association: 'mosquito',
+                          attributes: { include: [ 'nome' ], exclude: [ 'createdAt', 'updatedAt' ] },
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
             },
-        ]
+            {
+              association: 'imovel',
+              attributes: ['tipoImovel'],
+              include: [
+                {
+                  association: 'lado',
+                  attributes: ['quarteirao_id'],
+                  include: [
+                    {
+                      association: 'quarteirao',
+                      attributes: ['numero'],
+                    }
+                  ],
+                },
+              ],
+            },
+          ]
+        },
+      ]
+    });
+    
+    if( trabalhos.length === 0 )
+      return res.json( [] );
+    
+    let sql_situacao_quarteirao = 
+      'SELECT ' + 
+        'qrt.numero, stq.situacao_quarteirao_id ' +
+      'FROM ' + 
+        'atividades as atv ' + 
+      'JOIN estratos as est ON (est.atividade_id = atv.id) ' +
+      'JOIN situacao_quarteiroes as stq ON (stq.estrato_id = est.id) ' +
+      'JOIN quarteiroes as qrt ON (stq.quarteirao_id = qrt.id) ' +
+      'WHERE ' +
+      `atv.id = ${atividade_id} ` + 
+      'GROUP BY qrt.numero, stq.situacao_quarteirao_id';
+
+    let situacao_quarteirao = await SituacaoQuarteirao.sequelize.query( sql_situacao_quarteirao )
+    .then(data => {
+      const [ rows ] = data;
+      let quarteiroes = { trabalhados: [], concluidos: [] };
+      rows.map(quarteirao => {
+        if (quarteirao.situacao_quarteirao_id === 3) {
+          quarteiroes.concluidos.push( quarteirao.numero );
+        } else {
+          quarteiroes.trabalhados.push( quarteirao.numero );
+        }
+      })
+      return quarteiroes;
     });
 
-    let imoveisRecusados = 0;
-    let imoveisFechados = 0;
-    let totalLarvicida = 0;
-    let totalVistorias = 0;
-    let totalAmostras = 0;
-    let imoveisPositivos = 0;
-    let imoveisNegativos = 0;
-    let amostrasColetadas = 0;
-    let amostrasPendentes = 0;
-    let amostrasPositivas = 0;
-    let amostrasNegativas = 0;
+    let propertiesByType = [
+      { label: 'Residencial', sigla: 'R', value: 0 },
+      { label: 'Terreno Baldio', sigla: 'TB', value: 0 },
+      { label: 'Comercial', sigla: 'C', value: 0 },
+      { label: 'Ponto Estratégico', sigla: 'PE', value: 0 },
+      { label: 'Total', sigla: 'T', value: 0 },
+    ];
+    
+    let propertiesByStatus = [
+      { label: 'Normal', value: 0 },
+      { label: 'Recuperado', value: 0 },
+    ];
+
+    let properties = [
+      { label: 'Inspecionada', value: 0 },
+      { label: 'Tratada', value: 0 }
+    ];
+
+    let depositTreated = [
+      { label: 'Larvicida', sigla: 'T', value: 'TEMEPHÓS' },
+      { label: 'Gramas', value: 0 },
+      { label: 'Dep. Tratados', value: 0 },
+    ];
+
+    let propertiesByPendency = [
+      { label: 'Fechado', value: 0 },
+      { label: 'Recusado', value: 0 },
+      { label: 'Nenhuma', value: 0 },
+    ];
+
+    let recipientsByType = [
+      { label: 'A1', value: 0 },
+      { label: 'A2', value: 0 },
+      { label: 'B', value: 0 },
+      { label: 'C', value: 0 },
+      { label: 'D1', value: 0 },
+      { label: 'D2', value: 0 },
+      { label: 'E', value: 0 },
+    ];
+
+    let recipientDestination = [
+        { label: 'Eliminado', value: 0 },
+        { label: 'Tratado', value: 0 },
+    ];
+
+    let quarteiroesAedesAegypti = [];
+
+    let quarteiroesAedesAlbopictus = [];
+
+    let sampleByProperty = [
+      { 
+        label: 'Residência', 
+        sigla: 'R',
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 },
+          { label: 'Outros', value: 0 }
+        ] 
+      },
+      { 
+        label: 'Comércio', 
+        sigla: 'C',
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 },
+          { label: 'Outros', value: 0 }
+        ] 
+      },
+      { 
+        label: 'Terreno Baldio', 
+        sigla: 'TB',
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 },
+          { label: 'Outros', value: 0 }
+        ] 
+      },
+      { 
+        label: 'Ponto Estratégico', 
+        sigla: 'PE',
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 },
+          { label: 'Outros', value: 0 }
+        ] 
+      }
+    ];
+
+    let sampleByDeposit = [
+      { 
+        label: 'A1', 
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 }
+        ] 
+      },
+      { 
+        label: 'A2', 
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 }
+        ] 
+      },
+      { 
+        label: 'B', 
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 }
+        ] 
+      },
+      { 
+        label: 'C', 
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 }
+        ] 
+      },
+      { 
+        label: 'D1', 
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 }
+        ] 
+      },
+      { 
+        label: 'D2', 
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 }
+        ] 
+      },
+      { 
+        label: 'E', 
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 }
+        ] 
+      },
+    ]
+
+    let sampleExemplary = [
+      {
+        label: 'Ovo',
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 },
+          { label: 'Outros', value: 0 }
+        ]
+      },
+      {
+        label: 'Pupa',
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 },
+          { label: 'Outros', value: 0 }
+        ]
+      },
+      {
+        label: 'Exúvia de pupa',
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 },
+          { label: 'Outros', value: 0 }
+        ]
+      },
+      {
+        label: 'Larva',
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 },
+          { label: 'Outros', value: 0 }
+        ]
+      },
+      {
+        label: 'Adulto',
+        value: [
+          { label: 'Aedes aegypti', value: 0 },
+          { label: 'Aedes albopictus', value: 0 },
+          { label: 'Outros', value: 0 }
+        ]
+      },
+    ]
+
+    let totalSample = 0;
+
+    // Gerando os indíces do relatório
 
     trabalhos.map(trabalho => {
-        const { vistorias } = trabalho;
+      const vistorias = trabalho.vistorias;
 
-        vistorias.map(vistoria => {
-            switch(vistorias.pendencia) {
-                case 'R':
-                    imoveisRecusados++;
-                    break;
-                case 'F':
-                    imoveisFechados++;
-                    break;
+      propertiesByType[ 4 ].value += vistorias.length;
+      vistorias.map(vistoria => {
+        const depositos = vistoria.depositos;
+        const num_quarteirao = vistoria.imovel.lado.quarteirao.numero;
+
+        switch (vistoria.situacaoVistoria) {
+          case 'N':
+            propertiesByStatus[0].value++;
+            break;
+          case 'R':
+            propertiesByStatus[1].value++;
+            break;
+        }
+
+        switch (vistoria.pendencia) {
+          case 'F':
+            propertiesByPendency[0].value++;
+            break;
+          case 'R':
+            propertiesByPendency[0].value++;
+            break;
+          case null:
+            propertiesByPendency[2].value++;
+            break;
+        }
+
+        switch (vistoria.imovel.tipoImovel) {
+          case 1:
+            propertiesByType[0].value++;
+            break;
+          case 2:
+            propertiesByType[1].value++;
+            break; 
+          case 3:
+            propertiesByType[2].value++;
+            break;
+          case 4:
+            propertiesByType[3].value++;
+            break;   
+        }
+
+        // Somando imóveis inspecionados
+        if( depositos.length > 0 )
+          properties[ 0 ].value++;
+
+        let property_is_trated          = false,
+            property_contain_aegypti    = false,
+            property_contain_albopictus = false,
+            property_contain_other      = false;
+
+        depositos.map(deposito => {
+          switch (deposito.tipoRecipiente) {
+            case 'A1':
+              recipientsByType[0].value++;
+              break;
+            case 'A2':
+              recipientsByType[1].value++;
+              break; 
+            case 'B':
+              recipientsByType[2].value++;
+              break;
+            case 'C':
+              recipientsByType[3].value++;
+              break; 
+            case 'D1':
+              recipientsByType[4].value++;
+              break;
+            case 'D2':
+              recipientsByType[5].value++;
+              break; 
+            case 'E':
+              recipientsByType[6].value++;
+              break;      
+          }
+
+          if( deposito.fl_eliminado )
+            recipientDestination[0].value++;
+
+          if( deposito.fl_tratado ) {
+            recipientDestination[1].value++;
+
+            // Contabilizando recipiente tratado e somando gastos de larvicida
+            depositTreated[ 1 ].value += deposito.tratamentos.reduce( ( accumulator, currentValue ) => accumulator + currentValue.quantidade, 0 );
+            depositTreated[ 2 ].value++;
+
+            // Setando imóvel como tratado
+            property_is_trated = true;
+          }
+
+          totalSample += deposito.amostras.length;
+          deposito.amostras.map( amostra => {
+            let aegypti     = amostra.exemplares.filter( exemplar => exemplar.mosquito.id === 1 ),
+                albopictus  = amostra.exemplares.filter( exemplar => exemplar.mosquito.id === 2 ),
+                other       = amostra.exemplares.filter( exemplar => exemplar.mosquito.id > 2 );
+
+            // Checando se o imóvel deu posítivo para aegypti
+            if( aegypti.length > 0 )
+              property_contain_aegypti = true;
+              quarteiroesAedesAegypti.push(num_quarteirao);
+
+            // Checando se o imóvel deu posítivo para albopictus
+            if( albopictus.length > 0 )
+              property_contain_albopictus = true;
+              quarteiroesAedesAlbopictus.push(num_quarteirao);
+
+            // Checando se o imóvel deu posítivo para outros
+            if( other.length > 0 )
+              property_contain_other = true;
+
+            // Preenchendo informações dos exemplares
+            amostra.exemplares.forEach( exemplar => {
+              switch( exemplar.fase ) {
+                case 1: // Ovo
+                  if( exemplar.mosquito_id === 1 )
+                    sampleExemplary[ 0 ].value[ 0 ].value += exemplar.quantidade;
+
+                  if( exemplar.mosquito_id === 2 )
+                    sampleExemplary[ 0 ].value[ 1 ].value += exemplar.quantidade;
+
+                  if( exemplar.mosquito_id > 2 )
+                    sampleExemplary[ 0 ].value[ 2 ].value += exemplar.quantidade;
+                  break;
+                case 2: // Pupa
+                  if( exemplar.mosquito_id === 1 )
+                    sampleExemplary[ 1 ].value[ 0 ].value += exemplar.quantidade;
+
+                  if( exemplar.mosquito_id === 2 )
+                    sampleExemplary[ 1 ].value[ 1 ].value += exemplar.quantidade;
+
+                  if( exemplar.mosquito_id > 2 )
+                    sampleExemplary[ 1 ].value[ 2 ].value += exemplar.quantidade;
+                  break;
+                case 3: // Exúvia de pupa
+                  if( exemplar.mosquito_id === 1 )
+                    sampleExemplary[ 2 ].value[ 0 ].value += exemplar.quantidade;
+
+                  if( exemplar.mosquito_id === 2 )
+                    sampleExemplary[ 2 ].value[ 1 ].value += exemplar.quantidade;
+
+                  if( exemplar.mosquito_id > 2 )
+                    sampleExemplary[ 2 ].value[ 2 ].value += exemplar.quantidade;
+                  break;
+                case 4: // Larva
+                  if( exemplar.mosquito_id === 1 )
+                    sampleExemplary[ 3 ].value[ 0 ].value += exemplar.quantidade;
+
+                  if( exemplar.mosquito_id === 2 )
+                    sampleExemplary[ 3 ].value[ 1 ].value += exemplar.quantidade;
+
+                  if( exemplar.mosquito_id > 2 )
+                    sampleExemplary[ 3 ].value[ 2 ].value += exemplar.quantidade;
+                  break;
+                case 5: // Adulto
+                  if( exemplar.mosquito_id === 1 )
+                    sampleExemplary[ 4 ].value[ 0 ].value += exemplar.quantidade;
+
+                  if( exemplar.mosquito_id === 2 )
+                    sampleExemplary[ 4 ].value[ 1 ].value += exemplar.quantidade;
+
+                  if( exemplar.mosquito_id > 2 )
+                    sampleExemplary[ 4 ].value[ 2 ].value += exemplar.quantidade;
+                  break;
+              
                 default:
-                    break;
+                  break;
+              }
+            } );
+
+            switch( deposito.tipoRecipiente ) {
+              case 'A1':
+                sampleByDeposit[ 0 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
+                sampleByDeposit[ 0 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                break;
+              case 'A2':
+                sampleByDeposit[ 1 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
+                sampleByDeposit[ 1 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                break; 
+              case 'B':
+                sampleByDeposit[ 2 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
+                sampleByDeposit[ 2 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                break;
+              case 'C':
+                sampleByDeposit[ 3 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
+                sampleByDeposit[ 3 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                break; 
+              case 'D1':
+                sampleByDeposit[ 4 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
+                sampleByDeposit[ 4 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                break;
+              case 'D2':
+                sampleByDeposit[ 5 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
+                sampleByDeposit[ 5 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                break; 
+              case 'E':
+                sampleByDeposit[ 6 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
+                sampleByDeposit[ 6 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                break;      
             }
+          });
+        })
 
-            totalVistorias++;
+        // Somando imóveis tratados
+        if( property_is_trated )
+          properties[ 1 ].value++;
 
-            const { depositos } = vistoria;
+        // Preenchendo resultados de laboratório por imóvel
+        switch( vistoria.imovel.tipoImovel ) {
+          case 1:
+            // Somando imóveis positivos para aegypti
+            if( property_contain_aegypti )
+              sampleByProperty[ 0 ].value[ 0 ].value += 1;
 
-            let imovelPositivo = false;
-            let imovelNegativo = false;
+            // Somando imóveis positivos para albopictus
+            if( property_contain_albopictus )
+              sampleByProperty[ 0 ].value[ 1 ].value += 1;
 
-            depositos.map(deposito => {
-                const amostras = deposito.amostras;
+            // Somando imóveis positivos para outros
+            if( property_contain_other )
+              sampleByProperty[ 0 ].value[ 2 ].value += 1;
 
-                if (deposito.tratamentos[0]) {
-                    totalLarvicida += deposito.tratamentos[0].quantidade;
-                }
+            break;
+          case 2:
+            // Somando imóveis positivos para aegypti
+            if( property_contain_aegypti )
+              sampleByProperty[ 1 ].value[ 0 ].value += 1;
 
+            // Somando imóveis positivos para albopictus
+            if( property_contain_albopictus )
+              sampleByProperty[ 1 ].value[ 1 ].value += 1;
 
-                amostras.map(amostra => {
-                    totalAmostras++;
+            // Somando imóveis positivos para outros
+            if( property_contain_other )
+              sampleByProperty[ 1 ].value[ 2 ].value += 1;
 
-                    switch (amostra.situacaoAmostra) {
-                        case 1:
-                            amostrasColetadas++;
-                            break;
-                        case 2:
-                            amostrasPendentes++;
-                            break;
-                        case 3:
-                            amostrasPositivas++;
-                            imovelPositivo = true;
-                            break;
-                        case 4:
-                            amostrasNegativas++;
-                            imovelNegativo = true;
-                            break;
-                    }
-                })
-            })
+            break; 
+          case 3:
+            // Somando imóveis positivos para aegypti
+            if( property_contain_aegypti )
+              sampleByProperty[ 2 ].value[ 0 ].value += 1;
 
-            if (imovelPositivo) {
-                imoveisPositivos += 1;
-            }
-            if (imovelNegativo) {
-                imoveisNegativos += 1;
-            }
-        });
+            // Somando imóveis positivos para albopictus
+            if( property_contain_albopictus )
+              sampleByProperty[ 2 ].value[ 1 ].value += 1;
+
+            // Somando imóveis positivos para outros
+            if( property_contain_other )
+              sampleByProperty[ 2 ].value[ 2 ].value += 1;
+
+            break;
+          case 4:
+            // Somando imóveis positivos para aegypti
+            if( property_contain_aegypti )
+              sampleByProperty[ 3 ].value[ 0 ].value += 1;
+
+            // Somando imóveis positivos para albopictus
+            if( property_contain_albopictus )
+              sampleByProperty[ 3 ].value[ 1 ].value += 1;
+
+            // Somando imóveis positivos para outros
+            if( property_contain_other )
+              sampleByProperty[ 3 ].value[ 2 ].value += 1;
+
+            break;   
+        }
+      })
     });
 
-    const { totalImoveis } = situacao_quarteiroes;
-    let percentualConclusao = totalVistorias/totalImoveis;
-
-    const relatorio = {
-        pendencia: {
-            imoveisFechados,
-            imoveisRecusados
-        },
-        amostras: {
-            coletadas: amostrasColetadas,
-            pendentes: amostrasPendentes,
-            positivas: amostrasPositivas,
-            negativas: amostrasNegativas,
-        },
-        imoveisPositivos,
-        imoveisNegativos,
-        situacao_quarteiroes,
-        totalVistorias,
-        percentualConclusao,
-        totalLarvicida,
+    const resultado = {
+      situacao_quarteirao,
+      propertiesByType,
+      propertiesByStatus,
+      propertiesByPendency,
+      recipientsByType,
+      recipientDestination,
+      totalSample,
+      properties,
+      depositTreated,
+      sampleByDeposit,
+      sampleByProperty,
+      sampleExemplary,
+      quarteiroesPositivos: {
+        aedesAegypti: [...new Set(quarteiroesAedesAegypti)],
+        aedesAlbopictus: [...new Set(quarteiroesAedesAlbopictus)]
+      },
     }
 
-    return res.json(relatorio);
+    return res.json(resultado);
 }
 
 

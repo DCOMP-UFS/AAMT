@@ -48,6 +48,21 @@ export const situacao_imovel_enum = [
   { id: 6, sigla: "R", label: "Recuperado", slug: "recuperado" },
 ];
 
+export const situacao_vistoria_enum = [
+  { id: 1, sigla: "T", label: "Trabalhado", slug: "trabalhado" },
+  { id: 2, sigla: "I", label: "Inspecionado", slug: "inspecionado" },
+];
+
+export const situacao_deposito_enum = [
+  { id: 1, sigla: "CF", label: "Com Foco", slug: "foco" },
+  { id: 2, sigla: "TR", label: "Tratado", slug: "tratado" },
+];
+
+export const situacao_imovel2_enum = [
+  { id: 1, sigla: "P", label: "Fechado/Recusado", slug: "pendencia" },
+  { id: 2, sigla: "R", label: "Recuperado", slug: "recuperado" },
+];
+
 export const perfil = {
   agente: { id: 4, label: "Agente" },
   coordenador: { id: 2, label: "Coordenador" },

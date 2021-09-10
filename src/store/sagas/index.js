@@ -211,6 +211,7 @@ export default function* rootSaga() {
     takeLatest( NW_RelatorioActions.GET_BOLETIM_SEMANAL_REQUEST, NW_RelatorioSagas.getBoletimSemanal ),
     takeLatest( NW_RelatorioActions.GET_BOLETIM_DIARIO_EQUIPE_REQUEST, NW_RelatorioSagas.getBoletimDiarioEquipe ),
     takeLatest( NW_RelatorioActions.GET_BOLETIM_ATIVIDADE_EQUIPE_REQUEST, NW_RelatorioSagas.getBoletimAtividadeEquipe ),
+    takeLatest( NW_RelatorioActions.GET_BOLETIM_ATIVIDADE_REQUEST, NW_RelatorioSagas.getBoletimAtividade ),
 
     // Gerir Equipe
     takeLatest( NW_EquipeActions.GET_MEMBROS_REQUEST, NW_EquipeSagas.getMembros ),

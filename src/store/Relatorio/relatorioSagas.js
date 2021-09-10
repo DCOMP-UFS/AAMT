@@ -2,7 +2,8 @@ import { call, put } from 'redux-saga/effects';
 import {
   getBoletimSemanalRequest,
   getBoletimDiarioEquipeRequest,
-  getBoletimAtividadeEquipeRequest
+  getBoletimAtividadeEquipeRequest,
+  getBoletimAtividadeRequest
 } from '../../services/requests/Relatorio';
 
 import * as RelatorioActions from './relatorioActions';
@@ -50,5 +51,22 @@ export function* getBoletimAtividadeEquipe( action ) {
 
   } catch (error) {
     yield put( AppConfigActions.showNotifyToast( "Erro ao consultar boletim da atividade por equipe, favor verifique a conexão", "error" ) );
+  }
+}
+
+export function* getBoletimAtividade( action ) {
+  try {
+    const { data, status } = yield call( getBoletimAtividadeRequest, action.payload );
+
+    console.log(data);
+
+    if( status === 200 ) {
+      yield put( RelatorioActions.setBoletimAtividade( data ) );
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Falha ao consultar boletim de acompanhamento da atividade: " + status, "error" ) );
+    }
+
+  } catch (error) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar boletim de acompanhamento da atividade, favor verifique a conexão", "error" ) );
   }
 }

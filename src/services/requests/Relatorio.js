@@ -29,3 +29,14 @@ export const getBoletimDiarioEquipeRequest = args => {
     ...headerAuthorization()
   });
 }
+
+/**
+ * Consulta na API do back-end aamt o relatório de acompanhamento
+ * da atividade
+ */
+ export const getBoletimAtividadeRequest = args => {
+  const { atividade_id } = args;
+  return api.get(`/relatorios/atividade/${ atividade_id }`, {
+    ...headerAuthorization()
+  });
+}

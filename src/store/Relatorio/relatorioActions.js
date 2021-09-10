@@ -4,7 +4,9 @@ export const ActionTypes = {
   GET_BOLETIM_DIARIO_EQUIPE_REQUEST: "GET_BOLETIM_DIARIO_EQUIPE_REQUEST",
   SET_BOLETIM_DIARIO_EQUIPE: "SET_BOLETIM_DIARIO_EQUIPE",
   GET_BOLETIM_ATIVIDADE_EQUIPE_REQUEST: "GET_BOLETIM_ATIVIDADE_EQUIPE_REQUEST",
-  SET_BOLETIM_ATIVIDADE_EQUIPE: "SET_BOLETIM_ATIVIDADE_EQUIPE"
+  SET_BOLETIM_ATIVIDADE_EQUIPE: "SET_BOLETIM_ATIVIDADE_EQUIPE",
+  GET_BOLETIM_ATIVIDADE_REQUEST: "GET_BOLETIM_ATIVIDADE_REQUEST",
+  SET_BOLETIM_ATIVIDADE: "SET_BOLETIM_ATIVIDADE"
 }
 
 /**
@@ -100,3 +102,36 @@ export const setBoletimSemanal = data => {
     }
   }
 }
+
+/**
+ * Aciona o sagas para consultar os dados do boletim
+ * de acompanhamento da atividade
+ *
+ * @returns void
+ */
+ export const getBoletimAtividadeRequest = ( atividade_id ) => {
+  return {
+    type: ActionTypes.GET_BOLETIM_ATIVIDADE_REQUEST,
+    payload: {
+      atividade_id,
+    }
+  }
+}
+
+/**
+ * Seta os dados de um boletim de acompanhamento
+ * da atividade no reduce.
+ *
+ * @param Object data
+ * @returns
+ */
+ export const setBoletimAtividade = data => {
+  return {
+    type: ActionTypes.SET_BOLETIM_ATIVIDADE,
+    payload: {
+      data
+    }
+  }
+}
+
+

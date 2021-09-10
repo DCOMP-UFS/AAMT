@@ -56,6 +56,7 @@ import VisualizarSemanal from './pages/supervisor/Relatorio/Semanal/visualizarRe
 import RelatorioAtividade from './pages/supervisor/Relatorio/Atividade';
 import RelatorioAtividadeEquipe from './pages/supervisor/Relatorio/AtividadeEquipe';
 import VisualizarAtividadeEquipe from './pages/supervisor/Relatorio/AtividadeEquipe/visualizarRelatorio';
+import VisualizarRelatorioAtividade from './pages/supervisor/Relatorio/Atividade/visualizarRelatorio';
 
 // Páginas do agente
 import HomeAgente from './pages/agente/home';
@@ -214,6 +215,7 @@ const Routes = props => {
         <PrivateSupervisor exact path="/sup/relatorio/semanal" component={ RelatorioSemanal } tipoPerfil={ perfil } />
         <PrivateSupervisor exact path="/sup/relatorio/semanal/:semana/:atividade_id/:ano" component={ VisualizarSemanal } tipoPerfil={ perfil } />
         <PrivateSupervisor exact path="/sup/relatorio/atividade" component={ RelatorioAtividade } tipoPerfil={ perfil } />
+        <PrivateSupervisor exact path="/sup/relatorio/atividade/:atividade_id" component={ VisualizarRelatorioAtividade } tipoPerfil={ perfil } />
         <PrivateSupervisor exact path="/sup/relatorio/atividadeEquipe" component={ RelatorioAtividadeEquipe } tipoPerfil={ perfil } />
         <PrivateSupervisor exact path="/sup/relatorio/atividadeEquipe/:equipe_id" component={ VisualizarAtividadeEquipe } tipoPerfil={ perfil } />
         <PrivateSupervisor path="/sup/quarteiroes/:id" component={ EditarQuarteirao } tipoPerfil={ perfil } />

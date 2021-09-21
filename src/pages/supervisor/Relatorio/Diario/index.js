@@ -42,7 +42,7 @@ export const RelatorioDiario = ({ atividades, ciclo, usuario, ...props }) => {
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaChartLine /></PageIcon>
-          Relatório Diário
+          Boletim Diário
         </h3>
       </PageHeader>
 
@@ -73,7 +73,7 @@ export const RelatorioDiario = ({ atividades, ciclo, usuario, ...props }) => {
                             id="panel-side-0"
                           >
                             <PanelTitle>
-                              <p>{ equipe.apelido ? equipe.apelido : 'Equipe' }</p>
+                              <p>{ equipe.apelido ? `Equipe ${equipe.apelido}` : 'Equipe' }</p>
                             </PanelTitle>
                           </AccordionSummary>
                           <AccordionDetails>

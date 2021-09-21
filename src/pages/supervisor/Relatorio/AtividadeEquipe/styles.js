@@ -32,6 +32,7 @@ export const Container = styled.div`
       &:hover {
         background: ${ Color.info };
         border-color: ${ Color.info };
+        color: #FFFFFF;
       }
     }
   }

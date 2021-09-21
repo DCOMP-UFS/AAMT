@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { FaChartLine } from 'react-icons/fa';
@@ -25,12 +26,16 @@ export const RelatorioAtividadeEquipe = ({ atividades, ciclo, usuario, ...props 
     }
   }, [ ciclo ]);
 
+  const clickTeam = (equipe_id) => {
+    window.location = window.location.origin.toString() + '/sup/relatorio/atividadeEquipe/' + equipe_id;
+  }
+
   return (
     <Container>
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaChartLine /></PageIcon>
-          Relatório Diário por Equipe
+          Boletim da Equipe por Atividade
         </h3>
       </PageHeader>
 
@@ -55,7 +60,7 @@ export const RelatorioAtividadeEquipe = ({ atividades, ciclo, usuario, ...props 
                     <ul className="lista-equipes">
                       {
                         atividade.equipes.map( equipe => (
-                          <li key={ 'eq-' + equipe.id }>{ equipe.apelido ? equipe.apelido : 'Equipe' }</li>
+                          <li key={ 'eq-' + equipe.id } onClick={() => clickTeam(equipe.id)}>{ equipe.apelido ? `Equipe ${equipe.apelido}` : 'Equipe' }</li>
                         ) )
                       }
                     </ul>

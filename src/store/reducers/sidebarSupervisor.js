@@ -33,10 +33,10 @@ const INITIAL_STATE = {
     createLink( 5, "Dashboard", false, FaChartPie, "/sup/dashboard"),
     createNav( 6, "Relatórios", false, FaChartLine, [
       createSubmenu( 1, false, "Boletim Diário", "/sup/relatorio/diario" ),
-      createSubmenu( 2, false, "Diário por Equipe", "/sup/relatorio/diarioEquipe" ),
+      createSubmenu( 2, false, "Boletim Diário por Equipe", "/sup/relatorio/diarioEquipe" ),
       createSubmenu( 3, false, "Boletim Semanal", "/sup/relatorio/semanal" ),
-      createSubmenu( 4, false, "Atividade", "/sup/relatorio/atividade" ),
-      createSubmenu( 5, false, "Equipe por Atividade", "/sup/relatorio/atividadeEquipe" ),
+      createSubmenu( 4, false, "Boletim Geral da Atividade", "/sup/relatorio/atividade" ),
+      createSubmenu( 5, false, "Boletim da Equipe por Atividade", "/sup/relatorio/atividadeEquipe" ),
     ]),
     createCategory( "Cadastros Básicos" ),
     createLink( 4, "Imóveis", false, IoIosHome, "/sup/imoveis"),

@@ -169,7 +169,7 @@ export default function* rootSaga() {
     // Nova Estrutura
     takeLatest( NW_AtividadeActions.GET_RESPONSABILITY_ACTIVITIES_REQUEST, NW_AtividadeSagas.getResponsabilityActivities ),
     takeLatest( NW_AtividadeActions.GET_ROTA_EQUIPE_REQUEST, NW_AtividadeSagas.getRotaEquipe ),
-    
+
 
     // Gerir Rotas
     takeLatest( RotaActions.GET_ROUTE_REQUEST, RotaSagas.getRoute ),
@@ -210,6 +210,8 @@ export default function* rootSaga() {
     // Gerir Relatórios
     takeLatest( NW_RelatorioActions.GET_BOLETIM_SEMANAL_REQUEST, NW_RelatorioSagas.getBoletimSemanal ),
     takeLatest( NW_RelatorioActions.GET_BOLETIM_DIARIO_EQUIPE_REQUEST, NW_RelatorioSagas.getBoletimDiarioEquipe ),
+    takeLatest( NW_RelatorioActions.GET_BOLETIM_ATIVIDADE_EQUIPE_REQUEST, NW_RelatorioSagas.getBoletimAtividadeEquipe ),
+    takeLatest( NW_RelatorioActions.GET_BOLETIM_ATIVIDADE_REQUEST, NW_RelatorioSagas.getBoletimAtividade ),
 
     // Gerir Equipe
     takeLatest( NW_EquipeActions.GET_MEMBROS_REQUEST, NW_EquipeSagas.getMembros ),

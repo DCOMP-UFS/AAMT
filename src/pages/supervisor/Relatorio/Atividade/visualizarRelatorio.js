@@ -7,7 +7,7 @@ import { Row, Col } from 'react-bootstrap';
 
 // ACTIONS
 import { changeSidebar } from '../../../../store/actions/sidebarSupervisor';
-import { getBoletimSemanalRequest } from '../../../../store/Relatorio/relatorioActions';
+import { getBoletimAtividadeRequest } from '../../../../store/Relatorio/relatorioActions';
 
 // STYLES
 import { Container } from './styles';
@@ -97,7 +97,7 @@ const initVar = {
   }
 }
 
-export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
+export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
   const [ imoveisTipoData, setImoveisTipoData ]           = useState( initVar.imoveisTipoData );
   const [ numeroImoveisData, setNumeroImoveisData ]       = useState( initVar.numeroImoveisData );
   const [ depositosTipoData, setDepositosTipoData ]       = useState( initVar.depositosTipoData );
@@ -128,31 +128,29 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
   }
 
   useEffect(() => {
-    const { semana, atividade_id, ano } = props.match.params;
+    const { atividade_id } = props.match.params;
 
-    props.changeSidebar( 6, 3 );
-    setSemana( semana );
+    props.changeSidebar( 6, 4 );
     setAtividade_id( atividade_id );
-    setAno( ano );
-    props.getBoletimSemanalRequest( semana, atividade_id, ano );
-    console.log(boletimSemanal);
+    props.getBoletimAtividadeRequest( atividade_id );
+    console.log(boletimAtividade);
   }, []);
 
   useEffect(() => {
-    if( Object.entries( boletimSemanal ).length ) {
-      setQtdTratamentoGrama( boletimSemanal.depositTreated[ 1 ].value );
-      setQtdDepositoTratado( boletimSemanal.depositTreated[ 2 ].value );
-      setQtdAgente( boletimSemanal.epiWeek.totalAgentes );
-      setQtdDepositoEliminado( boletimSemanal.recipientDestination[ 0 ].value );
-      setQtdAmostra( boletimSemanal.totalSample );
-      setAmostrasPorDepositos( boletimSemanal.sampleByDeposit );
-      setAmostrasPorImoveis( boletimSemanal.sampleByProperty );
-      setAmostrasPorExemplar( boletimSemanal.sampleExemplary );
+    if( Object.entries( boletimAtividade ).length ) {
+      setQtdTratamentoGrama( boletimAtividade.depositTreated[ 1 ].value );
+      setQtdDepositoTratado( boletimAtividade.depositTreated[ 2 ].value );
+      // setQtdAgente( boletimAtividade.epiWeek.totalAgentes );
+      setQtdDepositoEliminado( boletimAtividade.recipientDestination[ 0 ].value );
+      setQtdAmostra( boletimAtividade.totalSample );
+      setAmostrasPorDepositos( boletimAtividade.sampleByDeposit );
+      setAmostrasPorImoveis( boletimAtividade.sampleByProperty );
+      setAmostrasPorExemplar( boletimAtividade.sampleExemplary );
 
-      const qrt_concluidos = boletimSemanal.situacao_quarteirao.concluidos;
-      const qrt_trabalhados = boletimSemanal.situacao_quarteirao.trabalhados;
-      const qrt_pstv_aegypti = boletimSemanal.quarteiroesPositivos.aedesAegypti;
-      const qrt_pstv_albopictus = boletimSemanal.quarteiroesPositivos.aedesAlbopictus;
+      const qrt_concluidos = boletimAtividade.situacao_quarteirao.concluidos;
+      const qrt_trabalhados = boletimAtividade.situacao_quarteirao.trabalhados;
+      const qrt_pstv_aegypti = boletimAtividade.quarteiroesPositivos.aedesAegypti;
+      const qrt_pstv_albopictus = boletimAtividade.quarteiroesPositivos.aedesAlbopictus;
 
       setQuarteiroesTrabalhados( sliceIntoSubArrays(qrt_trabalhados, 10) );
       setQuarteiroesConcluidos( sliceIntoSubArrays(qrt_concluidos, 10) );
@@ -164,43 +162,43 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
           dTipoData = depositosTipoData;
 
       // Imóveis trabalhados
-      nImoveisData.datasets[ 0 ].data[ 0 ] = boletimSemanal.propertiesByStatus[ 0 ].value;
+      nImoveisData.datasets[ 0 ].data[ 0 ] = boletimAtividade.propertiesByStatus[ 0 ].value;
       // Imóveis inspecionados
-      nImoveisData.datasets[ 0 ].data[ 1 ] = boletimSemanal.properties[ 0 ].value;
+      nImoveisData.datasets[ 0 ].data[ 1 ] = boletimAtividade.properties[ 0 ].value;
       // Imóveis tratados
-      nImoveisData.datasets[ 0 ].data[ 3 ] = boletimSemanal.properties[ 1 ].value;
+      nImoveisData.datasets[ 0 ].data[ 3 ] = boletimAtividade.properties[ 1 ].value;
       // Imóveis fechados
-      nImoveisData.datasets[ 0 ].data[ 4 ] = boletimSemanal.propertiesByPendency[ 0 ].value;
+      nImoveisData.datasets[ 0 ].data[ 4 ] = boletimAtividade.propertiesByPendency[ 0 ].value;
       // Imóveis recusados
-      nImoveisData.datasets[ 0 ].data[ 5 ] = boletimSemanal.propertiesByPendency[ 1 ].value;
+      nImoveisData.datasets[ 0 ].data[ 5 ] = boletimAtividade.propertiesByPendency[ 1 ].value;
       // Imóveis recuperados
-      nImoveisData.datasets[ 0 ].data[ 6 ] = boletimSemanal.propertiesByStatus[ 1 ].value;
+      nImoveisData.datasets[ 0 ].data[ 6 ] = boletimAtividade.propertiesByStatus[ 1 ].value;
 
       // Imóveis do tipo residência
-      iTipoData.datasets[ 0 ].data[ 0 ] = boletimSemanal.propertiesByType[ 0 ].value;
+      iTipoData.datasets[ 0 ].data[ 0 ] = boletimAtividade.propertiesByType[ 0 ].value;
       // Imóveis do tipo comércio
-      iTipoData.datasets[ 0 ].data[ 1 ] = boletimSemanal.propertiesByType[ 2 ].value;
+      iTipoData.datasets[ 0 ].data[ 1 ] = boletimAtividade.propertiesByType[ 2 ].value;
       // Imóveis do tipo terreno baldio
-      iTipoData.datasets[ 0 ].data[ 2 ] = boletimSemanal.propertiesByType[ 1 ].value;
+      iTipoData.datasets[ 0 ].data[ 2 ] = boletimAtividade.propertiesByType[ 1 ].value;
       // Imóveis do tipo ponto estratégico
-      iTipoData.datasets[ 0 ].data[ 3 ] = boletimSemanal.propertiesByType[ 3 ].value;
+      iTipoData.datasets[ 0 ].data[ 3 ] = boletimAtividade.propertiesByType[ 3 ].value;
       // Imóveis total
-      iTipoData.datasets[ 0 ].data[ 4 ] = boletimSemanal.propertiesByType[ 4 ].value;
+      iTipoData.datasets[ 0 ].data[ 4 ] = boletimAtividade.propertiesByType[ 4 ].value;
 
       // Depósitos inspecionado por tipo A1
-      dTipoData.datasets[ 0 ].data[ 0 ] = boletimSemanal.recipientsByType[ 0 ].value;
+      dTipoData.datasets[ 0 ].data[ 0 ] = boletimAtividade.recipientsByType[ 0 ].value;
       // Depósitos inspecionado por tipo A2
-      dTipoData.datasets[ 0 ].data[ 1 ] = boletimSemanal.recipientsByType[ 1 ].value;
+      dTipoData.datasets[ 0 ].data[ 1 ] = boletimAtividade.recipientsByType[ 1 ].value;
       // Depósitos inspecionado por tipo B
-      dTipoData.datasets[ 0 ].data[ 2 ] = boletimSemanal.recipientsByType[ 2 ].value;
+      dTipoData.datasets[ 0 ].data[ 2 ] = boletimAtividade.recipientsByType[ 2 ].value;
       // Depósitos inspecionado por tipo C
-      dTipoData.datasets[ 0 ].data[ 3 ] = boletimSemanal.recipientsByType[ 3 ].value;
+      dTipoData.datasets[ 0 ].data[ 3 ] = boletimAtividade.recipientsByType[ 3 ].value;
       // Depósitos inspecionado por tipo D1
-      dTipoData.datasets[ 0 ].data[ 4 ] = boletimSemanal.recipientsByType[ 4 ].value;
+      dTipoData.datasets[ 0 ].data[ 4 ] = boletimAtividade.recipientsByType[ 4 ].value;
       // Depósitos inspecionado por tipo D2
-      dTipoData.datasets[ 0 ].data[ 5 ] = boletimSemanal.recipientsByType[ 5 ].value;
+      dTipoData.datasets[ 0 ].data[ 5 ] = boletimAtividade.recipientsByType[ 5 ].value;
       // Depósitos inspecionado por tipo E
-      dTipoData.datasets[ 0 ].data[ 6 ] = boletimSemanal.recipientsByType[ 6 ].value;
+      dTipoData.datasets[ 0 ].data[ 6 ] = boletimAtividade.recipientsByType[ 6 ].value;
       // Depósitos total
       setQtdDeposito( dTipoData.datasets[ 0 ].data.reduce( ( ac, d ) => ac + d ) );
 
@@ -211,16 +209,16 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
       dTipoData.reload = !dTipoData.reload;
       setDepositosTipoData( dTipoData );
 
-      console.log( boletimSemanal );
+      console.log( boletimAtividade );
     }
-  }, [ boletimSemanal ]);
+  }, [ boletimAtividade ]);
 
   return (
     <Container>
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaChartPie /></PageIcon>
-          Boletim Semanal - Semana Epidemiológica { semana } de { ano }
+          Boletim Geral da Atividade
         </h3>
       </PageHeader>
       <section className="card-list">
@@ -253,7 +251,7 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
           </Col>
           <Col md="3">
             <article className="p-0">
-              <InfoBox className="mb-3 bg-primary template-no-icon text-white">
+              {/* <InfoBox className="mb-3 bg-primary template-no-icon text-white">
                 <div className="info-box-content">
                   <div className="content-left">
                     <div className="info-title">Agente(s)</div>
@@ -263,7 +261,7 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
                     <span className="info-box-number">{ qtdAgente }</span>
                   </div>
                 </div>
-              </InfoBox>
+              </InfoBox> */}
               <InfoBox className="mb-3 bg-info template-no-icon text-white">
                 <div className="info-box-content">
                   <div className="content-left">
@@ -352,7 +350,7 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
                         <tr key={ 'qrt-trab-' + index }>
                           {
                             row.map( ( quarteirao, index ) => (
-                              <td>{quarteirao.numero}</td>
+                              <td>{quarteirao}</td>
                             ) )
                           }
                         </tr>
@@ -388,7 +386,7 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
                         <tr key={ 'qrt-conc-' + index }>
                           {
                             row.map( ( quarteirao, index ) => (
-                              <td>{quarteirao.numero}</td>
+                              <td>{quarteirao}</td>
                             ) )
                           }
                         </tr>
@@ -613,12 +611,12 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
 }
 
 const mapStateToProps = state => ({
-  boletimSemanal: state.nw_relatorio.boletimSemanal
+  boletimAtividade: state.nw_relatorio.boletimAtividade
 });
 
 const mapDispatchToProps = {
   changeSidebar,
-  getBoletimSemanalRequest
+  getBoletimAtividadeRequest
 }
 
 export default connect(

@@ -2,18 +2,32 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { FaChartLine } from 'react-icons/fa';
 import { Row, Col } from 'react-bootstrap';
+import { getDateBr } from '../../../../config/function';
 
 // ACTIONS
 import { changeSidebar } from '../../../../store/actions/sidebarSupervisor';
+import { getCicloAbertoRequest } from '../../../../store/Ciclo/cicloActions';
+import { getResponsabilityActivitiesRequest } from '../../../../store/Atividade/atividadeActions';
 
 // STYLES
 import { Container } from './styles';
 import { PageIcon, PageHeader } from '../../../../styles/util';
 
-export const RelatorioAtividade = ({ ...props }) => {
+export const RelatorioAtividade = ({ atividades, ciclo, usuario, ...props }) => {
   useEffect(() => {
     props.changeSidebar( 6, 4 );
+    props.getCicloAbertoRequest( usuario.municipio.regional.id );
   }, []);
+
+  useEffect(() => {
+    if( Object.entries( ciclo ).length > 0 ) {
+      props.getResponsabilityActivitiesRequest( usuario.id, ciclo.id );
+    }
+  }, [ ciclo ]);
+
+  const submit = (atividade_id) => {
+    window.location = window.location.origin.toString() + '/sup/relatorio/atividade/' + atividade_id;
+  }
 
   return (
     <Container>
@@ -26,57 +40,27 @@ export const RelatorioAtividade = ({ ...props }) => {
 
       <section className="card-list">
         <article className="row">
-          <Col md="4">
-            <div className="card2 atividade">
-              <div className="card2-header">
-                <h3 className="title">PNCD</h3>
-              </div>
-              <div className="card2-body">
-                <div className="form-group">
-                  <label style={{ fontWeight: 'bold' }}>Objetivo</label>
-                  <span>LI+T - Levantamento de Índice + Tratamento</span>
+          {
+            atividades.map( atividade => (
+              <Col key={ 'atv-' + atividade.id } md="4" onClick={() => submit(atividade.id)}>
+                <div className="card2 atividade">
+                  <div className="card2-header">
+                    <h3 className="title">{ atividade.metodologia.sigla }</h3>
+                  </div>
+                  <div className="card2-body">
+                    <div className="form-group">
+                      <label style={{ fontWeight: 'bold' }}>Objetivo</label>
+                      <span>{ atividade.objetivo.descricao }</span>
+                    </div>
+                    <div className="form-group mb-0">
+                      <label style={{ fontWeight: 'bold' }}>Data de Início</label>
+                      <span>{ getDateBr( ciclo.dataInicio, 'date' ) }</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="form-group mb-0">
-                  <label style={{ fontWeight: 'bold' }}>Data de Início</label>
-                  <span>03/03/2021</span>
-                </div>
-              </div>
-            </div>
-          </Col>
-          <Col md="4">
-            <div className="card2 atividade">
-              <div className="card2-header">
-                <h3 className="title">LIRAa</h3>
-              </div>
-              <div className="card2-body">
-                <div className="form-group">
-                  <label style={{ fontWeight: 'bold' }}>Objetivo</label>
-                  <span>LI - Levantamento de Índice</span>
-                </div>
-                <div className="form-group mb-0">
-                  <label style={{ fontWeight: 'bold' }}>Data de Início</label>
-                  <span>03/03/2021</span>
-                </div>
-              </div>
-            </div>
-          </Col>
-          <Col md="4">
-            <div className="card2 atividade">
-              <div className="card2-header">
-                <h3 className="title">PNCD</h3>
-              </div>
-              <div className="card2-body">
-                <div className="form-group">
-                  <label style={{ fontWeight: 'bold' }}>Objetivo</label>
-                  <span>PE - Ponto Estratégico</span>
-                </div>
-                <div className="form-group mb-0">
-                  <label style={{ fontWeight: 'bold' }}>Data de Início</label>
-                  <span>03/03/2021</span>
-                </div>
-              </div>
-            </div>
-          </Col>
+              </Col>
+            ) )
+          }
         </article>
       </section>
     </Container>
@@ -84,11 +68,15 @@ export const RelatorioAtividade = ({ ...props }) => {
 }
 
 const mapStateToProps = state => ({
-
+  usuario: state.appConfig.usuario,
+  ciclo: state.nw_ciclo.ciclo,
+  atividades: state.nw_atividade.atividades
 });
 
 const mapDispatchToProps = {
-  changeSidebar
+  changeSidebar,
+  getCicloAbertoRequest,
+  getResponsabilityActivitiesRequest
 }
 
 export default connect(

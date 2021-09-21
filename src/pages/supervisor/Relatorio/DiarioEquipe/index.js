@@ -41,7 +41,7 @@ export const RelatorioDiarioEquipe = ({ atividades, ciclo, usuario, ...props }) 
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaChartLine /></PageIcon>
-          Relatório Diário por Equipe
+          Boletim Diário por Equipe
         </h3>
       </PageHeader>
 
@@ -67,7 +67,7 @@ export const RelatorioDiarioEquipe = ({ atividades, ciclo, usuario, ...props }) 
                       {
                         atividade.equipes.map( equipe => (
                           <li key={ 'eq-' + equipe.id } onClick={ () => openModal( equipe.id ) } >
-                            { equipe.apelido ? equipe.apelido : 'Equipe' }
+                            { equipe.apelido ? `Equipe ${equipe.apelido}` : 'Equipe' }
                           </li>
                         ) )
                       }

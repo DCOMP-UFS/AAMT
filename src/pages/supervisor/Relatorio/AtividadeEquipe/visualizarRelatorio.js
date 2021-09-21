@@ -742,8 +742,6 @@ export const VisualizarRelatorio = ({ membros, boletimAtividadeEquipe, ...props 
           <Col md="6">
             <article className="p-0">
               <div className="card">
-                {/* <h2 className="title">Imóveis</h2> */}
-                {/* <Bar data={ numeroImoveisData } options={ options } /> */}
                 <h2 className="title">Imóveis por situação da vistoria</h2>
                 <Bar data={ situacaoVistoriasData } options={ options } />
               </div>

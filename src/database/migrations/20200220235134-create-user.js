@@ -22,7 +22,6 @@ module.exports = {
       rg: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
       },
       celular: {
         type: Sequelize.STRING,

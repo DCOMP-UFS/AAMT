@@ -75,12 +75,12 @@ getActivitiesOfCity = async ( req, res ) => {
       [Op.and]: [
         {
           dataInicio: {
-            [Op.lt]: current_date
+            [Op.lte]: current_date
           }
         },
         {
           dataFim: {
-            [Op.gt]: current_date
+            [Op.gte]: current_date
           }
         }
       ]

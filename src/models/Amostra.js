@@ -4,7 +4,8 @@ class Amostra extends Model {
   static init(sequelize) {
     super.init({
       situacaoAmostra: DataTypes.INTEGER,
-      sequencia: DataTypes.INTEGER
+      sequencia: DataTypes.INTEGER,
+      codigo: DataTypes.STRING
     }, {
       sequelize,
       tableName: 'amostras'

@@ -5,7 +5,8 @@ class Atuacao extends Model {
     super.init({
       tipoPerfil: DataTypes.INTEGER,
       escopo: DataTypes.INTEGER,
-      local_id: DataTypes.INTEGER
+      local_id: DataTypes.INTEGER,
+      sequencia_usuario: DataTypes.INTEGER
     }, {
       sequelize,
       tableName: 'atuacoes'

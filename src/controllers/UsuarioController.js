@@ -1,5 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
+const { Op } = require('sequelize');
 const { QueryTypes } = require('sequelize');
 
 const authMiddleware = require('../middlewares/auth');
@@ -200,11 +201,30 @@ store = async (req, res) => {
         break;
     }
 
+    let sequencia_usuario = null;
+
+    if (tipoPerfil === 4) {
+      const agentesCadastrados = await Atuacao.findAll({
+        where: {
+          [Op.and]: [
+            { local_id },
+            { tipoPerfil: 4 }
+          ]
+        },
+        order: [
+          [ 'sequencia_usuario', 'DESC' ]
+        ]
+      });
+      
+      sequencia_usuario = agentesCadastrados.length > 0 ? agentesCadastrados[0].sequencia_usuario + 1 : 1;
+    }
+
     const result = await Atuacao.create({
       usuario_id: user.id,
       tipoPerfil,
       local_id,
-      escopo
+      escopo,
+      sequencia_usuario
     });
     result.dataValues.usuario_id = undefined;
     result.dataValues.createdAt = undefined;

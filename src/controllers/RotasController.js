@@ -161,7 +161,7 @@ planejarRota = async ( req, res ) => {
   const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split('/');
   const current_date = `${ Y }-${ m }-${ d }`;
 
-  const td = await TrabalhoDiario.findOne({
+  const td = await TrabalhoDiario.findAll({
     where: {
       [Op.and]: [
         {
@@ -170,28 +170,20 @@ planejarRota = async ( req, res ) => {
           }
         },
         { usuario_id },
-        { equipe_id }
       ]
-    }
+    },
+    order: [
+      [ 'sequencia', 'DESC' ]
+    ]
   });
 
-  let trabalho_diario = {};
-  if( !td ) {
-    trabalho_diario = await TrabalhoDiario.create({
-      data: current_date,
-      supervisor_id,
-      usuario_id,
-      equipe_id
-    });
-  } else {
-    trabalho_diario = td;
-
-    await Rota.destroy({
-      where: {
-        trabalho_diario_id: trabalho_diario.id
-      }
-    });
-  }
+  const trabalho_diario = await TrabalhoDiario.create({
+    data: current_date,
+    supervisor_id,
+    usuario_id,
+    equipe_id,
+    sequencia: td.length > 0 ? td[0].sequencia + 1 : 1        
+  });
 
   const rota = lados.map( lado_id => ({
     lado_id,

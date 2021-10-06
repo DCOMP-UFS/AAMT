@@ -204,6 +204,8 @@ store = async (req, res) => {
     let sequencia_usuario = null;
 
     if (tipoPerfil === 4) {
+      // Busca os agentes cadastrados naquela mesma localidade
+
       const agentesCadastrados = await Atuacao.findAll({
         where: {
           [Op.and]: [

@@ -13,10 +13,17 @@ const Amostra         = require('../models/Amostra');
 const Imovel          = require('../models/Imovel');
 const Equipe          = require('../models/Equipe');
 const Atividade       = require('../models/Atividade');
+const Atuacao         = require('../models/Atuacao');
+const Municipio       = require('../models/Municipio');
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
 const checkBlockSituation = require('../util/checkBlockSituation');
+
+/**
+ * Consulta a rota de trabalho de um agente em 
+ * uma determinada data.
+ */
 
 getRoute = async ( req, res ) => {
   const { usuario_id, data } = req.params;
@@ -62,7 +69,7 @@ getRoute = async ( req, res ) => {
           {
             association: 'objetivo',
             attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
-          }
+          },
         ]
       }
     }
@@ -70,7 +77,6 @@ getRoute = async ( req, res ) => {
 
   if( !td )
     return res.json({});
-
 
   let rota = await Quarteirao.findAll({
     include: {
@@ -90,6 +96,20 @@ getRoute = async ( req, res ) => {
     }
   });
 
+  const sequencia_usuario = await Atuacao.findOne({
+    where: {
+      usuario_id,
+      tipoPerfil: 4,
+      local_id: td.equipe.atividade.municipio_id
+    }
+  }).then(at => at.sequencia_usuario);
+
+  const codigo_municipio = await Municipio.findOne({
+    where: {
+      id: td.equipe.atividade.municipio_id
+    }
+  }).then(mun => mun.codigo);
+
   rota = rota.filter( r => r.lados.length > 0);
 
   let equipe = {
@@ -99,15 +119,18 @@ getRoute = async ( req, res ) => {
 
   let trabalhoDiario = {
     id: td.id,
+    sequencia: td.sequencia,
     data: td.data,
     horaInicio: td.horaInicio,
     horaFim: td.horaFim,
     usuario_id: td.usuario_id,
+    sequencia_usuario,
     supervisor_id: td.supervisor_id,
     equipe_id: td.supervisor_id,
     equipe: equipe,
-    atividade: td.equipe.atividade
-  }
+    atividade: td.equipe.atividade,
+    codigo_municipio,
+  };
 
   return res.json({
     trabalhoDiario,
@@ -317,6 +340,10 @@ getPlain = async ( req, res ) => {
   return res.json( plainTeam );
 }
 
+/**
+ * Inicializa uma rota de trabalho diário.
+ */
+
 startRoute = async ( req, res ) => {
   const { trabalhoDiario_id } = req.body;
   const userId = req.userId;
@@ -392,6 +419,11 @@ startRoute = async ( req, res ) => {
 
   return res.json( rota );
 }
+
+/**
+ * Finaliza uma rota de trabalho diário e armazena
+ * as informações da vistoria.
+ */
 
 endRoute = async ( req, res ) => {
   const { trabalhoDiario_id, horaFim, vistorias } = req.body;
@@ -485,6 +517,7 @@ endRoute = async ( req, res ) => {
           await Amostra.create({
             situacaoAmostra: a.situacao,
             sequencia: a.sequencia,
+            codigo: a.codigo,
             deposito_id: recipiente.id,
             laboratorio_id: null
           });

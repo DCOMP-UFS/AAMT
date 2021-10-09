@@ -111,7 +111,7 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
     const current_date = `${Y}-${m}-${d}`;
 
     props.getRouteRequest( usuario.id, current_date );
-  }, []);
+  }, [props, usuario.id]);
 
   useEffect(() => {
     if( props.showNotStarted ) {
@@ -120,7 +120,7 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
 
       setTimeout(() => { props.resetShowNotStarted() }, 500);
     }
-  }, [ props.showNotStarted ]);
+  }, [props, props.showNotStarted, trabalhoDiario.horaInicio, trabalhoDiario.id]);
 
   useEffect(() => {
     if( fl_iniciada ) // consultando os dados da rota, a rota back end já faz verificação se está iniciado ou n.
@@ -132,7 +132,7 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
       $('#modal-iniciar-rota').modal('show');
       props.resetOpenModal();
     }
-  }, [ openModal ]);
+  }, [openModal, props, trabalhoDiario.id]);
 
   useEffect(() => {
     if( Object.entries( trabalhoDiario ).length > 0 ) {
@@ -247,7 +247,7 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
           <article className="col-12">
             <ProgressBar className="bg-success" percentage={ vistorias.length } total={ imoveis.length } />
           </article>
-          <article className="col-md-8">
+          {/* <article className="col-md-8">
             <div className="card" style={{ height: '350px' }}>
               <ReactMapGL
                 { ...viewport }
@@ -280,7 +280,7 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
                 }
               </ReactMapGL>
             </div>
-          </article>
+          </article> */}
           <article className="col-md-4">
             <InfoBox className="mb-3 bg-info">
               <span className="info-box-icon"><FaHome /></span>

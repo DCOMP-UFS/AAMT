@@ -209,7 +209,7 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
 
     props.getRouteRequest( usuario.id, current_date );
     props.resetHandleSave();
-  }, []);
+  }, [props, trabalhoDiario.horaInicio, trabalhoDiario.id, usuario.id]);
 
   // pegando a lista de imóveis planejados para trabalho
   useEffect(() => {
@@ -274,7 +274,7 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
             <ProgressBar className="bg-success" percentage={ vistorias.length } total={ imoveis.length } />
           </article>
 
-          <article className="col-md-12">
+          {/* <article className="col-md-12">
             <div className="card">
               <div style={{ height: '300px', width: '100%', backgroundColor: '#ccc' }}>
                 <ReactMapGL
@@ -308,7 +308,7 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
                 </ReactMapGL>
               </div>
             </div>
-          </article>
+          </article> */}
         </Row>
 
         <Row>

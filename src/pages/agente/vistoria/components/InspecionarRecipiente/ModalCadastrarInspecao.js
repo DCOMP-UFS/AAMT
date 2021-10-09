@@ -38,7 +38,7 @@ import {
   LiEmpty
 } from '../../../../../styles/global';
 
-function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, trabalhoDiario_id, objetivo, ...props }) {
+function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, trabalhoDiario_id, objetivo, trabalhoDiario_sequencia, codigoMunicipio, sequenciaUsuario, ...props }) {
   const [ tipoRecipiente, setTipoRecipiente ] = useState({ value: null, label: null });
   const [ fl_eliminado, setFl_eliminado ] = useState({ value: null, label: null });
   const [ fl_tratado, setFl_tratado ] = useState({ value: null, label: null });
@@ -71,9 +71,14 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
 
     const amostra = {
       idUnidade:
-        trabalhoDiario_id + '.' +
-        ( vistorias.length + 1) + '.' +
-        sequenciaRecipiente + '.' +
+        // trabalhoDiario_id + '.' +
+        // ( vistorias.length + 1) + '.' +
+        // sequenciaRecipiente + '.' +
+        // nu,
+        codigoMunicipio + '.' +
+        sequenciaUsuario + '.' +
+        trabalhoDiario_sequencia + '.' +
+        '08102021' + '.' +
         nu,
       sequencia: nu,
       situacao: situacaoAmostraEnum.coletada.id
@@ -104,7 +109,7 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
     if( !validInputIsNull( "#fl_foco", fl_foco.value ) ) fl_valido = false;
     if( fl_tratado.value && qtdTratamento === 0 ) {
       fl_valido = false;
-      
+
       var input_qtd_tratamento = $( '#qtdTratamento' ),
           form_group = input_qtd_tratamento.parent();
       input_qtd_tratamento.addClass( 'invalid' );
@@ -291,6 +296,9 @@ function ListUnidade( props ) {
 
 const mapStateToProps = state => ({
   trabalhoDiario_id: state.rotaCache.trabalhoDiario.id,
+  trabalhoDiario_sequencia: state.rotaCache.trabalhoDiario.sequencia,
+  codigoMunicipio: state.rotaCache.trabalhoDiario.codigo_municipio,
+  sequenciaUsuario: state.rotaCache.trabalhoDiario.sequencia_usuario,
   vistorias: state.vistoriaCache.vistorias,
   recipientes: state.vistoria.recipientes,
   sequenciaRecipiente: state.vistoria.sequenciaRecipiente,

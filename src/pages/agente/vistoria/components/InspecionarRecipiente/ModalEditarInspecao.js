@@ -37,11 +37,13 @@ import {
   LiEmpty
 } from '../../../../../styles/global';
 
-function InspecionarRecipiente({ updatedIndex, sequenciaRecipiente, recipientes, vistorias, trabalhoDiario_id, objetivo, ...props }) {
+function InspecionarRecipiente({ updatedIndex, sequenciaRecipiente, recipientes, vistorias, trabalhoDiario_id, data, objetivo, trabalhoDiario_sequencia, codigoMunicipio, sequenciaUsuario, ...props }) {
   const [ tipoRecipiente, setTipoRecipiente ] = useState({ value: null, label: null });
   const [ fl_eliminado, setFl_eliminado ] = useState({ value: null, label: null });
   const [ fl_tratado, setFl_tratado ] = useState({ value: null, label: null });
   const [ fl_foco, setFl_foco ] = useState({ value: null, label: null });
+  const [ dataFormatada, setDataFormatada ] = useState( null );
+  const [ seqAmostra, setSeqAmostra ] = useState( 0 );
   const [ tecnicaTratamento, setTecnicaTratamento ] = useState({ value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label });
   const [ numUnidade, setNumUnidade ] = useState(0);
   const [ qtdTratamento, setQtdTratamento ] = useState(0);
@@ -76,17 +78,23 @@ function InspecionarRecipiente({ updatedIndex, sequenciaRecipiente, recipientes,
     }
   }, [ updatedIndex, recipientes ]);
 
+  useEffect(() => {
+    const [ano, mes, dia] = data.split("-");
+
+    setDataFormatada(`${dia}${mes}${ano}`);
+  }, [data]);
   function addUnidade() {
     let nu = numUnidade + 1;
     let listUnidade = unidade;
 
     const amostra = {
       idUnidade:
-        trabalhoDiario_id + '.' +
-        ( vistorias.length + 1) + '.' +
-        sequenciaRecipiente + '.' +
-        nu,
-      sequencia: nu,
+        codigoMunicipio + '.' +
+        sequenciaUsuario + '.' +
+        dataFormatada + '.' +
+        trabalhoDiario_sequencia + '.' +
+        seqAmostra,
+      sequencia: seqAmostra,
       situacao: situacaoAmostraEnum.coletada.id
     }
 
@@ -114,7 +122,7 @@ function InspecionarRecipiente({ updatedIndex, sequenciaRecipiente, recipientes,
 
     if( fl_tratado.value && qtdTratamento === 0 ) {
       fl_valido = false;
-      
+
       var input_qtd_tratamento = $( '#edi_qtdTratamento' ),
           form_group = input_qtd_tratamento.parent();
       input_qtd_tratamento.addClass( 'invalid' );
@@ -248,10 +256,24 @@ function InspecionarRecipiente({ updatedIndex, sequenciaRecipiente, recipientes,
 
               <h4>
                 Gerar código da(s) amostra(s)
+              </h4>
+              <br />
+
+              <Row>
+                <Col md="6" className="form-group">
+                  <label>Nº da sequencia da amostra</label>
+                  <input
+                    name="sequencia-amostra"
+                    type="number"
+                    min="0"
+                    className="form-control"
+                    value={ seqAmostra }
+                    onChange={ e => setSeqAmostra( e.target.value ) } />
+                </Col>
                 <ButtonNewObject
                   title="Gerar código"
                   onClick={ addUnidade } />
-              </h4>
+              </Row>
 
               <ListUnidade unidade={ unidade } remove={ removeUnidade } />
             </ContainerUnidade>
@@ -305,6 +327,10 @@ function ListUnidade( props ) {
 
 const mapStateToProps = state => ({
   trabalhoDiario_id: state.rotaCache.trabalhoDiario.id,
+  data: state.rotaCache.trabalhoDiario.data,
+  trabalhoDiario_sequencia: state.rotaCache.trabalhoDiario.sequencia,
+  codigoMunicipio: state.rotaCache.trabalhoDiario.codigo_municipio,
+  sequenciaUsuario: state.rotaCache.trabalhoDiario.sequencia_usuario,
   vistorias: state.vistoriaCache.vistorias,
   recipientes: state.vistoria.recipientes,
   sequenciaRecipiente: state.vistoria.sequenciaRecipiente,

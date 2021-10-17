@@ -247,7 +247,7 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
           <article className="col-12">
             <ProgressBar className="bg-success" percentage={ vistorias.length } total={ imoveis.length } />
           </article>
-          {/* <article className="col-md-8">
+          <article className="col-md-8">
             <div className="card" style={{ height: '350px' }}>
               <ReactMapGL
                 { ...viewport }
@@ -280,7 +280,7 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
                 }
               </ReactMapGL>
             </div>
-          </article> */}
+          </article>
           <article className="col-md-4">
             <InfoBox className="mb-3 bg-info">
               <span className="info-box-icon"><FaHome /></span>

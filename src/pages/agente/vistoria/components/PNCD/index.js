@@ -32,6 +32,7 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
   const [ visita, setVisita ] = useState({});
   const [ pendencia, setPendencia ] = useState({});
   const [ entrada, setEntrada ] = useState( "" );
+  const [ justificativa, setJustificativa ] = useState( null );
   const [ sequenciaVistoria, setSequenciaVistoria ] = useState( 0 );
 
   useEffect(() => {
@@ -46,6 +47,7 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
       setEntrada( inspection.horaEntrada );
       setVisita( class_inspectionSituation );
       setPendencia( class_pendency );
+      setJustificativa( inspection.justificativa );
       props.setRecipient( inspection.recipientes );
       props.setImmobile( inspection.imovel );
       seq = inspection.sequencia;
@@ -53,7 +55,7 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
 
     props.setSequenceInspection( seq );
     setSequenciaVistoria( seq );
-  }, []);
+  }, [optionPendencia, optionVisita, props]);
 
   useEffect(() => {
     if( handleSave )
@@ -82,8 +84,11 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
         sequencia: sequenciaVistoria,
         imovel,
         recipientes,
-        trabalhoDiario_id
+        trabalhoDiario_id,
+        justificativa
       };
+
+      console.log(vistoria);
 
       if( props.indexInspection ) {
         props.updateInspection( vistoria, props.indexInspection );
@@ -150,6 +155,23 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
                       onChange={ option => setPendencia( option ) } />
                   </Col>
                 </Row>
+
+                {(pendencia.value === 'F' || pendencia.value === 'R') && (
+                  <Row>
+                    <Col md="12" className="form-group">
+                      <label>Justificativa da pendência</label>
+                      <textarea
+                        id="justificativa"
+                        value={ justificativa }
+                        className="form-control"
+                        onChange={ e => setJustificativa( e.target.value ) }
+                        rows="5"
+                        maxLength="255"
+                        required
+                      ></textarea>
+                    </Col>
+                  </Row>
+                )}
               </Col>
 
               <Col md="6" >

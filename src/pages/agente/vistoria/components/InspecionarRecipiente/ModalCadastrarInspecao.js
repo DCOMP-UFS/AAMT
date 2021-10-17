@@ -121,6 +121,24 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
       form_group.append( msgInputInvalid( 'O valor não pode ser zero' ) );
     }
 
+    /**
+     * Verifica a ocorrencia de códigos de amostra
+     * que são iguais em um mesmo depósito.
+     */
+
+    const arrayCodigosAmostra = unidade.map(function(item){ return item.idUnidade });
+    const temCodigoDuplicado = arrayCodigosAmostra.filter((item, index) => arrayCodigosAmostra.indexOf(item) !== index);
+
+    if (temCodigoDuplicado.length > 0) {
+      fl_valido = false;
+      var input_seq_amostra = $( '#row-sequence' ),
+          form_group_amostra = input_seq_amostra.parent();
+          $( '#row-sequence' ).parent().find('span.form-label-invalid').remove();
+          input_seq_amostra.addClass( 'invalid' );
+
+        form_group_amostra.append( msgInputInvalid( `Os códigos ${temCodigoDuplicado.join(', ')} estão duplicados` ) );
+    }
+
     if( fl_valido ) {
       const recipiente = {
         fl_comFoco: fl_foco.value,
@@ -144,6 +162,7 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
       setFl_foco({ value: null, label: null, name: "fl_foco" });
       // setNumUnidade( 0 );
       setUnidade( [] );
+      setSeqAmostra( 0 );
       setQtdTratamento( 0 );
       setTecnicaTratamento({ value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label });
 
@@ -247,19 +266,24 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
               <br />
 
               <Row>
-                <Col md="6" className="form-group">
+                <Col md="12" className="form-group">
                   <label>Nº da sequencia da amostra</label>
-                  <input
-                    name="sequencia-amostra"
-                    type="number"
-                    min="0"
-                    className="form-control"
-                    value={ seqAmostra }
-                    onChange={ e => setSeqAmostra( e.target.value ) } />
+                  <Row id="row-sequence">
+                    <Col md="6" className="form-group">
+                      <input
+                        id="sequencia-amostra"
+                        type="number"
+                        min="0"
+                        className="form-control"
+                        value={ seqAmostra }
+                        onChange={ e => setSeqAmostra( e.target.value ) }
+                        style={{ marginBottom: -24 }} />
+                    </Col>
+                    <ButtonNewObject
+                      title="Gerar código"
+                      onClick={ addUnidade } />
+                  </Row>
                 </Col>
-                <ButtonNewObject
-                  title="Gerar código"
-                  onClick={ addUnidade } />
               </Row>
 
               <ListUnidade unidade={ unidade } remove={ removeUnidade } />

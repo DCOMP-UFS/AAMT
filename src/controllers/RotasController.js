@@ -464,6 +464,30 @@ endRoute = async ( req, res ) => {
   });
   // Apagando dados desatualizados
 
+  // Verificando códigos de amostra repetidos
+
+  let arrayCodigosAmostra = [];
+
+  vistorias.forEach(v => {
+    v.recipientes.forEach(r => {
+      if( r.fl_comFoco ) {
+        r.amostras.forEach(a => {
+          arrayCodigosAmostra.push(a.idUnidade);
+        });
+      }
+    })
+  });
+
+  const temCodigoDuplicado = arrayCodigosAmostra.filter((item, index) => arrayCodigosAmostra.indexOf(item) !== index);
+
+  if (temCodigoDuplicado.length > 0) {
+    return res.status(400).json({ 
+      status: 'error',
+      tipo: 'codigo_amostra_duplicado',
+      message: `Os códigos de amostra ${temCodigoDuplicado.join(', ')} estão repetidos. Por favor, verifique e corrija.`
+    })
+  }
+
   // Salvando as vistorias  
   let vists = [];
   vistorias.forEach(async v => {
@@ -517,7 +541,7 @@ endRoute = async ( req, res ) => {
           await Amostra.create({
             situacaoAmostra: a.situacao,
             sequencia: a.sequencia,
-            codigo: a.codigo,
+            codigo: a.idUnidade,
             deposito_id: recipiente.id,
             laboratorio_id: null
           });

@@ -80,6 +80,10 @@ export function* closeRoute(action) {
     }
 
   } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao encerrar a rota, favor verifique a conexão", "error" ) );
+    if (error.response.data.tipo === 'codigo_amostra_duplicado') {
+      yield put( AppConfigActions.showNotifyToast( error.response.data.message, "error" ) );
+    } else {
+      yield put( AppConfigActions.showNotifyToast( "Erro ao encerrar a rota, favor verifique a conexão", "error" ) );
+    }
   }
 }

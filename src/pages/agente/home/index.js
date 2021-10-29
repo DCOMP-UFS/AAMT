@@ -249,7 +249,7 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
           </article>
           <article className="col-md-8">
             <div className="card" style={{ height: '350px' }}>
-              <ReactMapGL
+              {/* <ReactMapGL
                 { ...viewport }
                 onViewportChange={ nextViewport => setViewport( nextViewport ) }
                 mapboxApiAccessToken={ process.env.REACT_APP_MAP_TOKEN }
@@ -278,7 +278,7 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
                     )
                   })))
                 }
-              </ReactMapGL>
+              </ReactMapGL> */}
             </div>
           </article>
           <article className="col-md-4">

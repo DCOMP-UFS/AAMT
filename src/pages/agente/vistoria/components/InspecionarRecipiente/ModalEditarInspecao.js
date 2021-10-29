@@ -132,21 +132,59 @@ function InspecionarRecipiente({ updatedIndex, sequenciaRecipiente, recipientes,
 
     /**
      * Verifica a ocorrencia de códigos de amostra
-     * que são iguais em um mesmo depósito.
+     * que são iguais em um mesmo depósito, em recipientes
+     * de uma mesma vistoria e entre diferentes vistorias.
      */
 
      const arrayCodigosAmostra = unidade.map(function(item){ return item.idUnidade });
      const temCodigoDuplicado = arrayCodigosAmostra.filter((item, index) => arrayCodigosAmostra.indexOf(item) !== index);
- 
+
+     var input_seq_amostra = $( '#row-sequence' ),
+     form_group_amostra = input_seq_amostra.parent();
+
+     let valida_entre_recipiente = true;
+
      if (temCodigoDuplicado.length > 0) {
-       console.log('entrou aqui!')
        fl_valido = false;
-       var input_seq_amostra = $( '#edi_row-sequence' ),
-           form_group_amostra = input_seq_amostra.parent();
-           $( '#row-sequence' ).parent().find('span.form-label-invalid').remove();
-           input_seq_amostra.addClass( 'invalid' );
- 
-         form_group_amostra.append( msgInputInvalid( `Os códigos ${temCodigoDuplicado.join(', ')} estão duplicados` ) );
+       $( '#row-sequence' ).parent().find('span.form-label-invalid').remove();
+       input_seq_amostra.addClass( 'invalid' );
+
+       form_group_amostra.append( msgInputInvalid( `Os códigos ${temCodigoDuplicado.join(', ')} estão duplicados.` ) );
+     }
+
+     if (temCodigoDuplicado.length === 0) {
+       $( '#row-sequence' ).parent().find('span.form-label-invalid').remove();
+       recipientes.forEach(recipiente => {
+         recipiente.amostras.forEach(amostra => {
+           const index = arrayCodigosAmostra.findIndex(p => p === amostra.idUnidade);
+
+           if (index !== -1) {
+             fl_valido = false;
+             valida_entre_recipiente = false;
+             input_seq_amostra.addClass( 'invalid' );
+
+             form_group_amostra.append( msgInputInvalid( `O código ${arrayCodigosAmostra[index]} já foi gerado nesta vistoria para o recipiente ${recipiente.sequencia}.` ) );
+           }
+         })
+       })
+     }
+
+     if (temCodigoDuplicado.length === 0 && valida_entre_recipiente) {
+       $( '#row-sequence' ).parent().find('span.form-label-invalid').remove();
+       vistorias.forEach((vistoria, vistoriaIndex) => {
+         vistoria.recipientes.forEach(recipiente => {
+           recipiente.amostras.forEach(amostra => {
+             const index = arrayCodigosAmostra.findIndex(p => p === amostra.idUnidade);
+
+             if (index !== -1) {
+               fl_valido = false;
+               input_seq_amostra.addClass( 'invalid' );
+
+               form_group_amostra.append( msgInputInvalid( `O código ${arrayCodigosAmostra[index]} já foi gerado para o recipiente ${recipiente.sequencia} <a href="/agente/vistoria/editar/${vistoriaIndex}">em outro imóvel</a>.` ) );
+             }
+           })
+         })
+       })
      }
 
     if( fl_valido ) {

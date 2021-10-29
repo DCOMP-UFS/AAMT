@@ -277,7 +277,7 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
           <article className="col-md-12">
             <div className="card">
               <div style={{ height: '300px', width: '100%', backgroundColor: '#ccc' }}>
-                <ReactMapGL
+                {/* <ReactMapGL
                   { ...viewport }
                   onViewportChange={ nextViewport => setViewport( nextViewport ) }
                   mapboxApiAccessToken={ process.env.REACT_APP_MAP_TOKEN }
@@ -305,7 +305,7 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
                       )
                     })))
                   }
-                </ReactMapGL>
+                </ReactMapGL> */}
               </div>
             </div>
           </article>

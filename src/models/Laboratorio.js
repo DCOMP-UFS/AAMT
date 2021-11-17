@@ -3,8 +3,11 @@ const { Model, DataTypes } = require('sequelize');
 class Laboratorio extends Model {
   static init(sequelize) {
     super.init({
+      cnpj: DataTypes.BIGINT,
       nome: DataTypes.STRING,
-      endereco: DataTypes.STRING
+      endereco: DataTypes.STRING,
+      municipio_id: DataTypes.INTEGER,
+      tipo_laboratorio: DataTypes.ENUM('sede', 'privado')
     }, {
       sequelize,
       tableName: 'laboratorios'
@@ -12,7 +15,7 @@ class Laboratorio extends Model {
   }
 
   static associate( models ) {
-    this.belongsTo( models.Localidade, { foreignKey: 'localidade_id', as: 'localidade' } );
+    this.hasMany( models.LaboratorioMunicipio, { foreignKey: 'municipio_id', as: 'municipios'} );
     this.hasMany( models.Amostra, { foreignKey: 'laboratorio_id', as: 'amostras' } );
   }
 }

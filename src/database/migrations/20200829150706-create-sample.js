@@ -21,10 +21,10 @@ module.exports = {
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE'
         },
-        laboratorio_id: {
+        laboratorio_cnpj: {
           type: Sequelize.INTEGER,
           allowNull: true,
-          references: { model: 'laboratorios', key: 'id' },
+          references: { model: 'laboratorios', key: 'cnpj' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE'
         },

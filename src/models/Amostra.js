@@ -13,7 +13,7 @@ class Amostra extends Model {
 
   static associate( models ) {
     this.belongsTo( models.Deposito, { foreignKey: 'deposito_id', as: 'deposito' } );
-    this.belongsTo( models.Laboratorio, { foreignKey: 'laboratorio_id', as: 'laboratorio' } );
+    this.belongsTo( models.Laboratorio, { foreignKey: 'laboratorio_cnpj', as: 'laboratorio' } );
     this.hasMany( models.Exemplar, { foreignKey: 'amostra_id', as: 'exemplares' } );
   }
 }

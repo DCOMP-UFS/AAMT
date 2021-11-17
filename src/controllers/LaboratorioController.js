@@ -13,10 +13,11 @@ router.use(authMiddleware);
  */
  getLaboratorio = async ( req, res ) => {
   const { municipio_id } = req.params;
-
+  /*
   const allow = await allowFunction( req.userId, 'definir_trabalho_diario' );
   if( !allow )
     return res.status(403).json({ error: 'Acesso negado' });
+  */
 
   const laboratorios = await Laboratorio.findAll({
     include: {

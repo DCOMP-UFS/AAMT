@@ -4,11 +4,11 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable(
       'laboratorios', { 
-        id: {
-          type: Sequelize.INTEGER,
+        cnpj: {
+          type: Sequelize.BIGINT,
           primaryKey: true,
-          autoIncrement: true,
           allowNull: false,
+          references: {model: 'laboratorios_municipios', key: 'cnpj'}
         },
         nome: {
           type: Sequelize.STRING,
@@ -18,12 +18,13 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: false,
         },
-        localidade_id: {
+        municipio_id: {
           type: Sequelize.INTEGER,
           allowNull: false,
-          references: { model: 'localidades', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE'
+        },
+        tipo_laboratorio:{
+          type: Sequelize.ENUM('sede', 'privado'),
+          allowNull: false,
         },
         created_at: {
           type: Sequelize.DATE,

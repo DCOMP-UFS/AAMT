@@ -6,7 +6,6 @@ class Laboratorio extends Model {
       cnpj: DataTypes.BIGINT,
       nome: DataTypes.STRING,
       endereco: DataTypes.STRING,
-      municipio_id: DataTypes.INTEGER,
       tipo_laboratorio: DataTypes.ENUM('sede', 'privado')
     }, {
       sequelize,

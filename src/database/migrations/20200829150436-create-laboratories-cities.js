@@ -14,6 +14,9 @@ module.exports = {
                     type: Sequelize.BIGINT,
                     allowNull: false,
                     unique: true,
+                    references: {model: 'laboratorios', key: 'cnpj'},
+                    onUpdate: 'CASCADE',
+                    onDelete: 'CASCADE'
                 },
                 municipio_id: {
                     type: Sequelize.INTEGER,

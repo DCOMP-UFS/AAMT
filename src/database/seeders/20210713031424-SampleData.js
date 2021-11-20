@@ -10,7 +10,7 @@ module.exports = {
         data.push({
           situacao_amostra: faker.datatype.number( { max: 4, min: 1 } ),
           deposito_id: i,
-          laboratorio_id: null,
+          laboratorio_cnpj: null,
           sequencia: 1,
           created_at: new Date(),
           updated_at: new Date()

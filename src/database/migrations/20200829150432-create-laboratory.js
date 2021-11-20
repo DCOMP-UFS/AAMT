@@ -8,7 +8,6 @@ module.exports = {
           type: Sequelize.BIGINT,
           primaryKey: true,
           allowNull: false,
-          references: {model: 'laboratorios_municipios', key: 'cnpj'}
         },
         nome: {
           type: Sequelize.STRING,
@@ -16,10 +15,6 @@ module.exports = {
         },
         endereco: {
           type: Sequelize.STRING,
-          allowNull: false,
-        },
-        municipio_id: {
-          type: Sequelize.INTEGER,
           allowNull: false,
         },
         tipo_laboratorio:{

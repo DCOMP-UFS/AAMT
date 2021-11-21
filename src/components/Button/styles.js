@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components/native';
-// import { RectButton } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native';
 
 const containerModifiers = {
   normal: css`
@@ -13,7 +13,9 @@ const containerModifiers = {
   `,
 };
 
-export const Container = styled.View`
+export const Container = styled(TouchableOpacity).attrs({
+  activeOpacity: 0.7,
+})`
   width: 100%;
   height: 50px;
   border-radius: 4px;

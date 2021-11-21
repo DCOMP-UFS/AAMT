@@ -18,17 +18,17 @@ export const ProfileContainer = styled.View`
 `;
 
 export const Small = styled.Text`
-  font-family: ${({ theme }) => theme.fonts.regular};
-  color: #a6a8ad;
-  font-size: 14px;
+  font-family: ${({ theme }) => theme.fonts.bold};
+  color: ${({ theme }) => theme.colors.label};
+  font-size: 16px;
   text-align: left;
   margin-bottom: 5px;
 `;
 
 export const Item = styled.Text`
-  font-family: ${({ theme }) => theme.fonts.bold};
-  color: #3a3c4e;
-  font-size: 20px;
+  font-family: ${({ theme }) => theme.fonts.regular};
+  color: ${({ theme }) => theme.colors.textInput};
+  font-size: 18px;
   margin-bottom: 20px;
   text-align: left;
 `;

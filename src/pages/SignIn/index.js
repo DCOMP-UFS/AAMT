@@ -4,10 +4,13 @@ import {
   StatusBar,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+
+import logoAamt from '../../assets/logoaedes.png';
 
 import Button from '../../components/Button';
 import Input from '../../components/Input';
@@ -36,18 +39,28 @@ const SignIn = () => {
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-      <Container>
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          enabled
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        enabled
+      >
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{
+            flex: 1,
+          }}
         >
-          <ScrollView
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{ flex: 1, justifyContent: 'center' }}
-          >
-            <WelcomeTitle>Olá!</WelcomeTitle>
-            <WelcomeDescription>Faça login para continuar</WelcomeDescription>
+          <Container>
+            <Image
+              source={logoAamt}
+              resizeMode="center"
+              style={{
+                height: '50%',
+                width: '50%',
+                marginTop: 25,
+              }}
+            />
+
             <Formik
               validationSchema={signInValidationSchema}
               validateOnChange={false}
@@ -85,10 +98,10 @@ const SignIn = () => {
                 </>
               )}
             </Formik>
-            <Version>Versão 1.1</Version>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </Container>
+            <Version>Versão 0.1</Version>
+          </Container>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </>
   );
 };

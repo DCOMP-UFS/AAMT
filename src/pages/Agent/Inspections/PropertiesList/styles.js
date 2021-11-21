@@ -1,5 +1,8 @@
 import styled from 'styled-components';
 
+import Button from '../../../../components/Button';
+import SecondaryButton from '../../../../components/SecondaryButton';
+
 export const Container = styled.ScrollView`
   margin: 10px 10px;
   flex: 1;
@@ -21,8 +24,8 @@ export const Header = styled.View`
 `;
 
 export const PropertyTitle = styled.Text`
-  font-family: 'Lato-Bold';
-  color: #3a3c4e;
+  font-family: ${({ theme }) => theme.fonts.bold};
+  color: ${({ theme }) => theme.colors.black};
   font-size: 20px;
   margin-left: 7px;
 `;
@@ -33,15 +36,15 @@ export const TitleContainer = styled.View`
 `;
 
 export const Label = styled.Text`
-  font-family: 'Lato-Bold';
-  color: #3a3c4e;
+  font-family: ${({ theme }) => theme.fonts.bold};
+  color: ${({ theme }) => theme.colors.black};
   font-size: 16px;
   margin-bottom: 5px;
 `;
 
 export const Small = styled.Text`
-  font-family: 'Lato-Normal';
-  color: #a6a8ad;
+  font-family: ${({ theme }) => theme.fonts.regular};
+  color: ${({ theme }) => theme.colors.textInput};
   font-size: 16px;
   margin-bottom: 10px;
 `;
@@ -57,8 +60,8 @@ export const DetailsColumn = styled.View`
 `;
 
 export const MoreDetails = styled.Text`
-  font-family: 'Lato-Bold';
-  color: #0095da;
+  font-family: ${({ theme }) => theme.fonts.bold};
+  color: ${({ theme }) => theme.colors.blue};
   font-size: 16px;
   align-self: center;
 `;
@@ -73,7 +76,7 @@ export const StatusContainer = styled.View`
 `;
 
 export const StatusText = styled.Text`
-  font-family: 'Lato-Normal';
+  font-family: ${({ theme }) => theme.fonts.regular};
   color: #fff;
   font-size: 14px;
 `;
@@ -90,8 +93,23 @@ export const AddContainer = styled.View`
 `;
 
 export const AddText = styled.Text`
-  font-family: 'Lato-Bold';
-  color: #0095da;
+  font-family: ${({ theme }) => theme.fonts.bold};
+  color: ${({ theme }) => theme.colors.blue};
   font-size: 16px;
   margin-left: 5px;
+`;
+
+export const ButtonRow = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-self: stretch;
+  margin-top: 10px;
+`;
+
+export const SeeInspectionButton = styled(SecondaryButton).attrs({})`
+  width: 48%;
+`;
+
+export const StartInspectionButton = styled(Button).attrs({})`
+  width: 48%;
 `;

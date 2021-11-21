@@ -1,8 +1,10 @@
 import styled from 'styled-components/native';
-import Platform from 'react-native';
+import { Platform } from 'react-native';
 
 export const Container = styled.View`
   flex: 1;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   padding: 0 30px ${Platform.OS === 'android' ? 150 : 40}px;
   background-color: #ffffff;
@@ -25,7 +27,7 @@ export const WelcomeDescription = styled.Text`
 export const Version = styled.Text`
   font-family: ${({ theme }) => theme.fonts.regular};
   font-size: 14px;
-  color: ${({ theme }) => theme.colors.label};
+  color: ${({ theme }) => theme.colors.textInput};
   justify-content: flex-end;
   align-self: center;
   margin-top: 60px;

@@ -23,6 +23,9 @@ import {
   DetailsContainer,
   AddContainer,
   AddText,
+  ButtonRow,
+  StartInspectionButton,
+  SeeInspectionButton,
 } from './styles';
 
 const InspectionStatus = ({ property }) => {
@@ -60,14 +63,8 @@ const InspectionStatus = ({ property }) => {
         <StatusText>{status.text}</StatusText>
       </StatusContainer>
     );
-  } else {
-    return (
-      <AddContainer>
-        <FontAwesome5 size={18} name="plus" color="#0095da" />
-        <AddText>Vistoriar</AddText>
-      </AddContainer>
-    );
   }
+  return <View />;
 };
 
 const PropertiesList = ({ currentIndex, inspections, routes, ...props }) => {
@@ -100,8 +97,6 @@ const PropertiesList = ({ currentIndex, inspections, routes, ...props }) => {
               <InspectionStatus property={property} />
             </TouchableOpacity>
           </Header>
-          <Label>Rua</Label>
-          <Small>{street}</Small>
           <CardRow>
             <DetailsColumn>
               <Label>Número</Label>
@@ -116,28 +111,14 @@ const PropertiesList = ({ currentIndex, inspections, routes, ...props }) => {
               )}
             </DetailsColumn>
           </CardRow>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate('Detalhes do Imóvel', {
-                address: {
-                  blockIndex,
-                  streetIndex,
-                  propertyIndex,
-                  street,
-                },
-              })
-            }
-          >
-            <DetailsContainer>
-              <FontAwesome5
-                size={23}
-                name="edit"
-                color="#0095da"
-                style={{ marginRight: 5 }}
-              />
-              <MoreDetails>Detalhes do imóvel</MoreDetails>
-            </DetailsContainer>
-          </TouchableOpacity>
+          <ButtonRow>
+            <StartInspectionButton
+              disabled={property.inspection ? true : false}
+            >
+              Iniciar vistoria
+            </StartInspectionButton>
+            <SeeInspectionButton>Ver detalhes</SeeInspectionButton>
+          </ButtonRow>
         </Card>
       ))}
     </Container>

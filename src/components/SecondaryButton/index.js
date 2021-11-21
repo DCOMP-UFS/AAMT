@@ -4,18 +4,23 @@ import { TouchableOpacity } from 'react-native';
 
 import { Container, ButtonText } from './styles';
 
-const SecondaryButton = ({ children, ...rest }) => {
+const SecondaryButton = ({ children, isDisabled, ...rest }) => {
   return (
-    <TouchableOpacity activeOpacity={0.7} {...rest}>
-      <Container>
-        <ButtonText>{children}</ButtonText>
+    <TouchableOpacity activeOpacity={0.7} disabled={isDisabled} {...rest}>
+      <Container isDisabled={isDisabled}>
+        <ButtonText isDisabled={isDisabled}>{children}</ButtonText>
       </Container>
     </TouchableOpacity>
   );
 };
 
+SecondaryButton.defaultProps = {
+  isDisabled: false,
+};
+
 SecondaryButton.propTypes = {
   children: PropTypes.string.isRequired,
+  isDisabled: PropTypes.bool,
 };
 
 export default SecondaryButton;

@@ -11,7 +11,7 @@ export const TextContainer = styled.View`
   height: 60px;
   padding: 0 16px;
   background: ${({ theme }) => theme.colors.input};
-  border-radius: 8px;
+  border-radius: 4px;
   border: 1px solid ${({ theme }) => theme.colors.borderInput};
   ${props =>
     props.isFocused &&

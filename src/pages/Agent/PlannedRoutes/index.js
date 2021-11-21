@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Alert } from 'react-native';
+import { Alert, Image } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { format, parseISO, isToday } from 'date-fns';
-import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import NetInfo from '@react-native-community/netinfo';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+
+import AlertBox from '../../../components/AlertBox';
+
+import emptyState from '../../../assets/empty-state.png';
+import noInternet from '../../../assets/no-internet.png';
 
 import api from '../../../services/api';
 
@@ -62,11 +65,12 @@ const PlannedRoutes = ({
   currentRouteIndex,
   ...props
 }) => {
-  const [connState, setConnState] = useState(null);
+  const [connState, setConnState] = useState();
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [activities, setActivities] = useState([]);
-  const [alertMessage, setAlertMessage] = useState('');
+  const [isOldRouteWithConn, setIsOldRouteWithConn] = useState(false);
+  const [isOldRouteWithoutConn, setIsOldRouteWithoutConn] = useState(false);
 
   const navigation = useNavigation();
 
@@ -238,6 +242,8 @@ const PlannedRoutes = ({
   useEffect(() => {
     async function manageRoutes() {
       setLoading(true);
+      setIsOldRouteWithConn(false);
+      setIsOldRouteWithoutConn(false);
 
       const index = routes.findIndex(
         p => p.trabalhoDiario.usuario_id === user_id
@@ -257,11 +263,9 @@ const PlannedRoutes = ({
               setActivities([routes[index]]);
             } else {
               setActivities([routes[index]]);
-              // ROTA ANTIGA EM ABERTO - Informar que precisa encerrar a vistoria
-              // Colocar componente amarelo de alerta!
+              setIsOldRouteWithConn(true);
             }
           } else {
-            // ROTA ANTIGA ENCERRADA - Limpar cache do usuário
             props.removeFinishedRoute(dailyWorkId);
             setActivities([]);
             Alert.alert(
@@ -274,16 +278,13 @@ const PlannedRoutes = ({
           if (isThisRouteFromToday) {
             setActivities([routes[index]]);
           } else {
-            // Tem que ativar a internet para finalizar vistoria
+            setActivities([routes[index]]);
+            setIsOldRouteWithoutConn(true);
           }
         }
       } else {
         if (connState) {
-          console.log('-> Caso 6');
           await getDailyWork();
-        }
-        if (connState === false) {
-          console.log('7 -> entrou aqui');
         }
       }
 
@@ -292,15 +293,6 @@ const PlannedRoutes = ({
 
     manageRoutes();
   }, [connState, currentRouteIndex, routes]);
-
-  // useEffect(() => {
-  //   function loadWorkInfo() {
-  //     if (activity) {
-  //     }
-  //   }
-
-  //   loadWorkInfo();
-  // }, []);
 
   const ActivityComponent = () => {
     return activities.map(activity => (
@@ -363,7 +355,7 @@ const PlannedRoutes = ({
               </StartRouteButton>
             ) : (
               <EndRouteButton
-                type="error"
+                // type="error"
                 onPress={() => handleFinishActivity()}
               >
                 Encerrar rota
@@ -371,6 +363,7 @@ const PlannedRoutes = ({
             )}
             {activity.trabalhoDiario.horaInicio ? (
               <RouteButton
+                // isDisabled={true}
                 onPress={() =>
                   navigation.navigate('Rota', {
                     isStarted: activity.trabalhoDiario.horaInicio,
@@ -427,9 +420,9 @@ const PlannedRoutes = ({
   const EmptyState = () => {
     return (
       <EmptyContainer>
-        {connState && (
+        {connState === true && (
           <>
-            {/* <Image
+            <Image
               source={emptyState}
               style={{
                 resizeMode: 'contain',
@@ -438,7 +431,7 @@ const PlannedRoutes = ({
                 marginBottom: 20,
                 tintColor: '#999999',
               }}
-            /> */}
+            />
             <EmptyTitle>Ohh... que pena!</EmptyTitle>
             <EmptyDescription>
               Você não possui rotas planejadas para hoje. Que tal voltar mais
@@ -448,7 +441,7 @@ const PlannedRoutes = ({
         )}
         {connState === false && (
           <>
-            {/* <Image
+            <Image
               source={noInternet}
               style={{
                 resizeMode: 'contain',
@@ -457,7 +450,7 @@ const PlannedRoutes = ({
                 marginBottom: 20,
                 tintColor: '#999999',
               }}
-            /> */}
+            />
             <EmptyTitle>Ohh... não tem internet!</EmptyTitle>
             <EmptyDescription>
               Precisamos que conecte-se com a internet para sabermos se existe
@@ -466,6 +459,29 @@ const PlannedRoutes = ({
           </>
         )}
       </EmptyContainer>
+    );
+  };
+
+  const OldRouteAlert = () => {
+    return (
+      <>
+        {isOldRouteWithoutConn && (
+          <AlertBox
+            type="warning"
+            icon="exclamation-triangle"
+            title="É preciso conexão com a internet"
+            message="A rota atual é antiga e precisa ser encerrada antes de inicar uma nova rota."
+          />
+        )}
+        {isOldRouteWithConn && (
+          <AlertBox
+            type="warning"
+            icon="exclamation-triangle"
+            title="Esta rota não é de hoje"
+            message="A rota atual é antiga e precisa ser encerrada antes de inicar uma nova rota."
+          />
+        )}
+      </>
     );
   };
 
@@ -479,6 +495,7 @@ const PlannedRoutes = ({
         <Container>
           {activities.length > 0 ? (
             <>
+              <OldRouteAlert />
               <ActivityComponent />
               {currentRouteIndex >= 0 && <ProgressBarComponent />}
             </>

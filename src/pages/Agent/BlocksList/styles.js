@@ -18,18 +18,18 @@ export const Header = styled.View`
   flex-direction: row;
   justify-content: space-between;
   padding: 15px;
-  background-color: #0095da;
+  background-color: ${({ theme }) => theme.colors.blue};
   border-radius: 4px;
 `;
 
 export const Title = styled.Text`
-  font-family: 'Lato-Bold';
+  font-family: ${({ theme }) => theme.fonts.bold};
   color: #fff;
   font-size: 18px;
 `;
 
 export const Small = styled.Text`
-  font-family: 'Lato-Regular';
+  font-family: ${({ theme }) => theme.fonts.regular};
   color: #fff;
   font-size: 14px;
 `;
@@ -46,8 +46,8 @@ export const Box = styled.View`
 `;
 
 export const StreetText = styled.Text`
-  font-family: 'Lato-Regular';
-  color: #3a3c4e;
+  font-family: ${({ theme }) => theme.fonts.regular};
+  color: ${({ theme }) => theme.colors.black};
   font-size: 16px;
   margin-bottom: 5px;
 `;

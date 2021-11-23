@@ -1,116 +1,154 @@
-import React, { useState, useEffect, useCallback } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect } from 'react';
+import { Row, Col, Modal } from 'react-bootstrap';
 import Select from 'react-select';
-import { connect } from 'react-redux';
-import { Row, Col } from 'react-bootstrap';
-import Modal, { ModalBody, ModalFooter } from '../../../../../components/Modal';
 import { tipoImovelEnum } from '../../../../../config/enumerate';
 import { FaChevronDown, FaChevronUp, FaMapMarkerAlt } from 'react-icons/fa';
 import { Collapse } from 'react-bootstrap';
 import ReactMapGL, { Marker } from 'react-map-gl';
 
+// Models
+import { Imovel } from '../../../../../config/models';
+
+// REDUX
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+
 // ACTIONS
-import { getQuarteiroesMunicipioRequest, getLadosQuarteiraoRequest } from '../../../../../store/Quarteirao/quarteiraoActions';
+import { clearCreate } from '../../../../../store/actions/ImovelActions';
+import { setUpdated } from '../../../../../store/Quarteirao/quarteiraoActions';
 import { addImovelRequest, editarImovelRequest } from '../../../../../store/Imovel/imovelActions';
 
 // STYLES
+import { ContainerArrow } from '../../../../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../../../../styles/global';
 
-export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) => {
-  const [ imovel_id, setImovelId ]                = useState( null );
+/**
+ * Modal de adição de um imóvel
+ * @param {String} acao cadastrar ou editar
+ * @param {Model} imovel modelo de dados
+ * @param {Boolean} show abrir ou fechar modal
+ * @param {Function} handleClose função para fechar modal
+ * @param {Array} lados lista de lados do quarteirão
+ * @param {Object} props demais propriedades para funcionamento do componente
+ * @returns 
+ */
+const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => {
   const [ numero, setNumero ]                     = useState( null );
   const [ sequencia, setSequencia ]               = useState( null );
   const [ responsavel, setResponsavel ]           = useState( "" );
   const [ complemento, setComplemento ]           = useState( "" );
   const [ tipoImovel, setTipoImovel ]             = useState( {} );
-  const [ optionTipoImovel ]                      = useState( tipoImovelEnum.map( tipo => ( { value: tipo.id, label: tipo.label } ) ) );
+  const [ optionTipoImovel, setOptionTipoImovel ] = useState(
+    tipoImovelEnum.map( tipo => {
+      return { value: tipo.id, label: tipo.label }
+    } )
+  );
   const [ lado, setLado ]                         = useState( {} );
   const [ optionLado, setOptionLado ]             = useState( [] );
-  const [ quarteirao, setQuarteirao ]             = useState( {} );
-  const [ optionQuarteirao, setOptionQuarteirao ] = useState( [] );
-  const [ loading, setLoading ]                   = useState( false );
-  const [ clss, setClss ]                         = useState( [] );
-  const [ reload, setReload ]                     = useState( false );
+  const [ flLocValido, setFlLocValido ]           = useState( true );
   const [ localizacao, setLocalizacao ]           = useState( "" );
-  const [ fl_open, setFl_open ]                   = useState( false );
+  const [ flOpen, setFlOpen ]                     = useState( false );
   const [ lng, setLng ]                           = useState( "" );
   const [ lat, setLat ]                           = useState( "" );
-  const [ flLocValido, setFlLocValido ]           = useState( true );
-  const [ viewport, setViewport ]                 = useState({
+  const [ marcador, setMarcador ]                 = useState( {} );
+  const [ viewport, setViewport ]                 = useState( {
     width: '100%',
     height: '300px',
     latitude: -15.7801,
     longitude: -47.9292,
     zoom: 2
-  });
-  const [ marcador, setMarcador ]                 = useState( {} );
+  } );
 
-  useEffect(() => {
-    props.getQuarteiroesMunicipioRequest( usuario.municipio.id );
-  }, []);
-
-  useEffect(() => {
-    setOptionQuarteirao( quarteiroes.map( q => ( { value: q.id, label: q.numero } ) ) );
-  }, [ quarteiroes ]);
-
-  useEffect(() => {
-    if( Object.entries( imovel ).length > 0 ) {
-      const tipo = tipoImovelEnum.find( tipo => tipo.id === imovel.tipoImovel );
-
-      props.getLadosQuarteiraoRequest( imovel.quarteirao.numero );
-      setLoading( true );
-
-      setImovelId( imovel.id );
+  /**
+   * Efeito acionado ao mudar o modelo de dados Imóvel do modal
+   * Esse efeito modifica os dados do modal
+   */
+  useEffect( () => {
+    if( acao == 'editar' ) {
+      const l = lados.find( l => l.id == imovel.lado_id );
+      setLado( {
+        value: l.id,
+        label: "Nº " + l.numero  + " - " + l.logradouro
+      } );
       setNumero( imovel.numero );
       setSequencia( imovel.sequencia );
       setResponsavel( imovel.responsavel );
       setComplemento( imovel.complemento );
-      setTipoImovel( { value: tipo.id, label: tipo.label } );
-      setQuarteirao( { value: imovel.quarteirao.id, label: imovel.quarteirao.numero } );
-      setLado( { value: imovel.lado_id, label: imovel.logradouro } );
-      setLng( imovel.lng ? imovel.lng : "" );
-      setLat( imovel.lat ? imovel.lat : "" );
-      setLocalizacao( imovel.lng && imovel.lat ? `{ ${ imovel.lng }, ${ imovel.lat } }` : "" );
-      setMarcador( imovel.lng && imovel.lat ? { lng: parseFloat( imovel.lng ), lat: parseFloat( imovel.lat ) } : {} );
+
+      const timovel = tipoImovelEnum.find( tipo => tipo.id == imovel.tipoImovel );
+
+      if( timovel )
+        setTipoImovel( { value: timovel.id, label: timovel.label } );
+
+      onMarkerDrag( { lngLat: [ imovel.lng, imovel.lat ] } );
+      setFlOpen( false );
     } else {
       setNumero( null );
       setSequencia( null );
-      setResponsavel( '' );
-      setComplemento( '' );
+      setResponsavel( "" );
+      setComplemento( "" );
       setTipoImovel( {} );
-      setQuarteirao( {} );
+      setOptionTipoImovel(
+        tipoImovelEnum.map( tipo => {
+          return { value: tipo.id, label: tipo.label }
+        } )
+      );
       setLado( {} );
+      setOptionLado( [] );
+      setFlLocValido( true );
+      setLocalizacao( "" );
+      setFlOpen( false );
       setLng( "" );
       setLat( "" );
-      setLocalizacao( "" );
       setMarcador( {} );
+      setViewport( {
+        width: '100%',
+        height: '300px',
+        latitude: -15.7801,
+        longitude: -47.9292,
+        zoom: 2
+      } );
     }
-  }, [ imovel ]);
+  }, [ acao, imovel ]);
 
   /**
-   * Toda vez que a variável quarteirao for alterada é consultado os lados
-   * do quarteirão
+   * Assim que os lados do quarteirão é alterado, essa função atualiza
+   * o select dos lados do modal
    */
-  useEffect(() => {
-    if( quarteirao.value )
-      props.getLadosQuarteiraoRequest( quarteirao.value );
-  }, [ quarteirao ]);
-
-  useEffect(() => {
-    const options = lados.map( l => ( { value: l.id, label: l.rua.nome } ) );
-
-    loading ? setLoading( false ) : setLado( {} );
+  useEffect( () => {
+    const options = lados.filter( l => l.id ? true : false ).map( l => ( {
+      value: l.id,
+      label: "Nº " + l.numero  + " - " + l.logradouro
+    } ) );
 
     setOptionLado( options );
-  }, [ lados ]);
+  }, [ lados ] );
 
-  const limparClss = index => {
-    let c = clss;
+  /**
+   * Quando a variável created é alterada para true, significa que a requisição
+   * ao back-end foi bem sucedidade e podemos fechar o modal
+   */
+  useEffect( () => {
+    if( props.created ) {
+      handleClose();
+      setNumero( null );
+      setSequencia( null );
+      setResponsavel( "" );
+      setComplemento( "" );
+      setTipoImovel( {} );
+      setLado( {} );
+      props.clearCreate();
+      props.setUpdated( null );
+    }
+  }, [ props.created ] );
 
-    c[ index ] = '';
-    setClss( c );
-    setReload( !reload );
-  }
-
+  /**
+   * Valida se a localização inserida é válida
+   * 
+   * @param {*} valor 
+   * @param {*} campo 
+   */
   const checkLocValida = ( valor, campo ) => {
     if( lng === "" || lat === "" )
       setFlLocValido( false );
@@ -123,6 +161,10 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
       setLocalizacao( `{ ${ lng }, ${ valor } }` );
   }
 
+  /**
+   * Valida se o valor da localização
+   * @param {*} valor 
+   */
   const checkLocalizacao = valor => {
     if( valor[ 0 ] === '{' && valor[ valor.length - 1 ] === '}' ) {
       let coordenadas = valor;
@@ -149,115 +191,75 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
     setLocalizacao( valor );
   }
 
+  /**
+   * Mudar posição do marcador ao clicar e arrastar no marcador
+   * @param {*} params 
+   */
   const onMarkerDrag = params => {
-    setMarcador({
+    setMarcador( {
       lng: params.lngLat[ 0 ],
       lat: params.lngLat[ 1 ]
-    });
+    } );
     setLocalizacao( `{ ${ params.lngLat[ 0 ] }, ${ params.lngLat[ 1 ] } }` );
     setLng( params.lngLat[ 0 ] );
     setLat( params.lngLat[ 1 ] );
   }
 
-  const submit = e => {
+  /**
+   * Esta função chama a action para adicionar um imóvel ao quarteirão.
+   * 
+   * @param {object} e Elemento que acionou esaa função
+   */
+  function handleSubmit( e ) {
     e.preventDefault();
+    const im = new Imovel( {
+      id          : imovel.id,
+      lado_id     : lado.value,
+      numero      : numero,
+      logradouro  : "",
+      sequencia   : sequencia,
+      responsavel : responsavel,
+      complemento : complemento,
+      tipoImovel  : tipoImovel.value,
+      lat         : lat,
+      lng         : lng,
+    } );
 
-    let fl_valido = true,
-        c         = clss;
-
-    if( !quarteirao.value ) {
-      fl_valido = false;
-      c         = clss;
-
-      c[ 'quarteirao' ] = 'invalid';
-      setClss( c );
-    }
-
-    if( !lado.value ) {
-      fl_valido = false;
-      c         = clss;
-
-      c[ 'lado' ] = 'invalid';
-      setClss( c );
-    }
-
-    if( !numero ) {
-      fl_valido = false;
-      c         = clss;
-
-      c[ 'numero' ] = 'invalid';
-      setClss( c );
-    }
-
-    if( !tipoImovel.value ) {
-      fl_valido = false;
-      c         = clss;
-
-      c[ 'tipoImovel' ] = 'invalid';
-      setClss( c );
-    }
-
-    if( fl_valido ) {
-      if( Object.entries( imovel ).length > 0 ) { // Editar
-        props.editarImovelRequest({
-          id: imovel_id,
-          numero,
-          sequencia,
-          responsavel,
-          complemento,
-          tipoImovel: tipoImovel.value,
-          lado_id: lado.value,
-          lng,
-          lat
-        });
-      } else { // Adicionar
-        props.addImovelRequest({
-          numero,
-          sequencia,
-          responsavel,
-          complemento,
-          tipoImovel: tipoImovel.value,
-          lado_id: lado.value,
-          lng,
-          lat
-        });
-      }
+    if( acao == 'cadastrar' ) {
+      props.addImovelRequest( {
+        numero,
+        sequencia,
+        responsavel,
+        complemento,
+        tipoImovel: tipoImovel.value,
+        lado_id: lado.value,
+        lng,
+        lat
+      } );
     } else {
-      setReload( !reload );
+      props.editarImovelRequest( im );
     }
-  };
+  }
 
-  return (
-    <Modal id="modal-imovel" title={ `Imóvel` }>
-      <form onSubmit={ submit }>
-        <ModalBody>
+  return(
+    <Modal show={ show } onHide={ handleClose }>
+      <Modal.Header closeButton>
+        <Modal.Title>
+          { acao == 'cadastrar' ? 'Cadastrar' : 'Editar' } Imóvel
+        </Modal.Title>
+      </Modal.Header>
+      <form onSubmit={ handleSubmit }>
+        <Modal.Body>
           <Row>
-            <Col md="12">
+            <Col>
               <FormGroup>
-                <label htmlFor="quarteirao">Quarteirão<code>*</code></label>
-                <Select
-                  id="quarteirao"
-                  className={ clss[ 'quarteirao' ] }
-                  onBlur={ () => limparClss( 'quarteirao' ) }
-                  value={ quarteirao }
-                  styles={ selectDefault }
-                  options={ optionQuarteirao }
-                  onChange={ e => setQuarteirao( e ) }
-                />
-              </FormGroup>
-            </Col>
-            <Col md="12">
-              <FormGroup>
-                <label htmlFor="lado">Logradouro<code>*</code></label>
+                <label htmlFor="lado">Lado <code>*</code></label>
                 <Select
                   id="lado"
-                  className={ clss[ 'lado' ] }
-                  onBlur={ () => limparClss( 'lado' ) }
                   value={ lado }
                   styles={ selectDefault }
                   options={ optionLado }
                   onChange={ e => setLado( e ) }
-                  isDisabled={ lados.length === 0 }
                 />
               </FormGroup>
             </Col>
@@ -265,13 +267,12 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
           <Row>
             <Col sm="6">
               <FormGroup>
-                <label htmlFor="numero">Nº Imóvel<code>*</code></label>
+                <label htmlFor="numero">Nº Imóvel <code>*</code></label>
                 <input
                   id="numero"
-                  className={ "form-control " + clss[ 'numero' ] }
-                  onBlur={ () => limparClss( 'numero' ) }
                   value={ numero ? numero : "" }
                   type="number"
+                  className="form-control"
                   onChange={ e => setNumero( e.target.value ) }
                   min="1"
                 />
@@ -318,11 +319,9 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
           <Row>
             <Col>
               <FormGroup>
-                <label>Tipo do imóvel<code>*</code></label>
+                <label>Tipo do imóvel <code>*</code></label>
                 <Select
                     id="tipoImovel"
-                    className={ clss[ 'tipoImovel' ] }
-                    onBlur={ () => limparClss( 'tipoImovel' ) }
                     value={ tipoImovel }
                     styles={ selectDefault }
                     options={ optionTipoImovel }
@@ -347,9 +346,9 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
                     </div>
                     <div className="toggle-control">
                       <span className="separator"></span>
-                      <div className="toggle" onClick={ () => setFl_open( !fl_open ) }>
+                      <div className="toggle" onClick={ () => setFlOpen( !flOpen ) }>
                         {
-                          fl_open ?
+                          flOpen ?
                             <FaChevronUp className="icon sm" /> :
                             <FaChevronDown className="icon sm" />
                         }
@@ -357,7 +356,7 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
                     </div>
                   </div>
 
-                  <Collapse in={ fl_open }>
+                  <Collapse in={ flOpen }>
                     <div className="collapse-body">
                       <FormGroup>
                         <label htmlFor="lng">Longitude<code>*</code></label>
@@ -366,7 +365,10 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
                           value={ lng }
                           type="number"
                           className="form-control"
-                          onChange={ e => { setLng( e.target.value ); checkLocValida( e.target.value, "lng" ); } }
+                          onChange={ e => { 
+                            setLng( e.target.value ); 
+                            checkLocValida( e.target.value, "lng" ); 
+                          } }
                         />
                       </FormGroup>
                       <FormGroup className="mb-0">
@@ -376,7 +378,10 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
                           value={ lat }
                           type="number"
                           className="form-control"
-                          onChange={ e => { setLat( e.target.value ); checkLocValida( e.target.value, "lat" ); } }
+                          onChange={ e => { 
+                            setLat( e.target.value ); 
+                            checkLocValida( e.target.value, "lat" ); 
+                          } }
                         />
                       </FormGroup>
                     </div>
@@ -408,30 +413,41 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
               </ReactMapGL>
             </Col>
           </Row>
-        </ModalBody>
-        <ModalFooter>
-          <Button className="secondary" data-dismiss="modal">Cancelar</Button>
-          <Button className="info" type="submit">Salvar</Button>
-        </ModalFooter>
+        </Modal.Body>
+        <Modal.Footer>
+          <ContainerArrow className="justify-content-end">
+            <div>
+              <Button type="button" className="secondary" onClick={ handleClose }>Cancelar</Button>
+              <Button type="submit">Salvar</Button>
+            </div>
+          </ContainerArrow>
+        </Modal.Footer>
       </form>
     </Modal>
-  )
+  );
 }
 
-const mapStateToProps = state => ({
-  usuario     : state.appConfig.usuario,
-  imovel      : state.nw_imovel.imovel,
-  reload      : state.nw_imovel.reload,
-  quarteiroes : state.quarteirao.quarteiroes,
-  lados       : state.quarteirao.lados,
-})
+/**
+ * Mapeia o estado global da aplicação a propriedade do componente
+ * @param {Object} state estado global
+ * @returns 
+ */
+const mapStateToProps = state => ( {
+  created: state.imovel.created
+} );
 
-const mapDispatchToProps = {
-  getQuarteiroesMunicipioRequest,
-  getLadosQuarteiraoRequest,
-  addImovelRequest,
-  editarImovelRequest
-}
+/**
+ * Mapeia ações a propriedade do componente
+ * @param {*} dispatch 
+ * @returns 
+ */
+const mapDispatchToProps = dispatch =>
+  bindActionCreators( {
+    clearCreate,
+    addImovelRequest,
+    editarImovelRequest,
+    setUpdated,
+  }, dispatch );
 
 export default connect(
   mapStateToProps,

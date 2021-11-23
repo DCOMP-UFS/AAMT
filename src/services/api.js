@@ -7,6 +7,10 @@ const api = axios.create({
 
 export default api;
 
+export const viacep_api = axios.create( {
+  baseURL: 'https://viacep.com.br/ws/'
+} );
+
 export const headerAuthorization = () => {
   const { token } = JSON.parse(JSON.parse(localStorage.getItem('persist:aamt')).appConfig);
 
@@ -15,4 +19,4 @@ export const headerAuthorization = () => {
       authorization: `Bearer ${ token }`
     }
   }
-}
+};

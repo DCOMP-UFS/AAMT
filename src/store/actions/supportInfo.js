@@ -84,32 +84,3 @@ export const changeTableSelected = (id, selected) => {
   }
 }
 
-export const changeImovelSelect = (
-  id,
-  lado_id,
-  lado_numero,
-  logradouro,
-  imovel_numero,
-  sequencia,
-  responsavel,
-  complemento,
-  tipoImovel
-) => {
-  return {
-    type: ActionTypes.CHANGE_IMOVEL_SELECT,
-    payload: {
-      id,
-      numero: imovel_numero,
-      sequencia,
-      responsavel,
-      complemento,
-      tipoImovel,
-      lado: {
-        id: lado_id,
-        numero: lado_numero,
-        logradouro
-      }
-    }
-  }
-}
-

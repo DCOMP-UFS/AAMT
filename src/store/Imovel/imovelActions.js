@@ -76,23 +76,12 @@ export const addImovelRequest = imovel => {
 }
 
 /**
- * Aciona o sagas para inserir um novo imóvel
+ * Aciona o sagas para alterar um novo imóvel
  *
- * @param class imovel: {
- *  id,
- *  numero,
- *  sequencia,
- *  responsavel,
- *  complemento,
- *  tipoImovel,
- *  lado_id,
- *  lng,
- *  lat,
- * }
+ * @param Model imovel
  * @returns
  */
 export const editarImovelRequest = imovel => {
-  console.log( imovel );
   return {
     type: ActionTypes.EDITAR_IMOVEL_REQUEST,
     payload: {

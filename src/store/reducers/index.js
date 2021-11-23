@@ -8,7 +8,6 @@ import imovel from './Imovel';
 import localidade from './Localidade';
 import municipio from './Municipio';
 import pais from './Pais';
-import quarteirao from './quarteirao';
 import regiao from './Regiao';
 import regionalSaude from './RegionalSaude';
 import rua from './Rua';
@@ -34,11 +33,12 @@ import nw_amostra from '../Amostra/amostraReduce';
 import nw_laboratorio from '../Laboratorio/laboratorioReduce';
 import nw_mosquito from '../Mosquito/mosquitoReduce';
 import nw_imovel from '../Imovel/imovelReduce';
-import nw_quarteirao from '../Quarteirao/quarteiraoReduce';
+import quarteirao from '../Quarteirao/quarteiraoReduce';
 import nw_ciclo from '../Ciclo/cicloReduce';
 import nw_trabalho from '../TrabalhoDiario/trabalhoDiarioReduce';
 import nw_relatorio from '../Relatorio/relatorioReduce';
 import nw_equipe from '../Equipe/equipeReduce';
+import nw_rua from '../Rua/ruaReduce';
 
 export default combineReducers({
   sidebarCoordGeral,
@@ -47,7 +47,6 @@ export default combineReducers({
   sidebarSupervisor,
   atividade,
   trabalhoDiario,
-  quarteirao,
   supportInfo,
   appConfig,
   usuario,
@@ -75,9 +74,10 @@ export default combineReducers({
   nw_laboratorio,
   nw_mosquito,
   nw_imovel,
-  nw_quarteirao,
+  quarteirao,
   nw_ciclo,
   nw_trabalho,
   nw_relatorio,
-  nw_equipe
+  nw_equipe,
+  nw_rua
 });

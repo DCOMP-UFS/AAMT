@@ -10,7 +10,6 @@ import { ActionTypes as PaisActions } from '../actions/PaisActions';
 import { ActionTypes as RegiaoActions } from '../actions/RegiaoActions';
 import { ActionTypes as EstadoActions } from '../actions/EstadoActions';
 import { ActionTypes as RegionalSaudeActions } from '../actions/RegionalSaudeActions';
-import { ActionTypes as QuarteiraoActions } from '../actions/QuarteiraoActions';
 import { ActionTypes as RuaActions } from '../actions/RuaActions';
 import { ActionTypes as CicloActions } from '../actions/CicloActions';
 import { ActionTypes as MetodologiaActions } from '../actions/MetodologiaActions';
@@ -26,11 +25,11 @@ import { ActionTypes as NW_AmostraActions } from '../Amostra/amostraActions';
 import { ActionTypes as NW_LaboratorioActions } from '../Laboratorio/laboratorioActions';
 import { ActionTypes as NW_MosquitoActions } from '../Mosquito/mosquitoActions';
 import { ActionTypes as NW_ImovelActions } from '../Imovel/imovelActions';
-import { ActionTypes as NW_QuarteiraoActions } from '../Quarteirao/quarteiraoActions';
 import { ActionTypes as NW_CicloActions } from '../Ciclo/cicloActions';
 import { ActionTypes as NW_TrabalhoActions } from '../TrabalhoDiario/trabalhoDiarioActions';
 import { ActionTypes as NW_RelatorioActions } from '../Relatorio/relatorioActions';
 import { ActionTypes as NW_EquipeActions } from '../Equipe/equipeActions';
+import { ActionTypes as NW_RuaActions } from '../Rua/ruaActions';
 
 import {
   authenticate,
@@ -49,14 +48,6 @@ import { getNations } from './PaisSagas';
 import { GetRegionsByNation } from './RegiaoSagas';
 import { GetStatesByRegion } from './EstadoSagas';
 import { getRegionalHealthByState } from './RegionalSaudeSagas';
-import {
-  getBlockByCity,
-  createCityBlock,
-  getBlockById,
-  addHouse,
-  deleteHouse,
-  updateHouse
-} from './QuarteiraoSagas';
 import { getStreetByLocality, createStreet, updateStreet, deleteStreet } from './RuaSagas';
 import * as CicloSagas from './CicloSagas';
 import * as MetodologiaSagas from './MetodologiaSagas';
@@ -72,11 +63,13 @@ import * as NW_AmostraSagas from '../Amostra/amostraSagas';
 import * as NW_LaboratorioSagas from '../Laboratorio/laboratorioSagas';
 import * as NW_MosquitoSagas from '../Mosquito/mosquitoSagas';
 import * as NW_ImovelSagas from '../Imovel/imovelSagas';
-import * as NW_QuarteiraoSagas from '../Quarteirao/quarteiraoSagas';
 import * as NW_CicloSagas from '../Ciclo/cicloSagas';
 import * as NW_TrabalhoSagas from '../TrabalhoDiario/trabalhoDiarioSagas';
 import * as NW_RelatorioSagas from '../Relatorio/relatorioSagas';
 import * as NW_EquipeSagas from '../Equipe/equipeSagas';
+import * as NW_RuaSagas from '../Rua/ruaSagas';
+
+import { quarteiraoSaga } from '../Quarteirao/quarteiraoSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -128,15 +121,7 @@ export default function* rootSaga() {
     takeLatest( RegionalSaudeActions.GET_REGIONAL_HEALTH_BY_STATE_REQUEST, getRegionalHealthByState ),
 
     // Gerir Quarteirão
-    takeLatest( QuarteiraoActions.GET_BLOCK_BY_CITY_REQUEST, getBlockByCity ),
-    takeLatest( QuarteiraoActions.GET_BY_ID_REQUEST, getBlockById ),
-    takeLatest( QuarteiraoActions.CREATE_CITY_BLOCK_REQUEST, createCityBlock ),
-    takeLatest( QuarteiraoActions.ADD_HOUSE_REQUEST, addHouse ),
-    takeLatest( QuarteiraoActions.DELETE_HOUSE_REQUEST, deleteHouse ),
-    takeLatest( QuarteiraoActions.UPDATE_HOUSE_REQUEST, updateHouse ),
-    // Nova Estrutura
-    takeLatest( NW_QuarteiraoActions.GET_QUARTEIROES_MUNICIPIO_REQUEST, NW_QuarteiraoSagas.getQuarteiroes ),
-    takeLatest( NW_QuarteiraoActions.GET_LADOS_QUARTEIRAO, NW_QuarteiraoSagas.getLadosQuarteirao ),
+    quarteiraoSaga(),
 
     // Gerir Rua
     takeLatest( RuaActions.GET_STREET_BY_LOCALITY_REQUEST, getStreetByLocality ),
@@ -215,5 +200,8 @@ export default function* rootSaga() {
 
     // Gerir Equipe
     takeLatest( NW_EquipeActions.GET_MEMBROS_REQUEST, NW_EquipeSagas.getMembros ),
+
+    // Gerir Rua
+    takeLatest( NW_RuaActions.GET_RUA_POR_CEP_REQUEST, NW_RuaSagas.getRuaPorCep ),
   ]);
 }

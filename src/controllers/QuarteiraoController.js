@@ -216,11 +216,12 @@ update = async ( req, res ) => {
     }
   }
 
-  const zona = await Zona.findByPk( zona_id );
-  if( !zona ) {
-    return res.status(400).json({ error: 'Zona não existe' });
+  if( zona_id ) {
+    const zona = await Zona.findByPk( zona_id );
+    if( !zona )
+      return res.status(400).json({ error: 'Zona não existe' });
   }
-
+  
   const { isRejected } = await Quarteirao.update(
     {
       numero,
@@ -347,6 +348,40 @@ getLadosQuarteirao = async ( req, res ) => {
   res.json( lados );
 }
 
+/**
+ * Excluir um lado do quarteirão e atribuir seus imóveis a outro lado
+ * 
+ * @params integer id
+ * @return array lados
+ */
+ excluirLadoPorId = async ( req, res ) => {
+  const { excluirLadoId } = req.params;
+  const { addImovelLadoId }     = req.body;
+
+  // Checando se o ID existe
+  const excluirLado = await Lado.findByPk( excluirLadoId );
+  const addLado     = await Lado.findByPk( addImovelLadoId );
+
+  if( !excluirLado && !addLado )
+    return res.status( 400 ).json( { error: 'Não é possível excluir o lado, um dos lados não existe' } );
+
+  if( excluirLado.quarteirao_id !== addLado.quarteirao_id )
+    return res.status( 400 ).json( { error: 'Não é permitido adicionar imóveis a um quarteirão diferente' } );
+
+  let sql = `UPDATE imoveis SET lado_id = $1 WHERE lado_id = $2`;
+
+  await Lado.sequelize.query( sql, 
+    {
+      bind: [ addLado.id, excluirLado.id ],
+      logging: console.log,
+    }
+  );
+
+  excluirLado.destroy();
+
+  res.json( { mensage: 'Lado removido com sucesso' } );
+}
+
 const router = express.Router();
 router.use( authMiddleware );
 
@@ -356,5 +391,6 @@ router.get( '/:municipio_id/municipios', getBlockByCity );
 router.post( '/', store );
 router.put( '/:id/desativar', disabled );
 router.put( '/:id', update );
+router.post( '/excluirLado/:excluirLadoId', excluirLadoPorId );
 
 module.exports = app => app.use( '/quarteiroes', router );

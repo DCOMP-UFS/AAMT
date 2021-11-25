@@ -55,7 +55,7 @@ export default function Vistoria( state = INITIAL_STATE, action ) {
       return {
         ...state,
         recipientes,
-        reload: !state.reload
+        reload            : !state.reload
       }
     }
 

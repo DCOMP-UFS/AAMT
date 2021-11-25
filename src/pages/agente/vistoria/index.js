@@ -165,8 +165,8 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
       setTimeout(() => { window.location = window.location.origin + '/agente/home'; }, 300);
   }, [ showNotStarted ]);
 
-  useEffect(() => {
-    function createRows() {
+  useEffect( () => {
+    const createRows = () => {
       const vists = vistorias.map( ( vistoria, index ) => (
         [
           index,
@@ -175,19 +175,19 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
           vistoria.imovel.numero,
           vistoria.imovel.sequencia,
           tipoImovelEnum[
-            Object.entries( tipoImovelEnum ).find(([ key, value ]) => value.id === vistoria.imovel.tipoImovel )[0]
+            Object.entries( tipoImovelEnum ).find( ( [ key, value ] ) => value.id === vistoria.imovel.tipoImovel )[ 0 ]
           ].sigla,
           vistoria.situacaoVistoria === "N" ? "Normal" : "Recuperada",
           vistoria.pendencia ? ( vistoria.pendencia === "F" ? "Fechada" : "Recusada" ) : "",
           vistoria.horaEntrada
         ]
-      ));
+      ) );
 
       setRows( vists );
     }
 
     createRows();
-  }, [ vistorias, props.reload ]);
+  }, [ vistorias, props.reload ] );
 
   useEffect(() => {
     if( !trabalhoDiario.id ) {

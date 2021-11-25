@@ -66,10 +66,6 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
     }
   }, [ selectQuarteirao ]);
 
-  useEffect(() => {
-    console.log(quarteirao);
-  }, [quarteirao]);
-
   function handleImovel( i ) {
     props.setImovelSelected( i );
   };
@@ -175,7 +171,8 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
                   min="0"
                   disabled={ imovel ? "" : "disabled" }
                   value={ imovel ?  imovel.numero : "" }
-                  onChange={ handleInputImovel } />
+                  onChange={ handleInputImovel }
+                />
               </div>
             </Col>
 
@@ -284,8 +281,12 @@ function ListImovel({ rotaIndex, idImovelSelect, quarteirao, imoveis, ...props }
         key={ index}
         className={ `${ idImovelSelect === imovel.id ? "active" : imovel.fl_inspection ? " disabled" : "" }` }
         onClick={ () => {
+          if( idImovelSelect !== imovel.id )
+            if( imovel.fl_inspection )
+              return;
+          
           props.handleImovel( imovel );
-        }}>
+        } } >
         <ContainerIcon className="ContainerIcon" >
           <IoIosHome />
         </ContainerIcon>

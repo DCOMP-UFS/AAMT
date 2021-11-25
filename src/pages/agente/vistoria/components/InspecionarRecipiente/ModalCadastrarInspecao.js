@@ -17,6 +17,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
+import { showNotifyToast } from '../../../../../store/actions/appConfig';
 import { addUnidade } from '../../../../../store/actions/supportInfo';
 import { addRecipiente } from '../../../../../store/actions/VistoriaActions';
 
@@ -55,7 +56,7 @@ function InspecionarRecipiente( {
   const [ fl_tratado, setFl_tratado ]               = useState( { value: null, label: null } );
   const [ fl_foco, setFl_foco ]                     = useState( { value: null, label: null } );
   const [ dataFormatada, setDataFormatada ]         = useState( null );
-  const [ seqAmostra, setSeqAmostra ]               = useState( 0 );
+  const [ seqAmostra, setSeqAmostra ]               = useState( "" );
   const [ tecnicaTratamento, setTecnicaTratamento ] = useState( { value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label } );
   const [ numUnidade, setNumUnidade ]               = useState( 0 );
   const [ qtdTratamento, setQtdTratamento ]         = useState( 0 );
@@ -84,18 +85,21 @@ function InspecionarRecipiente( {
     } );
   }, [] );
 
-  function addUnidade() {
-    let nu = numUnidade + 1;
-    let listUnidade = unidade;
+  const addUnidade = () => {
+    if( seqAmostra == "" ) {
+      props.showNotifyToast( "Informe a sequência da amostra", "warning" );
+      return;
+    }
 
-    const amostra = {
-      idUnidade:
-        codigoMunicipio + '.' +
-        sequenciaUsuario + '.' +
-        dataFormatada + '.' +
-        trabalhoDiario_sequencia + '.' +
-        seqAmostra,
-      sequencia: seqAmostra,
+    let seq         = parseInt( seqAmostra );
+    let nu          = numUnidade + 1;
+    let listUnidade = unidade;
+    let unidade_id  = 
+      `${ codigoMunicipio }.${ sequenciaUsuario }.${ dataFormatada }.${ trabalhoDiario_sequencia }.${ seq }`;
+
+    const amostra   = {
+      idUnidade: unidade_id,
+      sequencia: seq,
       situacao: situacaoAmostraEnum.coletada.id
     }
 
@@ -212,11 +216,13 @@ function InspecionarRecipiente( {
       setFl_foco( { value: null, label: null, name: "fl_foco" } );
       // setNumUnidade( 0 );
       setUnidade( [] );
-      setSeqAmostra( 0 );
+      setSeqAmostra( "" );
       setQtdTratamento( 0 );
       setTecnicaTratamento( { value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label } );
 
       $( '#modalCadastrarInspecao' ).modal( 'hide' );
+    } else {
+      props.showNotifyToast( "Existem campos obrigatórios não preenchidos", "warning" );
     }
   }
 
@@ -319,19 +325,20 @@ function InspecionarRecipiente( {
                 <Col md="12" className="form-group">
                   <label>Nº da sequencia da amostra</label>
                   <Row id="row-sequence">
-                    <Col md="6" className="form-group">
+                    <Col className="form-group">
                       <input
-                        id="sequencia-amostra"
-                        type="number"
-                        min="0"
-                        className="form-control"
-                        value={ seqAmostra }
-                        onChange={ e => setSeqAmostra( parseInt( e.target.value ) ) }
-                        style={ { marginBottom: -24 } } />
+                        id        ="sequencia-amostra"
+                        type      ="number"
+                        min       ="0"
+                        className ="form-control"
+                        value     ={ seqAmostra }
+                        onChange  ={ e => setSeqAmostra( parseInt( e.target.value ) ) }
+                        style     ={ { marginBottom: -24 } } 
+                      />
                     </Col>
-                    <ButtonNewObject
-                      title="Gerar código"
-                      onClick={ addUnidade } />
+                    <Col>
+                      <ButtonNewObject title="Adicionar Amostra" onClick={ addUnidade } />
+                    </Col>
                   </Row>
                 </Col>
               </Row>
@@ -398,9 +405,13 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ addUnidade, addRecipiente }, dispatch);
+  bindActionCreators( {
+    addUnidade,
+    addRecipiente,
+    showNotifyToast,
+  }, dispatch );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(InspecionarRecipiente);
+)( InspecionarRecipiente );

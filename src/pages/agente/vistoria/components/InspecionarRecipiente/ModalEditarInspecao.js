@@ -17,6 +17,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
+import { showNotifyToast } from '../../../../../store/actions/appConfig';
 import { addUnidade } from '../../../../../store/actions/supportInfo';
 import { atualizarRecipiente } from '../../../../../store/actions/VistoriaActions';
 
@@ -37,36 +38,46 @@ import {
   LiEmpty
 } from '../../../../../styles/global';
 
-function InspecionarRecipiente({ updatedIndex, sequenciaRecipiente, recipientes, vistorias, trabalhoDiario_id, data, objetivo, trabalhoDiario_sequencia, codigoMunicipio, sequenciaUsuario, ...props }) {
-  const [ tipoRecipiente, setTipoRecipiente ] = useState({ value: null, label: null });
-  const [ fl_eliminado, setFl_eliminado ] = useState({ value: null, label: null });
-  const [ fl_tratado, setFl_tratado ] = useState({ value: null, label: null });
-  const [ fl_foco, setFl_foco ] = useState({ value: null, label: null });
-  const [ dataFormatada, setDataFormatada ] = useState( null );
-  const [ seqAmostra, setSeqAmostra ] = useState( 0 );
-  const [ tecnicaTratamento, setTecnicaTratamento ] = useState({ value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label });
-  const [ numUnidade, setNumUnidade ] = useState(0);
-  const [ qtdTratamento, setQtdTratamento ] = useState(0);
-  const [ unidade, setUnidade ] = useState([]);
-  const [ reload, setReload ] = useState( false );
-  const [ optionsTipoRecipiente ] = useState(tipoRecipienteEnum.map( tipo => (
-    { value: tipo, label: tipo }
-  ) ));
-  const [ optionsSimNao ] = useState([
+const InspecionarRecipiente = ( {
+  updatedIndex,
+  recipientes,
+  vistorias,
+  trabalhoDiario_id,
+  data,
+  objetivo,
+  trabalhoDiario_sequencia,
+  codigoMunicipio,
+  sequenciaUsuario,
+  ...props
+} ) => {
+  const [ tipoRecipiente, setTipoRecipiente ]       = useState( { value: null, label: null } );
+  const [ fl_eliminado, setFl_eliminado ]           = useState( { value: null, label: null } );
+  const [ fl_tratado, setFl_tratado ]               = useState( { value: null, label: null } );
+  const [ fl_foco, setFl_foco ]                     = useState( { value: null, label: null } );
+  const [ dataFormatada, setDataFormatada ]         = useState( null );
+  const [ seqAmostra, setSeqAmostra ]               = useState( "" );
+  const [ tecnicaTratamento, setTecnicaTratamento ] = useState( { value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label } );
+  const [ numUnidade, setNumUnidade ]               = useState( 0 );
+  const [ qtdTratamento, setQtdTratamento ]         = useState( 0 );
+  const [ unidade, setUnidade ]                     = useState( [] );
+  const [ reload, setReload ]                       = useState( false );
+  const [ optionsTipoRecipiente ]                   = useState( tipoRecipienteEnum.map( tipo => ( { value: tipo, label: tipo } ) ) );
+  const [ optionsSimNao ]                           = useState( [
     { value: true, label: "Sim" },
     { value: false, label: "Não" }
-  ]);
-  const [ optionsTecnicaTratamento ] = useState(
-    Object.entries( tecnicaTratamentoEnum ).map(([ key, value ]) => ({ value: value.id, label: value.label }))
+  ] );
+  const [ optionsTecnicaTratamento ]                = useState(
+    Object.entries( tecnicaTratamentoEnum ).map( ( [ key, value ] ) => ( { value: value.id, label: value.label } ) )
   );
 
-  useEffect(() => {
+  useEffect( () => {
     if( updatedIndex > -1 ) {
       const recipiente = recipientes[ updatedIndex ];
       setTipoRecipiente({ value: recipiente.tipoRecipiente, label: recipiente.tipoRecipiente });
       setFl_eliminado({ value: recipiente.fl_eliminado, label: recipiente.fl_eliminado ? "Sim" : "Não" });
       setFl_tratado({ value: recipiente.fl_tratado, label: recipiente.fl_tratado ? "Sim" : "Não" });
       setFl_foco({ value: recipiente.fl_comFoco, label: recipiente.fl_comFoco ? "Sim" : "Não" });
+      setQtdTratamento( recipiente.tratamento.quantidade );
       setTecnicaTratamento( recipiente.tratamento.tecnica === 1 ?
         { value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label } :
         { value: tecnicaTratamentoEnum.perifocal.id, label: tecnicaTratamentoEnum.perifocal.label }
@@ -76,25 +87,33 @@ function InspecionarRecipiente({ updatedIndex, sequenciaRecipiente, recipientes,
       if( recipiente.amostras.length > 0 )
         setNumUnidade( recipiente.amostras[ recipiente.amostras.length - 1 ].sequencia );
     }
-  }, [ updatedIndex, recipientes ]);
+  }, [ updatedIndex, recipientes ] );
 
   useEffect( () => {
     const [ ano, mes, dia ] = data.split( "-" );
 
     setDataFormatada(`${ dia }${ mes }${ ano }`);
   }, [ data ] );
-  function addUnidade() {
-    let nu = numUnidade + 1;
-    let listUnidade = unidade;
 
-    const amostra = {
-      idUnidade:
-        codigoMunicipio + '.' +
-        sequenciaUsuario + '.' +
-        dataFormatada + '.' +
-        trabalhoDiario_sequencia + '.' +
-        seqAmostra,
-      sequencia: seqAmostra,
+  /**
+   * Adiciona uma nova amostra ao array de amostras do recipiente
+   * @returns void
+   */
+  const addUnidade = () => {
+    if( seqAmostra == "" ) {
+      props.showNotifyToast( "Informe a sequência da amostra", "warning" );
+      return;
+    }
+
+    let seq         = parseInt( seqAmostra );
+    let nu          = numUnidade + 1;
+    let listUnidade = unidade;
+    let unidade_id  = 
+      `${ codigoMunicipio }.${ sequenciaUsuario }.${ dataFormatada }.${ trabalhoDiario_sequencia }.${ seq }`;
+
+    const amostra   = {
+      idUnidade: unidade_id,
+      sequencia: seq,
       situacao: situacaoAmostraEnum.coletada.id
     }
 
@@ -112,6 +131,10 @@ function InspecionarRecipiente({ updatedIndex, sequenciaRecipiente, recipientes,
     setReload( !reload );
   }
 
+  /**
+   * Atualiza o recipiente no reduce
+   * @returns void
+   */
   function submit() {
     // Validação
     let fl_valido = true;// true -> válido | false -> inválido
@@ -153,18 +176,20 @@ function InspecionarRecipiente({ updatedIndex, sequenciaRecipiente, recipientes,
 
     if( temCodigoDuplicado.length === 0 ) {
       $( '#row-sequence' ).parent().find('span.form-label-invalid').remove();
-      recipientes.forEach( recipiente => {
-        recipiente.amostras.forEach( amostra => {
-          const index = arrayCodigosAmostra.findIndex( p => p === amostra.idUnidade );
-
-          if( index !== -1 ) {
-            fl_valido = false;
-            valida_entre_recipiente = false;
-            input_seq_amostra.addClass( 'invalid' );
-
-            form_group_amostra.append( msgInputInvalid( `O código ${ arrayCodigosAmostra[ index ] } já foi gerado nesta vistoria para o recipiente ${ recipiente.sequencia }.` ) );
-          }
-        } );
+      recipientes.forEach( ( recipiente, i ) => {
+        if( updatedIndex !== i ) {
+          recipiente.amostras.forEach( amostra => {
+            const index = arrayCodigosAmostra.findIndex( p => p === amostra.idUnidade );
+  
+            if( index !== -1 ) {
+              fl_valido = false;
+              valida_entre_recipiente = false;
+              input_seq_amostra.addClass( 'invalid' );
+  
+              form_group_amostra.append( msgInputInvalid( `O código ${ arrayCodigosAmostra[ index ] } já foi gerado nesta vistoria para o recipiente ${ recipiente.sequencia }.` ) );
+            }
+          } );
+        }
       } );
     }
 
@@ -188,23 +213,26 @@ function InspecionarRecipiente({ updatedIndex, sequenciaRecipiente, recipientes,
 
     if( fl_valido ) {
       const recipiente = {
-        fl_comFoco:     fl_foco.value,
-        fl_tratado:     fl_tratado.value,
-        fl_eliminado:   fl_eliminado.value,
+        fl_comFoco    : fl_foco.value,
+        fl_tratado    : fl_tratado.value,
+        fl_eliminado  : fl_eliminado.value,
         tipoRecipiente: tipoRecipiente.value,
-        sequencia:      sequenciaRecipiente,
-        tratamento: {
-          quantidade: qtdTratamento,
-          tecnica:    tecnicaTratamento.value
+        sequencia     : recipientes[ updatedIndex ].sequencia,
+        amostras      : unidade,
+        tratamento    : {
+          quantidade  : qtdTratamento,
+          tecnica     : tecnicaTratamento.value
         },
-        amostras:       unidade
       };
 
-      setSeqAmostra( 0 );
+      setSeqAmostra( "" );
 
       props.atualizarRecipiente( updatedIndex, recipiente );
+      props.showNotifyToast( "Recipiente atualizado com sucesso", "success" );
 
       $( '#modalEditarInspecao' ).modal( 'hide' );
+    } else {
+      props.showNotifyToast( "Existem campos obrigatórios não preenchidos", "warning" );
     }
   }
 
@@ -389,21 +417,26 @@ function ListUnidade( props ) {
 }
 
 const mapStateToProps = state => ({
-  trabalhoDiario_id: state.rotaCache.trabalhoDiario.id,
-  data: state.rotaCache.trabalhoDiario.data,
+  trabalhoDiario_id       : state.rotaCache.trabalhoDiario.id,
+  data                    : state.rotaCache.trabalhoDiario.data,
   trabalhoDiario_sequencia: state.rotaCache.trabalhoDiario.sequencia,
-  codigoMunicipio: state.rotaCache.trabalhoDiario.codigo_municipio,
-  sequenciaUsuario: state.rotaCache.trabalhoDiario.sequencia_usuario,
-  vistorias: state.vistoriaCache.vistorias,
-  recipientes: state.vistoria.recipientes,
-  sequenciaRecipiente: state.vistoria.sequenciaRecipiente,
-  updatedIndex: state.vistoria.updatedIndex
+  codigoMunicipio         : state.rotaCache.trabalhoDiario.codigo_municipio,
+  sequenciaUsuario        : state.rotaCache.trabalhoDiario.sequencia_usuario,
+  vistorias               : state.vistoriaCache.vistorias,
+  recipientes             : state.vistoria.recipientes,
+  sequenciaRecipiente     : state.vistoria.sequenciaRecipiente,
+  updatedIndex            : state.vistoria.updatedIndex,
+  updatedRecipiente       : state.vistoria.updatedRecipiente,
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ addUnidade, atualizarRecipiente }, dispatch);
+  bindActionCreators( {
+    addUnidade,
+    atualizarRecipiente,
+    showNotifyToast,
+  }, dispatch );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(InspecionarRecipiente);
+)( InspecionarRecipiente );

@@ -421,6 +421,8 @@ startRoute = async ( req, res ) => {
 /**
  * Finaliza uma rota de trabalho diário e armazena
  * as informações da vistoria.
+ * 
+ * @returns {Promise} reponse
  */
 endRoute = async ( req, res ) => {
   const { trabalhoDiario_id, horaFim, vistorias } = req.body;
@@ -429,52 +431,47 @@ endRoute = async ( req, res ) => {
   // Validando
   const td = await TrabalhoDiario.findByPk( trabalhoDiario_id );
   if( !td ) 
-    res.json({
+    res.json( {
       status: 'error',
       mensage: 'Impossível finalizar a rota, trabalho diário informado não existe!'
-    });
+    } );
 
   const userRequest = await Usuario.findByPk( userId, {
     include: {
       association: "atuacoes"
     }
-  });
+  } );
 
   let fl_agente = false;
   userRequest.atuacoes.forEach( at => {
     if( at.tipoPerfil === 4 )
       fl_agente = true;
-  });
+  } );
 
+  /**
+   * Verificando se o usuário solicitando finalização da rota é o responsável
+   * pelo trabalho diário informado
+   */
   if( fl_agente && td.usuario_id !== userRequest.id )
-    return res.json({ 
+    return res.json( { 
       status: 'error',
       mensage: 'Acesso negado'
-    });
-  // Validando
+    } );
 
-  // Apagando dados desatualizados
-  await Vistoria.destroy({
-    where: {
-      trabalho_diario_id: trabalhoDiario_id
-    }
-  });
-  // Apagando dados desatualizados
-
-  // Verificando códigos de amostra repetidos
-
+  // Concatenando todas amostras
   let arrayCodigosAmostra = [];
 
   vistorias.forEach( v => {
-    v.recipientes.forEach( r => {
-      if( r.fl_comFoco ) {
-        r.amostras.forEach( a => {
-          arrayCodigosAmostra.push( a.idUnidade );
+    v.recipientes.forEach( recipiente => {
+      if( recipiente.fl_comFoco ) {
+        recipiente.amostras.forEach( amostra => {
+          arrayCodigosAmostra.push( amostra.idUnidade );
         } );
       }
     } );
-  });
+  } );
 
+  // Verificando códigos de amostra repetidos
   const temCodigoDuplicado = arrayCodigosAmostra.filter( ( item, index ) => arrayCodigosAmostra.indexOf( item ) !== index );
 
   if( temCodigoDuplicado.length > 0 ) {
@@ -485,17 +482,23 @@ endRoute = async ( req, res ) => {
     } );
   }
 
-  // Salvando as vistorias  
-  vistorias.forEach( async v => {
-    let vistoria = { ...v };
+  // Apagando dados desatualizados
+  await Vistoria.destroy( {
+    where: {
+      trabalho_diario_id: trabalhoDiario_id
+    }
+  } );
+
+  // Salvando as vistorias 
+  for( let vistoria of vistorias ) {
     await Vistoria.create( {
-      situacaoVistoria:   v.situacaoVistoria,
-      horaEntrada:        v.horaEntrada,
-      pendencia:          v.pendencia,
-      sequencia:          v.sequencia,
-      justificativa:      v.justificativa,
-      imovel_id:          v.imovel.id,
-      trabalho_diario_id: v.trabalhoDiario_id
+      situacaoVistoria:   vistoria.situacaoVistoria,
+      horaEntrada:        vistoria.horaEntrada,
+      pendencia:          vistoria.pendencia,
+      sequencia:          vistoria.sequencia,
+      justificativa:      vistoria.justificativa,
+      imovel_id:          vistoria.imovel.id,
+      trabalho_diario_id: vistoria.trabalhoDiario_id
     } )
     .then( result => {
       vistoria.id = result.dataValues.id;
@@ -513,8 +516,8 @@ endRoute = async ( req, res ) => {
       } 
     );
 
-    vistoria.recipientes.forEach( async r => {
-      let recipiente = { ...r };
+    const recipientes = vistoria.recipientes;
+    for( let recipiente of recipientes ) {
       await Deposito.create( {
         fl_comFoco:     recipiente.fl_comFoco,
         fl_tratado:     recipiente.fl_tratado,
@@ -537,19 +540,19 @@ endRoute = async ( req, res ) => {
       }
 
       if( recipiente.fl_comFoco ) {
-        recipiente.amostras.forEach( async a => {
+        const amostras = recipiente.amostras;
+        for( const amostra of amostras ) {
           await Amostra.create( {
-            situacaoAmostra:  a.situacao,
-            sequencia:        a.sequencia,
-            codigo:           a.idUnidade,
+            situacaoAmostra:  amostra.situacao,
+            sequencia:        amostra.sequencia,
+            codigo:           amostra.idUnidade,
             deposito_id:      recipiente.id,
             laboratorio_id:   null
           } );
-        } );
+        }
       }
-    } );
-  } );
-  // Salvando as vistorias
+    }
+  }
 
   // Finalizar rota
   const [ result ] = await TrabalhoDiario.update(
@@ -568,7 +571,6 @@ endRoute = async ( req, res ) => {
       status: 'error',
       mensage: 'Falha ao tentar finalizara rota, por favor, aguarde e tente novamente.'
     });
-  // Finalizar rota
 
   // Atualizando a situação dos quarteirões
   await checkBlockSituation( trabalhoDiario_id );

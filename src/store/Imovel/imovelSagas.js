@@ -8,6 +8,10 @@ import {
 import * as ImovelActions from './imovelActions';
 import * as AppConfigActions from '../actions/appConfig';
 
+/**
+ * Saga de consulta de imóveis
+ * @param {*} action 
+ */
 export function* getImoveis( action ) {
   try {
     const { data, status } = yield call( getImoveisRequest, action.payload );
@@ -23,6 +27,10 @@ export function* getImoveis( action ) {
   }
 }
 
+/**
+ * Saga para adição de um imóvel
+ * @param {*} action 
+ */
 export function* addImovel( action ) {
   try {
     const { status } = yield call( createHouseRequest, action.payload.imovel );
@@ -38,12 +46,16 @@ export function* addImovel( action ) {
   }
 }
 
+/**
+ * Saga para edição de imóvel
+ * @param {*} action 
+ */
 export function* editarImovel( action ) {
   try {
     const { status } = yield call( updateHouseRequest, action.payload.imovel );
 
     if( status === 200 ) {
-      document.location.reload();
+      yield put( AppConfigActions.showNotifyToast( "Imóvel atualizado com sucesso!", "success" ) );
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao atualizar imóvel: " + status, "error" ) );
     }

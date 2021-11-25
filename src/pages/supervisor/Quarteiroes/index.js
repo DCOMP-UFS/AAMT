@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebarSupervisor';
-import { getBlockByCityRequest } from '../../../store/actions/QuarteiraoActions';
+import { getQuarteiroesMunicipioRequest } from '../../../store/Quarteirao/quarteiraoActions';
 
 // STYLES
 import { GlobalStyle } from './styles';
@@ -98,16 +98,12 @@ function Quarteiroes({ quarteiroes, tableSelection, ...props }) {
 
   useEffect(() => {
     props.changeSidebar( 1, 1 );
-    props.getBlockByCityRequest( props.municipio.id );
+    props.getQuarteiroesMunicipioRequest( props.municipio.id );
   }, []);
 
   useEffect(() => {
     createRows();
   }, [ quarteiroes ]);
-
-  useEffect(() => {
-    const quarteiroesSelect = rowsSelected.map( r => ( rows[ r.dataIndex ] ));
-  }, [ rowsSelected ]);
 
   function createRows() {
     const list = quarteiroes.map( (quarteirao, index) => (
@@ -161,16 +157,19 @@ function Quarteiroes({ quarteiroes, tableSelection, ...props }) {
   );
 }
 
-const mapStateToProps = state => ({
-  municipio: state.appConfig.usuario.municipio,
-  quarteiroes: state.quarteirao.quarteiroes,
+const mapStateToProps = state => ( {
+  municipio     : state.appConfig.usuario.municipio,
+  quarteiroes   : state.quarteirao.quarteiroes,
   tableSelection: state.supportInfo.tableSelection
-});
+} );
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ changeSidebar, getBlockByCityRequest }, dispatch);
+  bindActionCreators( { 
+    changeSidebar,
+    getQuarteiroesMunicipioRequest
+  }, dispatch );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Quarteiroes);
+)( Quarteiroes );

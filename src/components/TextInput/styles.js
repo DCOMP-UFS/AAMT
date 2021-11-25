@@ -8,10 +8,9 @@ export const Container = styled.View`
 
 export const TextContainer = styled.View`
   width: 100%;
-  height: 60px;
-  padding: 0 16px;
+  height: 180px;
   background: ${({ theme }) => theme.colors.input};
-  border-radius: 4px;
+  border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.colors.borderInput};
   ${props =>
     props.isFocused &&
@@ -27,6 +26,8 @@ export const TextContainer = styled.View`
 
 export const TInput = styled.TextInput`
   flex: 1;
+  height: 180px;
+  padding: 20px;
   color: ${({ theme }) => theme.colors.textInput};
   font-size: 16px;
   font-family: ${({ theme }) => theme.fonts.regular};
@@ -45,7 +46,7 @@ export const Label = styled.Text`
 `;
 
 export const ErrorMessage = styled.Text`
-  font-family: 'Lato-Regular';
+  font-family: ${({ theme }) => theme.fonts.regular};
   color: ${({ theme }) => theme.colors.error};
   font-size: 14px;
   margin-top: 8px;

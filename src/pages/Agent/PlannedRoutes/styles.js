@@ -28,7 +28,7 @@ export const Card = styled(View).attrs({
   border-radius: 4px;
   padding: 14px 14px 14px 14px;
   margin-bottom: 20px;
-  background: ${({ theme }) => theme.colors.cardBackground};
+  background: ${({ theme }) => theme.colors.white};
 `;
 
 export const RouteHeader = styled.View`
@@ -54,7 +54,7 @@ export const RouteCard = styled(View).attrs({
   flex-direction: column;
   border-radius: 4px;
   margin-bottom: 20px;
-  background: ${({ theme }) => theme.colors.cardBackground};
+  background: ${({ theme }) => theme.colors.white};
 `;
 
 export const HalfPair = styled.View`

@@ -9,6 +9,12 @@ import BlocksList from '../pages/Agent/BlocksList';
 import PropertiesList from '../pages/Agent/Inspections/PropertiesList';
 import Profile from '../pages/Profile';
 
+// Formulários de vistorias
+
+import StatusInspectionForm from '../pages/Agent/Inspections/InspectionForm/StatusInspectionForm';
+import RecipientList from '../pages/Agent/Inspections/InspectionForm/RecipientList';
+import RecipientForm from '../pages/Agent/Inspections/InspectionForm/RecipientForm';
+
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -42,6 +48,15 @@ const DailyWorkStack = () => {
       />
       <Stack.Screen name="Rota" component={BlocksList} />
       <Stack.Screen name="Lista de Imóveis" component={PropertiesList} />
+
+      {/* Formulário de vistoria */}
+
+      <Stack.Screen
+        name="Situação da vistoria"
+        component={StatusInspectionForm}
+      />
+      <Stack.Screen name="Depósitos inspecionados" component={RecipientList} />
+      <Stack.Screen name="Inspecionar depósito" component={RecipientForm} />
     </Stack.Navigator>
   );
 };

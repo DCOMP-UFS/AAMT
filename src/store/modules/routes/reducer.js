@@ -57,13 +57,43 @@ export default function routes(state = INITIAL_STATE, action) {
       });
     case '@routes/ADD_INSPECTION':
       return produce(state, draft => {
-        const { inspection, address } = action.payload;
+        const { inspection, blockIndex, streetIndex, propertyIndex } =
+          action.payload;
         const index = state.currentRouteIndex;
-        draft.routes[index].rota[address.blockIndex].lados[
-          address.streetIndex
-        ].imoveis[address.propertyIndex]['inspection'] = inspection;
+        draft.routes[index].rota[blockIndex].lados[streetIndex].imoveis[
+          propertyIndex
+        ]['inspection'] = inspection;
         draft.recipientSequence = 1;
-        totalInspections = state.totalInspections + 1;
+        draft.totalInspections = state.totalInspections + 1;
+      });
+    case '@routes/ADD_INSPECTION_WITH_PENDENCY':
+      return produce(state, draft => {
+        const { status, pendency, startHour, justification, indexes } =
+          action.payload;
+        const { blockIndex, streetIndex, propertyIndex } = indexes;
+        const index = state.currentRouteIndex;
+        draft.routes[index].rota[blockIndex].lados[streetIndex].imoveis[
+          propertyIndex
+        ]['inspection'] = {
+          situacaoVistoria: status,
+          pendencia: pendency,
+          horaEntrada: startHour,
+          recipientes: [],
+          justificativa: justification,
+        };
+        draft.recipientSequence = 1;
+        draft.totalInspections = state.totalInspections + 1;
+      });
+    case '@routes/ADD_INSPECTION_WITHOUT_PENDENCY':
+      return produce(state, draft => {
+        const { form, indexes } = action.payload;
+        const { blockIndex, streetIndex, propertyIndex } = indexes;
+        const index = state.currentRouteIndex;
+        draft.routes[index].rota[blockIndex].lados[streetIndex].imoveis[
+          propertyIndex
+        ]['inspection'] = form;
+        draft.recipientSequence = 1;
+        draft.totalInspections = state.totalInspections + 1;
       });
     case '@routes/FINISH_DAILY_WORK':
       return produce(state, draft => {
@@ -81,12 +111,8 @@ export default function routes(state = INITIAL_STATE, action) {
       });
     case '@routes/EDIT_PROPERTY':
       return produce(state, draft => {
-        const {
-          blockIndex,
-          streetIndex,
-          propertyIndex,
-          property,
-        } = action.payload;
+        const { blockIndex, streetIndex, propertyIndex, property } =
+          action.payload;
         const { currentRouteIndex } = state;
         draft.routes[currentRouteIndex].rota[blockIndex].lados[
           streetIndex
@@ -104,6 +130,11 @@ export default function routes(state = INITIAL_STATE, action) {
           streetIndex
         ].imoveis[propertyIndex].sequencia = property.sequence;
       });
+    case '@inspectionform/ADD_RECIPIENT_TO_FORM': {
+      return produce(state, draft => {
+        draft.recipientSequence = state.recipientSequence + 1;
+      });
+    }
     case '@auth/SIGN_OUT':
       return produce(state, draft => {
         draft.currentRouteIndex = -1;

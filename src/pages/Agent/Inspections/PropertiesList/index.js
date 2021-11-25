@@ -5,6 +5,11 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+import {
+  loadInspectionForm,
+  loadInspectionEditForm,
+} from '../../../../store/modules/inspectionForm/actions';
+
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import {
@@ -17,12 +22,8 @@ import {
   Small,
   CardRow,
   DetailsColumn,
-  MoreDetails,
   StatusContainer,
   StatusText,
-  DetailsContainer,
-  AddContainer,
-  AddText,
   ButtonRow,
   StartInspectionButton,
   SeeInspectionButton,
@@ -33,17 +34,17 @@ const InspectionStatus = ({ property }) => {
 
   const message = [
     {
-      text: 'Vistoriado',
+      text: 'Imóvel vistoriado',
       pendencia: null,
       color: '#0095da',
     },
     {
-      text: 'Fechado',
+      text: 'Imóvel fechado',
       pendencia: 'F',
       color: '#FAA33F',
     },
     {
-      text: 'Recusado',
+      text: 'Vistoria recusada',
       pendencia: 'R',
       color: '#E5454C',
     },
@@ -67,9 +68,8 @@ const InspectionStatus = ({ property }) => {
   return <View />;
 };
 
-const PropertiesList = ({ currentIndex, inspections, routes, ...props }) => {
-  const route = useRoute();
-  const { street, blockIndex, streetIndex } = route.params;
+const PropertiesList = ({ currentIndex, routes, indexes, ...props }) => {
+  const { blockIndex, streetIndex } = indexes;
   const properties =
     routes[currentIndex].rota[blockIndex].lados[streetIndex].imoveis;
   const navigation = useNavigation();
@@ -83,19 +83,7 @@ const PropertiesList = ({ currentIndex, inspections, routes, ...props }) => {
               <FontAwesome5 size={21} name="home" color="#3a3c4e" />
               <PropertyTitle>Imóvel {property.id}</PropertyTitle>
             </TitleContainer>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('MultiStepForm', {
-                  blockIndex,
-                  streetIndex,
-                  propertyIndex,
-                  property,
-                  street,
-                })
-              }
-            >
-              <InspectionStatus property={property} />
-            </TouchableOpacity>
+            <InspectionStatus property={property} />
           </Header>
           <CardRow>
             <DetailsColumn>
@@ -113,9 +101,17 @@ const PropertiesList = ({ currentIndex, inspections, routes, ...props }) => {
           </CardRow>
           <ButtonRow>
             <StartInspectionButton
-              disabled={property.inspection ? true : false}
+              onPress={() => {
+                property.inspection
+                  ? props.loadInspectionEditForm(
+                      propertyIndex,
+                      property.inspection
+                    )
+                  : props.loadInspectionForm(propertyIndex);
+                navigation.navigate('Situação da vistoria');
+              }}
             >
-              Iniciar vistoria
+              {property.inspection ? 'Editar vistoria' : 'Iniciar vistoria'}
             </StartInspectionButton>
             <SeeInspectionButton>Ver detalhes</SeeInspectionButton>
           </ButtonRow>
@@ -126,11 +122,12 @@ const PropertiesList = ({ currentIndex, inspections, routes, ...props }) => {
 };
 
 const mapStateToProps = state => ({
-  inspections: state.inspections.vistorias,
   routes: state.routes.routes,
+  indexes: state.inspectionForm.indexes,
   currentIndex: state.routes.currentRouteIndex,
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators({}, dispatch);
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ loadInspectionForm, loadInspectionEditForm }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(PropertiesList);

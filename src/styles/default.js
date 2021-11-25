@@ -11,14 +11,22 @@ const defaultTheme = {
     input: '#F7F6FB',
     textInput: '#706E7A',
     borderInput: '#e4e9f2',
-    cardBackground: '#ffffff',
+    focusInput: '#737380',
+    white: '#ffffff',
 
     confirm: '#1BCFB4',
     error: '#E73F5D',
-    // warning: '#ffcc6a',
     warning: '#E8A029',
     disabledContainer: '#f2f2f2',
     disabledText: '#acacac',
+    blueSelected: '#E5F3F9',
+    grayNotSelected: '#A0A1B6',
+
+    iconSelection: {
+      selected: '#0095DA',
+      normal: '#A0A1B6',
+      disabled: '#e4e9f2',
+    },
 
     lightWarning: '#FFF3CC',
   },

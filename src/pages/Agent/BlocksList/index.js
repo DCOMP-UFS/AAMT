@@ -7,7 +7,13 @@ import {
 } from 'accordion-collapse-react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+
+import {
+  changeBlockIndex,
+  changeStreetIndex,
+} from '../../../store/modules/inspectionForm/actions';
 
 import {
   Container,
@@ -21,7 +27,7 @@ import {
 } from './styles';
 import { useEffect } from 'react/cjs/react.development';
 
-const BlocksList = ({ currentIndex, routes }) => {
+const BlocksList = ({ currentIndex, routes, ...props }) => {
   const navigation = useNavigation();
   const route = useRoute();
   const { isStarted, rota } = route.params;
@@ -52,15 +58,15 @@ const BlocksList = ({ currentIndex, routes }) => {
                   {block.lados.map((street, streetIndex) => (
                     <TouchableOpacity
                       key={street.id}
-                      onPress={() =>
-                        isStarted
-                          ? navigation.navigate('Lista de Imóveis', {
-                              street: street.rua.nome,
-                              blockIndex,
-                              streetIndex,
-                            })
-                          : null
-                      }
+                      onPress={() => {
+                        if (isStarted) {
+                          props.changeBlockIndex(blockIndex);
+                          props.changeStreetIndex(streetIndex);
+                          navigation.navigate('Lista de Imóveis', {
+                            street: street.rua.nome,
+                          });
+                        }
+                      }}
                     >
                       <Street>
                         <StreetText>{street.rua.nome}</StreetText>
@@ -87,4 +93,7 @@ const mapStateToProps = state => ({
   routes: state.routes.routes,
 });
 
-export default connect(mapStateToProps)(BlocksList);
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ changeBlockIndex, changeStreetIndex }, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(BlocksList);

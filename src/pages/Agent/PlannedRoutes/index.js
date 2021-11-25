@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Alert, Image } from 'react-native';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { format, parseISO, isToday } from 'date-fns';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -74,7 +74,7 @@ const PlannedRoutes = ({
 
   const navigation = useNavigation();
 
-  const date = format(new Date(), 'yyyy-MM-dd');
+  const date = format(new Date(2021, 10, 25, 0, 0, 0), 'yyyy-MM-dd');
 
   function formatDate(date) {
     const formattedDate = format(parseISO(date), 'dd/MM/yyyy');

@@ -6,7 +6,7 @@ export default reducers => {
     {
       key: 'aamt',
       storage: AsyncStorage,
-      whitelist: ['user', 'auth', 'routes', 'inspections'],
+      whitelist: ['user', 'auth', 'routes', 'inspectionForm'],
     },
     reducers
   );

@@ -1,5 +1,6 @@
 import styled from 'styled-components/native';
 import Button from '../../../../../components/Button';
+import Input from '../../../../../components/Input';
 import SecondaryButton from '../../../../../components/SecondaryButton';
 
 export const Container = styled.ScrollView`
@@ -102,4 +103,70 @@ export const FinishInspection = styled(Button).attrs({
   type: 'error',
 })`
   width: 48%;
+`;
+
+export const TitleModal = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.bold};
+  font-size: 22px;
+  color: ${({ theme }) => theme.colors.black};
+  margin-bottom: 20px;
+`;
+
+export const HeaderModal = styled.View`
+  display: flex;
+  flex-direction: row-reverse;
+`;
+
+export const DetailsModal = styled.View`
+  flex-direction: column;
+`;
+
+export const SubContainer = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+export const RowContainer = styled.View`
+  flex-direction: column;
+`;
+
+export const ColumnContainer = styled.View`
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 20px;
+`;
+
+export const SmallModal = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.bold};
+  font-size: 16px;
+  color: ${({ theme }) => theme.colors.black};
+  margin-bottom: 5px;
+`;
+
+export const DescriptionModal = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.regular};
+  font-size: 16px;
+  color: ${({ theme }) => theme.colors.textInput};
+`;
+
+export const SubtitleModal = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.bold};
+  font-size: 20px;
+  color: ${({ theme }) => theme.colors.black};
+  margin-bottom: 15px;
+`;
+
+export const SampleDescriptionModal = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.regular};
+  font-size: 16px;
+  color: ${({ theme }) => theme.colors.textInput};
+  margin-bottom: 10px;
+`;
+
+export const RepeatButton = styled(Button)`
+  width: 100%;
+`;
+
+export const RepeatInput = styled(Input)`
+  width: 100%;
 `;

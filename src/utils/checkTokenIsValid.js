@@ -11,7 +11,6 @@ export default function checkTokenIsValid() {
   api.interceptors.response.use(
     response => response,
     error => {
-      console.log('ihhhhhhhhhhhhhhhhhhhh');
       if (error.response && error.response.status === UNAUTHORIZED) {
         Alert.alert(
           'Sua sessão expirou!',

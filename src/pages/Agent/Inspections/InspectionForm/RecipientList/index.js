@@ -1,5 +1,5 @@
-import React from 'react';
-import { Image, TouchableOpacity, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { Image, TouchableOpacity, Alert, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
@@ -12,6 +12,8 @@ import {
   deleteRecipient,
 } from '../../../../../store/modules/inspectionForm/actions';
 
+import ModalComponent from '../../../../../components/ModalComponent';
+
 import testTube from '../../../../../assets/test-tube.png';
 
 import {
@@ -23,13 +25,22 @@ import {
   FinishInspectionButton,
   RecipientContainer,
   RecipientHeader,
-  TypeContainer,
-  TypeText,
   HeaderText,
   ButtonsContainer,
   AddInspection,
   FinishInspection,
   ButtonsRow,
+  HeaderModal,
+  TitleModal,
+  DetailsModal,
+  RowContainer,
+  ColumnContainer,
+  SmallModal,
+  DescriptionModal,
+  SubtitleModal,
+  SubContainer,
+  SampleDescriptionModal,
+  RepeatButton,
 } from './styles';
 
 const RecipientList = ({
@@ -41,6 +52,7 @@ const RecipientList = ({
   ...props
 }) => {
   const navigation = useNavigation();
+  const [visible, setVisible] = useState(false);
 
   function handleFinishInspection() {
     Alert.alert(
@@ -66,7 +78,7 @@ const RecipientList = ({
   function handleDeleteRecipient(recipientSequence, recipient) {
     Alert.alert(
       'Atenção!',
-      `Tem certeza que deseja excluir a inspeção realizada neste depósito? \n${
+      `Tem certeza que deseja excluir a inspeção realizada neste depósito? \n\n${
         recipient.amostras.length > 0
           ? 'Este depósito possui amostras cadastradas.'
           : ''
@@ -87,52 +99,165 @@ const RecipientList = ({
     );
   }
 
+  const RecipientModal = ({ recipient, index }) => {
+    return (
+      <>
+        <HeaderModal>
+          <TouchableOpacity onPress={() => setVisible(false)}>
+            <FontAwesome5 size={22} name="times" color="#a6a8ad" />
+          </TouchableOpacity>
+        </HeaderModal>
+        <TitleModal>{`Depósito ${recipient.idUnidade}`}</TitleModal>
+        <DetailsModal>
+          <SubtitleModal>Informações do depósito</SubtitleModal>
+          <SubContainer>
+            <RowContainer>
+              <ColumnContainer>
+                <SmallModal>Tipo do recipiente</SmallModal>
+                <DescriptionModal>{recipient.tipoRecipiente}</DescriptionModal>
+              </ColumnContainer>
+              <ColumnContainer>
+                <SmallModal>Depósito com foco?</SmallModal>
+                <DescriptionModal>
+                  {recipient.fl_comFoco ? `Sim` : `Não`}
+                </DescriptionModal>
+              </ColumnContainer>
+            </RowContainer>
+            <RowContainer>
+              <ColumnContainer>
+                <SmallModal>Depósito eliminado?</SmallModal>
+                <DescriptionModal>
+                  {recipient.fl_eliminado ? `Sim` : `Não`}
+                </DescriptionModal>
+              </ColumnContainer>
+              <ColumnContainer>
+                <SmallModal>Depósito tratado?</SmallModal>
+                <DescriptionModal>
+                  {recipient.fl_tratado ? `Sim` : `Não`}
+                </DescriptionModal>
+              </ColumnContainer>
+            </RowContainer>
+          </SubContainer>
+          {recipient.fl_tratado && (
+            <>
+              <SubtitleModal>Informações do tratamento</SubtitleModal>
+              <SubContainer>
+                <RowContainer>
+                  <ColumnContainer>
+                    <SmallModal>Técnica empregada</SmallModal>
+                    <DescriptionModal>
+                      {recipient.tratamento.tecnica === 1
+                        ? 'Focal'
+                        : 'Perifocal'}
+                    </DescriptionModal>
+                  </ColumnContainer>
+                </RowContainer>
+                <RowContainer>
+                  <ColumnContainer>
+                    <SmallModal>Quantidade de larvicida</SmallModal>
+                    <DescriptionModal>{`${recipient.tratamento.quantidade} g`}</DescriptionModal>
+                  </ColumnContainer>
+                </RowContainer>
+              </SubContainer>
+            </>
+          )}
+          {recipient.amostras.length > 0 && (
+            <>
+              <SubtitleModal>Amostras</SubtitleModal>
+              <SubContainer>
+                <ColumnContainer>
+                  {recipient.amostras.map(amostra => (
+                    <SampleDescriptionModal
+                      key={amostra.sequencia}
+                    >{`Amostra ${amostra.idUnidade}`}</SampleDescriptionModal>
+                  ))}
+                </ColumnContainer>
+              </SubContainer>
+            </>
+          )}
+          {recipient.amostras.length === 0 && (
+            <>
+              <SubtitleModal>Repetir inspeção</SubtitleModal>
+              <SubContainer>
+                {/* <ColumnContainer>
+                  <Input
+                    value={repetitions}
+                    onChangeText={value => setRepetitions(value)}
+                    keyboardType="number-pad"
+                  />
+                  <TouchableOpacity
+                    onPress={() => handleRepetitions(index)}
+                  >
+                    <RepeatButton>Repetir</RepeatButton>
+                  </TouchableOpacity>
+                </ColumnContainer> */}
+              </SubContainer>
+            </>
+          )}
+        </DetailsModal>
+      </>
+    );
+  };
+
   return (
     <>
       {recipients.length > 0 ? (
-        <Container>
-          <ButtonsRow>
-            <AddInspection
-              onPress={() => {
-                props.changeRecipientIndex(-1);
-                navigation.navigate('Inspecionar depósito');
-              }}
-            >
-              Inspecionar recipiente
-            </AddInspection>
-            <FinishInspection onPress={() => handleFinishInspection()}>
-              Finalizar vistoria
-            </FinishInspection>
-          </ButtonsRow>
-          {recipients.map((recipient, index) => (
-            <RecipientContainer key={index}>
-              <RecipientHeader>
-                <HeaderText>{`Depósito ${recipient.sequencia}`}</HeaderText>
-              </RecipientHeader>
-              <ButtonsContainer>
-                <TouchableOpacity
-                  onPress={() =>
-                    handleDeleteRecipient(recipient.sequencia, recipient)
-                  }
-                >
-                  <FontAwesome5 name="trash-alt" size={22} color="#E73F5D" />
-                </TouchableOpacity>
+        <>
+          <StatusBar
+            barStyle={visible ? 'light-content' : 'dark-content'}
+            backgroundColor={visible ? 'rgba(0,0,0,0.5)' : '#fff'}
+          />
+          <Container>
+            <ButtonsRow>
+              <AddInspection
+                onPress={() => {
+                  props.changeRecipientIndex(-1);
+                  navigation.navigate('Inspecionar depósito');
+                }}
+              >
+                Inspecionar recipiente
+              </AddInspection>
+              <FinishInspection onPress={() => handleFinishInspection()}>
+                Finalizar vistoria
+              </FinishInspection>
+            </ButtonsRow>
+            {recipients.map((recipient, index) => (
+              <RecipientContainer key={index}>
+                <ModalComponent visible={visible}>
+                  <RecipientModal recipient={recipient} index={index} />
+                </ModalComponent>
+                <RecipientHeader>
+                  <HeaderText>{`Depósito ${recipient.sequencia}`}</HeaderText>
+                </RecipientHeader>
+                <ButtonsContainer>
+                  <TouchableOpacity
+                    onPress={() =>
+                      handleDeleteRecipient(recipient.sequencia, recipient)
+                    }
+                  >
+                    <FontAwesome5 name="trash-alt" size={22} color="#E73F5D" />
+                  </TouchableOpacity>
 
-                <TouchableOpacity
-                  onPress={() => {
-                    props.changeRecipientIndex(index);
-                    navigation.navigate('Inspecionar depósito');
-                  }}
-                >
-                  <FontAwesome5 name="edit" size={22} color="#585666" />
-                </TouchableOpacity>
-                <TouchableOpacity>
-                  <FontAwesome5 name="info-circle" size={22} color="#585666" />
-                </TouchableOpacity>
-              </ButtonsContainer>
-            </RecipientContainer>
-          ))}
-        </Container>
+                  <TouchableOpacity
+                    onPress={() => {
+                      props.changeRecipientIndex(index);
+                      navigation.navigate('Inspecionar depósito');
+                    }}
+                  >
+                    <FontAwesome5 name="edit" size={22} color="#585666" />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => setVisible(true)}>
+                    <FontAwesome5
+                      name="info-circle"
+                      size={22}
+                      color="#585666"
+                    />
+                  </TouchableOpacity>
+                </ButtonsContainer>
+              </RecipientContainer>
+            ))}
+          </Container>
+        </>
       ) : (
         <EmptyContainer>
           <Image

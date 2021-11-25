@@ -74,7 +74,7 @@ const PlannedRoutes = ({
 
   const navigation = useNavigation();
 
-  const date = format(new Date(2021, 10, 25, 0, 0, 0), 'yyyy-MM-dd');
+  const date = format(new Date(), 'yyyy-MM-dd');
 
   function formatDate(date) {
     const formattedDate = format(parseISO(date), 'dd/MM/yyyy');

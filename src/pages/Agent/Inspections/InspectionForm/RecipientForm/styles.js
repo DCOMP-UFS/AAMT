@@ -54,7 +54,7 @@ export const SampleItem = styled.View`
   border-style: solid;
   border-top-width: 1px;
   border-top-color: #edf1f4;
-  padding: 20px 0px;
+  padding: 10px 0px;
   flex-grow: 1;
   flex: 1;
   align-items: center;
@@ -71,5 +71,5 @@ export const SampleText = styled.Text`
 
 export const ExtraContainer = styled.View`
   flex-direction: column;
-  margin: 15px 0px;
+  margin-bottom: 20px;
 `;

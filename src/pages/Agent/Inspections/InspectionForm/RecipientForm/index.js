@@ -156,7 +156,7 @@ const RecipientForm = ({
         quantidade: parseFloat(data.quantity ? data.quantity : 0),
         tecnica: data.treatmentType,
       },
-      amostras: data.samples,
+      amostras: data.focus ? data.samples : [],
       idUnidade: recipientSequence,
     };
 
@@ -241,6 +241,72 @@ const RecipientForm = ({
                 </ButtonContainer>
               </SectionContainer>
 
+              <SectionContainer>
+                <Small>Destino do depósito</Small>
+                <ButtonContainer>
+                  {treatmentOptions.map(item => (
+                    <TouchableWithoutFeedback
+                      onPress={() =>
+                        formRef.current.setFieldValue('treatment', item.id)
+                      }
+                      key={item.label}
+                    >
+                      <SelectionButton
+                        status={
+                          values.treatment === item.id ? 'selected' : 'normal'
+                        }
+                      >
+                        {item.label}
+                      </SelectionButton>
+                    </TouchableWithoutFeedback>
+                  ))}
+                </ButtonContainer>
+              </SectionContainer>
+
+              {values.treatment === true && methodology === 'PNCD' && (
+                <>
+                  <SectionContainer>
+                    <Small>Técnica de tratamento empregada</Small>
+                    <ButtonContainer>
+                      {treatmentTypeOptions.map(item => (
+                        <TouchableWithoutFeedback
+                          onPress={() =>
+                            formRef.current.setFieldValue(
+                              'treatmentType',
+                              item.id
+                            )
+                          }
+                          key={item.label}
+                        >
+                          <SelectionButton
+                            status={
+                              values.treatmentType === item.id
+                                ? 'selected'
+                                : 'normal'
+                            }
+                          >
+                            {item.label}
+                          </SelectionButton>
+                        </TouchableWithoutFeedback>
+                      ))}
+                    </ButtonContainer>
+                  </SectionContainer>
+
+                  <SectionContainer>
+                    <Small>Quantidade de larvicida usada</Small>
+                    <Input
+                      value={values.quantity}
+                      onChangeText={handleChange('quantity')}
+                      autoCapitalize="none"
+                      keyboardType="number-pad"
+                      returnKeyType="send"
+                      onSubmitEditing={handleSubmit}
+                      // errors={errors.password}
+                    />
+                  </SectionContainer>
+                </>
+              )}
+
               {values.focus === true &&
                 (objective === 'PE' ||
                   objective === 'DF' ||
@@ -270,68 +336,6 @@ const RecipientForm = ({
                   </ExtraContainer>
                 )}
 
-              <SectionContainer>
-                <Small>Destino do depósito</Small>
-                <ButtonContainer>
-                  {treatmentOptions.map(item => (
-                    <TouchableWithoutFeedback
-                      onPress={() =>
-                        formRef.current.setFieldValue('treatment', item.id)
-                      }
-                      key={item.label}
-                    >
-                      <SelectionButton
-                        status={
-                          values.treatment === item.id ? 'selected' : 'normal'
-                        }
-                      >
-                        {item.label}
-                      </SelectionButton>
-                    </TouchableWithoutFeedback>
-                  ))}
-                </ButtonContainer>
-              </SectionContainer>
-
-              {values.treatment === true && methodology === 'PNCD' && (
-                <>
-                  <ExtraContainer>
-                    <Small>Técnica de tratamento empregada</Small>
-                    <ButtonContainer>
-                      {treatmentTypeOptions.map(item => (
-                        <TouchableWithoutFeedback
-                          onPress={() =>
-                            formRef.current.setFieldValue(
-                              'treatmentType',
-                              item.id
-                            )
-                          }
-                          key={item.label}
-                        >
-                          <SelectionButton
-                            status={
-                              values.treatmentType === item.id
-                                ? 'selected'
-                                : 'normal'
-                            }
-                          >
-                            {item.label}
-                          </SelectionButton>
-                        </TouchableWithoutFeedback>
-                      ))}
-                    </ButtonContainer>
-                    <Small>Quantidade de larvicida usado</Small>
-                    <Input
-                      value={values.quantity}
-                      onChangeText={handleChange('quantity')}
-                      autoCapitalize="none"
-                      keyboardType="number-pad"
-                      returnKeyType="send"
-                      onSubmitEditing={handleSubmit}
-                      // errors={errors.password}
-                    />
-                  </ExtraContainer>
-                </>
-              )}
               <Button onPress={handleSubmit}>
                 {recipientIndex >= 0 ? 'Editar inspeção' : 'Concluir inspeção'}
               </Button>

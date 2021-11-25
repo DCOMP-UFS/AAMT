@@ -103,7 +103,6 @@ export default function routes(state = INITIAL_STATE, action) {
     case '@routes/FINISH_DAILY_WORK_SUCCESS':
       return produce(state, draft => {
         const { current_route_index } = action.payload;
-        console.log('ola');
         // draft.inspections = [];
         // draft.sampleSequence = 0;
         // draft.recipientSequence = 1;
@@ -132,7 +131,7 @@ export default function routes(state = INITIAL_STATE, action) {
       });
     case '@inspectionform/ADD_RECIPIENT_TO_FORM': {
       return produce(state, draft => {
-        draft.recipientSequence = state.recipientSequence + 1;
+        draft.recipientSequence = draft.recipientSequence + 1;
       });
     }
     case '@auth/SIGN_OUT':

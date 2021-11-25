@@ -24,7 +24,6 @@ const checkBlockSituation = require('../util/checkBlockSituation');
  * Consulta a rota de trabalho de um agente em 
  * uma determinada data.
  */
-
 getRoute = async ( req, res ) => {
   const { usuario_id, data } = req.params;
   const userId = req.userId;
@@ -96,13 +95,13 @@ getRoute = async ( req, res ) => {
     }
   });
 
-  const sequencia_usuario = await Atuacao.findOne({
+  const sequencia_usuario = await Atuacao.findOne( {
     where: {
       usuario_id,
       tipoPerfil: 4,
-      local_id: td.equipe.atividade.municipio_id
+      local_id:   td.equipe.atividade.municipio_id
     }
-  }).then(at => at.sequencia_usuario);
+  } ).then( at => at.sequencia_usuario );
 
   const codigo_municipio = await Municipio.findOne({
     where: {
@@ -118,24 +117,24 @@ getRoute = async ( req, res ) => {
   };
 
   let trabalhoDiario = {
-    id: td.id,
-    sequencia: td.sequencia,
-    data: td.data,
-    horaInicio: td.horaInicio,
-    horaFim: td.horaFim,
-    usuario_id: td.usuario_id,
+    id:             td.id,
+    sequencia:      td.sequencia,
+    data:           td.data,
+    horaInicio:     td.horaInicio,
+    horaFim:        td.horaFim,
+    usuario_id:     td.usuario_id,
     sequencia_usuario,
-    supervisor_id: td.supervisor_id,
-    equipe_id: td.supervisor_id,
-    equipe: equipe,
-    atividade: td.equipe.atividade,
+    supervisor_id:  td.supervisor_id,
+    equipe_id:      td.supervisor_id,
+    equipe:         equipe,
+    atividade:      td.equipe.atividade,
     codigo_municipio,
   };
 
-  return res.json({
+  return res.json( {
     trabalhoDiario,
     rota
-  });
+  } );
 }
 
 planejarRota = async ( req, res ) => {
@@ -181,10 +180,10 @@ planejarRota = async ( req, res ) => {
   // Fim validação
 
   // en-GB: d/m/Y
-  const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split('/');
+  const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split( '/' );
   const current_date = `${ Y }-${ m }-${ d }`;
 
-  const td = await TrabalhoDiario.findAll({
+  const td = await TrabalhoDiario.findAll( {
     where: {
       [Op.and]: [
         {
@@ -198,20 +197,20 @@ planejarRota = async ( req, res ) => {
     order: [
       [ 'sequencia', 'DESC' ]
     ]
-  });
+  } );
 
-  const trabalho_diario = await TrabalhoDiario.create({
+  const trabalho_diario = await TrabalhoDiario.create( {
     data: current_date,
     supervisor_id,
     usuario_id,
     equipe_id,
-    sequencia: td.length > 0 ? td[0].sequencia + 1 : 1        
-  });
+    sequencia: td.length > 0 ? td[ 0 ].sequencia + 1 : 1        
+  } );
 
-  const rota = lados.map( lado_id => ({
+  const rota = lados.map( lado_id => ( {
     lado_id,
     trabalho_diario_id: trabalho_diario.id
-  }));
+  } ) );
 
   Rota.bulkCreate( rota );
 
@@ -343,7 +342,6 @@ getPlain = async ( req, res ) => {
 /**
  * Inicializa uma rota de trabalho diário.
  */
-
 startRoute = async ( req, res ) => {
   const { trabalhoDiario_id } = req.body;
   const userId = req.userId;
@@ -424,7 +422,6 @@ startRoute = async ( req, res ) => {
  * Finaliza uma rota de trabalho diário e armazena
  * as informações da vistoria.
  */
-
 endRoute = async ( req, res ) => {
   const { trabalhoDiario_id, horaFim, vistorias } = req.body;
   const userId = req.userId;
@@ -468,87 +465,90 @@ endRoute = async ( req, res ) => {
 
   let arrayCodigosAmostra = [];
 
-  vistorias.forEach(v => {
-    v.recipientes.forEach(r => {
+  vistorias.forEach( v => {
+    v.recipientes.forEach( r => {
       if( r.fl_comFoco ) {
-        r.amostras.forEach(a => {
-          arrayCodigosAmostra.push(a.idUnidade);
-        });
+        r.amostras.forEach( a => {
+          arrayCodigosAmostra.push( a.idUnidade );
+        } );
       }
-    })
+    } );
   });
 
-  const temCodigoDuplicado = arrayCodigosAmostra.filter((item, index) => arrayCodigosAmostra.indexOf(item) !== index);
+  const temCodigoDuplicado = arrayCodigosAmostra.filter( ( item, index ) => arrayCodigosAmostra.indexOf( item ) !== index );
 
-  if (temCodigoDuplicado.length > 0) {
-    return res.status(400).json({ 
-      status: 'error',
-      tipo: 'codigo_amostra_duplicado',
-      message: `Os códigos de amostra ${temCodigoDuplicado.join(', ')} estão repetidos. Por favor, verifique e corrija.`
-    })
+  if( temCodigoDuplicado.length > 0 ) {
+    return res.status( 400 ).json( {
+      status:   'error',
+      tipo:     'codigo_amostra_duplicado',
+      message:  `Os códigos de amostra ${ temCodigoDuplicado.join( ', ' ) } estão repetidos. Por favor, verifique e corrija.`
+    } );
   }
 
   // Salvando as vistorias  
-  let vists = [];
-  vistorias.forEach(async v => {
-    let vistoria = { ...v }
-    await Vistoria.create({
-      situacaoVistoria: v.situacaoVistoria,
-      horaEntrada: v.horaEntrada,
-      pendencia: v.pendencia,
-      sequencia: v.sequencia,
-      justificativa: v.justificativa,
-      imovel_id: v.imovel.id,
+  vistorias.forEach( async v => {
+    let vistoria = { ...v };
+    await Vistoria.create( {
+      situacaoVistoria:   v.situacaoVistoria,
+      horaEntrada:        v.horaEntrada,
+      pendencia:          v.pendencia,
+      sequencia:          v.sequencia,
+      justificativa:      v.justificativa,
+      imovel_id:          v.imovel.id,
       trabalho_diario_id: v.trabalhoDiario_id
-    })
-    .then(function( result ) {
+    } )
+    .then( result => {
       vistoria.id = result.dataValues.id;
-    });
+    } );
 
-    await Imovel.update({
-      numero: vistoria.imovel.numero,
-      sequencia: vistoria.imovel.sequencia,
-      responsavel: vistoria.imovel.responsavel,
-      complemento: vistoria.imovel.complemento,
-      tipoImovel: vistoria.imovel.tipoImovel
-    }, { where: { id: vistoria.imovel.id } } );
+    await Imovel.update( 
+      {
+        numero:       vistoria.imovel.numero,
+        sequencia:    vistoria.imovel.sequencia,
+        responsavel:  vistoria.imovel.responsavel,
+        complemento:  vistoria.imovel.complemento,
+        tipoImovel:   vistoria.imovel.tipoImovel
+      }, { 
+        where: { id: vistoria.imovel.id } 
+      } 
+    );
 
-    vistoria.recipientes.forEach(async r => {
+    vistoria.recipientes.forEach( async r => {
       let recipiente = { ...r };
-      await Deposito.create({
-        fl_comFoco: recipiente.fl_comFoco,
-        fl_tratado: recipiente.fl_tratado,
-        fl_eliminado: recipiente.fl_eliminado,
+      await Deposito.create( {
+        fl_comFoco:     recipiente.fl_comFoco,
+        fl_tratado:     recipiente.fl_tratado,
+        fl_eliminado:   recipiente.fl_eliminado,
         tipoRecipiente: recipiente.tipoRecipiente,
-        sequencia: recipiente.sequencia,
-        vistoria_id: vistoria.id
-      })
-      .then(function( result ) {
+        sequencia:      recipiente.sequencia,
+        vistoria_id:    vistoria.id
+      } )
+      .then( result => {
         recipiente.id = result.dataValues.id;
-      });
+      } );
 
       if( recipiente.fl_tratado ) {
-        await Tratamento.create({
-          quantidade: recipiente.tratamento.quantidade,
-          tecnica: recipiente.tratamento.tecnica,
-          deposito_id: recipiente.id,
-          inseticida_id: 2
-        });
+        await Tratamento.create( {
+          quantidade:     recipiente.tratamento.quantidade,
+          tecnica:        recipiente.tratamento.tecnica,
+          deposito_id:    recipiente.id,
+          inseticida_id:  2
+        } );
       }
 
       if( recipiente.fl_comFoco ) {
-        recipiente.amostras.forEach(async a => {
-          await Amostra.create({
-            situacaoAmostra: a.situacao,
-            sequencia: a.sequencia,
-            codigo: a.idUnidade,
-            deposito_id: recipiente.id,
-            laboratorio_id: null
-          });
-        });
+        recipiente.amostras.forEach( async a => {
+          await Amostra.create( {
+            situacaoAmostra:  a.situacao,
+            sequencia:        a.sequencia,
+            codigo:           a.idUnidade,
+            deposito_id:      recipiente.id,
+            laboratorio_id:   null
+          } );
+        } );
       }
-    });
-  });
+    } );
+  } );
   // Salvando as vistorias
 
   // Finalizar rota
@@ -571,12 +571,12 @@ endRoute = async ( req, res ) => {
   // Finalizar rota
 
   // Atualizando a situação dos quarteirões
-  await checkBlockSituation(trabalhoDiario_id);
+  await checkBlockSituation( trabalhoDiario_id );
   
-  return res.json({ 
+  return res.json( { 
     status: 'success',
     mensage: 'Vistorias registradas com sucesso!'
-  })
+  } );
 }
 
 isStarted = async ( req, res ) => {

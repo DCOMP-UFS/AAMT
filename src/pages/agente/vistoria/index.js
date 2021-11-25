@@ -142,24 +142,18 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
           }/>
       );
     },
-    customToolbarSelect: ({ data }) => {
-      props.changeTableSelected('tableVistoria', data);
+    customToolbarSelect: ( { data } ) => {
+      props.changeTableSelected( 'tableVistoria', data );
       return (
         <ButtonDelete
-          title="Deletar usuário"
-          data-toggle="modal"
-          data-target="#modal-deletar-vistoria"
-          data={ data } />
+          title       ="Deletar usuário"
+          data-toggle ="modal"
+          data-target ="#modal-deletar-vistoria"
+          data        ={ data } 
+        />
       );
     },
-    // setRowProps: (row) => {
-    //   const className = row[7] === "Não" ? "row-desabled" : "";
-
-    //   return {
-    //     className
-    //   }
-    // },
-    onRowClick: (row, ...props) => {
+    onRowClick: ( row, ...props ) => {
       const index = row[ 0 ].props[ 'data-index' ];
 
       window.location = `${ window.location.origin.toString() }/agente/vistoria/editar/${ index }`;
@@ -209,28 +203,28 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
 
     props.getRouteRequest( usuario.id, current_date );
     props.resetHandleSave();
-  }, [props, trabalhoDiario.horaInicio, trabalhoDiario.id, usuario.id]);
+  }, [ trabalhoDiario.horaInicio, trabalhoDiario.id, usuario.id ] );
 
   // pegando a lista de imóveis planejados para trabalho
   useEffect(() => {
     if( rota.length > 0 ) {
       let imo = [];
 
-      rota.forEach(q => {
-        q.lados.forEach(l => {
-          let i = l.imoveis.map(imovel => ({ ...imovel, rua: l.rua.nome, quarteirao: q.numero }));
+      rota.forEach( q => {
+        q.lados.forEach( l => {
+          let i = l.imoveis.map(imovel => ( { ...imovel, rua: l.rua.nome, quarteirao: q.numero } ) );
 
           imo = [ ...i, ...imo ];
-        });
-      });
+        } );
+      } );
 
-      setViewport({
+      setViewport( {
         width: '100%',
         height: '100%',
         latitude: imo[0].lat ? parseFloat(imo[0].lat) : -15.7801,
         longitude: imo[0].lng ? parseFloat(imo[0].lng) : -47.9292,
         zoom: 14
-      });
+      } );
       setImoveis( imo );
     }
   }, [ rota ]);
@@ -276,23 +270,23 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
 
           <article className="col-md-12">
             <div className="card">
-              <div style={{ height: '300px', width: '100%', backgroundColor: '#ccc' }}>
-                {/* <ReactMapGL
+              <div style={ { height: '300px', width: '100%', backgroundColor: '#ccc' } }>
+                <ReactMapGL
                   { ...viewport }
                   onViewportChange={ nextViewport => setViewport( nextViewport ) }
                   mapboxApiAccessToken={ process.env.REACT_APP_MAP_TOKEN }
                 >
                   {
-                    rota.map( r => r.lados.map( lado => lado.imoveis.map(( imovel, index ) => {
-                      const inspection  = vistorias.find(vistoria => vistoria.imovel.id === imovel.id );
+                    rota.map( r => r.lados.map( lado => lado.imoveis.map( ( imovel, index ) => {
+                      const inspection = vistorias.find(vistoria => vistoria.imovel.id === imovel.id );
 
                       return (
                         <Marker
-                          key={ index }
-                          latitude={ parseFloat( imovel.lat ) }
-                          longitude={ parseFloat( imovel.lng ) }
+                          key       ={ index }
+                          latitude  ={ parseFloat( imovel.lat ) }
+                          longitude ={ parseFloat( imovel.lng ) }
                           offsetLeft={ -20 }
-                          offsetTop={ -10 }
+                          offsetTop ={ -10 }
                         >
                           <img
                             src={
@@ -303,9 +297,9 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
                           />
                         </Marker>
                       )
-                    })))
+                    } ) ) )
                   }
-                </ReactMapGL> */}
+                </ReactMapGL>
               </div>
             </div>
           </article>

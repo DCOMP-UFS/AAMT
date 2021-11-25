@@ -20,22 +20,22 @@ import { selectDefault } from '../../../../../styles/global';
 import { ContainerFixed } from '../../../../../styles/util';
 
 function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, ...props }) {
-  const [ optionVisita ] = useState([
+  const [ optionVisita ]                            = useState( [
     { value: "N", label: "Normal" },
     { value: "R", label: "Recuperada" },
-  ]);
-  const [ optionPendencia ] = useState([
+  ] );
+  const [ optionPendencia ]                         = useState( [
     { value: null, label: "Nenhuma" },
     { value: "F", label: "Fechada" },
     { value: "R", label: "Recusada" }
-  ]);
-  const [ visita, setVisita ] = useState({});
-  const [ pendencia, setPendencia ] = useState({});
-  const [ entrada, setEntrada ] = useState( "" );
-  const [ justificativa, setJustificativa ] = useState( null );
+  ] );
+  const [ visita, setVisita ]                       = useState( {} );
+  const [ pendencia, setPendencia ]                 = useState( {} );
+  const [ entrada, setEntrada ]                     = useState( "" );
+  const [ justificativa, setJustificativa ]         = useState( null );
   const [ sequenciaVistoria, setSequenciaVistoria ] = useState( 0 );
 
-  useEffect(() => {
+  useEffect( () => {
     let seq = props.vistorias.length + 1;
 
     if( props.vistoria ) {
@@ -55,12 +55,12 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
 
     props.setSequenceInspection( seq );
     setSequenciaVistoria( seq );
-  }, [optionPendencia, optionVisita, props]);
+  }, [ optionPendencia, optionVisita, props ] );
 
-  useEffect(() => {
+  useEffect( () => {
     if( handleSave )
-      setTimeout(() => { window.location = window.location.origin + '/agente/vistoria'; }, 300);
-  }, [ handleSave ]);
+      setTimeout( () => { window.location = window.location.origin + '/agente/vistoria'; }, 300 );
+  }, [ handleSave ] );
 
   function submit() {
     let fl_valido = true;
@@ -79,16 +79,14 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
     if( fl_valido ) {
       const vistoria = {
         situacaoVistoria: visita.value,
-        horaEntrada: entrada,
-        pendencia: ( pendencia.value ? pendencia.value : null ),
-        sequencia: sequenciaVistoria,
+        horaEntrada:      entrada,
+        pendencia:        ( pendencia.value ? pendencia.value : null ),
+        sequencia:        sequenciaVistoria,
         imovel,
         recipientes,
         trabalhoDiario_id,
         justificativa
       };
-
-      console.log(vistoria);
 
       if( props.indexInspection ) {
         props.updateInspection( vistoria, props.indexInspection );
@@ -156,7 +154,7 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
                   </Col>
                 </Row>
 
-                {(pendencia.value === 'F' || pendencia.value === 'R') && (
+                { ( pendencia.value === 'F' || pendencia.value === 'R' ) && (
                   <Row>
                     <Col md="12" className="form-group">
                       <label>Justificativa da pendência</label>
@@ -171,7 +169,7 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
                       ></textarea>
                     </Col>
                   </Row>
-                )}
+                ) }
               </Col>
 
               <Col md="6" >

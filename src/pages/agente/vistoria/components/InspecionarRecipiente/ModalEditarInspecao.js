@@ -78,11 +78,11 @@ function InspecionarRecipiente({ updatedIndex, sequenciaRecipiente, recipientes,
     }
   }, [ updatedIndex, recipientes ]);
 
-  useEffect(() => {
-    const [ano, mes, dia] = data.split("-");
+  useEffect( () => {
+    const [ ano, mes, dia ] = data.split( "-" );
 
-    setDataFormatada(`${dia}${mes}${ano}`);
-  }, [data]);
+    setDataFormatada(`${ dia }${ mes }${ ano }`);
+  }, [ data ] );
   function addUnidade() {
     let nu = numUnidade + 1;
     let listUnidade = unidade;
@@ -123,8 +123,9 @@ function InspecionarRecipiente({ updatedIndex, sequenciaRecipiente, recipientes,
     if( fl_tratado.value && qtdTratamento === 0 ) {
       fl_valido = false;
 
-      var input_qtd_tratamento = $( '#edi_qtdTratamento' ),
-          form_group = input_qtd_tratamento.parent();
+      let input_qtd_tratamento  = $( '#edi_qtdTratamento' );
+      let form_group            = input_qtd_tratamento.parent();
+
       input_qtd_tratamento.addClass( 'invalid' );
 
       form_group.append( msgInputInvalid( 'O valor não pode ser zero' ) );
@@ -135,77 +136,75 @@ function InspecionarRecipiente({ updatedIndex, sequenciaRecipiente, recipientes,
      * que são iguais em um mesmo depósito, em recipientes
      * de uma mesma vistoria e entre diferentes vistorias.
      */
+    const arrayCodigosAmostra  = unidade.map( item => item.idUnidade );
+    const temCodigoDuplicado   = arrayCodigosAmostra.filter( ( item, index ) => arrayCodigosAmostra.indexOf( item ) !== index );
 
-     const arrayCodigosAmostra = unidade.map(function(item){ return item.idUnidade });
-     const temCodigoDuplicado = arrayCodigosAmostra.filter((item, index) => arrayCodigosAmostra.indexOf(item) !== index);
+    let input_seq_amostra        = $( '#row-sequence' );
+    let form_group_amostra       = input_seq_amostra.parent();
+    let valida_entre_recipiente  = true;
 
-     var input_seq_amostra = $( '#row-sequence' ),
-     form_group_amostra = input_seq_amostra.parent();
+    if( temCodigoDuplicado.length > 0 ) {
+      fl_valido = false;
+      $( '#row-sequence' ).parent().find('span.form-label-invalid').remove();
+      input_seq_amostra.addClass( 'invalid' );
 
-     let valida_entre_recipiente = true;
+      form_group_amostra.append( msgInputInvalid( `Os códigos ${ temCodigoDuplicado.join( ', ' ) } estão duplicados.` ) );
+    }
 
-     if (temCodigoDuplicado.length > 0) {
-       fl_valido = false;
-       $( '#row-sequence' ).parent().find('span.form-label-invalid').remove();
-       input_seq_amostra.addClass( 'invalid' );
+    if( temCodigoDuplicado.length === 0 ) {
+      $( '#row-sequence' ).parent().find('span.form-label-invalid').remove();
+      recipientes.forEach( recipiente => {
+        recipiente.amostras.forEach( amostra => {
+          const index = arrayCodigosAmostra.findIndex( p => p === amostra.idUnidade );
 
-       form_group_amostra.append( msgInputInvalid( `Os códigos ${temCodigoDuplicado.join(', ')} estão duplicados.` ) );
-     }
+          if( index !== -1 ) {
+            fl_valido = false;
+            valida_entre_recipiente = false;
+            input_seq_amostra.addClass( 'invalid' );
 
-     if (temCodigoDuplicado.length === 0) {
-       $( '#row-sequence' ).parent().find('span.form-label-invalid').remove();
-       recipientes.forEach(recipiente => {
-         recipiente.amostras.forEach(amostra => {
-           const index = arrayCodigosAmostra.findIndex(p => p === amostra.idUnidade);
+            form_group_amostra.append( msgInputInvalid( `O código ${ arrayCodigosAmostra[ index ] } já foi gerado nesta vistoria para o recipiente ${ recipiente.sequencia }.` ) );
+          }
+        } );
+      } );
+    }
 
-           if (index !== -1) {
-             fl_valido = false;
-             valida_entre_recipiente = false;
-             input_seq_amostra.addClass( 'invalid' );
+    if( temCodigoDuplicado.length === 0 && valida_entre_recipiente ) {
+      $( '#row-sequence' ).parent().find('span.form-label-invalid').remove();
+      vistorias.forEach( ( vistoria, vistoriaIndex ) => {
+        vistoria.recipientes.forEach( recipiente => {
+          recipiente.amostras.forEach( amostra => {
+            const index = arrayCodigosAmostra.findIndex( p => p === amostra.idUnidade );
 
-             form_group_amostra.append( msgInputInvalid( `O código ${arrayCodigosAmostra[index]} já foi gerado nesta vistoria para o recipiente ${recipiente.sequencia}.` ) );
-           }
-         })
-       })
-     }
+            if( index !== -1 ) {
+              fl_valido = false;
+              input_seq_amostra.addClass( 'invalid' );
 
-     if (temCodigoDuplicado.length === 0 && valida_entre_recipiente) {
-       $( '#row-sequence' ).parent().find('span.form-label-invalid').remove();
-       vistorias.forEach((vistoria, vistoriaIndex) => {
-         vistoria.recipientes.forEach(recipiente => {
-           recipiente.amostras.forEach(amostra => {
-             const index = arrayCodigosAmostra.findIndex(p => p === amostra.idUnidade);
-
-             if (index !== -1) {
-               fl_valido = false;
-               input_seq_amostra.addClass( 'invalid' );
-
-               form_group_amostra.append( msgInputInvalid( `O código ${arrayCodigosAmostra[index]} já foi gerado para o recipiente ${recipiente.sequencia} <a href="/agente/vistoria/editar/${vistoriaIndex}">em outro imóvel</a>.` ) );
-             }
-           })
-         })
-       })
-     }
+              form_group_amostra.append( msgInputInvalid( `O código ${ arrayCodigosAmostra[ index ] } já foi gerado para o recipiente ${ recipiente.sequencia } <a href="/agente/vistoria/editar/${ vistoriaIndex }">em outro imóvel</a>.` ) );
+            }
+          } );
+        } );
+      } );
+    }
 
     if( fl_valido ) {
       const recipiente = {
-        fl_comFoco: fl_foco.value,
-        fl_tratado: fl_tratado.value,
-        fl_eliminado: fl_eliminado.value,
+        fl_comFoco:     fl_foco.value,
+        fl_tratado:     fl_tratado.value,
+        fl_eliminado:   fl_eliminado.value,
         tipoRecipiente: tipoRecipiente.value,
-        sequencia: sequenciaRecipiente,
+        sequencia:      sequenciaRecipiente,
         tratamento: {
           quantidade: qtdTratamento,
-          tecnica: tecnicaTratamento.value
+          tecnica:    tecnicaTratamento.value
         },
-        amostras: unidade
+        amostras:       unidade
       };
 
       setSeqAmostra( 0 );
 
       props.atualizarRecipiente( updatedIndex, recipiente );
 
-      $('#modalEditarInspecao').modal('hide');
+      $( '#modalEditarInspecao' ).modal( 'hide' );
     }
   }
 

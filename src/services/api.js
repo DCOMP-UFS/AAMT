@@ -1,10 +1,9 @@
 import axios from 'axios';
 require('dotenv').config();
 
-const api = axios.create({
-  // baseURL: process.env.REACT_APP_API_URL || 'https://aamt-backend.herokuapp.com/'
-  baseURL: 'http://localhost:3333'
-});
+const api = axios.create( {
+  baseURL: process.env.REACT_APP_API_URL || 'https://aamt-backend.herokuapp.com/'
+} );
 
 export default api;
 

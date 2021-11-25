@@ -7,7 +7,7 @@ import AddBoxIcon from '@material-ui/icons/AddBox';
 import Block from '@material-ui/icons/Block';
 import Delete from '@material-ui/icons/Delete';
 import $ from 'jquery';
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import { createTheme, MuiThemeProvider } from '@material-ui/core/styles';
 
 // STYLES
 import { Container } from './styles';
@@ -56,7 +56,7 @@ const optionsDefault = {
 export default function Table({ title, data, columns, options: optionsProps, size, ...props }) {
   const options = { ...optionsDefault, ...optionsProps }
 
-  const getMuiTheme = () => createMuiTheme({
+  const getMuiTheme = () => createTheme({
     overrides: {
       MUIDataTableToolbarSelect: {
         root: {

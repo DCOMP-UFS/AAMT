@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { FaRoute, FaPlay, FaHome, FaHouseDamage, FaStore, FaMapMarkerAlt } from 'react-icons/fa';
 import ModalIniciarTrabalho from '../components/ModalIniciarTrabalho';
-import ReactMapGL, { Marker } from 'react-map-gl';
 import dotenv from 'dotenv';
+import ReactMapGL, { Marker } from 'react-map-gl';
 import img_home_icon from '../../../assets/home-icon.png';
 import img_home_icon_green from '../../../assets/home-icon-green.png';
 import Typography from "@material-ui/core/Typography";
@@ -35,7 +35,7 @@ const columns = [
     options: {
       filter: false,
       display: 'false',
-      customBodyRender: (value, tableMeta, updateValue) => (
+      customBodyRender: ( value, tableMeta, updateValue ) => (
         <Typography data-index={ value }>{ value }</Typography>
       )
     }
@@ -87,52 +87,51 @@ const columns = [
   }
 ];
 
-function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vistorias, ...props }) {
+function HomeAgente( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vistorias, ...props } ) {
   const [ trabalhoDiario_date, setTrabalhoDiario_date ] = useState( '' );
-  const [ viewport, setViewport ] = useState({
-    width: '100%',
-    height: '100%',
-    latitude: -15.7801,
-    longitude: -47.9292,
-    zoom: 2
-  });
-  // const [ qtdQuarteirao, setQtdQuarteirao ] = useState( 0 );
-  const [ qtdTipoImovel, setQtdTipoImovel ] = useState( [ 0, 0, 0, 0 ] );
-  const [ imoveis, setImoveis ] = useState( [] );
-  const [ rows, setRows ] = useState( [] );
-  const options = {
+  const [ viewport, setViewport ]                       = useState( {
+    width:      '100%',
+    height:     '100%',
+    latitude:   -15.7801,
+    longitude:  -47.9292,
+    zoom:       2
+  } );
+  const [ qtdTipoImovel, setQtdTipoImovel ]             = useState( [ 0, 0, 0, 0 ] );
+  const [ imoveis, setImoveis ]                         = useState( [] );
+  const [ rows, setRows ]                               = useState( [] );
+  const options                                         = {
     selectableRows: 'none'
   };
 
-  useEffect(() => {
-    props.changeSidebar(1, 1);
+  useEffect( () => {
+    props.changeSidebar( 1, 1 );
 
-    const [ d, m, Y ]  = new Date().toLocaleDateString().split('/');
-    const current_date = `${Y}-${m}-${d}`;
+    const [ d, m, Y ]  = new Date().toLocaleDateString().split( '/' );
+    const current_date = `${ Y }-${ m }-${ d }`;
 
     props.getRouteRequest( usuario.id, current_date );
-  }, [props, usuario.id]);
+  }, [] );
 
   useEffect(() => {
     if( props.showNotStarted ) {
       if( !trabalhoDiario.id ) props.showNotifyToast( "Você não possui uma rota planejada para hoje!", "warning" );
       if( !trabalhoDiario.horaInicio ) props.showNotifyToast( "Você deve iniciar a rota antes de registrar as vistorias!", "warning" );
 
-      setTimeout(() => { props.resetShowNotStarted() }, 500);
+      setTimeout( () => { props.resetShowNotStarted() }, 500 );
     }
-  }, [props, props.showNotStarted, trabalhoDiario.horaInicio, trabalhoDiario.id]);
+  }, [ props.showNotStarted, trabalhoDiario.horaInicio, trabalhoDiario.id ] );
 
-  useEffect(() => {
+  useEffect( () => {
     if( fl_iniciada ) // consultando os dados da rota, a rota back end já faz verificação se está iniciado ou n.
       window.location = window.location.origin.toString() + '/agente/vistoria';
-  }, [ fl_iniciada ]);
+  }, [ fl_iniciada ] );
 
-  useEffect(() => {
+  useEffect( () => {
     if( openModal && trabalhoDiario.id ) {
-      $('#modal-iniciar-rota').modal('show');
+      $('#modal-iniciar-rota').modal( 'show' );
       props.resetOpenModal();
     }
-  }, [openModal, props, trabalhoDiario.id]);
+  }, [ openModal, trabalhoDiario.id ] );
 
   useEffect(() => {
     if( Object.entries( trabalhoDiario ).length > 0 ) {
@@ -142,30 +141,30 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
     }
   }, [ trabalhoDiario ]);
 
-  useEffect(() => {
+  useEffect( () => {
     if( rota.length > 0 ) {
       let imo = [];
 
-      rota.forEach(q => {
-        q.lados.forEach(l => {
-          let i = l.imoveis.map(imovel => ({ ...imovel, rua: l.rua.nome, quarteirao: q.numero }));
+      rota.forEach( q => {
+        q.lados.forEach( l => {
+          let i = l.imoveis.map( imovel => ( { ...imovel, rua: l.rua.nome, quarteirao: q.numero } ) );
 
           imo = [ ...i, ...imo ];
-        });
-      });
+        } );
+      } );
 
-      setViewport({
-        width: '100%',
-        height: '100%',
-        latitude: imo[0].lat ? parseFloat(imo[0].lat) : -15.7801,
-        longitude: imo[0].lng ? parseFloat(imo[0].lng) : -47.9292,
-        zoom: 14
-      });
+      setViewport( {
+        width:      '100%',
+        height:     '100%',
+        latitude:   imo[ 0 ].lat ? parseFloat( imo[ 0 ].lat ) : -15.7801,
+        longitude:  imo[ 0 ].lng ? parseFloat( imo[ 0 ].lng ) : -47.9292,
+        zoom:       14
+      } );
       setImoveis( imo );
     }
-  }, [ rota ]);
+  }, [ rota ] );
 
-  useEffect(() => {
+  useEffect( () => {
     function createRows() {
       let qtdTipo = [ 0, 0, 0, 0 ];
       const imovs = imoveis.map( ( imovel, index ) => {
@@ -188,14 +187,14 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
             imovel.quarteirao,
           ]
         )
-      });
+      } );
 
       setRows( imovs );
       setQtdTipoImovel( qtdTipo );
     }
 
     createRows();
-  }, [ imoveis ]);
+  }, [ imoveis ] );
 
   function checkRota() {
     props.isStartedRequest( trabalhoDiario.id );
@@ -248,24 +247,23 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
             <ProgressBar className="bg-success" percentage={ vistorias.length } total={ imoveis.length } />
           </article>
           <article className="col-md-8">
-            <div className="card" style={{ height: '350px' }}>
-              {/* <ReactMapGL
+            <div className="card" style={ { height: '350px' } }>
+              <ReactMapGL
                 { ...viewport }
                 onViewportChange={ nextViewport => setViewport( nextViewport ) }
                 mapboxApiAccessToken={ process.env.REACT_APP_MAP_TOKEN }
-                // mapStyle="mapbox://styles/mapbox/satellite-streets-v11"
               >
                 {
                   rota.map( r => r.lados.map( lado => lado.imoveis.map(( imovel, index ) => {
-                    const inspection  = vistorias.find(vistoria => vistoria.imovel.id === imovel.id );
+                    const inspection = vistorias.find( vistoria => vistoria.imovel.id === imovel.id );
 
                     return (
                       <Marker
-                        key={ index }
-                        latitude={ parseFloat( imovel.lat ) }
-                        longitude={ parseFloat( imovel.lng ) }
+                        key       ={ index }
+                        latitude  ={ parseFloat( imovel.lat ) }
+                        longitude ={ parseFloat( imovel.lng ) }
                         offsetLeft={ -20 }
-                        offsetTop={ -10 }
+                        offsetTop ={ -10 }
                       >
                         <img
                           src={
@@ -276,9 +274,9 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
                         />
                       </Marker>
                     )
-                  })))
+                  } ) ) )
                 }
-              </ReactMapGL> */}
+              </ReactMapGL>
             </div>
           </article>
           <article className="col-md-4">
@@ -342,16 +340,16 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({
+  bindActionCreators( {
     changeSidebar,
     getRouteRequest,
     isStartedRequest,
     showNotifyToast,
     resetShowNotStarted,
     resetOpenModal
-  }, dispatch);
+  }, dispatch );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(HomeAgente);
+)( HomeAgente );

@@ -566,7 +566,9 @@ endRoute = async ( req, res ) => {
         id: trabalhoDiario_id
       }
     }
-  ).then(data => {}).catch(err => console.log(err));  
+  );
+
+  console.log(result);
 
   if( !result ) 
     return res.json({ 

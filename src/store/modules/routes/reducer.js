@@ -14,7 +14,7 @@ export default function routes(state = INITIAL_STATE, action) {
   switch (action.type) {
     case '@routes/START_ROUTE_REQUEST':
       return produce(state, draft => {
-        // draft.loadingStartRoute = true;
+        draft.loadingStartRoute = true;
       });
     case '@routes/START_ROUTE_SUCCESS':
       return produce(state, draft => {
@@ -27,6 +27,7 @@ export default function routes(state = INITIAL_STATE, action) {
         if (index >= 0) {
           draft.currentRouteIndex = index;
         }
+        draft.loadingStartRoute = false;
       });
     case '@routes/START_ROUTE_FAILURE':
       return produce(state, draft => {
@@ -34,7 +35,7 @@ export default function routes(state = INITIAL_STATE, action) {
       });
     case '@routes/REMOVE_FINISHED_ROUTE':
       return produce(state, draft => {
-        draft.routes = state.routes.filter(
+        draft.routes = draft.routes.filter(
           p => p.trabalhoDiario.id !== action.payload.daily_work_id
         );
         draft.currentRouteIndex = -1;
@@ -103,10 +104,12 @@ export default function routes(state = INITIAL_STATE, action) {
     case '@routes/FINISH_DAILY_WORK_SUCCESS':
       return produce(state, draft => {
         const { current_route_index } = action.payload;
-        // draft.inspections = [];
-        // draft.sampleSequence = 0;
-        // draft.recipientSequence = 1;
-        // draft.routes.splice(current_route_index, 1);
+        draft.inspections = [];
+        draft.totalInspections = 0;
+        draft.recipientSequence = 1;
+        draft.sampleSequence = 0;
+        draft.currentRouteIndex = -1;
+        draft.routes.splice(current_route_index, 1);
       });
     case '@routes/EDIT_PROPERTY':
       return produce(state, draft => {

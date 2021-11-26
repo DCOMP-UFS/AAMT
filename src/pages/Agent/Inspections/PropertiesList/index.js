@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import {
   loadInspectionForm,
   loadInspectionEditForm,
+  changePropertyIndex,
 } from '../../../../store/modules/inspectionForm/actions';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -80,7 +81,7 @@ const PropertiesList = ({ currentIndex, routes, indexes, ...props }) => {
         <Card key={property.id}>
           <Header>
             <TitleContainer>
-              <FontAwesome5 size={21} name="home" color="#3a3c4e" />
+              <FontAwesome5 size={21} name="home" color="#585666" />
               <PropertyTitle>Imóvel {property.id}</PropertyTitle>
             </TitleContainer>
             <InspectionStatus property={property} />
@@ -113,7 +114,14 @@ const PropertiesList = ({ currentIndex, routes, indexes, ...props }) => {
             >
               {property.inspection ? 'Editar vistoria' : 'Iniciar vistoria'}
             </StartInspectionButton>
-            <SeeInspectionButton>Ver detalhes</SeeInspectionButton>
+            <SeeInspectionButton
+              onPress={() => {
+                props.changePropertyIndex(propertyIndex);
+                navigation.navigate('Detalhes do imóvel', { property });
+              }}
+            >
+              Ver detalhes
+            </SeeInspectionButton>
           </ButtonRow>
         </Card>
       ))}
@@ -128,6 +136,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ loadInspectionForm, loadInspectionEditForm }, dispatch);
+  bindActionCreators(
+    { loadInspectionForm, loadInspectionEditForm, changePropertyIndex },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapDispatchToProps)(PropertiesList);

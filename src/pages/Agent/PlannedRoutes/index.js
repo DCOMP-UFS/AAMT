@@ -168,11 +168,11 @@ const PlannedRoutes = ({
         `Tem certeza que deseja finalizar esta rota? ${confirmationMessage}`,
         [
           {
-            text: 'Não',
+            text: 'Cancelar',
             style: 'cancel',
           },
           {
-            text: 'Sim',
+            text: 'Encerrar rota',
             onPress: () => createInspectionsArray(),
           },
         ],
@@ -266,6 +266,9 @@ const PlannedRoutes = ({
               setIsOldRouteWithConn(true);
             }
           } else {
+            console.log(
+              '-> ENTROU AQUI NO PROBLEMA DA ROTA NÃO ENCONTRADA!!!!!!!!'
+            );
             props.removeFinishedRoute(dailyWorkId);
             setActivities([]);
             Alert.alert(

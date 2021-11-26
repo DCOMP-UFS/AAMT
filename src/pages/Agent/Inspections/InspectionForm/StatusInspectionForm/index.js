@@ -84,7 +84,7 @@ const StatusInspectionForm = ({
         nw_data.justificativa,
         indexes
       );
-      navigation.navigate('Lista de Imóveis');
+      navigation.navigate('Lista de imóveis');
     } else {
       props.saveStatusForm(
         nw_data.status,

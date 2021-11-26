@@ -7,6 +7,8 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import PlannedRoutes from '../pages/Agent/PlannedRoutes';
 import BlocksList from '../pages/Agent/BlocksList';
 import PropertiesList from '../pages/Agent/Inspections/PropertiesList';
+import PropertieDetails from '../pages/Agent/Inspections/PropertieDetails';
+import PropertieEdit from '../pages/Agent/Inspections/PropertieEdit';
 import Profile from '../pages/Profile';
 
 // Formulários de vistorias
@@ -47,7 +49,9 @@ const DailyWorkStack = () => {
         }}
       />
       <Stack.Screen name="Rota" component={BlocksList} />
-      <Stack.Screen name="Lista de Imóveis" component={PropertiesList} />
+      <Stack.Screen name="Lista de imóveis" component={PropertiesList} />
+      <Stack.Screen name="Detalhes do imóvel" component={PropertieDetails} />
+      <Stack.Screen name="Editar imóvel" component={PropertieEdit} />
 
       {/* Formulário de vistoria */}
 

@@ -31,6 +31,7 @@ import {
   HeaderTitle,
   SampleItem,
   SampleText,
+  ErrorMessage,
 } from './styles';
 
 const RecipientForm = ({
@@ -114,6 +115,7 @@ const RecipientForm = ({
 
   const statusValidationSchema = Yup.object().shape({
     recipientType: Yup.string().required('Selecione o tipo do depósito'),
+    focus: Yup.boolean().required('Selecione se há ou não foco do mosquito'),
   });
 
   /**
@@ -239,6 +241,7 @@ const RecipientForm = ({
                     </TouchableWithoutFeedback>
                   ))}
                 </ButtonContainer>
+                {errors.focus && <ErrorMessage>{errors.focus}</ErrorMessage>}
               </SectionContainer>
 
               <SectionContainer>

@@ -67,7 +67,7 @@ const RecipientList = ({
           text: 'Finalizar',
           onPress: () => {
             props.addInspectionWithoutPendency(form, indexes);
-            navigation.navigate('Lista de Imóveis');
+            navigation.navigate('Lista de imóveis');
           },
         },
       ],
@@ -175,11 +175,11 @@ const RecipientList = ({
               </SubContainer>
             </>
           )}
-          {recipient.amostras.length === 0 && (
+          {/* {recipient.amostras.length === 0 && (
             <>
               <SubtitleModal>Repetir inspeção</SubtitleModal>
               <SubContainer>
-                {/* <ColumnContainer>
+                <ColumnContainer>
                   <Input
                     value={repetitions}
                     onChangeText={value => setRepetitions(value)}
@@ -190,10 +190,10 @@ const RecipientList = ({
                   >
                     <RepeatButton>Repetir</RepeatButton>
                   </TouchableOpacity>
-                </ColumnContainer> */}
+                </ColumnContainer>
               </SubContainer>
             </>
-          )}
+          )} */}
         </DetailsModal>
       </>
     );

@@ -8,9 +8,10 @@ import {
   TInput,
   Label,
   ErrorMessage,
+  Required,
 } from './styles';
 
-const Input = ({ label, errors, ...rest }, ref) => {
+const Input = ({ label, required, errors, ...rest }, ref) => {
   const [isFocused, setIsFocused] = useState(false);
 
   function handleFocus() {
@@ -23,7 +24,14 @@ const Input = ({ label, errors, ...rest }, ref) => {
 
   return (
     <Container>
-      {label && <Label>{label}</Label>}
+      {label && (
+        <>
+          <Label>
+            {`${label} `}
+            {required && <Required>*</Required>}
+          </Label>
+        </>
+      )}
       <TextContainer isFocused={isFocused} isErrored={!!errors}>
         <TInput
           {...rest}
@@ -41,6 +49,7 @@ const Input = ({ label, errors, ...rest }, ref) => {
 Input.propTypes = {
   label: PropTypes.string,
   errors: PropTypes.string,
+  required: PropTypes.bool,
 };
 
 export default Input;

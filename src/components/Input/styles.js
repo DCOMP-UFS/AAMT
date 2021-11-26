@@ -44,6 +44,12 @@ export const Label = styled.Text`
   margin-bottom: 10px;
 `;
 
+export const Required = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.bold};
+  font-size: 16px;
+  color: ${({ theme }) => theme.colors.error};
+`;
+
 export const ErrorMessage = styled.Text`
   font-family: 'Lato-Regular';
   color: ${({ theme }) => theme.colors.error};

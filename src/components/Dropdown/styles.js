@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const Container = styled.View`
   flex-direction: column;
-  margin-bottom: 10px;
+  margin-bottom: 16px;
 `;
 
 export const PickerBox = styled.View`
@@ -11,7 +11,7 @@ export const PickerBox = styled.View`
   background: ${({ theme }) => theme.colors.input};
   align-items: center;
   justify-content: center;
-  padding-left: 16px;
+  padding-left: 5px;
   border-radius: 4px;
   border: 1px solid
     ${props =>
@@ -32,4 +32,10 @@ export const ErrorMessage = styled.Text`
   color: ${({ theme }) => theme.colors.error};
   font-size: 14px;
   margin-top: 8px;
+`;
+
+export const Required = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.bold};
+  font-size: 16px;
+  color: ${({ theme }) => theme.colors.error};
 `;

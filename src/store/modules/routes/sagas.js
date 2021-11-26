@@ -35,11 +35,11 @@ export function* endRoute({ payload }) {
     const { inspections, end_hour, daily_work_id, current_route_index } =
       payload;
 
-    // const response = yield call(api.post, '/rotas/finalizar', {
-    //   trabalhoDiario_id: daily_work_id,
-    //   horaFim: end_hour,
-    //   vistorias: inspections,
-    // });
+    const response = yield call(api.post, '/rotas/finalizar', {
+      trabalhoDiario_id: daily_work_id,
+      horaFim: end_hour,
+      vistorias: inspections,
+    });
 
     yield put(finishDailyWorkSuccess(current_route_index));
 

@@ -62,7 +62,7 @@ const BlocksList = ({ currentIndex, routes, ...props }) => {
                         if (isStarted) {
                           props.changeBlockIndex(blockIndex);
                           props.changeStreetIndex(streetIndex);
-                          navigation.navigate('Lista de Imóveis', {
+                          navigation.navigate('Lista de imóveis', {
                             street: street.rua.nome,
                           });
                         }

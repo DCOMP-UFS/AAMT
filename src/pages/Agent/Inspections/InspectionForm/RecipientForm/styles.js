@@ -73,3 +73,10 @@ export const ExtraContainer = styled.View`
   flex-direction: column;
   margin-bottom: 20px;
 `;
+
+export const ErrorMessage = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.regular};
+  color: ${({ theme }) => theme.colors.error};
+  font-size: 14px;
+  margin-bottom: 12px;
+`;

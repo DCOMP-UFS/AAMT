@@ -15,7 +15,7 @@ const borderModifiers = {
 
 const textModifiers = {
   normal: css`
-    color: ${({ theme }) => theme.colors.grayNotSelected};
+    color: ${({ theme }) => theme.colors.black};
   `,
   selected: css`
     color: ${({ theme }) => theme.colors.blue};

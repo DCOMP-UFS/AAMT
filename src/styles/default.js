@@ -24,7 +24,8 @@ const defaultTheme = {
 
     iconSelection: {
       selected: '#0095DA',
-      normal: '#A0A1B6',
+      // normal: '#A0A1B6',
+      normal: '#585666',
       disabled: '#e4e9f2',
     },
 

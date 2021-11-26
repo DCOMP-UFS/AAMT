@@ -428,6 +428,8 @@ endRoute = async ( req, res ) => {
   const { trabalhoDiario_id, horaFim, vistorias } = req.body;
   const userId = req.userId;
 
+  console.log(vistorias);
+
   // Validando
   const td = await TrabalhoDiario.findByPk( trabalhoDiario_id );
   if( !td ) 
@@ -502,7 +504,7 @@ endRoute = async ( req, res ) => {
     } )
     .then( result => {
       vistoria.id = result.dataValues.id;
-    } );
+    } ).catch(err => console.log(err));
 
     await Imovel.update( 
       {
@@ -564,7 +566,7 @@ endRoute = async ( req, res ) => {
         id: trabalhoDiario_id
       }
     }
-  );  
+  ).then(data => {}).catch(err => console.log(err));  
 
   if( !result ) 
     return res.json({ 

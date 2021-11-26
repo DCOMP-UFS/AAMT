@@ -66,7 +66,8 @@ const RecipientList = ({
         {
           text: 'Finalizar',
           onPress: () => {
-            props.addInspectionWithoutPendency(form, indexes);
+            const dailyWorkId = routes[currentRouteIndex].trabalhoDiario.id;
+            props.addInspectionWithoutPendency(form, indexes, dailyWorkId);
             navigation.navigate('Lista de imóveis');
           },
         },

@@ -16,8 +16,9 @@ export default function inspectionForm(state = INITIAL_STATE, action) {
   switch (action.type) {
     case '@inspectionform/LOAD_INSPECTION_FORM': {
       return produce(state, draft => {
+        const { propertyIndex } = action.payload;
         draft.type = 'insert';
-        draft.indexes.propertyIndex = action.payload.propertyIndex;
+        draft.indexes.propertyIndex = propertyIndex;
         draft.form = {
           situacaoVistoria: '',
           pendencia: '',

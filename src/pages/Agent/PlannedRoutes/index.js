@@ -213,6 +213,13 @@ const PlannedRoutes = ({
           handleStartActivity(response.data);
         }
       }
+
+      if (
+        response.data.trabalhoDiario &&
+        response.data.trabalhoDiario.horaFim !== null
+      ) {
+        setActivities([]);
+      }
     } catch (err) {
       Alert.alert(
         'Ocorreu um erro',

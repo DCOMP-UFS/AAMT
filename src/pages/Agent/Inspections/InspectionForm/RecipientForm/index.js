@@ -72,7 +72,7 @@ const RecipientForm = ({
     routes[currentRouteIndex].trabalhoDiario.atividade.objetivo.sigla;
   const methodology =
     routes[currentRouteIndex].trabalhoDiario.atividade.metodologia.sigla;
-  const ibgeCode = routes[currentRouteIndex].codigo_municipio;
+  const ibgeCode = routes[currentRouteIndex].trabalhoDiario.codigo_municipio;
   const userSequence =
     routes[currentRouteIndex].trabalhoDiario.sequencia_usuario;
   const date = routes[currentRouteIndex].trabalhoDiario.data;

@@ -35,7 +35,7 @@ export function* endRoute({ payload }) {
     const { inspections, end_hour, daily_work_id, current_route_index } =
       payload;
 
-    const response = yield call(api.post, '/rotas/finalizar', {
+    yield call(api.post, '/rotas/finalizar', {
       trabalhoDiario_id: daily_work_id,
       horaFim: end_hour,
       vistorias: inspections,
@@ -48,12 +48,10 @@ export function* endRoute({ payload }) {
       'O trabalho diário foi finalizado e armazenado na base de dados'
     );
   } catch (err) {
-    if (err.response.status === 400) {
-      Alert.alert(
-        'Houve um problema',
-        'Não foi possível finalizar o trabalho diário'
-      );
-    }
+    Alert.alert(
+      'Houve um problema',
+      'Não foi possível finalizar o trabalho diário'
+    );
   }
 }
 

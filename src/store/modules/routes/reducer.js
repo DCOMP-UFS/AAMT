@@ -56,21 +56,16 @@ export default function routes(state = INITIAL_STATE, action) {
       return produce(state, draft => {
         draft.recipientSequence = state.recipientSequence + 1;
       });
-    case '@routes/ADD_INSPECTION':
-      return produce(state, draft => {
-        const { inspection, blockIndex, streetIndex, propertyIndex } =
-          action.payload;
-        const index = state.currentRouteIndex;
-        draft.routes[index].rota[blockIndex].lados[streetIndex].imoveis[
-          propertyIndex
-        ]['inspection'] = inspection;
-        draft.recipientSequence = 1;
-        draft.totalInspections = state.totalInspections + 1;
-      });
     case '@routes/ADD_INSPECTION_WITH_PENDENCY':
       return produce(state, draft => {
-        const { status, pendency, startHour, justification, indexes } =
-          action.payload;
+        const {
+          status,
+          pendency,
+          startHour,
+          justification,
+          dailyWorkId,
+          indexes,
+        } = action.payload;
         const { blockIndex, streetIndex, propertyIndex } = indexes;
         const index = state.currentRouteIndex;
         draft.routes[index].rota[blockIndex].lados[streetIndex].imoveis[
@@ -81,18 +76,24 @@ export default function routes(state = INITIAL_STATE, action) {
           horaEntrada: startHour,
           recipientes: [],
           justificativa: justification,
+          trabalhoDiario_id: dailyWorkId,
+          sequencia: state.totalInspections + 1,
         };
         draft.recipientSequence = 1;
         draft.totalInspections = state.totalInspections + 1;
       });
     case '@routes/ADD_INSPECTION_WITHOUT_PENDENCY':
       return produce(state, draft => {
-        const { form, indexes } = action.payload;
+        const { form, indexes, dailyWorkId } = action.payload;
         const { blockIndex, streetIndex, propertyIndex } = indexes;
         const index = state.currentRouteIndex;
         draft.routes[index].rota[blockIndex].lados[streetIndex].imoveis[
           propertyIndex
-        ]['inspection'] = form;
+        ]['inspection'] = {
+          ...form,
+          trabalhoDiario_id: dailyWorkId,
+          sequencia: state.totalInspections + 1,
+        };
         draft.recipientSequence = 1;
         draft.totalInspections = state.totalInspections + 1;
       });

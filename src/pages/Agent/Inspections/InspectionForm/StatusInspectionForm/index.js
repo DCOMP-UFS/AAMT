@@ -76,13 +76,15 @@ const StatusInspectionForm = ({
         form.horaEntrada !== '' ? form.horaEntrada : handleStartInspection(),
       justificativa: data.pendency !== 'N' ? data.justification : null,
     };
+    const dailyWorkId = routes[currentRouteIndex].trabalhoDiario.id;
     if (data.pendency === 'F' || data.pendency === 'R') {
       props.addInspectionWithPendency(
         nw_data.status,
         nw_data.pendencia,
         nw_data.horaEntrada,
         nw_data.justificativa,
-        indexes
+        indexes,
+        dailyWorkId
       );
       navigation.navigate('Lista de imóveis');
     } else {

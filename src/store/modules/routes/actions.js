@@ -53,35 +53,31 @@ export function addRecipient() {
   };
 }
 
-export function addInspection(
-  inspection,
-  blockIndex,
-  streetIndex,
-  propertyIndex
-) {
-  return {
-    type: '@routes/ADD_INSPECTION',
-    payload: { inspection, blockIndex, streetIndex, propertyIndex },
-  };
-}
-
 export function addInspectionWithPendency(
   status,
   pendency,
   startHour,
   justification,
-  indexes
+  indexes,
+  dailyWorkId
 ) {
   return {
     type: '@routes/ADD_INSPECTION_WITH_PENDENCY',
-    payload: { status, pendency, startHour, justification, indexes },
+    payload: {
+      status,
+      pendency,
+      startHour,
+      justification,
+      indexes,
+      dailyWorkId,
+    },
   };
 }
 
-export function addInspectionWithoutPendency(form, indexes) {
+export function addInspectionWithoutPendency(form, indexes, dailyWorkId) {
   return {
     type: '@routes/ADD_INSPECTION_WITHOUT_PENDENCY',
-    payload: { form, indexes },
+    payload: { form, indexes, dailyWorkId },
   };
 }
 

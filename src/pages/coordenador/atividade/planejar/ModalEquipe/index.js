@@ -10,7 +10,7 @@ import { FaLongArrowAltRight, FaLongArrowAltLeft } from 'react-icons/fa';
 import Modal, { ModalBody, ModalFooter } from '../../../../../components/Modal';
 
 // ACTIONS
-import { addEquipe } from '../../../../../store/actions/AtividadeActions';
+import { addEquipe } from '../../../../../store/Atividade/atividadeActions';
 
 // STYLES
 import {
@@ -26,49 +26,49 @@ import {
 import { ContainerArrow } from '../../../../../styles/util';
 import { Button, FormGroup, selectDefault, Separator } from '../../../../../styles/global';
 
-function ModalEquipe({ equipes, ...props }) {
-  const [ membros, setMembros ] = useState([]);
-  const [ membrosSelecionados, setMembrosSelecionados ] = useState([]);
-  const [ internalReload, setInternalReload ] = useState( false );
-  const [ supervisor, setSupervisor ] = useState({});
-  const [ optionSupervisor, setOptionSupervisor ] = useState([]);
-  const [ message, setMessage ] = useState("");
-  const [ messageMembro, setMessageMembro ] = useState("");
-  const [ locais, setLocais ] = useState([]);
+const ModalEquipe = ( { equipes, ...props } ) => {
+  const [ membros, setMembros ]                         = useState( [] );
+  const [ membrosSelecionados, setMembrosSelecionados ] = useState( [] );
+  const [ internalReload, setInternalReload ]           = useState( false );
+  const [ supervisor, setSupervisor ]                   = useState( {} );
+  const [ optionSupervisor, setOptionSupervisor ]       = useState( [] );
+  const [ message, setMessage ]                         = useState( "" );
+  const [ messageMembro, setMessageMembro ]             = useState( "" );
+  const [ locais, setLocais ]                           = useState( [] );
 
-  useEffect(() => {
-    const m = props.membros.map( m => ({
+  useEffect( () => {
+    const m = props.membros.map( m => ( {
       id: m.id,
       nome: m.nome,
       checked: false
-    }));
+    } ) );
 
     setMembros( m );
-  }, [ props.membros ]);
+  }, [ props.membros ] );
 
-  useEffect(() => {
+  useEffect( () => {
     setOptionSupervisor(
-      membrosSelecionados.map( m => ({
+      membrosSelecionados.map( m => ( {
         value: m.id, label: m.nome
-      }))
+      } ) )
     );
-  }, [ membrosSelecionados ]);
+  }, [ membrosSelecionados ] );
 
-  useEffect(() => {
+  useEffect( () => {
     const l = props.locais
       .filter( loc => loc.flEstrato ? !loc.flEquipe : false )
-      .map( loc => ({ ...loc, checked: false }));
+      .map( loc => ( { ...loc, checked: false } ) );
 
     setLocais( l );
-  }, [ props.locais, props.reload ]);
+  }, [ props.locais, props.reload ] );
 
   function addMembro() {
     let mSelecionado = membros
       .filter( m => m.checked ? m.checked : false )
-      .map( m => ({ ...m, checked: false }) );
+      .map( m => ( { ...m, checked: false } ) );
     let m = membros.filter( m => m.checked ? !m.checked : true );
 
-    setMembrosSelecionados([ ...membrosSelecionados, ...mSelecionado ]);
+    setMembrosSelecionados( [ ...membrosSelecionados, ...mSelecionado ] );
     setMembros( m );
   }
 
@@ -77,14 +77,14 @@ function ModalEquipe({ equipes, ...props }) {
       .filter( m => m.checked ? m.checked : false )
       .map( m => {
         if( m.id === supervisor.value )
-          setSupervisor({});
+          setSupervisor( {} );
 
-        return ({ ...m, checked: false })
-      });
+        return ( { ...m, checked: false } );
+      } );
     let mSelecionado = membrosSelecionados.filter( m => m.checked ? !m.checked : true );
 
     setMembrosSelecionados( mSelecionado );
-    setMembros([ ...membros, ...m ]);
+    setMembros( [ ...membros, ...m ] );
   }
 
   function handleMembro( index ) {
@@ -114,20 +114,20 @@ function ModalEquipe({ equipes, ...props }) {
   }
 
   function dbClickMembro( index ) {
-    let m = membros.filter( (m, i) => i !== index );
+    let m = membros.filter( ( m, i ) => i !== index );
 
-    setMembrosSelecionados([ ...membrosSelecionados, membros[ index ] ]);
+    setMembrosSelecionados( [ ...membrosSelecionados, membros[ index ] ] );
     setMembros( m );
   }
 
   function dbClickMembroSelecionado( index ) {
-    let m = membrosSelecionados.filter( (m, i) => i !== index );
+    let m = membrosSelecionados.filter( ( m, i ) => i !== index );
 
-    setMembros([ ...membros, membrosSelecionados[ index ] ]);
+    setMembros( [ ...membros, membrosSelecionados[ index ] ] );
     setMembrosSelecionados( m );
 
     if( membrosSelecionados[ index ].id === supervisor.value )
-      setSupervisor({});
+      setSupervisor( {} );
   }
 
   function handleLocal( index ) {
@@ -144,15 +144,15 @@ function ModalEquipe({ equipes, ...props }) {
   }
 
   function clearInput() {
-    const m = props.membros.map( m => ({
-      id: m.id,
-      nome: m.nome,
-      checked: false
-    }));
+    const m = props.membros.map( m => ( {
+      id      : m.id,
+      nome    : m.nome,
+      checked : false
+    } ) );
 
     setMembros( m );
-    setMembrosSelecionados([]);
-    setSupervisor({});
+    setMembrosSelecionados( [] );
+    setSupervisor( {} );
   }
 
   function handleSubmit( e ) {
@@ -369,17 +369,19 @@ function ListLocaly( props ) {
   );
 }
 
-const mapStateToProps = state => ({
-  membros: state.usuario.usuarios,
-  locais: state.atividade.locais,
-  equipes: state.atividade.equipes,
-  reload: state.atividade.reload
-});
+const mapStateToProps = state => ( {
+  membros : state.usuario.usuarios,
+  locais  : state.atividade.locais,
+  equipes : state.atividade.equipes,
+  reload  : state.atividade.reload
+} );
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ addEquipe }, dispatch);
+  bindActionCreators( {
+    addEquipe
+  }, dispatch );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ModalEquipe);
+)( ModalEquipe );

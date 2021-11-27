@@ -101,11 +101,11 @@ export const RelatorioDiario = ({ atividades, ciclo, usuario, ...props }) => {
   )
 }
 
-const mapStateToProps = state => ({
-  usuario: state.appConfig.usuario,
-  ciclo: state.nw_ciclo.ciclo,
-  atividades: state.nw_atividade.atividades
-});
+const mapStateToProps = state => ( {
+  usuario   : state.appConfig.usuario,
+  ciclo     : state.nw_ciclo.ciclo,
+  atividades: state.atividade.atividades
+} );
 
 const mapDispatchToProps = {
   changeSidebar,

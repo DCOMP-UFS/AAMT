@@ -13,7 +13,7 @@ import { changeSidebar } from '../../../../store/actions/sidebarCoordGeral';
 import { getMethodologiesRequest } from '../../../../store/actions/MetodologiaActions';
 import { getAllowedCyclesRequest } from '../../../../store/actions/CicloActions';
 import { getCityByRegionalHealthRequest } from '../../../../store/actions/MunicipioActions';
-import { createActiveRequest } from '../../../../store/actions/AtividadeActions';
+import { createActiveRequest } from '../../../../store/Atividade/atividadeActions';
 
 // STYLES
 import { FormGroup, selectDefault } from '../../../../styles/global';
@@ -276,24 +276,24 @@ function Atividades({ metodologias, ciclos, ...props }) {
   );
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = state => ( {
   regionalSaude_id: state.appConfig.usuario.regionalSaude.id,
-  metodologias: state.metodologia.metodologias,
-  ciclos: state.ciclo.ciclos,
-  municipios: state.municipio.municipiosList,
-  created: state.atividade.created
-});
+  metodologias    : state.metodologia.metodologias,
+  ciclos          : state.ciclo.ciclos,
+  municipios      : state.municipio.municipiosList,
+  created         : state.atividade.created
+} );
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({
+  bindActionCreators( {
     changeSidebar,
     getMethodologiesRequest,
     getAllowedCyclesRequest,
     getCityByRegionalHealthRequest,
     createActiveRequest
-  }, dispatch);
+  }, dispatch );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Atividades);
+)( Atividades );

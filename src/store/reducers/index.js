@@ -1,7 +1,6 @@
 import { combineReducers } from 'redux';
 
 import appConfig from './appConfig';
-import atividade from './Atividade';
 import categoria from './Categoria';
 import estado from './Estado';
 import imovel from './Imovel';
@@ -27,7 +26,7 @@ import rotaCache from './RotaCache';
 import vistoria from './Vistoria';
 import vistoriaCache from './VistoriaCache';
 import nw_vistoria from '../Vistoria/vistoriaReduce';
-import nw_atividade from '../Atividade/atividadeReduce';
+import atividade from '../Atividade/atividadeReduce';
 import nw_rota from '../Rota/rotaReduce';
 import nw_amostra from '../Amostra/amostraReduce';
 import nw_laboratorio from '../Laboratorio/laboratorioReduce';
@@ -45,7 +44,6 @@ export default combineReducers({
   sidebar,
   sidebarLab,
   sidebarSupervisor,
-  atividade,
   trabalhoDiario,
   supportInfo,
   appConfig,
@@ -68,7 +66,7 @@ export default combineReducers({
   vistoria,
   vistoriaCache,
   nw_vistoria,
-  nw_atividade,
+  atividade,
   nw_rota,
   nw_amostra,
   nw_laboratorio,

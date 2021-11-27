@@ -127,15 +127,15 @@ export const SelecionarQuarteiroes = ({ fl_loading, indexEquipe, indexMembro, ro
   )
 }
 
-const mapStateToProps = state => ({
-  usuario: state.appConfig.usuario,
-  equipes: state.nw_atividade.equipes,
-  rota_equipe: state.nw_atividade.rota_equipe,
-  indexEquipe: state.nw_atividade.indexEquipe,
-  indexMembro: state.nw_atividade.indexMembro,
-  reload: state.nw_atividade.reload,
-  fl_loading: state.nw_atividade.fl_loading,
-});
+const mapStateToProps = state => ( {
+  usuario     : state.appConfig.usuario,
+  equipes     : state.atividade.equipes,
+  rota_equipe : state.atividade.rota_equipe,
+  indexEquipe : state.atividade.indexEquipe,
+  indexMembro : state.atividade.indexMembro,
+  reload      : state.atividade.reload,
+  fl_loading  : state.atividade.fl_loading,
+} );
 
 const mapDispatchToProps = {
   toggleLado,

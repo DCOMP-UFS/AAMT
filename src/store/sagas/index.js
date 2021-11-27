@@ -13,13 +13,11 @@ import { ActionTypes as RegionalSaudeActions } from '../actions/RegionalSaudeAct
 import { ActionTypes as RuaActions } from '../actions/RuaActions';
 import { ActionTypes as CicloActions } from '../actions/CicloActions';
 import { ActionTypes as MetodologiaActions } from '../actions/MetodologiaActions';
-import { ActionTypes as AtividadeActions } from '../actions/AtividadeActions';
 import { ActionTypes as RotaActions } from '../actions/RotaActions';
 import { ActionTypes as VistoriaActions } from '../actions/VistoriaActions';
 import { ActionTypes as TrabalhoDiarioActions } from '../actions/trabalhoDiario';
 
 // Nova Estrutura
-import { ActionTypes as NW_AtividadeActions } from '../Atividade/atividadeActions';
 import { ActionTypes as NW_RotaActions } from '../Rota/rotaActions';
 import { ActionTypes as NW_AmostraActions } from '../Amostra/amostraActions';
 import { ActionTypes as NW_LaboratorioActions } from '../Laboratorio/laboratorioActions';
@@ -51,13 +49,11 @@ import { getRegionalHealthByState } from './RegionalSaudeSagas';
 import { getStreetByLocality, createStreet, updateStreet, deleteStreet } from './RuaSagas';
 import * as CicloSagas from './CicloSagas';
 import * as MetodologiaSagas from './MetodologiaSagas';
-import * as AtividadeSagas from './AtividadeSagas';
 import * as RotaSagas from './RotaSagas';
 import * as VistoriaSagas from './VistoriaSagas';
 import * as TrabalhoDiarioSagas from './TrabalhoDiarioSagas';
 
 // Nova Estrutura
-import * as NW_AtividadeSagas from '../Atividade/atividadeSagas';
 import * as NW_RotaSagas from '../Rota/rotaSagas';
 import * as NW_AmostraSagas from '../Amostra/amostraSagas';
 import * as NW_LaboratorioSagas from '../Laboratorio/laboratorioSagas';
@@ -71,6 +67,7 @@ import * as NW_RuaSagas from '../Rua/ruaSagas';
 
 import { quarteiraoSaga } from '../Quarteirao/quarteiraoSagas';
 import { rotaSaga } from '../Rota/rotaSagas';
+import { atividadeSaga } from '../Atividade/atividadeSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -146,17 +143,8 @@ export default function* rootSaga() {
     takeLatest( MetodologiaActions.GET_METHODOLOGIES_REQUEST, MetodologiaSagas.getMethodologies ),
 
     // Gerir Atividade
-    takeLatest( AtividadeActions.GET_ACTIVITIE_BY_ID_REQUEST, AtividadeSagas.getActivitieById ),
-    takeLatest( AtividadeActions.GET_ACTIVITIES_OF_CITY_REQUEST, AtividadeSagas.getActivitiesOfCity ),
-    takeLatest( AtividadeActions.GET_ACTIVITIES_BY_CITY_REQUEST, AtividadeSagas.getActivitiesByCity ),
-    takeLatest( AtividadeActions.GET_LOCATIONS_REQUEST, AtividadeSagas.getLocations ),
-    takeLatest( AtividadeActions.CREATE_ACTIVE_REQUEST, AtividadeSagas.createActive ),
-    takeLatest( AtividadeActions.PLAN_ACTIVITY_REQUEST, AtividadeSagas.planActivity ),
-    // Nova Estrutura
-    takeLatest( NW_AtividadeActions.GET_RESPONSABILITY_ACTIVITIES_REQUEST, NW_AtividadeSagas.getResponsabilityActivities ),
-    takeLatest( NW_AtividadeActions.GET_ROTA_EQUIPE_REQUEST, NW_AtividadeSagas.getRotaEquipe ),
-
-
+    atividadeSaga(),
+    
     // Gerir Rotas
     takeLatest( RotaActions.GET_ROUTE_REQUEST, RotaSagas.getRoute ),
     takeLatest( RotaActions.CHECK_ROTA_INICIADA_REQUEST, RotaSagas.isStarted ),

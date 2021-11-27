@@ -78,8 +78,8 @@ export const SelecionarAtividade = ({ indexAtividade, atividades, ...props }) =>
 }
 
 const mapStateToProps = state => ({
-  atividades: state.nw_atividade.atividades,
-  indexAtividade: state.nw_atividade.indexAtividade
+  atividades    : state.atividade.atividades,
+  indexAtividade: state.atividade.indexAtividade
 })
 
 const mapDispatchToProps = {

@@ -12,7 +12,7 @@ import { showNotifyToast } from '../../../store/actions/appConfig';
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebar';
 import { getAllowedCyclesRequest } from '../../../store/actions/CicloActions';
-import { getActivitiesByCityRequest } from '../../../store/actions/AtividadeActions';
+import { getActivitiesByCityRequest } from '../../../store/Atividade/atividadeActions';
 
 // STYLES
 import { ContainerAtividade, ContainerCiclo, Header, Body } from './styles';
@@ -154,22 +154,22 @@ function PlanejarAtividade({ ciclos, atividades, ...props }) {
   );
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = state => ( {
   regionalSaude_id: state.appConfig.usuario.municipio.regional.id,
-  municipio_id: state.appConfig.usuario.municipio.id,
-  atividades: state.atividade.atividades,
-  ciclos: state.ciclo.ciclos,
-});
+  municipio_id    : state.appConfig.usuario.municipio.id,
+  atividades      : state.atividade.atividades,
+  ciclos          : state.ciclo.ciclos,
+} );
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({
+  bindActionCreators( {
     changeSidebar,
     getAllowedCyclesRequest,
     getActivitiesByCityRequest,
     showNotifyToast
-  }, dispatch);
+  }, dispatch );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)( PlanejarAtividade )
+)( PlanejarAtividade );

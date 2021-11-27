@@ -10,35 +10,35 @@ import Modal, { ModalBody, ModalFooter } from '../../../../../components/Modal';
 import { abrangencia as abrangenciaEnum } from '../../../../../config/enumerate';
 
 // ACTIONS
-import { addEstrato } from '../../../../../store/actions/AtividadeActions';
+import { addEstrato } from '../../../../../store/Atividade/atividadeActions';
 
 // STYLES
 import { UlLocal, LiLocal, ContainerCheck, DivDescription, LiEmpty, Arrows } from './styles';
 import { ContainerArrow } from '../../../../../styles/util';
 import { Button, FormGroup } from '../../../../../styles/global';
 
-function ModalEstrato ({ atividade, ...props }) {
-  const [ abrangencia, setAbrangencia ] = useState("");
-  const [ locais, setLocais ] = useState([]);
-  const [ locaisSelecionados, setLocaisSelecionados ] = useState([]);
-  const [ reload, setReload ] = useState( false );
+const ModalEstrato = ( { atividade, ...props } ) => {
+  const [ abrangencia, setAbrangencia ]               = useState( "" );
+  const [ locais, setLocais ]                         = useState( [] );
+  const [ locaisSelecionados, setLocaisSelecionados ] = useState( [] );
+  const [ reload, setReload ]                         = useState( false );
 
-  useEffect(() => {
+  useEffect( () => {
     if( Object.entries( atividade ).length > 0 ) {
       let abr = Object.entries( abrangenciaEnum )
-        .filter(([ attr, data ]) => data.id === atividade.abrangencia )[0][1].label;
+        .filter( ( [ attr, data ] ) => data.id === atividade.abrangencia )[ 0 ][ 1 ].label;
 
-      setAbrangencia( abr.split(' ')[1] );
+      setAbrangencia( abr.split(' ')[ 1 ] );
     }
-  }, [ atividade ]);
+  }, [ atividade ] );
 
-  useEffect(() => {
+  useEffect( () => {
     const l = props.locais
-      .map( ( loc, index ) => ({ ...loc, dataIndex: index }))
+      .map( ( loc, index ) => ( { ...loc, dataIndex: index } ) )
       .filter( loc => loc.flEstrato ? !loc.flEstrato : true );
 
     setLocais( l );
-  }, [ props.locais, props.externalReload ]);
+  }, [ props.locais, props.externalReload ] );
 
   function handleLocal( index ) {
     let l = locais;
@@ -69,40 +69,40 @@ function ModalEstrato ({ atividade, ...props }) {
   function addLocal() {
     let lSelecionado = locais
       .filter( l => l.checked ? l.checked : false )
-      .map( l => ({ ...l, checked: false }) );
+      .map( l => ( { ...l, checked: false } ) );
     let l = locais.filter( l => l.checked ? !l.checked : true );
 
-    setLocaisSelecionados([ ...locaisSelecionados, ...lSelecionado ]);
+    setLocaisSelecionados( [ ...locaisSelecionados, ...lSelecionado ] );
     setLocais( l );
   }
 
   function removeLocal() {
     let l = locaisSelecionados
       .filter( l => l.checked ? l.checked : false )
-      .map( l => ({ ...l, checked: false }) );
+      .map( l => ( { ...l, checked: false } ) );
     let lSelecionado = locaisSelecionados.filter( l => l.checked ? !l.checked : true );
 
     setLocaisSelecionados( lSelecionado );
-    setLocais([ ...locais, ...l ]);
+    setLocais( [ ...locais, ...l ] );
   }
 
   function dbClickLocal( index ) {
-    let l = locais.filter( (l, i) => i !== index );
+    let l = locais.filter( ( l, i ) => i !== index );
 
-    setLocaisSelecionados([ ...locaisSelecionados, locais[ index ] ]);
+    setLocaisSelecionados( [ ...locaisSelecionados, locais[ index ] ] );
     setLocais( l );
   }
 
   function dbClickLocalSelecionado( index ) {
-    let l = locaisSelecionados.filter( (l, i) => i !== index );
+    let l = locaisSelecionados.filter( ( l, i ) => i !== index );
 
-    setLocais([ ...locais, locaisSelecionados[ index ] ]);
-    setLocaisSelecionados(l);
+    setLocais( [ ...locais, locaisSelecionados[ index ] ] );
+    setLocaisSelecionados( l );
   }
 
   function clearInput() {
-    setLocais( props.locais.map( l => ({ ...l, checked: false }) ) );
-    setLocaisSelecionados([]);
+    setLocais( props.locais.map( l => ( { ...l, checked: false } ) ) );
+    setLocaisSelecionados( [] );
   }
 
   function handleSubmit( e ) {
@@ -110,8 +110,8 @@ function ModalEstrato ({ atividade, ...props }) {
 
     if( locaisSelecionados.length > 0 ) {
       props.addEstrato( locais, locaisSelecionados );
-      setLocaisSelecionados([]);
-      $('#modal-novo-estrato').modal('hide');
+      setLocaisSelecionados( [] );
+      $('#modal-novo-estrato').modal( 'hide' );
     }
   }
 
@@ -221,16 +221,16 @@ function ListLocaly( props ) {
   );
 }
 
-const mapStateToProps = state => ({
-  atividade: state.atividade.atividade,
-  locais: state.atividade.locais,
+const mapStateToProps = state => ( {
+  atividade     : state.atividade.atividade,
+  locais        : state.atividade.locais,
   externalReload: state.atividade.reload
-});
+} );
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ addEstrato }, dispatch);
+  bindActionCreators( { addEstrato }, dispatch );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ModalEstrato);
+)( ModalEstrato );

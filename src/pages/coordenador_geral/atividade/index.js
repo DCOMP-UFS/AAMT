@@ -9,7 +9,7 @@ import cityIcon from '../../../assets/city-icon.png';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebarCoordGeral';
-import { getActivitiesOfCityRequest } from '../../../store/actions/AtividadeActions';
+import { getActivitiesOfCityRequest } from '../../../store/Atividade/atividadeActions';
 import { getAllowedCyclesRequest } from '../../../store/actions/CicloActions';
 
 // STYLES
@@ -253,8 +253,8 @@ function CardAtividades({ municipio }) {
 
 const mapStateToProps = state => ({
   regionalSaude_id: state.appConfig.usuario.regionalSaude.id,
-  atividades: state.atividade.atividades,
-  ciclos: state.ciclo.ciclos,
+  atividades      : state.atividade.atividades,
+  ciclos          : state.ciclo.ciclos,
 });
 
 const mapDispatchToProps = dispatch =>

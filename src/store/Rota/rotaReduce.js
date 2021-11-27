@@ -2,8 +2,9 @@ import { ActionTypes } from './rotaActions';
 
 const INITIAL_STATE = {
   fl_carregando_rota: false,
-  fl_rota_planejada: undefined,
-  rotas_planejadas: []
+  fl_rota_planejada : undefined,
+  rotas_planejadas  : [],
+  isFinalizado      : undefined
 }
 
 export default function Rota(state = INITIAL_STATE, action) {
@@ -26,7 +27,13 @@ export default function Rota(state = INITIAL_STATE, action) {
         rotas_planejadas: action.payload.rotas_planejadas,
       };
 
+    case ActionTypes.SET_IS_FINALIZADO:
+      return {
+        ...state,
+        isFinalizado: action.payload.isFinalizado,
+      };
+
     default:
-      return {...state};
+      return { ...state };
   }
 }

@@ -1,9 +1,11 @@
 export const ActionTypes = {
-  PLANEJAR_ROTA_REQUEST: "PLANEJAR_ROTA_REQUEST",
-  SET_ROTA_PLANEJADA: "SET_ROTA_PLANEJADA",
-  SET_CARREGANDO_ROTA: "SET_CARREGANDO_ROTA",
+  PLANEJAR_ROTA_REQUEST       : "PLANEJAR_ROTA_REQUEST",
+  SET_ROTA_PLANEJADA          : "SET_ROTA_PLANEJADA",
+  SET_CARREGANDO_ROTA         : "SET_CARREGANDO_ROTA",
   GET_ROTAS_PLANEJADAS_REQUEST: "GET_ROTAS_PLANEJADAS_REQUEST",
-  SET_ROTAS_PLANEJADAS: "SET_ROTAS_PLANEJADAS",
+  SET_ROTAS_PLANEJADAS        : "SET_ROTAS_PLANEJADAS",
+  IS_FINALIZADO_REQUEST       : "IS_FINALIZADO_REQUEST",
+  SET_IS_FINALIZADO           : "SET_IS_FINALIZADO",
 }
 
 /**
@@ -71,6 +73,34 @@ export const setRotasPlanejadas = rotas_planejadas => {
     type: ActionTypes.SET_ROTAS_PLANEJADAS,
     payload: {
       rotas_planejadas
+    }
+  }
+}
+
+/**
+ * Solicita ao sagas a validação do trabalho diário
+ * @param {integer} trabalhoDiario_id 
+ * @returns 
+ */
+ export const isFinalizadoRequest = trabalhoDiario_id => {
+  return {
+    type    : ActionTypes.IS_FINALIZADO_REQUEST,
+    payload : {
+      trabalhoDiario_id
+    }
+  }
+}
+
+/**
+ * Solicita ao reduce que altere a variável flTrabalhoDiario
+ * @param {boolean} isFinalizado 
+ * @returns 
+ */
+export const setIsFinalizado = isFinalizado => {
+  return {
+    type    : ActionTypes.SET_IS_FINALIZADO,
+    payload : {
+      isFinalizado
     }
   }
 }

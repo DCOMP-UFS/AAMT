@@ -7,7 +7,7 @@ const INITIAL_STATE = {
   rota: []
 }
 
-export default function Rota(state = INITIAL_STATE, action) {
+export default function Rota( state = INITIAL_STATE, action ) {
   switch (action.type) {
     case ActionTypes.RESETAR_OPENMODAL: {
       return {
@@ -28,15 +28,14 @@ export default function Rota(state = INITIAL_STATE, action) {
     }
 
     case ActionTypes.GET_ROUTE_SUCCESS: {
-      const { data } = action.payload;
-      let trabalhoDiario = INITIAL_STATE.trabalhoDiario;
-      let rota = INITIAL_STATE.rota;
+      const { data }      = action.payload;
+      let trabalhoDiario  = INITIAL_STATE.trabalhoDiario;
+      let rota            = INITIAL_STATE.rota;
 
       if( typeof data.trabalhoDiario !== 'undefined' ) {
-        trabalhoDiario = data.trabalhoDiario;
-        rota = data.rota;
+        trabalhoDiario  = data.trabalhoDiario;
+        rota            = data.rota;
       }
-
 
       return {
         ...state,
@@ -50,6 +49,13 @@ export default function Rota(state = INITIAL_STATE, action) {
         ...state,
         fl_iniciada: action.payload.fl_iniciada,
         openModal: !action.payload.fl_iniciada
+      }
+    }
+
+    case ActionTypes.CLEAR_ROTA_CACHE: {
+      return {
+        ...state,
+        ...INITIAL_STATE,
       }
     }
 

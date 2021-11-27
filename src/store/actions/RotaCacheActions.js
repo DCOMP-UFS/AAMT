@@ -7,6 +7,7 @@ export const ActionTypes = {
   ENCERRAR_ROTA_REQUEST: "ENCERRAR_ROTA_REQUEST",
   SALVAR_ROTA: "SALVAR_ROTA",
   RESETAR_OPENMODAL: "RESETAR_OPENMODAL",
+  CLEAR_ROTA_CACHE: "CLEAR_ROTA_CACHE",
 }
 
 export const resetOpenModal = () => {
@@ -80,5 +81,15 @@ export const closeRouteRequest = ( trabalhoDiario_id, horaFim, vistorias ) => {
       horaFim,
       vistorias
     }
+  }
+}
+
+/**
+ * Limpa o cache da rota
+ * @returns 
+ */
+export const clearRotaCache = () => {
+  return {
+    type: ActionTypes.CLEAR_ROTA_CACHE
   }
 }

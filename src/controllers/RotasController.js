@@ -33,7 +33,7 @@ getRoute = async ( req, res ) => {
     include: {
       association: "atuacoes"
     }
-  });
+  } );
 
   let fl_agente = false;
   userRequest.atuacoes.forEach( at => {
@@ -42,18 +42,18 @@ getRoute = async ( req, res ) => {
   });
 
   if( fl_agente && parseInt( usuario_id ) !== userRequest.id )
-    return res.status(400).json({ error: "Acesso negado" });
+    return res.status( 400 ).json( { error: "Acesso negado" } );
 
   const usuario = await Usuario.findByPk( usuario_id );
 
   if( !usuario )
-    return res.status(400).json({ error: "Usuário não existe" });
-  // Fim validação
+    return res.status( 400 ).json( { error: "Usuário não existe" } );
 
-  const td = await TrabalhoDiario.findOne({
+  const td = await TrabalhoDiario.findOne( {
     where: {
       usuario_id: usuario.id,
-      data: `${ data }`
+      data:       `${ data }`,
+      horaFim:    null
     },
 
     include: {
@@ -72,12 +72,12 @@ getRoute = async ( req, res ) => {
         ]
       }
     }
-  });
+  } );
 
   if( !td )
-    return res.json({});
+    return res.json( {} );
 
-  let rota = await Quarteirao.findAll({
+  let rota = await Quarteirao.findAll( {
     include: {
       association: 'lados',
       include: [
@@ -93,7 +93,7 @@ getRoute = async ( req, res ) => {
         { association: 'rua' }
       ]
     }
-  });
+  } );
 
   const sequencia_usuario = await Atuacao.findOne( {
     where: {
@@ -107,9 +107,9 @@ getRoute = async ( req, res ) => {
     where: {
       id: td.equipe.atividade.municipio_id
     }
-  }).then(mun => mun.codigo);
+  } ).then( mun => mun.codigo );
 
-  rota = rota.filter( r => r.lados.length > 0);
+  rota = rota.filter( r => r.lados.length > 0 );
 
   let equipe = {
     id: td.equipe.id,
@@ -891,16 +891,59 @@ const consultarRotasPlanejadas = async ( req, res ) => {
   return res.json( atividadesSupervisor );
 }
 
+/**
+ * Verifica se a rota está finalizada
+ * @param {*} req 
+ * @param {*} res 
+ * @returns {Boolean}
+ */
+const isFinalizado = async ( req, res ) => {
+  const { trabalhoDiario_id } = req.params;
+  const userId                = req.userId;
+
+  // Validando
+  const td = await TrabalhoDiario.findByPk( trabalhoDiario_id );
+  if( !td ) 
+    res.status( 404 ).json( {
+      status  : 'error',
+      mensage : 'Trabalho diário informado não existe!'
+    } );
+
+  const userRequest = await Usuario.findByPk( userId, {
+    include: {
+      association: "atuacoes"
+    }
+  } );
+
+  let fl_agente = false;
+  userRequest.atuacoes.forEach( at => {
+    if( at.tipoPerfil === 4 )
+      fl_agente = true;
+  } );
+
+  if( fl_agente && td.usuario_id !== userRequest.id )
+    return res.status( 401 ).json( { 
+      status: 'error',
+      mensage: 'Acesso negado'
+    } );
+
+  if( td.horaFim === null )
+    res.json( false );
+
+  res.json( true );
+}
+
 const router = express.Router();
 router.use(authMiddleware);
 
-router.get('/:usuario_id/usuarios/:data/data', getRoute);
-router.get('/planejamento/:usuario_id/usuarios', getPlain);
-router.post('/planejamento', planejarRota);
-router.post('/iniciar', startRoute);
-router.post('/finalizar', endRoute);
-router.get('/check/:trabalhoDiario_id/trabalhoDiario', isStarted);
-router.get('/abertas/:equipe_id/equipes', getOpenRouteByTeam);
-router.get('/planejadas/:ciclo_id/ciclo/:usuario_id/supervisor', consultarRotasPlanejadas);
+router.get( '/:usuario_id/usuarios/:data/data', getRoute );
+router.get( '/planejamento/:usuario_id/usuarios', getPlain );
+router.post( '/planejamento', planejarRota );
+router.post( '/iniciar', startRoute );
+router.post( '/finalizar', endRoute );
+router.get( '/check/:trabalhoDiario_id/trabalhoDiario', isStarted );
+router.get( '/abertas/:equipe_id/equipes', getOpenRouteByTeam );
+router.get( '/planejadas/:ciclo_id/ciclo/:usuario_id/supervisor', consultarRotasPlanejadas );
+router.get( '/isFinalizado/:trabalhoDiario_id/trabalhoDiario', isFinalizado );
 
-module.exports = app => app.use('/rotas', router);
+module.exports = app => app.use( '/rotas', router );

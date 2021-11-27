@@ -7,7 +7,9 @@ class Vistoria extends Model {
       horaEntrada: DataTypes.TIME,
       pendencia: DataTypes.STRING,
       sequencia: DataTypes.INTEGER,
-      justificativa: DataTypes.STRING
+      justificativa: DataTypes.STRING,
+      tipoImovelVistoria: DataTypes.STRING,
+      responsavel: DataTypes.STRING
     }, {
       sequelize,
       tableName: 'vistorias'

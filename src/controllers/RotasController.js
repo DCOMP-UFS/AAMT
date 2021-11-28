@@ -500,7 +500,7 @@ endRoute = async ( req, res ) => {
       imovel_id:          vistoria.imovel.id,
       trabalho_diario_id: vistoria.trabalhoDiario_id,
       responsavel:        vistoria.imovel.responsavel,
-      tipoImovel:         vistoria.imovel.tipoImovel
+      tipoImovelVistoria: vistoria.imovel.tipoImovel
     } )
     .then( result => {
       vistoria.id = result.dataValues.id;
@@ -511,6 +511,8 @@ endRoute = async ( req, res ) => {
         numero:       vistoria.imovel.numero,
         sequencia:    vistoria.imovel.sequencia,
         complemento:  vistoria.imovel.complemento,
+        responsavel:  vistoria.imovel.responsavel,
+        tipoImovel:   vistoria.imovel.tipoImovel
       }, { 
         where: { id: vistoria.imovel.id } 
       } 

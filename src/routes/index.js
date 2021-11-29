@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import AuthRoutes from '../routes/authRoutes';
 import AgentRoutes from '../routes/agentRoutes';
+import SupRoutes from '../routes/supRoutes';
 
 const Agent = () => {
   return (
@@ -14,14 +15,14 @@ const Agent = () => {
   );
 };
 
-// const Sup = () => {
-//   return (
-//     <>
-//       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-//       <SupRoutes />
-//     </>
-//   );
-// };
+const Sup = () => {
+  return (
+    <>
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      <SupRoutes />
+    </>
+  );
+};
 
 const routes = ({ signed, profile }) => {
   if (signed) {
@@ -33,8 +34,7 @@ const routes = ({ signed, profile }) => {
       case 2:
         break;
       case 3:
-        // return <SupRoutes />;
-        break;
+        return <Sup />;
       case 4:
         return <Agent />;
       default:

@@ -60,10 +60,10 @@ const index = () => {
       <Provider store={store}>
         <PersistGate persistor={persistor}>
           <NavigationContainer
-            initialState={initialState}
-            onStateChange={state =>
-              AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))
-            }
+          // initialState={initialState}
+          // onStateChange={state =>
+          //   AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))
+          // }
           >
             <Routes />
           </NavigationContainer>

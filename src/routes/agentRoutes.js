@@ -17,6 +17,8 @@ import StatusInspectionForm from '../pages/Agent/Inspections/InspectionForm/Stat
 import RecipientList from '../pages/Agent/Inspections/InspectionForm/RecipientList';
 import RecipientForm from '../pages/Agent/Inspections/InspectionForm/RecipientForm';
 
+import ReportStack from './reportRoutes';
+
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -90,6 +92,11 @@ const AgentDrawer = () => {
       }}
     >
       <Drawer.Screen name="Planejamento do dia" component={DailyWorkStack} />
+      <Drawer.Screen
+        name="Relatórios"
+        component={ReportStack}
+        options={{ headerShown: false }}
+      />
       <Drawer.Screen
         name="Perfil"
         component={Profile}

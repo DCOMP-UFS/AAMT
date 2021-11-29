@@ -1,4 +1,4 @@
-import { ActionTypes } from '../actions/MunicipioActions';
+import { ActionTypes } from './municipioActions';
 
 const INITIAL_STATE = {
   municipio: {},

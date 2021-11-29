@@ -11,12 +11,11 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { createCityRequest, clearCreateCity } from '../../../store/actions/MunicipioActions';
+import { createCityRequest, clearCreateCity, getCityByRegionalHealthRequest } from '../../../store/Municipio/municipioActions';
 import { getNationsRequest } from '../../../store/actions/PaisActions';
 import { GetRegionsByNationRequest } from '../../../store/actions/RegiaoActions';
 import { GetStatesByRegionRequest } from '../../../store/Estado/estadoActions';
 import { getRegionalHealthByStateRequest } from '../../../store/actions/RegionalSaudeActions';
-import { getCityByRegionalHealthRequest } from '../../../store/actions/MunicipioActions';
 
 // STYLES
 import { ContainerArrow } from '../../../styles/util';

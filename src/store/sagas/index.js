@@ -2,7 +2,6 @@ import { all, takeLatest, takeEvery } from 'redux-saga/effects';
 
 import { ActionTypes as AppConfig } from '../AppConfig/appConfigActions';
 import { ActionTypes as UserActions } from '../actions/UsuarioActions';
-import { ActionTypes as MunicipioActions } from '../actions/MunicipioActions';
 import { ActionTypes as PaisActions } from '../actions/PaisActions';
 import { ActionTypes as RegiaoActions } from '../actions/RegiaoActions';
 import { ActionTypes as RegionalSaudeActions } from '../actions/RegionalSaudeActions';
@@ -29,7 +28,6 @@ import {
   getUsersByRegional,
   getUsersByCity
 } from './UsuarioSagas';
-import { getMunicipios, createCity, updateCity, getCityById, getCityByRegionalHealth } from './MunicipioSagas';
 import { getNations } from './PaisSagas';
 import { GetRegionsByNation } from './RegiaoSagas';
 import { getRegionalHealthByState } from './RegionalSaudeSagas';
@@ -58,6 +56,7 @@ import { zonaSaga } from '../Zona/zonaSagas';
 import { imovelSaga } from '../Imovel/imovelSagas';
 import { localidadeSaga } from '../Localidade/localidadeSagas';
 import { metodologiaSaga } from '../Metodologia/metodologiaSagas';
+import { municipioSaga } from '../Municipio/municipioSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -73,11 +72,7 @@ export default function* rootSaga() {
     takeLatest( UserActions.UPDATE_USUARIO_REQUEST, updateUsuario ),
 
     //Gerir Município
-    takeLatest( MunicipioActions.GET_MUNICIPIOS_REQUEST, getMunicipios ),
-    takeLatest( MunicipioActions.GET_CITY_BY_ID_REQUEST, getCityById ),
-    takeLatest( MunicipioActions.GET_CITY_BY_REGIONAL_HEALTH_REQUEST, getCityByRegionalHealth ),
-    takeLatest( MunicipioActions.CREATE_CITY_REQUEST, createCity ),
-    takeLatest( MunicipioActions.UPDATE_CITY_REQUEST, updateCity ),
+    municipioSaga(),
 
     // Gerir Localidade
     localidadeSaga(),

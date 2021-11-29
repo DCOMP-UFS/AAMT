@@ -12,7 +12,7 @@ import ButtonSave from '../../../../components/ButtonSave';
 import { changeSidebar } from '../../../../store/actions/sidebarCoordGeral';
 import { getMethodologiesRequest } from '../../../../store/Metodologia/metodologiaActions';
 import { getAllowedCyclesRequest } from '../../../../store/Ciclo/cicloActions';
-import { getCityByRegionalHealthRequest } from '../../../../store/actions/MunicipioActions';
+import { getCityByRegionalHealthRequest } from '../../../../store/Municipio/municipioActions';
 import { createActiveRequest } from '../../../../store/Atividade/atividadeActions';
 
 // STYLES

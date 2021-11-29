@@ -18,7 +18,7 @@ import { connect } from 'react-redux';
 import { changeSidebar } from '../../../store/actions/sidebarCoordGeral';
 import { changeTableSelected } from '../../../store/actions/supportInfo';
 import { clearToast } from '../../../store/AppConfig/appConfigActions';
-import { getMunicipiosRequest, changeCityEditIndex } from '../../../store/actions/MunicipioActions';
+import { getMunicipiosRequest, changeCityEditIndex } from '../../../store/Municipio/municipioActions';
 
 // STYLES
 import { GlobalStyle } from './styles';

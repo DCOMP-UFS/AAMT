@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebarCoordGeral';
-import { updateCityRequest, getCityByIdRequest, clearUpdateCity } from '../../../store/actions/MunicipioActions';
+import { updateCityRequest, getCityByIdRequest, clearUpdateCity } from '../../../store/Municipio/municipioActions';
 import { getLocationByCityRequest } from '../../../store/Localidade/localidadeActions';
 import { getNationsRequest } from '../../../store/actions/PaisActions';
 import { GetRegionsByNationRequest } from '../../../store/actions/RegiaoActions';

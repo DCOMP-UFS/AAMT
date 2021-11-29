@@ -18,7 +18,6 @@ import { ActionTypes as TrabalhoDiarioActions } from '../actions/trabalhoDiario'
 
 // Nova Estrutura
 import { ActionTypes as NW_RotaActions } from '../Rota/rotaActions';
-import { ActionTypes as NW_AmostraActions } from '../Amostra/amostraActions';
 import { ActionTypes as NW_LaboratorioActions } from '../Laboratorio/laboratorioActions';
 import { ActionTypes as NW_MosquitoActions } from '../Mosquito/mosquitoActions';
 import { ActionTypes as NW_ImovelActions } from '../Imovel/imovelActions';
@@ -52,7 +51,6 @@ import * as TrabalhoDiarioSagas from './TrabalhoDiarioSagas';
 
 // Nova Estrutura
 import * as NW_RotaSagas from '../Rota/rotaSagas';
-import * as NW_AmostraSagas from '../Amostra/amostraSagas';
 import * as NW_LaboratorioSagas from '../Laboratorio/laboratorioSagas';
 import * as NW_MosquitoSagas from '../Mosquito/mosquitoSagas';
 import * as NW_ImovelSagas from '../Imovel/imovelSagas';
@@ -65,6 +63,7 @@ import { quarteiraoSaga } from '../Quarteirao/quarteiraoSagas';
 import { rotaSaga } from '../Rota/rotaSagas';
 import { atividadeSaga } from '../Atividade/atividadeSagas';
 import { cicloSaga } from '../Ciclo/cicloSagas';
+import { amostraSaga } from '../Amostra/amostraSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -156,9 +155,7 @@ export default function* rootSaga() {
     takeLatest( NW_TrabalhoActions.GET_TRABALHOS_USUARIO_REQUEST, NW_TrabalhoSagas.getTrabalhosUsuario ),
 
     // Gerir Amostra
-    takeLatest( NW_AmostraActions.GET_AMOSTRAS_REQUEST, NW_AmostraSagas.getAmostras ),
-    takeLatest( NW_AmostraActions.ENVIAR_AMOSTRAS_REQUEST, NW_AmostraSagas.enviarAmostras ),
-    takeLatest( NW_AmostraActions.REGISTRAR_EXAME_REQUEST, NW_AmostraSagas.registrarExame ),
+    amostraSaga(),
 
     // Gerir Laboratório
     takeLatest( NW_LaboratorioActions.GET_LABORATORIOS_REQUEST, NW_LaboratorioSagas.getLaboratorios ),

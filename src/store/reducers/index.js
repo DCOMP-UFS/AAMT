@@ -27,7 +27,7 @@ import vistoriaCache from './VistoriaCache';
 import nw_vistoria from '../Vistoria/vistoriaReduce';
 import atividade from '../Atividade/atividadeReduce';
 import nw_rota from '../Rota/rotaReduce';
-import nw_amostra from '../Amostra/amostraReduce';
+import amostra from '../Amostra/amostraReduce';
 import nw_laboratorio from '../Laboratorio/laboratorioReduce';
 import nw_mosquito from '../Mosquito/mosquitoReduce';
 import nw_imovel from '../Imovel/imovelReduce';
@@ -38,7 +38,7 @@ import nw_relatorio from '../Relatorio/relatorioReduce';
 import nw_equipe from '../Equipe/equipeReduce';
 import nw_rua from '../Rua/ruaReduce';
 
-export default combineReducers({
+export default combineReducers( {
   sidebarCoordGeral,
   sidebar,
   sidebarLab,
@@ -67,7 +67,7 @@ export default combineReducers({
   nw_vistoria,
   atividade,
   nw_rota,
-  nw_amostra,
+  amostra,
   nw_laboratorio,
   nw_mosquito,
   nw_imovel,
@@ -76,4 +76,4 @@ export default combineReducers({
   nw_relatorio,
   nw_equipe,
   nw_rua
-});
+} );

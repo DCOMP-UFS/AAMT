@@ -1,16 +1,11 @@
-import { call, put } from 'redux-saga/effects';
-import {
-  getAmostrasRequest,
-  enviarAmostrasRequest,
-  registrarExameRequest
-} from '../../services/requests/Amostra';
-
+import { takeLatest, call, put, all } from 'redux-saga/effects';
+import * as servico from '../../services/requests/Amostra';
 import * as AmostraActions from './amostraActions';
 import * as AppConfigActions from '../actions/appConfig';
 
 export function* getAmostras( action ) {
   try {
-    const { data, status } = yield call( getAmostrasRequest, action.payload );
+    const { data, status } = yield call( servico.getAmostrasRequest, action.payload );
 
     if( status === 200 ) {
       yield put( AmostraActions.setAmostras( data ) );
@@ -25,7 +20,7 @@ export function* getAmostras( action ) {
 
 export function* enviarAmostras( action ) {
   try {
-    const { status } = yield call( enviarAmostrasRequest, action.payload );
+    const { status } = yield call( servico.enviarAmostrasRequest, action.payload );
 
     if( status === 200 ) {
       document.location.reload();
@@ -40,7 +35,7 @@ export function* enviarAmostras( action ) {
 
 export function* registrarExame( action ) {
   try {
-    const { status } = yield call( registrarExameRequest, action.payload );
+    const { status } = yield call( servico.registrarExameRequest, action.payload );
 
     if( status === 200 ) {
       document.location.reload();
@@ -51,4 +46,24 @@ export function* registrarExame( action ) {
   } catch (error) {
     yield put( AppConfigActions.showNotifyToast( "Erro ao registar exame", "error" ) );
   }
+}
+
+function* watchGetAmostras() {
+  yield takeLatest( AmostraActions.ActionTypes.GET_AMOSTRAS_REQUEST, getAmostras );
+}
+
+function* watchEnviarAmostras() {
+  yield takeLatest( AmostraActions.ActionTypes.ENVIAR_AMOSTRAS_REQUEST, enviarAmostras );
+}
+
+function* watchRegistrarExame() {
+  yield takeLatest( AmostraActions.ActionTypes.REGISTRAR_EXAME_REQUEST, registrarExame );
+}
+
+export function* amostraSaga() {
+  yield all( [
+    watchGetAmostras(),
+    watchEnviarAmostras(),
+    watchRegistrarExame(),
+  ] );
 }

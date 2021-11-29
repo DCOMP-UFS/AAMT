@@ -81,32 +81,29 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
     }
   };
 
-  useEffect(() => {
+  useEffect( () => {
     props.changeSidebar( 3, 1 );
     props.getAmostrasRequest( usuario.id );
     props.getLaboratoriosRequest( usuario.municipio.id );
-  }, []);
+  }, [] );
 
   useEffect(() => {
     if( laboratorios.length > 0 ) {
-      setLaboratoriosOptions( laboratorios.map( lab => ({
+      setLaboratoriosOptions( laboratorios.map( lab => ( {
         value: lab.id, label: lab.nome
-      })));
+      } ) ) );
     }
   }, [ laboratorios ]);
 
-  useEffect(() => {
+  useEffect( () => {
     let r = rows;
 
     r = amostras.map( ( amostra, index ) => {
-      const seqAmostra      = amostra.sequencia,
-            seqDeposito     = amostra.deposito.sequencia,
-            seqVistoria     = amostra.vistoria.sequencia,
-            trabalhoDiario  = amostra.trabalhoDiario,
-            ciclo           = amostra.ciclo,
-            metodologia     = amostra.atividade.metodologia,
-            objetivo        = amostra.atividade.objetivo,
-            data            = trabalhoDiario.data.split( '-' );
+      const trabalhoDiario  = amostra.trabalhoDiario;
+      const ciclo           = amostra.ciclo;
+      const metodologia     = amostra.atividade.metodologia;
+      const objetivo        = amostra.atividade.objetivo;
+      const data            = trabalhoDiario.data.split( '-' );
 
       let situacaoAmostra = '';
       if( amostra.situacaoAmostra === 1 )
@@ -119,7 +116,7 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
         situacaoAmostra = 'Negativa';
 
       return [
-        `${ data[ 2 ] + data[ 1 ] + data[ 0 ] }.1.${ seqVistoria }.${ seqDeposito }.${ seqAmostra }`,
+        amostra.codigo,
         `${ data[ 2 ] }/${ data[ 1 ] }/${ data[ 0 ] }`,
         metodologia.sigla,
         objetivo.sigla,
@@ -135,10 +132,10 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
           </IconButton>
         </Tooltip>,
       ]
-    });
+    } );
 
     setRows( r );
-  }, [ amostras ]);
+  }, [ amostras ] );
 
   const handlerSample = index => {
     props.setAmostra( amostras[ index ] );
@@ -203,11 +200,11 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
   );
 }
 
-const mapStateToProps = state => ({
-  usuario: state.appConfig.usuario,
-  amostras: state.nw_amostra.amostras,
+const mapStateToProps = state => ( {
+  usuario     : state.appConfig.usuario,
+  amostras    : state.amostra.amostras,
   laboratorios: state.nw_laboratorio.laboratorios
-})
+} );
 
 const mapDispatchToProps = {
   changeSidebar,
@@ -220,4 +217,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)( Amostras )
+)( Amostras );

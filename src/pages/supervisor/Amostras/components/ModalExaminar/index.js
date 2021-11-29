@@ -366,10 +366,10 @@ export const ModalExaminar = ({ mosquitos, amostra, ...props }) => {
   )
 }
 
-const mapStateToProps = state => ({
-  amostra: state.nw_amostra.amostra,
-  mosquitos: state.nw_mosquito.mosquitos,
-})
+const mapStateToProps = state => ( {
+  amostra   : state.amostra.amostra,
+  mosquitos : state.nw_mosquito.mosquitos,
+} );
 
 const mapDispatchToProps = {
   registrarExameRequest,

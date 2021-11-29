@@ -156,7 +156,7 @@ function SelecionarImovel({ rota, vistoria, ...props }) {
 
 const mapStateToProps = state => ({
   rota: state.rotaCache.rota,
-  vistoria: state.nw_vistoria,
+  vistoria: state.vistoria,
 });
 
 const mapDispatchToProps = dispatch =>

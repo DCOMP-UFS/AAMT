@@ -1,4 +1,4 @@
-import { ActionTypes } from '../actions/RotaCacheActions';
+import { ActionTypes } from './rotaCacheActions';
 
 const INITIAL_STATE = {
   fl_iniciada: false,
@@ -7,7 +7,7 @@ const INITIAL_STATE = {
   rota: []
 }
 
-export default function Rota( state = INITIAL_STATE, action ) {
+export default function RotaCache( state = INITIAL_STATE, action ) {
   switch (action.type) {
     case ActionTypes.RESETAR_OPENMODAL: {
       return {

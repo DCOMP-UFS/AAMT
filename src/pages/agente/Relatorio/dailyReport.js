@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebarAgente';
 import { getDailyWorkByIdRequest } from '../../../store/actions/trabalhoDiario';
-import { getInspectsByDailyWorkRequest } from '../../../store/actions/VistoriaActions';
+import { getInspectsByDailyWorkRequest } from '../../../store/Vistoria/vistoriaActions';
 
 // STYLES
 import { Color } from '../../../styles/global';

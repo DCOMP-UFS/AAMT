@@ -145,8 +145,8 @@ export const MapaRotas = ({ rotas_planejadas, fl_carregando_rota, ...props }) =>
 }
 
 const mapStateToProps = state => ({
-  rotas_planejadas: state.nw_rota.rotas_planejadas,
-  fl_carregando_rota: state.nw_rota.fl_carregando_rota
+  rotas_planejadas: state.rota.rotas_planejadas,
+  fl_carregando_rota: state.rota.fl_carregando_rota
 })
 
 const mapDispatchToProps = {

@@ -251,7 +251,7 @@ const mapStateToProps = (state) => ({
   indexMembro       : state.atividade.indexMembro,
   equipes           : state.atividade.equipes,
   indexEquipe       : state.atividade.indexEquipe,
-  fl_rota_planejada : state.nw_rota.fl_rota_planejada,
+  fl_rota_planejada : state.rota.fl_rota_planejada,
   rota_equipe       : state.atividade.rota_equipe,
 });
 

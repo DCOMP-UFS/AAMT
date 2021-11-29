@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 // ACTIONS
 import { showNotifyToast } from '../../../../../store/AppConfig/appConfigActions';
 import { addUnidade } from '../../../../../store/actions/supportInfo';
-import { atualizarRecipiente } from '../../../../../store/actions/VistoriaActions';
+import { atualizarRecipiente } from '../../../../../store/Vistoria/vistoriaActions';
 
 // STYLES
 import {

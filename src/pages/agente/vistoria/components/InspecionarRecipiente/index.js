@@ -11,7 +11,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { removerRecipiente, changeUpdatedIndex, changeDuplicatorIndex } from '../../../../../store/actions/VistoriaActions';
+import { removerRecipiente, changeUpdatedIndex, changeDuplicatorIndex } from '../../../../../store/Vistoria/vistoriaActions';
 
 // STYLES
 import {

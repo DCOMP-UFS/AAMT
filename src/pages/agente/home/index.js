@@ -18,11 +18,16 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebarAgente';
-import { getRouteRequest, isStartedRequest, resetOpenModal } from '../../../store/actions/RotaActions';
 import { showNotifyToast } from '../../../store/AppConfig/appConfigActions';
-import { resetShowNotStarted, clearInspection } from '../../../store/actions/VistoriaCacheActions';
-import { clearRotaCache } from '../../../store/actions/RotaCacheActions';
-import { isFinalizadoRequest, setIsFinalizado } from '../../../store/Rota/rotaActions';
+import { resetShowNotStarted, clearInspection } from '../../../store/VistoriaCache/vistoriaCacheActions';
+import { clearRotaCache } from '../../../store/RotaCache/rotaCacheActions';
+import {
+  isFinalizadoRequest,
+  setIsFinalizado,
+  getRouteRequest,
+  isStartedRequest,
+  resetOpenModal
+} from '../../../store/Rota/rotaActions';
 
 // STYLES
 import { Button } from '../../../styles/global';
@@ -387,7 +392,7 @@ const mapStateToProps = state => ( {
   openModal:      state.rota.openModal,
   showNotStarted: state.vistoriaCache.showNotStarted,
   vistorias:      state.vistoriaCache.vistorias,
-  isFinalizado:   state.nw_rota.isFinalizado,
+  isFinalizado:   state.rota.isFinalizado,
 } );
 
 const mapDispatchToProps = dispatch =>

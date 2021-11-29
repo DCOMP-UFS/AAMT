@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTION
-import { setQuarteiraoSelect, setImovelSelected } from '../../../../../store/actions/VistoriaActions';
+import { setQuarteiraoSelect, setImovelSelected } from '../../../../../store/Vistoria/vistoriaActions';
 
 // ENUMERATE
 import { tipoImovel as tipoImovelEnum } from '../../../../../config/enumerate';

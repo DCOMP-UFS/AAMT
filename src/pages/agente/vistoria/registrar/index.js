@@ -164,7 +164,7 @@ function RegistrarVistoria({ vistoria, trabalhoDiario, ...props }) {
 
 const mapStateToProps = state => ({
   trabalhoDiario: state.rotaCache.trabalhoDiario,
-  vistoria: state.nw_vistoria
+  vistoria: state.vistoria
 });
 
 const mapDispatchToProps = dispatch =>

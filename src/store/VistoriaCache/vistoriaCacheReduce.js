@@ -1,4 +1,4 @@
-import { ActionTypes } from '../actions/VistoriaCacheActions';
+import { ActionTypes } from './vistoriaCacheActions';
 
 const INITIAL_STATE = {
   vistorias: [],

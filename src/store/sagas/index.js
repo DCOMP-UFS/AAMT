@@ -3,12 +3,9 @@ import { all, takeLatest, takeEvery } from 'redux-saga/effects';
 import { ActionTypes as AppConfig } from '../AppConfig/appConfigActions';
 import { ActionTypes as UserActions } from '../actions/UsuarioActions';
 import { ActionTypes as RuaActions } from '../actions/RuaActions';
-import { ActionTypes as RotaActions } from '../actions/RotaActions';
-import { ActionTypes as VistoriaActions } from '../actions/VistoriaActions';
 import { ActionTypes as TrabalhoDiarioActions } from '../actions/trabalhoDiario';
 
 // Nova Estrutura
-import { ActionTypes as NW_RotaActions } from '../Rota/rotaActions';
 import { ActionTypes as NW_LaboratorioActions } from '../Laboratorio/laboratorioActions';
 import { ActionTypes as NW_MosquitoActions } from '../Mosquito/mosquitoActions';
 import { ActionTypes as NW_TrabalhoActions } from '../TrabalhoDiario/trabalhoDiarioActions';
@@ -26,12 +23,9 @@ import {
   getUsersByCity
 } from './UsuarioSagas';
 import { getStreetByLocality, createStreet, updateStreet, deleteStreet } from './RuaSagas';
-import * as RotaSagas from './RotaSagas';
-import * as VistoriaSagas from './VistoriaSagas';
 import * as TrabalhoDiarioSagas from './TrabalhoDiarioSagas';
 
 // Nova Estrutura
-import * as NW_RotaSagas from '../Rota/rotaSagas';
 import * as NW_LaboratorioSagas from '../Laboratorio/laboratorioSagas';
 import * as NW_MosquitoSagas from '../Mosquito/mosquitoSagas';
 import * as NW_TrabalhoSagas from '../TrabalhoDiario/trabalhoDiarioSagas';
@@ -54,6 +48,7 @@ import { municipioSaga } from '../Municipio/municipioSagas';
 import { paisSaga } from '../Pais/paisSagas';
 import { regiaoSaga } from '../Regiao/regiaoSagas';
 import { regionalSaudeSaga } from '../RegionalSaude/regionalSaudeSagas';
+import { vistoriaSaga } from '../Vistoria/vistoriaSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -111,20 +106,10 @@ export default function* rootSaga() {
     atividadeSaga(),
     
     // Gerir Rotas
-    takeLatest( RotaActions.GET_ROUTE_REQUEST, RotaSagas.getRoute ),
-    takeLatest( RotaActions.CHECK_ROTA_INICIADA_REQUEST, RotaSagas.isStarted ),
-    takeLatest( RotaActions.INICIAR_ROTA_REQUEST, RotaSagas.startRoute ),
-    takeLatest( RotaActions.ENCERRAR_ROTA_REQUEST, RotaSagas.closeRoute ),
-
     rotaSaga(),
 
-    // Nova Estrutura
-    takeLatest( NW_RotaActions.PLANEJAR_ROTA_REQUEST, NW_RotaSagas.planejarRota ),
-    takeLatest( NW_RotaActions.GET_ROTAS_PLANEJADAS_REQUEST, NW_RotaSagas.getRotasPlanejadas ),
-
     // Gerir Vistoria
-    takeLatest( VistoriaActions.CONSULTAR_VISTORIAS_REQUEST, VistoriaSagas.getInspects ),
-    takeLatest( VistoriaActions.GET_INSPECTS_BY_DAILY_WORK_REQUEST, VistoriaSagas.getInspectsByDailyWork ),
+    vistoriaSaga(),
 
     // Gerir Trabalho Diario
     takeLatest( TrabalhoDiarioActions.GET_BY_USER_REQUEST, TrabalhoDiarioSagas.getByUser ),

@@ -137,7 +137,7 @@ function AlterarImovel({ vistoria, ...props }) {
 }
 
 const mapStateToProps = state => ({
-  vistoria: state.nw_vistoria
+  vistoria: state.vistoria
 });
 
 const mapDispatchToProps = dispatch =>

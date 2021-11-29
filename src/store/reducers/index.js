@@ -19,13 +19,11 @@ import usuario from './Usuario';
 import zona from '../Zona/zonaReduce';
 import metodologia from '../Metodologia/metodologiaReduce';
 import sidebarAgente from './sidebarAgente';
-import rota from './Rota';
-import rotaCache from './RotaCache';
-import vistoria from './Vistoria';
-import vistoriaCache from './VistoriaCache';
-import nw_vistoria from '../Vistoria/vistoriaReduce';
+import rota from '../Rota/rotaReduce';
+import rotaCache from '../RotaCache/rotaCacheReduce';
+import vistoriaCache from '../VistoriaCache/vistoriaCacheReduce';
+import vistoria from '../Vistoria/vistoriaReduce';
 import atividade from '../Atividade/atividadeReduce';
-import nw_rota from '../Rota/rotaReduce';
 import amostra from '../Amostra/amostraReduce';
 import nw_laboratorio from '../Laboratorio/laboratorioReduce';
 import nw_mosquito from '../Mosquito/mosquitoReduce';
@@ -63,9 +61,7 @@ export default combineReducers( {
   rotaCache,
   vistoria,
   vistoriaCache,
-  nw_vistoria,
   atividade,
-  nw_rota,
   amostra,
   nw_laboratorio,
   nw_mosquito,

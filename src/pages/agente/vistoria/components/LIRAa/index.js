@@ -14,8 +14,8 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { showNotifyToast } from '../../../../../store/AppConfig/appConfigActions';
-import { addVistoria, updateInspection } from '../../../../../store/actions/VistoriaCacheActions';
-import { setRecipient, setSequenceInspection, setImmobile } from '../../../../../store/actions/VistoriaActions';
+import { addVistoria, updateInspection } from '../../../../../store/VistoriaCache/vistoriaCacheActions';
+import { setRecipient, setSequenceInspection, setImmobile } from '../../../../../store/Vistoria/vistoriaActions';
 
 // STYLES
 import { Separator, selectDefault } from '../../../../../styles/global';

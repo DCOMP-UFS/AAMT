@@ -7,7 +7,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { deletarVistoria } from '../../../store/actions/VistoriaCacheActions';
+import { deletarVistoria } from '../../../store/VistoriaCache/vistoriaCacheActions';
 
 // STYLES
 import { Button } from '../../../styles/global';

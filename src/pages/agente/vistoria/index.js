@@ -19,8 +19,8 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebarAgente';
-import { getRouteRequest } from '../../../store/actions/RotaActions';
-import { resetHandleSave, routeNotStarted } from '../../../store/actions/VistoriaCacheActions';
+import { getRouteRequest } from '../../../store/Rota/rotaActions';
+import { resetHandleSave, routeNotStarted } from '../../../store/VistoriaCache/vistoriaCacheActions';
 import { changeTableSelected } from '../../../store/actions/supportInfo';
 import { isFinalizadoRequest } from '../../../store/Rota/rotaActions';
 
@@ -365,7 +365,7 @@ const mapStateToProps = state => ( {
   vistorias     : state.vistoriaCache.vistorias,
   showNotStarted: state.vistoriaCache.showNotStarted,
   reload        : state.vistoriaCache.reload,
-  isFinalizado  : state.nw_rota.isFinalizado,
+  isFinalizado  : state.rota.isFinalizado,
 } );
 
 const mapDispatchToProps = dispatch =>

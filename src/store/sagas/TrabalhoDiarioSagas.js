@@ -5,7 +5,7 @@ import {
 } from '../../services/requests/TrabalhoDiario';
 
 import * as TrabalhoDiarioActions from '../actions/trabalhoDiario';
-import * as VistoriaActions from '../actions/VistoriaActions';
+import * as VistoriaActions from '../Vistoria/vistoriaActions';
 import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getByUser( action ) {

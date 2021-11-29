@@ -2,7 +2,6 @@ import { all, takeLatest, takeEvery } from 'redux-saga/effects';
 
 import { ActionTypes as AppConfig } from '../AppConfig/appConfigActions';
 import { ActionTypes as UserActions } from '../actions/UsuarioActions';
-import { ActionTypes as RegionalSaudeActions } from '../actions/RegionalSaudeActions';
 import { ActionTypes as RuaActions } from '../actions/RuaActions';
 import { ActionTypes as RotaActions } from '../actions/RotaActions';
 import { ActionTypes as VistoriaActions } from '../actions/VistoriaActions';
@@ -26,7 +25,6 @@ import {
   getUsersByRegional,
   getUsersByCity
 } from './UsuarioSagas';
-import { getRegionalHealthByState } from './RegionalSaudeSagas';
 import { getStreetByLocality, createStreet, updateStreet, deleteStreet } from './RuaSagas';
 import * as RotaSagas from './RotaSagas';
 import * as VistoriaSagas from './VistoriaSagas';
@@ -55,6 +53,7 @@ import { metodologiaSaga } from '../Metodologia/metodologiaSagas';
 import { municipioSaga } from '../Municipio/municipioSagas';
 import { paisSaga } from '../Pais/paisSagas';
 import { regiaoSaga } from '../Regiao/regiaoSagas';
+import { regionalSaudeSaga } from '../RegionalSaude/regionalSaudeSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -91,7 +90,7 @@ export default function* rootSaga() {
     estadoSaga(),
 
     // Gerir Regionais de Saúde
-    takeLatest( RegionalSaudeActions.GET_REGIONAL_HEALTH_BY_STATE_REQUEST, getRegionalHealthByState ),
+    regionalSaudeSaga(),
 
     // Gerir Quarteirão
     quarteiraoSaga(),

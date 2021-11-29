@@ -1,4 +1,4 @@
-import { ActionTypes } from '../actions/RegionalSaudeActions';
+import { ActionTypes } from './regionalSaudeActions';
 
 const INITIAL_STATE = {
   regionaisSaude: []

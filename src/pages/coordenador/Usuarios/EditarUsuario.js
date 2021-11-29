@@ -16,7 +16,7 @@ import { updateUsuarioRequest, getUsuarioByIdRequest, clearUpdateUser } from '..
 import { getNationsRequest } from '../../../store/Pais/paisActions';
 import { GetRegionsByNationRequest } from '../../../store/Regiao/regiaoActions';
 import { GetStatesByRegionRequest } from '../../../store/Estado/estadoActions';
-import { getRegionalHealthByStateRequest } from '../../../store/actions/RegionalSaudeActions';
+import { getRegionalHealthByStateRequest } from '../../../store/RegionalSaude/regionalSaudeActions';
 import { getCityByRegionalHealthRequest } from '../../../store/Municipio/municipioActions';
 
 // STYLES

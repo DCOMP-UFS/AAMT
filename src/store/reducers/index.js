@@ -7,7 +7,7 @@ import localidade from '../Localidade/localidadeReduce';
 import municipio from '../Municipio/municipioReduce';
 import pais from '../Pais/paisReduce';
 import regiao from '../Regiao/regiaoReduce';
-import regionalSaude from './RegionalSaude';
+import regionalSaude from '../RegionalSaude/regionalSaudeReduce';
 import rua from './Rua';
 import sidebar from './sidebar';
 import sidebarCoordGeral from './sidebarCoordGeral';

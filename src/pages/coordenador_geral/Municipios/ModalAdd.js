@@ -15,7 +15,7 @@ import { createCityRequest, clearCreateCity, getCityByRegionalHealthRequest } fr
 import { getNationsRequest } from '../../../store/Pais/paisActions';
 import { GetRegionsByNationRequest } from '../../../store/Regiao/regiaoActions';
 import { GetStatesByRegionRequest } from '../../../store/Estado/estadoActions';
-import { getRegionalHealthByStateRequest } from '../../../store/actions/RegionalSaudeActions';
+import { getRegionalHealthByStateRequest } from '../../../store/RegionalSaude/regionalSaudeActions';
 
 // STYLES
 import { ContainerArrow } from '../../../styles/util';

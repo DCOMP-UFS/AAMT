@@ -17,7 +17,7 @@ import { getLocationByCityRequest } from '../../../store/Localidade/localidadeAc
 import { getNationsRequest } from '../../../store/Pais/paisActions';
 import { GetRegionsByNationRequest } from '../../../store/Regiao/regiaoActions';
 import { GetStatesByRegionRequest } from '../../../store/Estado/estadoActions';
-import { getRegionalHealthByStateRequest } from '../../../store/actions/RegionalSaudeActions';
+import { getRegionalHealthByStateRequest } from '../../../store/RegionalSaude/regionalSaudeActions';
 
 // STYLES
 import { FormGroup, selectDefault } from '../../../styles/global';

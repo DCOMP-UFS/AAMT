@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/SidebarAgente/sidebarAgenteActions';
-import { getDailyWorkByIdRequest } from '../../../store/actions/trabalhoDiario';
+import { getDailyWorkByIdRequest } from '../../../store/TrabalhoDiario/trabalhoDiarioActions';
 import { getInspectsByDailyWorkRequest } from '../../../store/Vistoria/vistoriaActions';
 
 // STYLES

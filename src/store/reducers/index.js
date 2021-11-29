@@ -13,7 +13,6 @@ import sidebarCoordGeral from '../SidebarCoordGeral/sidebarCoordGeralReduce';
 import sidebarLab from '../SidebarLab/sidebarLabReduce';
 import sidebarSupervisor from '../SidebarSupervisor/sidebarSupervisorReduce';
 import supportInfo from '../SupportInfo/supportInfoReduce';
-import trabalhoDiario from './trabalhoDiario';
 import usuario from './Usuario';
 import zona from '../Zona/zonaReduce';
 import metodologia from '../Metodologia/metodologiaReduce';
@@ -29,7 +28,7 @@ import nw_mosquito from '../Mosquito/mosquitoReduce';
 import imovel from '../Imovel/imovelReduce';
 import quarteirao from '../Quarteirao/quarteiraoReduce';
 import ciclo from '../Ciclo/cicloReduce';
-import nw_trabalho from '../TrabalhoDiario/trabalhoDiarioReduce';
+import trabalhoDiario from '../TrabalhoDiario/trabalhoDiarioReduce';
 import nw_relatorio from '../Relatorio/relatorioReduce';
 import nw_equipe from '../Equipe/equipeReduce';
 import rua from '../Rua/ruaReduce';
@@ -65,7 +64,6 @@ export default combineReducers( {
   nw_laboratorio,
   nw_mosquito,
   quarteirao,
-  nw_trabalho,
   nw_relatorio,
   nw_equipe,
 } );

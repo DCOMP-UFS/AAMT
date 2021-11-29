@@ -48,7 +48,7 @@ export const ModalTrabalhoDiario = ({ trabalhos, id, title, ...props }) => {
 }
 
 const mapStateToProps = state => ({
-  trabalhos: state.nw_trabalho.trabalhos
+  trabalhos: state.trabalhoDiario.trabalhos
 });
 
 const mapDispatchToProps = {

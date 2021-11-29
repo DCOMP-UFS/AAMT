@@ -2,12 +2,10 @@ import { all, takeLatest, takeEvery } from 'redux-saga/effects';
 
 import { ActionTypes as AppConfig } from '../AppConfig/appConfigActions';
 import { ActionTypes as UserActions } from '../actions/UsuarioActions';
-import { ActionTypes as TrabalhoDiarioActions } from '../actions/trabalhoDiario';
 
 // Nova Estrutura
 import { ActionTypes as NW_LaboratorioActions } from '../Laboratorio/laboratorioActions';
 import { ActionTypes as NW_MosquitoActions } from '../Mosquito/mosquitoActions';
-import { ActionTypes as NW_TrabalhoActions } from '../TrabalhoDiario/trabalhoDiarioActions';
 import { ActionTypes as NW_RelatorioActions } from '../Relatorio/relatorioActions';
 import { ActionTypes as NW_EquipeActions } from '../Equipe/equipeActions';
 
@@ -20,12 +18,10 @@ import {
   getUsersByRegional,
   getUsersByCity
 } from './UsuarioSagas';
-import * as TrabalhoDiarioSagas from './TrabalhoDiarioSagas';
 
 // Nova Estrutura
 import * as NW_LaboratorioSagas from '../Laboratorio/laboratorioSagas';
 import * as NW_MosquitoSagas from '../Mosquito/mosquitoSagas';
-import * as NW_TrabalhoSagas from '../TrabalhoDiario/trabalhoDiarioSagas';
 import * as NW_RelatorioSagas from '../Relatorio/relatorioSagas';
 import * as NW_EquipeSagas from '../Equipe/equipeSagas';
 
@@ -46,6 +42,7 @@ import { regiaoSaga } from '../Regiao/regiaoSagas';
 import { regionalSaudeSaga } from '../RegionalSaude/regionalSaudeSagas';
 import { vistoriaSaga } from '../Vistoria/vistoriaSagas';
 import { ruaSaga } from '../Rua/ruaSagas';
+import { trabalhoDiarioSaga } from '../TrabalhoDiario/trabalhoDiarioSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -106,10 +103,7 @@ export default function* rootSaga() {
     vistoriaSaga(),
 
     // Gerir Trabalho Diario
-    takeLatest( TrabalhoDiarioActions.GET_BY_USER_REQUEST, TrabalhoDiarioSagas.getByUser ),
-    takeLatest( TrabalhoDiarioActions.GET_DAILY_WORK_BY_ID_REQUEST, TrabalhoDiarioSagas.getDailyWorkById ),
-    // Nova Estrutura
-    takeLatest( NW_TrabalhoActions.GET_TRABALHOS_USUARIO_REQUEST, NW_TrabalhoSagas.getTrabalhosUsuario ),
+    trabalhoDiarioSaga(),
 
     // Gerir Amostra
     amostraSaga(),

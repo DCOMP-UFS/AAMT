@@ -3,10 +3,15 @@ const { Model, DataTypes } = require('sequelize');
 class Laboratorio extends Model {
   static init(sequelize) {
     super.init({
-      cnpj: DataTypes.BIGINT,
+      cnpj: {
+        type: DataTypes.BIGINT, 
+        primaryKey: true
+      },
       nome: DataTypes.STRING,
       endereco: DataTypes.STRING,
-      tipo_laboratorio: DataTypes.ENUM('sede', 'privado')
+      tipo_laboratorio: DataTypes.ENUM('Sede', 'Privado'),
+      created_at: DataTypes.DATE,
+      updated_at: DataTypes.DATE
     }, {
       sequelize,
       tableName: 'laboratorios'
@@ -14,8 +19,8 @@ class Laboratorio extends Model {
   }
 
   static associate( models ) {
-    this.hasMany( models.LaboratorioMunicipio, { foreignKey: 'municipio_id', as: 'municipios'} );
-    this.hasMany( models.Amostra, { foreignKey: 'laboratorio_id', as: 'amostras' } );
+    this.belongsToMany( models.Municipio, { through: 'laboratorios_municipios', foreignKey: 'cnpj', as: 'municipios'} );
+    this.hasMany( models.Amostra, { foreignKey: 'cnpj', as: 'amostras' } );
   }
 }
 

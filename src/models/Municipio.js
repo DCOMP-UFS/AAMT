@@ -16,6 +16,7 @@ class Municipio extends Model {
     this.hasMany( models.Atividade, { foreignKey: 'municipio_id', as: 'atividades' } );
     this.hasMany( models.Localidade, { foreignKey: 'municipio_id', as: 'localidades' } );
     this.hasMany( models.Zona, { foreignKey: 'municipio_id', as: 'zonas' } );
+    this.belongsToMany( models.Laboratorio, {through: 'laboratorios_municipios', foreignKey: "municipio_id", as: 'laboratorios'})
   }
 }
 

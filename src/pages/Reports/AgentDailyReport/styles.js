@@ -20,8 +20,8 @@ export const Header = styled.View`
 `;
 
 export const PropertyTitle = styled.Text`
-  font-family: 'Lato-Bold';
-  color: #3a3c4e;
+  font-family: ${({ theme }) => theme.fonts.bold};
+  color: ${({ theme }) => theme.colors.black};
   font-size: 20px;
 `;
 

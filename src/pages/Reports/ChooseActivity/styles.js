@@ -1,5 +1,7 @@
 import styled from 'styled-components/native';
 
+import Button from '../../../components/Button';
+
 export const Container = styled.ScrollView`
   flex: 1;
   padding: 10px;
@@ -18,24 +20,24 @@ export const Card = styled.View`
 `;
 
 export const Title = styled.Text`
-  font-family: 'Lato-Bold';
-  color: #3a3c4e;
+  font-family: ${({ theme }) => theme.fonts.bold};
+  color: ${({ theme }) => theme.colors.black};
   font-size: 20px;
   margin-bottom: 10px;
   margin-left: 7px;
 `;
 
 export const Small = styled.Text`
-  font-family: 'Lato-Bold';
+  font-family: ${({ theme }) => theme.fonts.bold};
   font-size: 16px;
-  color: #3a3c4e;
+  color: ${({ theme }) => theme.colors.black};
   margin-bottom: 5px;
 `;
 
 export const Description = styled.Text`
-  font-family: 'Lato-Regular';
+  font-family: ${({ theme }) => theme.fonts.regular};
   font-size: 16px;
-  color: #a6a8ad;
+  color: ${({ theme }) => theme.colors.textInput};
   margin-bottom: 15px;
 `;
 
@@ -48,7 +50,7 @@ export const AccordionHeader = styled.View`
 `;
 
 export const AccordionTitle = styled.Text`
-  font-family: 'Lato-Bold';
+  font-family: ${({ theme }) => theme.fonts.bold};
   color: #fff;
   font-size: 16px;
 `;
@@ -59,22 +61,26 @@ export const Box = styled.View`
 `;
 
 export const AccordionItemText = styled.Text`
-  font-family: 'Lato-Regular';
-  color: #3a3c4e;
+  font-family: ${({ theme }) => theme.fonts.regular};
+  color: ${({ theme }) => theme.colors.black};
   font-size: 16px;
   margin-bottom: 20px;
 `;
 
 export const Label = styled.Text`
-  font-family: 'Lato-Bold';
-  color: #3a3c4e;
+  font-family: ${({ theme }) => theme.fonts.bold};
+  color: ${({ theme }) => theme.colors.black};
   font-size: 16px;
   margin-bottom: 5px;
 `;
 
 export const Smaller = styled.Text`
-  font-family: 'Lato-Normal';
-  color: #a6a8ad;
+  font-family: ${({ theme }) => theme.fonts.regular};
+  color: ${({ theme }) => theme.colors.textInput};
   font-size: 16px;
   margin-bottom: 10px;
+`;
+
+export const SelectActivityButton = styled(Button).attrs({})`
+  margin-top: 10px;
 `;

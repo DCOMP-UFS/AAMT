@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, DrawerActions } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
@@ -9,6 +9,7 @@ import AgentDailyReport from '../pages/Reports/AgentDailyReport';
 import ChooseActivity from '../pages/Reports/ChooseActivity';
 import ChooseWeek from '../pages/Reports/ChooseWeek';
 import WeeklyReport from '../pages/Reports/WeeklyReport';
+import ActivityGeneralReport from '../pages/Reports/ActivityGeneralReport';
 
 const Stack = createNativeStackNavigator();
 
@@ -47,6 +48,10 @@ const reportRoutes = () => {
       <Stack.Screen name="Selecione a atividade" component={ChooseActivity} />
       <Stack.Screen name="Boletim Semanal" component={WeeklyReport} />
       <Stack.Screen name="Escolha a semana" component={ChooseWeek} />
+      <Stack.Screen
+        name="Boletim geral da atividade"
+        component={ActivityGeneralReport}
+      />
     </Stack.Navigator>
   );
 };

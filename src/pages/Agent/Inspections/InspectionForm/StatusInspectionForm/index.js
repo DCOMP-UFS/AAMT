@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Alert } from 'react-native';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { Alert, TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -42,6 +41,9 @@ const StatusInspectionForm = ({
   ]);
   const formRef = useRef();
   const navigation = useNavigation();
+
+  const methodology =
+    routes[currentRouteIndex].trabalhoDiario.atividade.metodologia.sigla;
 
   function handleStartInspection() {
     var today = new Date();
@@ -149,10 +151,12 @@ const StatusInspectionForm = ({
                 <Small>Status da vistoria</Small>
                 <ButtonContainer>
                   {optionStatus.map(item => (
-                    <TouchableWithoutFeedback
-                      onPress={() =>
-                        formRef.current.setFieldValue('status', item.value)
-                      }
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (methodology === 'PNCD') {
+                          formRef.current.setFieldValue('status', item.value);
+                        }
+                      }}
                       key={item.label}
                     >
                       <SelectionButton
@@ -162,7 +166,7 @@ const StatusInspectionForm = ({
                       >
                         {item.label}
                       </SelectionButton>
-                    </TouchableWithoutFeedback>
+                    </TouchableOpacity>
                   ))}
                 </ButtonContainer>
 
@@ -173,7 +177,7 @@ const StatusInspectionForm = ({
                 <Small>Pendência</Small>
                 <ButtonContainer>
                   {optionPendency.map(item => (
-                    <TouchableWithoutFeedback
+                    <TouchableOpacity
                       onPress={() =>
                         formRef.current.setFieldValue('pendency', item.value)
                       }
@@ -186,7 +190,7 @@ const StatusInspectionForm = ({
                       >
                         {item.label}
                       </SelectionButton>
-                    </TouchableWithoutFeedback>
+                    </TouchableOpacity>
                   ))}
                 </ButtonContainer>
 

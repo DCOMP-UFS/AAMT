@@ -16,34 +16,34 @@ const Reports = ({ profile }) => {
       goTo: 'Selecione a atividade',
       observation: 'diary-report-agent',
     },
-    {
-      title: 'Boletim Diário por Equipe',
-      description: 'Progresso da equipe nas atividades',
-      iconColor: '#35c32a',
-      goTo: 'Selecione a atividade',
-      observation: 'diary-report-team',
-    },
+    // {
+    //   title: 'Boletim Diário por Equipe',
+    //   description: 'Progresso da equipe nas atividades',
+    //   iconColor: '#35c32a',
+    //   goTo: 'Selecione a atividade',
+    //   observation: 'diary-report-team',
+    // },
     {
       title: 'Boletim Semanal',
-      description: 'Relatório da semana epidemiológica',
+      description: 'Resumo da semana epidemiológica',
       iconColor: '#ef476f',
       goTo: 'Selecione a atividade',
       observation: 'weekly-report',
     },
     {
       title: 'Boletim Geral da Atividade',
-      description: 'Informações da atividade em tempo real',
+      description: 'Informações completas da atividade',
       iconColor: '#7954A1',
       goTo: 'Selecione a atividade',
       observation: 'current-activity-report',
     },
-    {
-      title: 'Boletim da Equipe por Atividade',
-      description: 'Desempenho da equipe na atividade',
-      iconColor: '#0292B7',
-      goTo: 'Selecione a atividade',
-      observation: 'team-activity-report',
-    },
+    // {
+    //   title: 'Boletim da Equipe por Atividade',
+    //   description: 'Desempenho da equipe na atividade',
+    //   iconColor: '#0292B7',
+    //   goTo: 'Selecione a atividade',
+    //   observation: 'team-activity-report',
+    // },
   ];
 
   const agentReports = [
@@ -82,10 +82,7 @@ const Reports = ({ profile }) => {
           <TouchableOpacity
             key={item.title}
             onPress={() =>
-              navigation.navigate('Relatórios', {
-                screen: item.goTo,
-                params: { observation: item.observation },
-              })
+              navigation.navigate(item.goTo, { observation: item.observation })
             }
           >
             <OptionMenu

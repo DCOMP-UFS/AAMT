@@ -20,8 +20,8 @@ export const TextContainer = styled.View`
 `;
 
 export const Label = styled.Text`
-  font-family: 'Lato-Bold';
+  font-family: ${({ theme }) => theme.fonts.bold};
   font-size: 14px;
-  color: #3a3c4e;
+  color: ${({ theme }) => theme.colors.black};
   margin-bottom: 10px;
 `;

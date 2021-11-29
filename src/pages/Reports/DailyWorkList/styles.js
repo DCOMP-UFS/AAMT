@@ -20,18 +20,20 @@ export const Header = styled.View`
   flex-direction: row;
   justify-content: space-between;
   padding: 5px 0px;
+  align-items: center;
+  margin-bottom: 10px;
 `;
 
 export const TitleContainer = styled.View`
   flex-direction: row;
+  align-items: center;
 `;
 
 export const PropertyTitle = styled.Text`
-  font-family: 'Lato-Bold';
-  color: #3a3c4e;
+  font-family: ${({ theme }) => theme.fonts.bold};
+  color: ${({ theme }) => theme.colors.black};
   font-size: 20px;
-  margin-bottom: 10px;
-  margin-left: 7px;
+  margin-left: 10px;
 `;
 
 export const List = styled.FlatList.attrs({
@@ -49,15 +51,15 @@ export const DetailsColumn = styled.View`
 `;
 
 export const Label = styled.Text`
-  font-family: 'Lato-Bold';
-  color: #3a3c4e;
+  font-family: ${({ theme }) => theme.fonts.bold};
+  color: ${({ theme }) => theme.colors.black};
   font-size: 16px;
   margin-bottom: 5px;
 `;
 
 export const Small = styled.Text`
-  font-family: 'Lato-Normal';
-  color: #a6a8ad;
+  font-family: ${({ theme }) => theme.fonts.regular};
+  color: ${({ theme }) => theme.colors.textInput};
   font-size: 16px;
   margin-bottom: 10px;
 `;

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { TouchableOpacity, Alert } from 'react-native';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -44,13 +43,13 @@ const RecipientForm = ({
   ...props
 }) => {
   const [recipientOptions, setRecipientOptions] = useState([
-    { name: 'A1', id: 1 },
-    { name: 'A2', id: 2 },
-    { name: 'B', id: 3 },
-    { name: 'C', id: 4 },
-    { name: 'D1', id: 5 },
-    { name: 'D2', id: 6 },
-    { name: 'E', id: 7 },
+    { name: 'Tipo A1', id: 'A1' },
+    { name: 'Tipo A2', id: 'A2' },
+    { name: 'Tipo B', id: 'B' },
+    { name: 'Tipo C', id: 'C' },
+    { name: 'Tipo D1', id: 'D1' },
+    { name: 'Tipo D2', id: 'D2' },
+    { name: 'Tipo E', id: 'E' },
   ]);
   const [focusOptions, setFocusOptions] = useState([
     { id: true, label: 'Sim' },
@@ -106,10 +105,26 @@ const RecipientForm = ({
   }
 
   function deleteSampleCode(sampleSequence) {
-    const samples = [...formRef.current.values.samples];
-    formRef.current.setFieldValue(
-      'samples',
-      samples.filter(p => p.sequencia !== sampleSequence)
+    Alert.alert(
+      'Atenção!',
+      `Tem certeza que deseja excluir este código de amostra?`,
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Excluir',
+          onPress: () => {
+            const samples = [...formRef.current.values.samples];
+            formRef.current.setFieldValue(
+              'samples',
+              samples.filter(p => p.sequencia !== sampleSequence)
+            );
+          },
+        },
+      ],
+      { cancelable: false }
     );
   }
 
@@ -225,7 +240,7 @@ const RecipientForm = ({
                 <Small>Foco de mosquito</Small>
                 <ButtonContainer>
                   {focusOptions.map(item => (
-                    <TouchableWithoutFeedback
+                    <TouchableOpacity
                       onPress={() =>
                         formRef.current.setFieldValue('focus', item.id)
                       }
@@ -238,7 +253,7 @@ const RecipientForm = ({
                       >
                         {item.label}
                       </SelectionButton>
-                    </TouchableWithoutFeedback>
+                    </TouchableOpacity>
                   ))}
                 </ButtonContainer>
                 {errors.focus && <ErrorMessage>{errors.focus}</ErrorMessage>}
@@ -248,7 +263,7 @@ const RecipientForm = ({
                 <Small>Destino do depósito</Small>
                 <ButtonContainer>
                   {treatmentOptions.map(item => (
-                    <TouchableWithoutFeedback
+                    <TouchableOpacity
                       onPress={() =>
                         formRef.current.setFieldValue('treatment', item.id)
                       }
@@ -261,7 +276,7 @@ const RecipientForm = ({
                       >
                         {item.label}
                       </SelectionButton>
-                    </TouchableWithoutFeedback>
+                    </TouchableOpacity>
                   ))}
                 </ButtonContainer>
               </SectionContainer>
@@ -272,7 +287,7 @@ const RecipientForm = ({
                     <Small>Técnica de tratamento empregada</Small>
                     <ButtonContainer>
                       {treatmentTypeOptions.map(item => (
-                        <TouchableWithoutFeedback
+                        <TouchableOpacity
                           onPress={() =>
                             formRef.current.setFieldValue(
                               'treatmentType',
@@ -290,7 +305,7 @@ const RecipientForm = ({
                           >
                             {item.label}
                           </SelectionButton>
-                        </TouchableWithoutFeedback>
+                        </TouchableOpacity>
                       ))}
                     </ButtonContainer>
                   </SectionContainer>

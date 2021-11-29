@@ -19,11 +19,6 @@ import {
   Card,
   Header,
   PropertyTitle,
-  TitleContainer,
-  Label,
-  Small,
-  CardRow,
-  DetailsColumn,
   EmptyContainer,
   EmptyTitle,
   EmptyDescription,
@@ -35,7 +30,7 @@ import {
   RowContainer,
 } from './styles';
 
-const WeeklyReport = () => {
+const ActivityGeneralReport = () => {
   const chunksLength = 4;
   const [report, setReport] = useState(undefined);
   const [loading, setLoading] = useState(true);
@@ -54,34 +49,21 @@ const WeeklyReport = () => {
   const [blocksWithAlbopictus, setBlocksWithAlbopictus] = useState([]);
   const [sampleNumber, setSampleNumber] = useState(0);
   const [larvicide, setLarvicide] = useState(0);
-  const [agentNumber, setAgentNumber] = useState(0);
   const [totalRecipients, setTotalRecipients] = useState(0);
 
   const blocksWorkedOptions = Array(chunksLength).fill('Nº/Seq.');
 
   const route = useRoute();
-  const { id, epidemiologicalWeek, selectedYear } = route.params;
+  const { id } = route.params;
 
   useEffect(() => {
     async function loadReport() {
       try {
-        let url = `/relatorios/semanal?atividade_id=${id}&ano=${selectedYear}&semana=${epidemiologicalWeek}`;
-
-        const response = await api.get(url);
+        const response = await api.get(`/relatorios/atividade/${id}`);
 
         setReport(response.data);
       } catch (err) {
-        if (
-          err.response.data.error ===
-          'Este ano não possui 53 semanas epidemiológicas'
-        ) {
-          setReport([]);
-        } else {
-          Alert.alert(
-            'Ocorreu um erro',
-            'Não foi possível carregar o relatório'
-          );
-        }
+        Alert.alert('Ocorreu um erro', 'Não foi possível carregar o relatório');
       }
       setLoading(false);
     }
@@ -113,42 +95,6 @@ const WeeklyReport = () => {
     }
     return result;
   }
-
-  useEffect(() => {
-    if (report?.epiWeek) {
-      const trabalhados = report.situacao_quarteirao.trabalhados.map(
-        array => array.numero
-      );
-      const concluidos = report.situacao_quarteirao.concluidos.map(
-        array => array.numero
-      );
-      setBlocksWorked(createChunks(trabalhados));
-      setBlocksFinished(createChunks(concluidos));
-      setBlocksWithAegypti(
-        createChunks(report.quarteiroesPositivos.aedesAegypti)
-      );
-      setBlocksWithAlbopictus(
-        createChunks(report.quarteiroesPositivos.aedesAlbopictus)
-      );
-      setLarvicide(report.depositTreated[1].value);
-      setSampleNumber(report.totalSample);
-      setAgentNumber(report.epiWeek.totalAgentes);
-      let stts = status;
-      stts[0].value =
-        report.propertiesByStatus[0].value + report.propertiesByStatus[1].value;
-      stts[1].value = report.properties[0].value;
-      stts[3].value = report.properties[1].value;
-      stts[4].value = report.propertiesByPendency[0].value;
-      stts[5].value = report.propertiesByPendency[1].value;
-      stts[6].value = report.propertiesByStatus[1].value;
-      setStatus(stts);
-      setTotalRecipients(
-        report.recipientsByType
-          .map(li => li.value)
-          .reduce((sum, val) => sum + val, 0)
-      );
-    }
-  }, [report]);
 
   function Bar(data) {
     const CUT_OFF = 0;
@@ -195,6 +141,36 @@ const WeeklyReport = () => {
       </View>
     );
   }
+
+  useEffect(() => {
+    if (report?.situacao_quarteirao) {
+      setBlocksWorked(createChunks(report.situacao_quarteirao.trabalhados));
+      setBlocksFinished(createChunks(report.situacao_quarteirao.concluidos));
+      setBlocksWithAegypti(
+        createChunks(report.quarteiroesPositivos.aedesAegypti)
+      );
+      setBlocksWithAlbopictus(
+        createChunks(report.quarteiroesPositivos.aedesAlbopictus)
+      );
+      setLarvicide(report.depositTreated[1].value);
+      setSampleNumber(report.totalSample);
+      let stts = status;
+      stts[0].value =
+        report.propertiesByStatus[0].value + report.propertiesByStatus[1].value;
+      stts[1].value = report.properties[0].value;
+      // stts[2].value =
+      stts[3].value = report.properties[1].value;
+      stts[4].value = report.propertiesByPendency[0].value;
+      stts[5].value = report.propertiesByPendency[1].value;
+      stts[6].value = report.propertiesByStatus[1].value;
+      setStatus(stts);
+      setTotalRecipients(
+        report.recipientsByType
+          .map(li => li.value)
+          .reduce((sum, val) => sum + val, 0)
+      );
+    }
+  }, [report]);
 
   const styles = StyleSheet.create({
     container: {
@@ -264,7 +240,7 @@ const WeeklyReport = () => {
         />
         <EmptyTitle>Ohh... que pena!</EmptyTitle>
         <EmptyDescription>
-          O boletim semanal não está disponível
+          O boletim geral da atividade não está disponível
         </EmptyDescription>
       </EmptyContainer>
     );
@@ -276,29 +252,11 @@ const WeeklyReport = () => {
         <LoadingPage />
       ) : (
         <Container>
-          {report.epiWeek && (
+          {report?.situacao_quarteirao && (
             <>
               <Card>
                 <Header>
-                  <TitleContainer>
-                    <Icon size={23} name="calendar-today" color="#3a3c4e" />
-                    <PropertyTitle>{`Semana Epidemiológica ${epidemiologicalWeek}`}</PropertyTitle>
-                  </TitleContainer>
-                </Header>
-                <CardRow>
-                  <DetailsColumn>
-                    <Label>Início da semana</Label>
-                    <Small>{report.epiWeek.inicio}</Small>
-                  </DetailsColumn>
-                  <DetailsColumn>
-                    <Label>Fim da semana</Label>
-                    <Small>{report.epiWeek.fim}</Small>
-                  </DetailsColumn>
-                </CardRow>
-              </Card>
-              <Card>
-                <Header>
-                  <PropertyTitle>Imóveis trabalhados por tipo</PropertyTitle>
+                  <PropertyTitle>Nº imóveis trabalhados por tipo</PropertyTitle>
                 </Header>
                 {Bar(report.propertiesByType)}
               </Card>
@@ -317,20 +275,11 @@ const WeeklyReport = () => {
               <RowContainer>
                 <CardPair>
                   <InfoContainer>
-                    <Title>Agente(s)</Title>
-                    <MiniText>Agente(s)</MiniText>
-                  </InfoContainer>
-                  <NumberText>{agentNumber}</NumberText>
-                </CardPair>
-                <CardPair>
-                  <InfoContainer>
                     <Title>Depósito(s)</Title>
                     <MiniText>Nº depositos</MiniText>
                   </InfoContainer>
                   <NumberText>{totalRecipients}</NumberText>
                 </CardPair>
-              </RowContainer>
-              <RowContainer>
                 <CardPair>
                   <InfoContainer>
                     <Title>Amostra(s)</Title>
@@ -338,6 +287,8 @@ const WeeklyReport = () => {
                   </InfoContainer>
                   <NumberText>{sampleNumber}</NumberText>
                 </CardPair>
+              </RowContainer>
+              <RowContainer>
                 <CardPair>
                   <InfoContainer>
                     <Title>Eliminado(s</Title>
@@ -347,8 +298,6 @@ const WeeklyReport = () => {
                     {report.recipientDestination[0].value}
                   </NumberText>
                 </CardPair>
-              </RowContainer>
-              <RowContainer>
                 <CardPair>
                   <InfoContainer>
                     <Title>Tratado(s)</Title>
@@ -358,6 +307,8 @@ const WeeklyReport = () => {
                     {report.recipientDestination[1].value}
                   </NumberText>
                 </CardPair>
+              </RowContainer>
+              <RowContainer>
                 <CardPair>
                   <InfoContainer>
                     <Title>Larvicida</Title>
@@ -501,4 +452,4 @@ const WeeklyReport = () => {
   );
 };
 
-export default WeeklyReport;
+export default ActivityGeneralReport;

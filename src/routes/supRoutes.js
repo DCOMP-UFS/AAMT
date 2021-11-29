@@ -11,10 +11,9 @@ import ReportStack from './reportRoutes';
 const Drawer = createDrawerNavigator();
 
 const SupDrawer = () => {
-  const navigation = useNavigation();
   return (
     <Drawer.Navigator
-      initialRouteName="Lista de Relatórios"
+      initialRouteName="Relatórios"
       screenOptions={{
         headerShown: false,
         headerTitleAlign: 'center',
@@ -23,15 +22,6 @@ const SupDrawer = () => {
           fontFamily: 'Roboto-Bold',
         },
         headerTintColor: '#3A3C4E',
-        headerLeft: () => (
-          <FontAwesome5
-            name="bars"
-            size={20}
-            color="#585666"
-            style={{ marginLeft: 15 }}
-            onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-          />
-        ),
       }}
     >
       <Drawer.Screen

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TouchableWithoutFeedback, Alert } from 'react-native';
+import { TouchableOpacity, Alert } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { format, parseISO } from 'date-fns';
@@ -11,8 +11,6 @@ import {
 } from 'accordion-collapse-react-native';
 
 import api from '../../../services/api';
-
-import Button from '../../../components/Button';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -27,6 +25,7 @@ import {
   Box,
   Label,
   Smaller,
+  SelectActivityButton,
 } from './styles';
 
 const ChooseActivity = () => {
@@ -74,7 +73,7 @@ const ChooseActivity = () => {
       });
     }
     if (observation === 'current-activity-report') {
-      return navigation.navigate('Relatorio da atividade atual', {
+      return navigation.navigate('Boletim geral da atividade', {
         id,
       });
     }
@@ -102,15 +101,15 @@ const ChooseActivity = () => {
           </Smaller>
 
           {observation === 'weekly-report' && (
-            <Button onPress={() => navigationTo(activity.id, 0)}>
+            <SelectActivityButton onPress={() => navigationTo(activity.id, 0)}>
               Selecionar atividade
-            </Button>
+            </SelectActivityButton>
           )}
 
           {observation === 'current-activity-report' && (
-            <Button onPress={() => navigationTo(activity.id, 0)}>
+            <SelectActivityButton onPress={() => navigationTo(activity.id, 0)}>
               Selecionar atividade
-            </Button>
+            </SelectActivityButton>
           )}
 
           {observation !== 'weekly-report' &&
@@ -127,7 +126,7 @@ const ChooseActivity = () => {
                     {team.membros.map(
                       member =>
                         member.tipo_perfil === 4 && (
-                          <TouchableWithoutFeedback
+                          <TouchableOpacity
                             key={member.usuario.id}
                             onPress={() =>
                               navigationTo(member.usuario.id, team.id)
@@ -136,7 +135,7 @@ const ChooseActivity = () => {
                             <AccordionItemText>
                               {member.usuario.nome}
                             </AccordionItemText>
-                          </TouchableWithoutFeedback>
+                          </TouchableOpacity>
                         )
                     )}
                   </Box>

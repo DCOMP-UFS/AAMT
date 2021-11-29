@@ -7,7 +7,6 @@ import { ActionTypes as LocalidadeActions } from '../actions/LocalidadeActions';
 import { ActionTypes as ZonaActions } from '../actions/ZonaActions';
 import { ActionTypes as PaisActions } from '../actions/PaisActions';
 import { ActionTypes as RegiaoActions } from '../actions/RegiaoActions';
-import { ActionTypes as EstadoActions } from '../actions/EstadoActions';
 import { ActionTypes as RegionalSaudeActions } from '../actions/RegionalSaudeActions';
 import { ActionTypes as RuaActions } from '../actions/RuaActions';
 import { ActionTypes as MetodologiaActions } from '../actions/MetodologiaActions';
@@ -39,7 +38,6 @@ import { getLocalidades, createLocation, updateLocation, getLocationById, getLoc
 import { getZoneByCity, createZone, updateZone, getZoneById, getZoneByLocality } from './ZonaSagas';
 import { getNations } from './PaisSagas';
 import { GetRegionsByNation } from './RegiaoSagas';
-import { GetStatesByRegion } from './EstadoSagas';
 import { getRegionalHealthByState } from './RegionalSaudeSagas';
 import { getStreetByLocality, createStreet, updateStreet, deleteStreet } from './RuaSagas';
 import * as MetodologiaSagas from './MetodologiaSagas';
@@ -63,6 +61,7 @@ import { atividadeSaga } from '../Atividade/atividadeSagas';
 import { cicloSaga } from '../Ciclo/cicloSagas';
 import { amostraSaga } from '../Amostra/amostraSagas';
 import { categoriaSaga } from '../Categoria/categoriaSagas';
+import { estadoSaga } from '../Estado/estadoSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -108,7 +107,7 @@ export default function* rootSaga() {
     takeLatest( RegiaoActions.GET_REGIONS_BY_NATION_REQUEST, GetRegionsByNation ),
 
     // Gerir Estado
-    takeLatest( EstadoActions.GET_STATES_BY_REGION_REQUEST, GetStatesByRegion ),
+    estadoSaga(),
 
     // Gerir Regionais de Saúde
     takeLatest( RegionalSaudeActions.GET_REGIONAL_HEALTH_BY_STATE_REQUEST, getRegionalHealthByState ),

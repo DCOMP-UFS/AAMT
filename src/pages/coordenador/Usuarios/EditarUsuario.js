@@ -15,7 +15,7 @@ import { changeSidebar } from '../../../store/actions/sidebar';
 import { updateUsuarioRequest, getUsuarioByIdRequest, clearUpdateUser } from '../../../store/actions/UsuarioActions';
 import { getNationsRequest } from '../../../store/actions/PaisActions';
 import { GetRegionsByNationRequest } from '../../../store/actions/RegiaoActions';
-import { GetStatesByRegionRequest } from '../../../store/actions/EstadoActions';
+import { GetStatesByRegionRequest } from '../../../store/Estado/estadoActions';
 import { getRegionalHealthByStateRequest } from '../../../store/actions/RegionalSaudeActions';
 import { getCityByRegionalHealthRequest } from '../../../store/actions/MunicipioActions';
 

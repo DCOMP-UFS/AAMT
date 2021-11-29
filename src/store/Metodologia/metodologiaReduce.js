@@ -1,4 +1,4 @@
-import { ActionTypes } from '../actions/MetodologiaActions';
+import { ActionTypes } from './metodologiaActions';
 
 const INITIAL_STATE = {
   metodologia: {},

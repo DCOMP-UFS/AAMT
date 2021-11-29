@@ -7,7 +7,6 @@ import { ActionTypes as PaisActions } from '../actions/PaisActions';
 import { ActionTypes as RegiaoActions } from '../actions/RegiaoActions';
 import { ActionTypes as RegionalSaudeActions } from '../actions/RegionalSaudeActions';
 import { ActionTypes as RuaActions } from '../actions/RuaActions';
-import { ActionTypes as MetodologiaActions } from '../actions/MetodologiaActions';
 import { ActionTypes as RotaActions } from '../actions/RotaActions';
 import { ActionTypes as VistoriaActions } from '../actions/VistoriaActions';
 import { ActionTypes as TrabalhoDiarioActions } from '../actions/trabalhoDiario';
@@ -35,7 +34,6 @@ import { getNations } from './PaisSagas';
 import { GetRegionsByNation } from './RegiaoSagas';
 import { getRegionalHealthByState } from './RegionalSaudeSagas';
 import { getStreetByLocality, createStreet, updateStreet, deleteStreet } from './RuaSagas';
-import * as MetodologiaSagas from './MetodologiaSagas';
 import * as RotaSagas from './RotaSagas';
 import * as VistoriaSagas from './VistoriaSagas';
 import * as TrabalhoDiarioSagas from './TrabalhoDiarioSagas';
@@ -59,6 +57,7 @@ import { estadoSaga } from '../Estado/estadoSagas';
 import { zonaSaga } from '../Zona/zonaSagas';
 import { imovelSaga } from '../Imovel/imovelSagas';
 import { localidadeSaga } from '../Localidade/localidadeSagas';
+import { metodologiaSaga } from '../Metodologia/metodologiaSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -114,7 +113,7 @@ export default function* rootSaga() {
     cicloSaga(),
 
     // Gerir Metodologia
-    takeLatest( MetodologiaActions.GET_METHODOLOGIES_REQUEST, MetodologiaSagas.getMethodologies ),
+    metodologiaSaga(),
 
     // Gerir Atividade
     atividadeSaga(),

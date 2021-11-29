@@ -17,7 +17,7 @@ import supportInfo from './supportInfo';
 import trabalhoDiario from './trabalhoDiario';
 import usuario from './Usuario';
 import zona from '../Zona/zonaReduce';
-import metodologia from './Metodologia';
+import metodologia from '../Metodologia/metodologiaReduce';
 import sidebarAgente from './sidebarAgente';
 import rota from './Rota';
 import rotaCache from './RotaCache';

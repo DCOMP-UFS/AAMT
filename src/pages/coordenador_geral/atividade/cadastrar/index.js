@@ -10,7 +10,7 @@ import ButtonSave from '../../../../components/ButtonSave';
 
 // ACTIONS
 import { changeSidebar } from '../../../../store/actions/sidebarCoordGeral';
-import { getMethodologiesRequest } from '../../../../store/actions/MetodologiaActions';
+import { getMethodologiesRequest } from '../../../../store/Metodologia/metodologiaActions';
 import { getAllowedCyclesRequest } from '../../../../store/Ciclo/cicloActions';
 import { getCityByRegionalHealthRequest } from '../../../../store/actions/MunicipioActions';
 import { createActiveRequest } from '../../../../store/Atividade/atividadeActions';

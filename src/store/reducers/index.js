@@ -13,7 +13,7 @@ import sidebarCoordGeral from '../SidebarCoordGeral/sidebarCoordGeralReduce';
 import sidebarLab from '../SidebarLab/sidebarLabReduce';
 import sidebarSupervisor from '../SidebarSupervisor/sidebarSupervisorReduce';
 import supportInfo from '../SupportInfo/supportInfoReduce';
-import usuario from './Usuario';
+import usuario from '../Usuario/usuarioReduce';
 import zona from '../Zona/zonaReduce';
 import metodologia from '../Metodologia/metodologiaReduce';
 import sidebarAgente from '../SidebarAgente/sidebarAgenteReduce';

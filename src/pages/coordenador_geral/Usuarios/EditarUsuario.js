@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
-import { updateUsuarioRequest, getUsuarioByIdRequest, clearUpdateUser } from '../../../store/actions/UsuarioActions';
+import { updateUsuarioRequest, getUsuarioByIdRequest, clearUpdateUser } from '../../../store/Usuario/usuarioActions';
 import { getNationsRequest } from '../../../store/Pais/paisActions';
 import { GetRegionsByNationRequest } from '../../../store/Regiao/regiaoActions';
 import { GetStatesByRegionRequest } from '../../../store/Estado/estadoActions';

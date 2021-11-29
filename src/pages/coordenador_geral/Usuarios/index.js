@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 import { changeSidebar } from '../../../store/SidebarCoordGeral/sidebarCoordGeralActions';
 import { changeTableSelected } from '../../../store/SupportInfo/supportInfoActions';
 import { clearToast } from '../../../store/AppConfig/appConfigActions';
-import { getUsersByRegionalRequest, changeUserEditIndex, } from '../../../store/actions/UsuarioActions';
+import { getUsersByRegionalRequest, changeUserEditIndex, } from '../../../store/Usuario/usuarioActions';
 
 // STYLES
 import { GlobalStyle } from './styles';

@@ -7,7 +7,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { updateAllUsuarioRequest, clearUpdateUser } from '../../../store/actions/UsuarioActions';
+import { updateAllUsuarioRequest, clearUpdateUser } from '../../../store/Usuario/usuarioActions';
 
 // STYLES
 import { Button } from '../../../styles/global';

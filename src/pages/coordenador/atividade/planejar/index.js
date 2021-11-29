@@ -22,7 +22,7 @@ import $ from 'jquery';
 
 // ACTIONS
 import { changeSidebar } from '../../../../store/Sidebar/sidebarActions';
-import { getUsersByCityRequest } from '../../../../store/actions/UsuarioActions';
+import { getUsersByCityRequest } from '../../../../store/Usuario/usuarioActions';
 import {
   getActivitieByIdRequest,
   getLocationsRequest,

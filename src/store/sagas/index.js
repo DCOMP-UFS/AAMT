@@ -1,23 +1,10 @@
-import { all, takeLatest, takeEvery } from 'redux-saga/effects';
-
-import { ActionTypes as AppConfig } from '../AppConfig/appConfigActions';
-import { ActionTypes as UserActions } from '../actions/UsuarioActions';
+import { all, takeLatest } from 'redux-saga/effects';
 
 // Nova Estrutura
 import { ActionTypes as NW_LaboratorioActions } from '../Laboratorio/laboratorioActions';
 import { ActionTypes as NW_MosquitoActions } from '../Mosquito/mosquitoActions';
 import { ActionTypes as NW_RelatorioActions } from '../Relatorio/relatorioActions';
 import { ActionTypes as NW_EquipeActions } from '../Equipe/equipeActions';
-
-import {
-  authenticate,
-  getUsuarios,
-  createUsuario,
-  updateUsuario,
-  getUsuarioById,
-  getUsersByRegional,
-  getUsersByCity
-} from './UsuarioSagas';
 
 // Nova Estrutura
 import * as NW_LaboratorioSagas from '../Laboratorio/laboratorioSagas';
@@ -43,21 +30,14 @@ import { regionalSaudeSaga } from '../RegionalSaude/regionalSaudeSagas';
 import { vistoriaSaga } from '../Vistoria/vistoriaSagas';
 import { ruaSaga } from '../Rua/ruaSagas';
 import { trabalhoDiarioSaga } from '../TrabalhoDiario/trabalhoDiarioSagas';
+import { usuarioSaga } from '../Usuario/usuarioSagas';
 
 export default function* rootSaga() {
   yield all([
-    takeLatest( AppConfig.AUTHENTICATE_REQUEST, authenticate ),
+    // Gerir Usuário
+    usuarioSaga(),
 
-    // Gerir Usuario
-    takeLatest( UserActions.GET_USUARIOS_REQUEST, getUsuarios ),
-    takeLatest( UserActions.GET_USUARIO_BY_ID_REQUEST, getUsuarioById ),
-    takeLatest( UserActions.GET_USERS_BY_REGIONAL_REQUEST, getUsersByRegional ),
-    takeLatest( UserActions.GET_USERS_BY_CITY_REQUEST, getUsersByCity ),
-    takeLatest( UserActions.CREATE_USUARIO_REQUEST, createUsuario ),
-    takeEvery( UserActions.UPDATE_ALL_USUARIO_REQUEST, updateUsuario ),
-    takeLatest( UserActions.UPDATE_USUARIO_REQUEST, updateUsuario ),
-
-    //Gerir Município
+    // Gerir Município
     municipioSaga(),
 
     // Gerir Localidade

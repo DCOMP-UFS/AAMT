@@ -1,4 +1,4 @@
-import { ActionTypes } from '../actions/RegiaoActions';
+import { ActionTypes } from './regiaoActions';
 
 const INITIAL_STATE = {
   regioes: []

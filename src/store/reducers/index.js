@@ -6,7 +6,7 @@ import estado from '../Estado/estadoReduce';
 import localidade from '../Localidade/localidadeReduce';
 import municipio from '../Municipio/municipioReduce';
 import pais from '../Pais/paisReduce';
-import regiao from './Regiao';
+import regiao from '../Regiao/regiaoReduce';
 import regionalSaude from './RegionalSaude';
 import rua from './Rua';
 import sidebar from './sidebar';

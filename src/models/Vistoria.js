@@ -8,7 +8,7 @@ class Vistoria extends Model {
       pendencia: DataTypes.STRING,
       sequencia: DataTypes.INTEGER,
       justificativa: DataTypes.STRING,
-      tipoImovelVistoria: DataTypes.STRING,
+      tipoImovelVistoria: DataTypes.INTEGER,
       responsavel: DataTypes.STRING
     }, {
       sequelize,

@@ -3,8 +3,8 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     return Promise.all([ 
-      queryInterface.addColumn('vistorias', 'tipoImovelVistoria', {
-        type: Sequelize.STRING,
+      queryInterface.addColumn('vistorias', 'tipo_imovel_vistoria', {
+        type: Sequelize.INTEGER,
         allowNull: false,
       }),
     ]);
@@ -12,7 +12,7 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {
     return Promise.all([ 
-      queryInterface.removeColumn('vistorias', 'tipoImovelVistoria'),
+      queryInterface.removeColumn('vistorias', 'tipo_imovel_vistoria'),
     ]);
   }
 };

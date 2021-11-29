@@ -6,7 +6,7 @@ import { tipoImovel as tipoImovelEnum, tipoRecipiente as tipoRecipienteEnum } fr
 import { Row, Col } from 'react-bootstrap';
 
 // ACTIONS
-import { changeSidebar } from '../../../../store/actions/sidebarSupervisor';
+import { changeSidebar } from '../../../../store/SidebarSupervisor/sidebarSupervisorActions';
 import { getBoletimSemanalRequest } from '../../../../store/Relatorio/relatorioActions';
 
 // STYLES

@@ -12,7 +12,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebarSupervisor';
+import { changeSidebar } from '../../../store/SidebarSupervisor/sidebarSupervisorActions';
 import { getQuarteiroesMunicipioRequest } from '../../../store/Quarteirao/quarteiraoActions';
 
 // STYLES

@@ -1,7 +1,7 @@
 import { IoIosPaper } from 'react-icons/io';
 import { FaUsers, FaCity, FaSyncAlt } from 'react-icons/fa';
 
-import { ActionTypes } from '../actions/sidebarCoordGeral';
+import { ActionTypes } from './sidebarCoordGeralActions';
 
 const location = window.location.origin.toString();
 

@@ -18,7 +18,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebarAgente';
+import { changeSidebar } from '../../../store/SidebarAgente/sidebarAgenteActions';
 import { getRouteRequest } from '../../../store/Rota/rotaActions';
 import { resetHandleSave, routeNotStarted } from '../../../store/VistoriaCache/vistoriaCacheActions';
 import { changeTableSelected } from '../../../store/actions/supportInfo';

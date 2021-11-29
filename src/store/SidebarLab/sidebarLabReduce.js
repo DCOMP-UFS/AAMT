@@ -1,5 +1,5 @@
 import { FaMapMarked, FaChartLine } from 'react-icons/fa';
-import { ActionTypes } from '../actions/sidebarLab';
+import { ActionTypes } from './sidebarLabActions';
 
 const location = window.location.origin.toString();
 

@@ -11,7 +11,7 @@ import ModalExaminar from './components/ModalExaminar';
 import $ from 'jquery';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebarSupervisor';
+import { changeSidebar } from '../../../store/SidebarSupervisor/sidebarSupervisorActions';
 import { getAmostrasRequest, enviarAmostrasRequest, setAmostra } from '../../../store/Amostra/amostraActions';
 import { getLaboratoriosRequest } from '../../../store/Laboratorio/laboratorioActions';
 

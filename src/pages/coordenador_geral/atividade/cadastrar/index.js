@@ -9,7 +9,7 @@ import { abrangencia as abrangenciaEnum }  from '../../../../config/enumerate';
 import ButtonSave from '../../../../components/ButtonSave';
 
 // ACTIONS
-import { changeSidebar } from '../../../../store/actions/sidebarCoordGeral';
+import { changeSidebar } from '../../../../store/SidebarCoordGeral/sidebarCoordGeralActions';
 import { getMethodologiesRequest } from '../../../../store/Metodologia/metodologiaActions';
 import { getAllowedCyclesRequest } from '../../../../store/Ciclo/cicloActions';
 import { getCityByRegionalHealthRequest } from '../../../../store/Municipio/municipioActions';

@@ -11,7 +11,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebarAgente';
+import { changeSidebar } from '../../../store/SidebarAgente/sidebarAgenteActions';
 import { getByUserRequest } from '../../../store/actions/trabalhoDiario';
 
 // STYLES

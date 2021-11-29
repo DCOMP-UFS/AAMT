@@ -11,7 +11,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebarCoordGeral';
+import { changeSidebar } from '../../../store/SidebarCoordGeral/sidebarCoordGeralActions';
 import { updateCityRequest, getCityByIdRequest, clearUpdateCity } from '../../../store/Municipio/municipioActions';
 import { getLocationByCityRequest } from '../../../store/Localidade/localidadeActions';
 import { getNationsRequest } from '../../../store/Pais/paisActions';

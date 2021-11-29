@@ -12,7 +12,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebar';
+import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
 import { changeTableSelected } from '../../../store/actions/supportInfo';
 import { getZoneByCityRequest } from '../../../store/Zona/zonaActions';
 

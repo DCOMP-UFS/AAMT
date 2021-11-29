@@ -21,7 +21,7 @@ import { ModalConfirm } from '../../../../components/Modal';
 import $ from 'jquery';
 
 // ACTIONS
-import { changeSidebar } from '../../../../store/actions/sidebar';
+import { changeSidebar } from '../../../../store/Sidebar/sidebarActions';
 import { getUsersByCityRequest } from '../../../../store/actions/UsuarioActions';
 import {
   getActivitieByIdRequest,

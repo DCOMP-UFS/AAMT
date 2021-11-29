@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-// import { changeSidebar } from '../../store/actions/sidebar';
+// import { changeSidebar } from '../../store/Sidebar/sidebarActions';
 
 function Home({ zonas, municipio_id, ...props }) {
 

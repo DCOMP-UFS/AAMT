@@ -17,7 +17,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebarAgente';
+import { changeSidebar } from '../../../store/SidebarAgente/sidebarAgenteActions';
 import { showNotifyToast } from '../../../store/AppConfig/appConfigActions';
 import { resetShowNotStarted, clearInspection } from '../../../store/VistoriaCache/vistoriaCacheActions';
 import { clearRotaCache } from '../../../store/RotaCache/rotaCacheActions';

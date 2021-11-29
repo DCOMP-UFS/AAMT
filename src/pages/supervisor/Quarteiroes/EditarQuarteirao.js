@@ -25,7 +25,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebarSupervisor';
+import { changeSidebar } from '../../../store/SidebarSupervisor/sidebarSupervisorActions';
 import { getLocationByCityRequest } from '../../../store/Localidade/localidadeActions';
 import { getZoneByLocalityRequest, getZoneByCityRequest } from '../../../store/Zona/zonaActions';
 import { getStreetByLocalityRequest } from '../../../store/Rua/ruaActions';

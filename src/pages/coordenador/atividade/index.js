@@ -10,7 +10,7 @@ import { situacaoAtividadeEnum } from '../../../config/enumerate';
 import { showNotifyToast } from '../../../store/AppConfig/appConfigActions';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebar';
+import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
 import { getAllowedCyclesRequest } from '../../../store/Ciclo/cicloActions';
 import { getActivitiesByCityRequest } from '../../../store/Atividade/atividadeActions';
 

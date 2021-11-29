@@ -6,7 +6,7 @@ import { Row, Col } from 'react-bootstrap';
 import { getDateBr } from '../../../../config/function';
 
 // ACTIONS
-import { changeSidebar } from '../../../../store/actions/sidebarSupervisor';
+import { changeSidebar } from '../../../../store/SidebarSupervisor/sidebarSupervisorActions';
 import { getCicloAbertoRequest } from '../../../../store/Ciclo/cicloActions';
 import { getResponsabilityActivitiesRequest } from '../../../../store/Atividade/atividadeActions';
 

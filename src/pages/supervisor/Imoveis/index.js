@@ -11,7 +11,7 @@ import $ from 'jquery';
 import { ModalConfirm } from '../../../components/Modal';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebarSupervisor';
+import { changeSidebar } from '../../../store/SidebarSupervisor/sidebarSupervisorActions';
 import { getImoveisMunicipioRequest, setImovel } from '../../../store/Imovel/imovelActions';
 
 // Styles

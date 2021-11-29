@@ -16,7 +16,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebarCoordGeral';
+import { changeSidebar } from '../../../store/SidebarCoordGeral/sidebarCoordGeralActions';
 import { changeTableSelected } from '../../../store/actions/supportInfo';
 import { clearToast } from '../../../store/AppConfig/appConfigActions';
 import { getUsersByRegionalRequest, changeUserEditIndex, } from '../../../store/actions/UsuarioActions';

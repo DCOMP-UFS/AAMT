@@ -9,7 +9,7 @@ import $ from 'jquery';
 import { getDateBr } from '../../../../config/function';
 
 // ACTIONS
-import { changeSidebar } from '../../../../store/actions/sidebarSupervisor';
+import { changeSidebar } from '../../../../store/SidebarSupervisor/sidebarSupervisorActions';
 import { getResponsabilityActivitiesRequest } from '../../../../store/Atividade/atividadeActions';
 import { getCicloAbertoRequest } from '../../../../store/Ciclo/cicloActions';
 import { getTrabalhosUsuarioRequest, setTrabalhos } from '../../../../store/TrabalhoDiario/trabalhoDiarioActions';

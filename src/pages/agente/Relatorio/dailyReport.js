@@ -10,7 +10,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebarAgente';
+import { changeSidebar } from '../../../store/SidebarAgente/sidebarAgenteActions';
 import { getDailyWorkByIdRequest } from '../../../store/actions/trabalhoDiario';
 import { getInspectsByDailyWorkRequest } from '../../../store/Vistoria/vistoriaActions';
 

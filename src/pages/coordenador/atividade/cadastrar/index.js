@@ -8,7 +8,7 @@ import { abrangencia as abrangenciaEnum }  from '../../../../config/enumerate';
 import ButtonSave from '../../../../components/ButtonSave';
 
 // ACTIONS
-import { changeSidebar } from '../../../../store/actions/sidebar';
+import { changeSidebar } from '../../../../store/Sidebar/sidebarActions';
 import { getMethodologiesRequest } from '../../../../store/Metodologia/metodologiaActions';
 import { getAllowedCyclesRequest } from '../../../../store/Ciclo/cicloActions';
 import { createActiveRequest } from '../../../../store/Atividade/atividadeActions';

@@ -11,7 +11,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebar';
+import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
 import { updateUsuarioRequest, getUsuarioByIdRequest, clearUpdateUser } from '../../../store/actions/UsuarioActions';
 import { getNationsRequest } from '../../../store/Pais/paisActions';
 import { GetRegionsByNationRequest } from '../../../store/Regiao/regiaoActions';

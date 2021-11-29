@@ -1,8 +1,8 @@
-import { IoIosPaper, IoIosCode, IoIosCheckboxOutline } from 'react-icons/io';
-import { FaUsers, FaMapSigns, FaVials } from 'react-icons/fa';
-import ViewCompactIcon from '@material-ui/icons/ViewCompact';
+import BorderAllIcon from '@material-ui/icons/BorderAll';
+import { FaMapSigns, FaVial, FaChartPie, FaChartLine } from 'react-icons/fa';
+import { IoIosHome } from 'react-icons/io';
 
-import { ActionTypes } from '../actions/sidebar';
+import { ActionTypes } from './sidebarSupervisorActions';
 
 const location = window.location.origin.toString();
 
@@ -26,34 +26,29 @@ const INITIAL_STATE = {
   // Menu ativo currenteNav: [ menu, submenu ]
   currentNav: [ 1, 0 ],
   menu: [
-    // createCategory( "Operacional" ),
-    // createNav( 1, "Trabalho Diário", true, FaTasks, [
-    //   createSubmenu( 1, true, "Iniciar", "/trabalho_diario/iniciar" ),
-    //   // createSubmenu( 2, false, "Realizar Vistoria", "/trabalho_diario/vistoria/lista" ),
-    // ]),
     createCategory( "Ações" ),
-    createNav( 1, "Atividades", false, IoIosPaper, [
-      createSubmenu( 1, false, "Consultar", "/coord/atividades/" ),
-      createSubmenu( 2, false, "Cadastrar", "/coord/atividades/cadastrar" ),
+    createLink( 2, "Rotas de Trabalho", false, FaMapSigns, "/sup/planejar_rota"),
+    createLink( 3, "Amostras", false, FaVial, "/sup/amostras"),
+    createCategory( "Relatórios" ),
+    createLink( 5, "Dashboard", false, FaChartPie, "/sup/dashboard"),
+    createNav( 6, "Relatórios", false, FaChartLine, [
+      createSubmenu( 1, false, "Boletim Diário", "/sup/relatorio/diario" ),
+      createSubmenu( 2, false, "Boletim Diário por Equipe", "/sup/relatorio/diarioEquipe" ),
+      createSubmenu( 3, false, "Boletim Semanal", "/sup/relatorio/semanal" ),
+      createSubmenu( 4, false, "Boletim Geral da Atividade", "/sup/relatorio/atividade" ),
+      createSubmenu( 5, false, "Boletim da Equipe por Atividade", "/sup/relatorio/atividadeEquipe" ),
     ]),
     createCategory( "Cadastros Básicos" ),
-    createLink( 2, "Usuários", false, FaUsers, "/coord/usuarios" ),
-    createLink( 3, "Bairro/Localidade", false, FaMapSigns, "/coord/localidades"),
-    createLink( 4, "Zonas", false, ViewCompactIcon, "/coord/zonas"),
-    createLink( 5, "Laboratórios", false, FaVials, "/coord/laboratorios"),
-    // createLink( 7, "Quarteirão", false, BorderAllIcon, "/quarteiroes"),
-    createCategory( "Recursos de Interface" ),
-    createNav( 8, "Elementos Básicos", false, IoIosCode, [
-      createSubmenu( 1, false, "Botões", "/elementos/botoes" ),
-      createSubmenu( 2, false, "Tipografia", "/elementos/tipografia" ),
-    ]),
-    createLink( 9, "Formulários", false, IoIosCheckboxOutline, "/elementos/formulario" )
+    createLink( 4, "Imóveis", false, IoIosHome, "/sup/imoveis"),
+    createLink( 1, "Quarteirões", false, BorderAllIcon, "/sup/quarteiroes"),
+    // createCategory( "Recursos de Interface" ),
+    // createLink( 9, "Formulários", false, IoIosCheckboxOutline, "/elementos/formulario" )
   ]
 }
 
-export default function sidebar(state = INITIAL_STATE, action) {
+export default function sidebarSupervisor(state = INITIAL_STATE, action) {
   switch( action.type ) {
-    case ActionTypes.CHANGE_SIDEBAR: {
+    case ActionTypes.CHANGE_SIDEBAR_SUPERVISOR: {
       const { id, subId } = action.payload;
       let currentNav = state.currentNav;
       let menu = state.menu;

@@ -8,7 +8,7 @@ import Select from 'react-select';
 import cityIcon from '../../../assets/city-icon.png';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebarCoordGeral';
+import { changeSidebar } from '../../../store/SidebarCoordGeral/sidebarCoordGeralActions';
 import { getActivitiesOfCityRequest } from '../../../store/Atividade/atividadeActions';
 import { getAllowedCyclesRequest } from '../../../store/Ciclo/cicloActions';
 

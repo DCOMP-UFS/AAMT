@@ -7,7 +7,7 @@ import { getDateBr } from '../../../../config/function';
 import $ from 'jquery';
 
 // ACTIONS
-import { changeSidebar } from '../../../../store/actions/sidebarSupervisor';
+import { changeSidebar } from '../../../../store/SidebarSupervisor/sidebarSupervisorActions';
 import { getCicloAbertoRequest } from '../../../../store/Ciclo/cicloActions';
 import { getResponsabilityActivitiesRequest } from '../../../../store/Atividade/atividadeActions';
 

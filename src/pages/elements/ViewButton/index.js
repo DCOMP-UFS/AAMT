@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebar';
+import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
 
 //Importando CSS exclusivo para páginas do template
 import './style.css';

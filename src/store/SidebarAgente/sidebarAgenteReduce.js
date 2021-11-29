@@ -1,6 +1,6 @@
 import { FaRoute, FaClipboardCheck, FaChartPie } from 'react-icons/fa';
 
-import { ActionTypes } from '../actions/sidebarAgente';
+import { ActionTypes } from './sidebarAgenteActions';
 
 const location = window.location.origin.toString();
 

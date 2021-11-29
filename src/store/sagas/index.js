@@ -2,7 +2,6 @@ import { all, takeLatest, takeEvery } from 'redux-saga/effects';
 
 import { ActionTypes as AppConfig } from '../AppConfig/appConfigActions';
 import { ActionTypes as UserActions } from '../actions/UsuarioActions';
-import { ActionTypes as PaisActions } from '../actions/PaisActions';
 import { ActionTypes as RegiaoActions } from '../actions/RegiaoActions';
 import { ActionTypes as RegionalSaudeActions } from '../actions/RegionalSaudeActions';
 import { ActionTypes as RuaActions } from '../actions/RuaActions';
@@ -28,7 +27,6 @@ import {
   getUsersByRegional,
   getUsersByCity
 } from './UsuarioSagas';
-import { getNations } from './PaisSagas';
 import { GetRegionsByNation } from './RegiaoSagas';
 import { getRegionalHealthByState } from './RegionalSaudeSagas';
 import { getStreetByLocality, createStreet, updateStreet, deleteStreet } from './RuaSagas';
@@ -57,6 +55,7 @@ import { imovelSaga } from '../Imovel/imovelSagas';
 import { localidadeSaga } from '../Localidade/localidadeSagas';
 import { metodologiaSaga } from '../Metodologia/metodologiaSagas';
 import { municipioSaga } from '../Municipio/municipioSagas';
+import { paisSaga } from '../Pais/paisSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -84,7 +83,7 @@ export default function* rootSaga() {
     zonaSaga(),
 
     // Gerir País
-    takeLatest( PaisActions.GET_NATIONS_REQUEST, getNations ),
+    paisSaga(),
 
     // Gerir Região
     takeLatest( RegiaoActions.GET_REGIONS_BY_NATION_REQUEST, GetRegionsByNation ),

@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { createUsuarioRequest, clearCreateUser } from '../../../store/actions/UsuarioActions';
-import { getNationsRequest } from '../../../store/actions/PaisActions';
+import { getNationsRequest } from '../../../store/Pais/paisActions';
 import { GetRegionsByNationRequest } from '../../../store/actions/RegiaoActions';
 import { GetStatesByRegionRequest } from '../../../store/Estado/estadoActions';
 import { getRegionalHealthByStateRequest } from '../../../store/actions/RegionalSaudeActions';

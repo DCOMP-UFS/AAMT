@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import { changeSidebar } from '../../../store/actions/sidebarCoordGeral';
 import { updateCityRequest, getCityByIdRequest, clearUpdateCity } from '../../../store/Municipio/municipioActions';
 import { getLocationByCityRequest } from '../../../store/Localidade/localidadeActions';
-import { getNationsRequest } from '../../../store/actions/PaisActions';
+import { getNationsRequest } from '../../../store/Pais/paisActions';
 import { GetRegionsByNationRequest } from '../../../store/actions/RegiaoActions';
 import { GetStatesByRegionRequest } from '../../../store/Estado/estadoActions';
 import { getRegionalHealthByStateRequest } from '../../../store/actions/RegionalSaudeActions';

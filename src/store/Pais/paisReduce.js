@@ -1,4 +1,4 @@
-import { ActionTypes } from '../actions/PaisActions';
+import { ActionTypes } from './paisActions';
 
 const INITIAL_STATE = {
   paises: []

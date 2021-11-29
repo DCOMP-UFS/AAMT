@@ -4,7 +4,6 @@ import { ActionTypes as AppConfig } from '../actions/appConfig';
 import { ActionTypes as UserActions } from '../actions/UsuarioActions';
 import { ActionTypes as MunicipioActions } from '../actions/MunicipioActions';
 import { ActionTypes as LocalidadeActions } from '../actions/LocalidadeActions';
-import { ActionTypes as ZonaActions } from '../actions/ZonaActions';
 import { ActionTypes as PaisActions } from '../actions/PaisActions';
 import { ActionTypes as RegiaoActions } from '../actions/RegiaoActions';
 import { ActionTypes as RegionalSaudeActions } from '../actions/RegionalSaudeActions';
@@ -35,7 +34,6 @@ import {
 } from './UsuarioSagas';
 import { getMunicipios, createCity, updateCity, getCityById, getCityByRegionalHealth } from './MunicipioSagas';
 import { getLocalidades, createLocation, updateLocation, getLocationById, getLocationByCity } from './LocalidadeSagas';
-import { getZoneByCity, createZone, updateZone, getZoneById, getZoneByLocality } from './ZonaSagas';
 import { getNations } from './PaisSagas';
 import { GetRegionsByNation } from './RegiaoSagas';
 import { getRegionalHealthByState } from './RegionalSaudeSagas';
@@ -62,6 +60,7 @@ import { cicloSaga } from '../Ciclo/cicloSagas';
 import { amostraSaga } from '../Amostra/amostraSagas';
 import { categoriaSaga } from '../Categoria/categoriaSagas';
 import { estadoSaga } from '../Estado/estadoSagas';
+import { zonaSaga } from '../Zona/zonaSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -94,11 +93,7 @@ export default function* rootSaga() {
     categoriaSaga(),
 
     // Gerir Zonas
-    takeLatest( ZonaActions.GET_ZONE_BY_CITY_REQUEST, getZoneByCity ),
-    takeLatest( ZonaActions.GET_ZONE_BY_ID_REQUEST, getZoneById ),
-    takeLatest( ZonaActions.GET_ZONE_BY_LOCALITY_REQUEST, getZoneByLocality ),
-    takeLatest( ZonaActions.CREATE_ZONE_REQUEST, createZone ),
-    takeLatest( ZonaActions.UPDATE_ZONE_REQUEST, updateZone ),
+    zonaSaga(),
 
     // Gerir País
     takeLatest( PaisActions.GET_NATIONS_REQUEST, getNations ),

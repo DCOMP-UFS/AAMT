@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebar';
 import { changeTableSelected } from '../../../store/actions/supportInfo';
-import { getZoneByCityRequest } from '../../../store/actions/ZonaActions';
+import { getZoneByCityRequest } from '../../../store/Zona/zonaActions';
 
 // STYLES
 import { GlobalStyle } from './styles';

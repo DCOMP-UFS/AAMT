@@ -21,7 +21,7 @@ import { connect } from 'react-redux';
 // ACTIONS
 import { addQuarteiraoRequest, setCreated } from '../../../store/Quarteirao/quarteiraoActions';
 import { getLocationByCityRequest } from '../../../store/actions/LocalidadeActions';
-import { getZoneByCityRequest } from '../../../store/actions/ZonaActions';
+import { getZoneByCityRequest } from '../../../store/Zona/zonaActions';
 import { getStreetByLocalityRequest } from '../../../store/actions/RuaActions';
 import { showNotifyToast } from '../../../store/actions/appConfig';
 

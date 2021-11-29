@@ -1,18 +1,11 @@
-import { call, put } from 'redux-saga/effects';
-import {
-  getZoneByCityRequest,
-  createZoneRequest,
-  updateRequest,
-  getZoneByIdRequest,
-  getZoneByLocalityRequest
-} from '../../services/requests/Zona';
-
-import * as ZonaActions from '../actions/ZonaActions';
+import { takeLatest, call, put, all } from 'redux-saga/effects';
+import * as servico from '../../services/requests/Zona';
+import * as ZonaActions from './zonaActions';
 import * as AppConfigActions from '../actions/appConfig';
 
 export function* getZoneByCity(action) {
   try {
-    const { data, status } = yield call( getZoneByCityRequest, action.payload.municipio_id );
+    const { data, status } = yield call( servico.getZoneByCityRequest, action.payload.municipio_id );
 
     if( status === 200 ) {
       yield put( ZonaActions.getZoneByCity( data ) );
@@ -27,7 +20,7 @@ export function* getZoneByCity(action) {
 
 export function* getZoneByLocality(action) {
   try {
-    const { data, status } = yield call( getZoneByLocalityRequest, action.payload );
+    const { data, status } = yield call( servico.getZoneByLocalityRequest, action.payload );
 
     if( status === 200 ) {
       yield put( ZonaActions.getZoneByLocality( data ) );
@@ -42,7 +35,7 @@ export function* getZoneByLocality(action) {
 
 export function* createZone( action ) {
   try {
-    const { data, status } = yield call( createZoneRequest, action.payload );
+    const { data, status } = yield call( servico.createZoneRequest, action.payload );
 
     if( status === 201 ) {
       yield put( ZonaActions.createZone( data ) );
@@ -57,7 +50,7 @@ export function* createZone( action ) {
 
 export function* updateZone( action ) {
   try {
-    const { data, status } = yield call( updateRequest, action.payload );
+    const { data, status } = yield call( servico.updateRequest, action.payload );
 
     if( status === 200 ) {
       yield put( ZonaActions.updateZone( data ) );
@@ -72,7 +65,7 @@ export function* updateZone( action ) {
 
 export function* getZoneById(action) {
   try {
-    const { data, status } = yield call( getZoneByIdRequest, action.payload );
+    const { data, status } = yield call( servico.getZoneByIdRequest, action.payload );
 
     if( status === 200 ) {
       yield put( ZonaActions.getZoneById( data ) );
@@ -83,4 +76,34 @@ export function* getZoneById(action) {
   } catch (error) {
     yield put( AppConfigActions.showNotifyToast( "Erro ao consultar a zona, favor verifique a conexão", "error" ) );
   }
+}
+
+function* watchGetZoneByCity() {
+  yield takeLatest( ZonaActions.ActionTypes.GET_ZONE_BY_CITY_REQUEST, getZoneByCity );
+}
+
+function* watchGetZoneByLocality() {
+  yield takeLatest( ZonaActions.ActionTypes.GET_ZONE_BY_LOCALITY_REQUEST, getZoneByLocality );
+}
+
+function* watchCreateZone() {
+  yield takeLatest( ZonaActions.ActionTypes.CREATE_ZONE_REQUEST, createZone );
+}
+
+function* watchUpdateZone() {
+  yield takeLatest( ZonaActions.ActionTypes.UPDATE_ZONE_REQUEST, updateZone );
+}
+
+function* watchGetZoneById() {
+  yield takeLatest( ZonaActions.ActionTypes.GET_ZONE_BY_ID_REQUEST, getZoneById );
+}
+
+export function* zonaSaga() {
+  yield all( [
+    watchGetZoneByCity(),
+    watchGetZoneByLocality(),
+    watchCreateZone(),
+    watchUpdateZone(),
+    watchGetZoneById(),
+  ] );
 }

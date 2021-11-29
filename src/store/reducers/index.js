@@ -17,7 +17,7 @@ import sidebarSupervisor from './sidebarSupervisor';
 import supportInfo from './supportInfo';
 import trabalhoDiario from './trabalhoDiario';
 import usuario from './Usuario';
-import zona from './Zona';
+import zona from '../Zona/zonaReduce';
 import metodologia from './Metodologia';
 import sidebarAgente from './sidebarAgente';
 import rota from './Rota';

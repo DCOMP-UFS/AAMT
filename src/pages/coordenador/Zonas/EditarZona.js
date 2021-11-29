@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebar';
-import { updateZoneRequest, getZoneByIdRequest } from '../../../store/actions/ZonaActions';
+import { updateZoneRequest, getZoneByIdRequest } from '../../../store/Zona/zonaActions';
 
 // STYLES
 import { FormGroup, selectDefault } from '../../../styles/global';

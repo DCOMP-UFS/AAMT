@@ -1,4 +1,4 @@
-import { ActionTypes } from '../actions/ZonaActions';
+import { ActionTypes } from './zonaActions';
 
 const INITIAL_STATE = {
   zona: {},

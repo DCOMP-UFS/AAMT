@@ -1,4 +1,4 @@
-import { call, put } from 'redux-saga/effects';
+import { takeLatest, call, put, all } from 'redux-saga/effects';
 import * as servico from '../../services/requests/Equipe';
 import * as EquipeActions from './equipeActions';
 import * as AppConfigActions from '../AppConfig/appConfigActions';
@@ -16,4 +16,14 @@ export function* getMembros( action ) {
   } catch (error) {
     yield put( AppConfigActions.showNotifyToast( "Erro ao consultar membros da equipe, favor verifique a conexão", "error" ) );
   }
+}
+
+function* watchGetMembros() {
+  yield takeLatest( EquipeActions.ActionTypes.GET_MEMBROS_REQUEST, getMembros );
+}
+
+export function* equipeSaga() {
+  yield all( [
+    watchGetMembros(),
+  ] );
 }

@@ -3,8 +3,8 @@ import { persistStore, persistReducer } from 'redux-persist';
 import createSagaMiddleware from 'redux-saga';
 import storage from 'redux-persist/lib/storage';
 
-import rootReducer from './reducers';
-import sagas from './sagas';
+import rootReducer from './rootReducers';
+import sagas from './rootSagas';
 
 const persistConfig = {
   key: 'aamt',

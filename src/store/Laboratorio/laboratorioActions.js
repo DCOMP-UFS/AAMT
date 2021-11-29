@@ -1,6 +1,12 @@
+import * as AppConfigActions from '../actions/appConfig';
+
 export const ActionTypes = {
   GET_LABORATORIOS_REQUEST: "GET_LABORATORIOS_REQUEST",
   SET_LABORATORIOS: "SET_LABORATORIOS",
+  CREATE_LABORATORY_REQUEST: "CREATE_LABORATORY_REQUEST",
+  CREATE_LABORATORY_SUCCESS: "CREATE_LABORATORY_SUCCESS",
+  UPDATE_LABORATORY_REQUEST: "UPDATE_LABORATORY_REQUEST",
+  UPDATE_LABORATORY_SUCCESS: "UPDATE_LABORATORY_SUCCESS"
 }
 
 /**
@@ -29,6 +35,52 @@ export const setLaboratorios = laboratorios => {
     type: ActionTypes.SET_LABORATORIOS,
     payload: {
       laboratorios
+    }
+  }
+}
+
+export const createLaboratoryRequest = (cnpj, nome, endereco, tipo, municipio) =>{
+  return{
+    type: ActionTypes.CREATE_LABORATORY_REQUEST,
+    payload:{
+      cnpj,
+      nome,
+      endereco,
+      tipo,
+      municipio
+    }
+  }
+}
+
+export const createLaboratory = data =>{
+  return{
+    type: ActionTypes.CREATE_LABORATORY_SUCCESS,
+    payload:{
+      data
+    }
+  }
+}
+
+export const updateLaboratoryRequest = (cnpj_id, cnpj, nome, endereco, tipo, created_at, municipio) =>{
+  return {
+    type:ActionTypes.UPDATE_LABORATORY_REQUEST,
+    payload:{
+      cnpj_id,
+      cnpj,
+      nome,
+      endereco,
+      tipo,
+      created_at,
+      municipio
+    }
+  }
+}
+
+export const updateLaboratory = data =>{
+  return{
+    type: ActionTypes.UPDATE_LABORATORY_SUCCESS,
+    payload: {
+      data
     }
   }
 }

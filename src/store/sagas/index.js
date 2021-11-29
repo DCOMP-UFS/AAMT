@@ -4,6 +4,7 @@ import { ActionTypes as AppConfig } from '../actions/appConfig';
 import { ActionTypes as UserActions } from '../actions/UsuarioActions';
 import { ActionTypes as MunicipioActions } from '../actions/MunicipioActions';
 import { ActionTypes as LocalidadeActions } from '../actions/LocalidadeActions';
+//import { ActionTypes as LaboratorioActions} from '../actions/LaboratorioActions';
 import { ActionTypes as CategoriaActions } from '../actions/CategoriaActions';
 import { ActionTypes as ZonaActions } from '../actions/ZonaActions';
 import { ActionTypes as PaisActions } from '../actions/PaisActions';
@@ -64,6 +65,7 @@ import * as AtividadeSagas from './AtividadeSagas';
 import * as RotaSagas from './RotaSagas';
 import * as VistoriaSagas from './VistoriaSagas';
 import * as TrabalhoDiarioSagas from './TrabalhoDiarioSagas';
+
 
 // Nova Estrutura
 import * as NW_AtividadeSagas from '../Atividade/atividadeSagas';
@@ -198,6 +200,8 @@ export default function* rootSaga() {
 
     // Gerir Laboratório
     takeLatest( NW_LaboratorioActions.GET_LABORATORIOS_REQUEST, NW_LaboratorioSagas.getLaboratorios ),
+    takeLatest( NW_LaboratorioActions.CREATE_LABORATORY_REQUEST, NW_LaboratorioSagas.createLaboratory),
+    takeLatest( NW_LaboratorioActions.UPDATE_LABORATORY_REQUEST, NW_LaboratorioSagas.updateLaboratorio),
 
     // Gerir Mosquito
     takeLatest( NW_MosquitoActions.GET_MOSQUITOS_REQUEST, NW_MosquitoSagas.getMosquitos ),

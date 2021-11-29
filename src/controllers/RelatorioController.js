@@ -193,7 +193,7 @@ getTeamDailyActivity = async (req, res) => {
 
     vistorias.map(vistoria => {
       const depositos = vistoria.depositos;
-      const tipoImovel = vistoria.imovel.tipoImovel;
+      const tipoImovel = vistoria.tipoImovelVistoria;
       let index = -1;
 
       // Calculando Dash Imóveis Por Tipo.
@@ -813,7 +813,9 @@ getActivityWeeklyReport = async (req, res) => {
             break;
         }
 
-        switch (vistoria.imovel.tipoImovel) {
+        console.log(vistoria.tipoImovelVistoria)
+
+        switch (vistoria.tipoImovelVistoria) {
           case 1:
             propertiesByType[0].value++;
             break;
@@ -993,7 +995,7 @@ getActivityWeeklyReport = async (req, res) => {
           properties[ 1 ].value++;
 
         // Preenchendo resultados de laboratório por imóvel
-        switch( vistoria.imovel.tipoImovel ) {
+        switch( vistoria.tipoImovelVistoria ) {
           case 1:
             // Somando imóveis positivos para aegypti
             if( property_contain_aegypti )
@@ -1393,6 +1395,8 @@ getCurrentActivityReport = async ( req, res ) => {
         const depositos = vistoria.depositos;
         const num_quarteirao = vistoria.imovel.lado.quarteirao.numero;
 
+        console.log(vistoria)
+
         switch (vistoria.situacaoVistoria) {
           case 'N':
             propertiesByStatus[0].value++;
@@ -1414,7 +1418,7 @@ getCurrentActivityReport = async ( req, res ) => {
             break;
         }
 
-        switch (vistoria.imovel.tipoImovel) {
+        switch (vistoria.tipoImovelVistoria) {
           case 1:
             propertiesByType[0].value++;
             break;
@@ -1594,7 +1598,7 @@ getCurrentActivityReport = async ( req, res ) => {
           properties[ 1 ].value++;
 
         // Preenchendo resultados de laboratório por imóvel
-        switch( vistoria.imovel.tipoImovel ) {
+        switch( vistoria.tipoImovelVistoria ) {
           case 1:
             // Somando imóveis positivos para aegypti
             if( property_contain_aegypti )
@@ -1845,8 +1849,9 @@ getTeamActivityReport = async (req, res) => {
 
     vistorias.map(vistoria => {
       const depositos = vistoria.depositos;
-      const tipoImovel = vistoria.imovel.tipoImovel;
+      const tipoImovel = vistoria.tipoImovelVistoria;
       let index = -1;
+      console.log(tipoImovel);
 
       // Calculando Dash Imóveis Por Tipo.
       switch( tipoImovel ) {

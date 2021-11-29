@@ -18,7 +18,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 1,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -29,7 +29,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 1,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -40,7 +40,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 1,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -51,7 +51,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 1,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -62,7 +62,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 2,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -73,7 +73,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 2,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -84,7 +84,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 2,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -95,7 +95,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 2,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -106,7 +106,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 3,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -117,7 +117,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 3,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -128,7 +128,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 3,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -139,7 +139,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 3,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -150,7 +150,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 4,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -161,7 +161,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 4,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -172,7 +172,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 4,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -183,7 +183,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 4,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -194,7 +194,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 5,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -205,7 +205,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 5,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -216,7 +216,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 5,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -227,7 +227,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 5,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -238,7 +238,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 6,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -249,7 +249,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 6,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -260,7 +260,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 6,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -271,7 +271,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 6,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -282,7 +282,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 7,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -293,7 +293,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 7,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -304,7 +304,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 7,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -315,7 +315,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 7,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -326,7 +326,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 8,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -337,7 +337,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 8,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -348,7 +348,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 8,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -359,7 +359,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 8,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -370,7 +370,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 9,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -381,7 +381,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 9,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -392,7 +392,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 10,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -403,7 +403,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 10,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -414,7 +414,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 11,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -425,7 +425,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 11,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -436,7 +436,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 12,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -447,7 +447,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 12,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -458,7 +458,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 13,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -469,7 +469,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 13,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -480,7 +480,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 14,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -491,7 +491,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 14,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -502,7 +502,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 15,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -513,7 +513,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 15,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -524,7 +524,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 16,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -535,7 +535,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 16,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -546,7 +546,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 17,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -557,7 +557,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 17,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -568,7 +568,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 18,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -579,7 +579,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 18,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -590,7 +590,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 19,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -601,7 +601,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 19,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -612,7 +612,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 20,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -623,7 +623,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 20,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -634,7 +634,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 21,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -645,7 +645,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 21,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -656,7 +656,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 22,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -667,7 +667,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 22,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -678,7 +678,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 23,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -689,7 +689,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 23,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -700,7 +700,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 24,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -711,7 +711,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 24,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -722,7 +722,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 25,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -733,7 +733,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 25,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -744,7 +744,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 26,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -755,7 +755,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 26,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -766,7 +766,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 27,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -777,7 +777,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 27,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -788,7 +788,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 28,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -799,7 +799,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 28,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -810,7 +810,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 29,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -821,7 +821,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 29,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -832,7 +832,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 30,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -843,7 +843,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 30,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -854,7 +854,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 31,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -865,7 +865,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 31,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -876,7 +876,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 32,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -887,7 +887,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 32,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -898,7 +898,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 35,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -909,7 +909,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 35,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -920,7 +920,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 36,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -931,7 +931,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 36,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -942,7 +942,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 33,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -953,7 +953,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 33,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -964,7 +964,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 33,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -975,7 +975,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 40,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -986,7 +986,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 41,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -997,7 +997,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 41,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1008,7 +1008,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 41,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1019,7 +1019,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 41,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1030,7 +1030,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 41,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1041,7 +1041,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 41,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1052,7 +1052,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 41,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1063,7 +1063,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 41,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1074,7 +1074,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 41,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1085,7 +1085,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 41,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1096,7 +1096,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 43,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1107,7 +1107,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 43,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1118,7 +1118,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 43,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1129,7 +1129,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 43,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1140,7 +1140,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 43,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1151,7 +1151,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 43,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1162,7 +1162,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 43,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1173,7 +1173,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 43,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1184,7 +1184,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 43,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1195,7 +1195,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 43,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1206,7 +1206,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 43,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1217,7 +1217,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 43,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1228,7 +1228,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 43,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1239,7 +1239,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 43,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1250,7 +1250,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 43,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1261,7 +1261,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 43,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1272,7 +1272,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 43,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1283,7 +1283,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 43,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1294,7 +1294,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 43,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1305,7 +1305,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 43,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1316,7 +1316,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 45,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1327,7 +1327,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 45,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1338,7 +1338,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 45,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1349,7 +1349,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 45,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1360,7 +1360,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 47,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1371,7 +1371,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 47,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1382,7 +1382,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 47,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -1393,7 +1393,7 @@ module.exports = {
         complemento: faker.address.secondaryAddress(),
         tipo_imovel: faker.datatype.number({ max: 4, min: 1 }),
         lado_id: 47,
-        ...generateCoordinate(),
+        // ...generateCoordinate(),
         created_at: new Date(),
         updated_at: new Date()
       },

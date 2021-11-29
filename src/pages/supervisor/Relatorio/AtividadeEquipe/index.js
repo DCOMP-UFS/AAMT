@@ -77,7 +77,7 @@ export const RelatorioAtividadeEquipe = ({ atividades, ciclo, usuario, ...props 
 
 const mapStateToProps = state => ( {
   usuario   : state.appConfig.usuario,
-  ciclo     : state.nw_ciclo.ciclo,
+  ciclo     : state.ciclo.ciclo,
   atividades: state.atividade.atividades
 } );
 

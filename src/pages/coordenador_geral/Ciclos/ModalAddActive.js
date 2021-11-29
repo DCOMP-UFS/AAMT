@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { getMethodologiesRequest } from '../../../store/actions/MetodologiaActions';
-import { changeFlAddActive } from '../../../store/actions/CicloActions';
+import { changeFlAddActive } from '../../../store/Ciclo/cicloActions';
 
 // STYLES
 import { ContainerArrow } from '../../../styles/util';

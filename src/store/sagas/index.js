@@ -11,7 +11,6 @@ import { ActionTypes as RegiaoActions } from '../actions/RegiaoActions';
 import { ActionTypes as EstadoActions } from '../actions/EstadoActions';
 import { ActionTypes as RegionalSaudeActions } from '../actions/RegionalSaudeActions';
 import { ActionTypes as RuaActions } from '../actions/RuaActions';
-import { ActionTypes as CicloActions } from '../actions/CicloActions';
 import { ActionTypes as MetodologiaActions } from '../actions/MetodologiaActions';
 import { ActionTypes as RotaActions } from '../actions/RotaActions';
 import { ActionTypes as VistoriaActions } from '../actions/VistoriaActions';
@@ -23,7 +22,6 @@ import { ActionTypes as NW_AmostraActions } from '../Amostra/amostraActions';
 import { ActionTypes as NW_LaboratorioActions } from '../Laboratorio/laboratorioActions';
 import { ActionTypes as NW_MosquitoActions } from '../Mosquito/mosquitoActions';
 import { ActionTypes as NW_ImovelActions } from '../Imovel/imovelActions';
-import { ActionTypes as NW_CicloActions } from '../Ciclo/cicloActions';
 import { ActionTypes as NW_TrabalhoActions } from '../TrabalhoDiario/trabalhoDiarioActions';
 import { ActionTypes as NW_RelatorioActions } from '../Relatorio/relatorioActions';
 import { ActionTypes as NW_EquipeActions } from '../Equipe/equipeActions';
@@ -47,7 +45,6 @@ import { GetRegionsByNation } from './RegiaoSagas';
 import { GetStatesByRegion } from './EstadoSagas';
 import { getRegionalHealthByState } from './RegionalSaudeSagas';
 import { getStreetByLocality, createStreet, updateStreet, deleteStreet } from './RuaSagas';
-import * as CicloSagas from './CicloSagas';
 import * as MetodologiaSagas from './MetodologiaSagas';
 import * as RotaSagas from './RotaSagas';
 import * as VistoriaSagas from './VistoriaSagas';
@@ -59,7 +56,6 @@ import * as NW_AmostraSagas from '../Amostra/amostraSagas';
 import * as NW_LaboratorioSagas from '../Laboratorio/laboratorioSagas';
 import * as NW_MosquitoSagas from '../Mosquito/mosquitoSagas';
 import * as NW_ImovelSagas from '../Imovel/imovelSagas';
-import * as NW_CicloSagas from '../Ciclo/cicloSagas';
 import * as NW_TrabalhoSagas from '../TrabalhoDiario/trabalhoDiarioSagas';
 import * as NW_RelatorioSagas from '../Relatorio/relatorioSagas';
 import * as NW_EquipeSagas from '../Equipe/equipeSagas';
@@ -68,6 +64,7 @@ import * as NW_RuaSagas from '../Rua/ruaSagas';
 import { quarteiraoSaga } from '../Quarteirao/quarteiraoSagas';
 import { rotaSaga } from '../Rota/rotaSagas';
 import { atividadeSaga } from '../Atividade/atividadeSagas';
+import { cicloSaga } from '../Ciclo/cicloSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -128,16 +125,7 @@ export default function* rootSaga() {
     takeLatest( RuaActions.DELETE_STREET_REQUEST, deleteStreet ),
 
     // Gerir Ciclo
-    takeLatest( CicloActions.GET_CYCLE_REQUEST, CicloSagas.getCycle ),
-    takeLatest( CicloActions.GET_CYCLES_FOR_YEAR_REQUEST, CicloSagas.getCyclesForYear ),
-    takeLatest( CicloActions.GET_CYCLES_REQUEST, CicloSagas.getCycles ),
-    takeLatest( CicloActions.GET_ALLOWED_CYCLES_REQUEST, CicloSagas.getAllowedCycles ),
-    takeLatest( CicloActions.GET_OPEN_CYCLE_REQUEST, CicloSagas.getOpenCyle ),
-    takeLatest( CicloActions.CREATE_CYCLE_REQUEST, CicloSagas.createCycle ),
-    takeLatest( CicloActions.UPDATE_CYCLE_REQUEST, CicloSagas.updateCycle ),
-    takeLatest( CicloActions.DESTROY_CYCLE_REQUEST, CicloSagas.destroyCycle ),
-    // Nova Estrutura
-    takeLatest( NW_CicloActions.GET_CICLO_ABERTO_REQUEST, NW_CicloSagas.getCicloAberto ),
+    cicloSaga(),
 
     // Gerir Metodologia
     takeLatest( MetodologiaActions.GET_METHODOLOGIES_REQUEST, MetodologiaSagas.getMethodologies ),

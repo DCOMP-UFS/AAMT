@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { destroyCycleRequest, changeFlDestroyed } from '../../../store/actions/CicloActions';
+import { destroyCycleRequest, changeFlDestroyed } from '../../../store/Ciclo/cicloActions';
 import { showNotifyToast } from '../../../store/actions/appConfig';
 
 // STYLES

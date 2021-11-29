@@ -8,7 +8,7 @@ import SelecionarQuarteiroes from '../components/SelecionarQuarteiroes';
 import MapaRotas from '../components/MapaRotas';
 
 // ACTIONS
-import { getOpenCycleRequest } from '../../../store/actions/CicloActions';
+import { getOpenCycleRequest } from '../../../store/Ciclo/cicloActions';
 import { getResponsabilityActivitiesRequest, setIndexEquipe, setIndexMembro } from '../../../store/Atividade/atividadeActions';
 import { planejarRotaRequest, setCarregandoRota, getRotasPlanejadasRequest } from '../../../store/Rota/rotaActions';
 import { showNotifyToast } from '../../../store/actions/appConfig';

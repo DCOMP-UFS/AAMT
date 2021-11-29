@@ -10,7 +10,7 @@ import ButtonSave from '../../../../components/ButtonSave';
 // ACTIONS
 import { changeSidebar } from '../../../../store/actions/sidebar';
 import { getMethodologiesRequest } from '../../../../store/actions/MetodologiaActions';
-import { getAllowedCyclesRequest } from '../../../../store/actions/CicloActions';
+import { getAllowedCyclesRequest } from '../../../../store/Ciclo/cicloActions';
 import { createActiveRequest } from '../../../../store/Atividade/atividadeActions';
 
 // STYLES

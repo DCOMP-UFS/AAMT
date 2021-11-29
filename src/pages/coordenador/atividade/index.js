@@ -11,7 +11,7 @@ import { showNotifyToast } from '../../../store/actions/appConfig';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebar';
-import { getAllowedCyclesRequest } from '../../../store/actions/CicloActions';
+import { getAllowedCyclesRequest } from '../../../store/Ciclo/cicloActions';
 import { getActivitiesByCityRequest } from '../../../store/Atividade/atividadeActions';
 
 // STYLES

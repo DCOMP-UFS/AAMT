@@ -10,7 +10,7 @@ import { FaSyncAlt } from 'react-icons/fa';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebarCoordGeral';
-import { getCyclesForYearRequest } from '../../../store/actions/CicloActions';
+import { getCyclesForYearRequest } from '../../../store/Ciclo/cicloActions';
 
 // STYLES
 import { Container } from './styles';

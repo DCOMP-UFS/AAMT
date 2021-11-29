@@ -11,7 +11,7 @@ import ButtonSave from '../../../../components/ButtonSave';
 // ACTIONS
 import { changeSidebar } from '../../../../store/actions/sidebarCoordGeral';
 import { getMethodologiesRequest } from '../../../../store/actions/MetodologiaActions';
-import { getAllowedCyclesRequest } from '../../../../store/actions/CicloActions';
+import { getAllowedCyclesRequest } from '../../../../store/Ciclo/cicloActions';
 import { getCityByRegionalHealthRequest } from '../../../../store/actions/MunicipioActions';
 import { createActiveRequest } from '../../../../store/Atividade/atividadeActions';
 

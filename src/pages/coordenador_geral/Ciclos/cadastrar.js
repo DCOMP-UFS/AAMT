@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebarCoordGeral';
-import { createCycleRequest, changeFlAddActive } from '../../../store/actions/CicloActions';
+import { createCycleRequest, changeFlAddActive } from '../../../store/Ciclo/cicloActions';
 
 // STYLES
 import { FormGroup, selectDefault } from '../../../styles/global';

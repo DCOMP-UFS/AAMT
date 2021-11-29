@@ -10,7 +10,7 @@ import cityIcon from '../../../assets/city-icon.png';
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebarCoordGeral';
 import { getActivitiesOfCityRequest } from '../../../store/Atividade/atividadeActions';
-import { getAllowedCyclesRequest } from '../../../store/actions/CicloActions';
+import { getAllowedCyclesRequest } from '../../../store/Ciclo/cicloActions';
 
 // STYLES
 import {

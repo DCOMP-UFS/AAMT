@@ -19,7 +19,7 @@ export const getTrabalhosUsuarioRequest = user_id => {
 }
 
 /**
- * Set um valor na variavel ciclo no reduce nw_ciclo
+ * Set um valor na variavel ciclo no reduce ciclo
  *
  * @param {*} ciclo
  * @returns

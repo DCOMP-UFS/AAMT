@@ -18,7 +18,6 @@ import supportInfo from './supportInfo';
 import trabalhoDiario from './trabalhoDiario';
 import usuario from './Usuario';
 import zona from './Zona';
-import ciclo from './Ciclo';
 import metodologia from './Metodologia';
 import sidebarAgente from './sidebarAgente';
 import rota from './Rota';
@@ -33,7 +32,7 @@ import nw_laboratorio from '../Laboratorio/laboratorioReduce';
 import nw_mosquito from '../Mosquito/mosquitoReduce';
 import nw_imovel from '../Imovel/imovelReduce';
 import quarteirao from '../Quarteirao/quarteiraoReduce';
-import nw_ciclo from '../Ciclo/cicloReduce';
+import ciclo from '../Ciclo/cicloReduce';
 import nw_trabalho from '../TrabalhoDiario/trabalhoDiarioReduce';
 import nw_relatorio from '../Relatorio/relatorioReduce';
 import nw_equipe from '../Equipe/equipeReduce';
@@ -73,7 +72,6 @@ export default combineReducers({
   nw_mosquito,
   nw_imovel,
   quarteirao,
-  nw_ciclo,
   nw_trabalho,
   nw_relatorio,
   nw_equipe,

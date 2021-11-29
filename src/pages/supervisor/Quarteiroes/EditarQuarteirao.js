@@ -28,7 +28,7 @@ import { connect } from 'react-redux';
 import { changeSidebar } from '../../../store/actions/sidebarSupervisor';
 import { getLocationByCityRequest } from '../../../store/Localidade/localidadeActions';
 import { getZoneByLocalityRequest, getZoneByCityRequest } from '../../../store/Zona/zonaActions';
-import { getStreetByLocalityRequest } from '../../../store/actions/RuaActions';
+import { getStreetByLocalityRequest } from '../../../store/Rua/ruaActions';
 import {
   getQuarteiraoPorIdRequest,
   setImovelEditar,

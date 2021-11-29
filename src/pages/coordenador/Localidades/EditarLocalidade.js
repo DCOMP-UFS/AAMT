@@ -20,7 +20,7 @@ import { connect } from 'react-redux';
 import { changeSidebar } from '../../../store/actions/sidebar';
 import { getLocationByIdRequest, updateLocationRequest } from '../../../store/Localidade/localidadeActions';
 import { getCategoryRequest } from '../../../store/Categoria/categoriaActions';
-import { getStreetByLocalityRequest, changeStreetSelect } from '../../../store/actions/RuaActions';
+import { getStreetByLocalityRequest, changeStreetSelect } from '../../../store/Rua/ruaActions';
 
 // STYLES
 import {

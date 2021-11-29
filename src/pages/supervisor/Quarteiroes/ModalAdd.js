@@ -22,7 +22,7 @@ import { connect } from 'react-redux';
 import { addQuarteiraoRequest, setCreated } from '../../../store/Quarteirao/quarteiraoActions';
 import { getLocationByCityRequest } from '../../../store/Localidade/localidadeActions';
 import { getZoneByCityRequest } from '../../../store/Zona/zonaActions';
-import { getStreetByLocalityRequest } from '../../../store/actions/RuaActions';
+import { getStreetByLocalityRequest } from '../../../store/Rua/ruaActions';
 import { showNotifyToast } from '../../../store/AppConfig/appConfigActions';
 
 // STYLES

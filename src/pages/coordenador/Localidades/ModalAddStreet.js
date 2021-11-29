@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { createStreetRequest } from '../../../store/actions/RuaActions';
+import { createStreetRequest } from '../../../store/Rua/ruaActions';
 
 // STYLES
 import { ContainerArrow } from '../../../styles/util';

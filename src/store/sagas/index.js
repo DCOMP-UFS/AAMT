@@ -2,7 +2,6 @@ import { all, takeLatest, takeEvery } from 'redux-saga/effects';
 
 import { ActionTypes as AppConfig } from '../AppConfig/appConfigActions';
 import { ActionTypes as UserActions } from '../actions/UsuarioActions';
-import { ActionTypes as RuaActions } from '../actions/RuaActions';
 import { ActionTypes as TrabalhoDiarioActions } from '../actions/trabalhoDiario';
 
 // Nova Estrutura
@@ -11,7 +10,6 @@ import { ActionTypes as NW_MosquitoActions } from '../Mosquito/mosquitoActions';
 import { ActionTypes as NW_TrabalhoActions } from '../TrabalhoDiario/trabalhoDiarioActions';
 import { ActionTypes as NW_RelatorioActions } from '../Relatorio/relatorioActions';
 import { ActionTypes as NW_EquipeActions } from '../Equipe/equipeActions';
-import { ActionTypes as NW_RuaActions } from '../Rua/ruaActions';
 
 import {
   authenticate,
@@ -22,7 +20,6 @@ import {
   getUsersByRegional,
   getUsersByCity
 } from './UsuarioSagas';
-import { getStreetByLocality, createStreet, updateStreet, deleteStreet } from './RuaSagas';
 import * as TrabalhoDiarioSagas from './TrabalhoDiarioSagas';
 
 // Nova Estrutura
@@ -31,7 +28,6 @@ import * as NW_MosquitoSagas from '../Mosquito/mosquitoSagas';
 import * as NW_TrabalhoSagas from '../TrabalhoDiario/trabalhoDiarioSagas';
 import * as NW_RelatorioSagas from '../Relatorio/relatorioSagas';
 import * as NW_EquipeSagas from '../Equipe/equipeSagas';
-import * as NW_RuaSagas from '../Rua/ruaSagas';
 
 import { quarteiraoSaga } from '../Quarteirao/quarteiraoSagas';
 import { rotaSaga } from '../Rota/rotaSagas';
@@ -49,6 +45,7 @@ import { paisSaga } from '../Pais/paisSagas';
 import { regiaoSaga } from '../Regiao/regiaoSagas';
 import { regionalSaudeSaga } from '../RegionalSaude/regionalSaudeSagas';
 import { vistoriaSaga } from '../Vistoria/vistoriaSagas';
+import { ruaSaga } from '../Rua/ruaSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -91,10 +88,7 @@ export default function* rootSaga() {
     quarteiraoSaga(),
 
     // Gerir Rua
-    takeLatest( RuaActions.GET_STREET_BY_LOCALITY_REQUEST, getStreetByLocality ),
-    takeLatest( RuaActions.CREATE_STREET_REQUEST, createStreet ),
-    takeLatest( RuaActions.UPDATE_STREET_REQUEST, updateStreet ),
-    takeLatest( RuaActions.DELETE_STREET_REQUEST, deleteStreet ),
+    ruaSaga(),
 
     // Gerir Ciclo
     cicloSaga(),
@@ -137,8 +131,5 @@ export default function* rootSaga() {
 
     // Gerir Equipe
     takeLatest( NW_EquipeActions.GET_MEMBROS_REQUEST, NW_EquipeSagas.getMembros ),
-
-    // Gerir Rua
-    takeLatest( NW_RuaActions.GET_RUA_POR_CEP_REQUEST, NW_RuaSagas.getRuaPorCep ),
   ]);
 }

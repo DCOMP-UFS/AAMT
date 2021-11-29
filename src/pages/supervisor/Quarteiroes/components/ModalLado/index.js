@@ -165,7 +165,7 @@ const ModalLado = ( { lado, acao, show, handleClose, ruas, addLado, ...props } )
  * @returns 
  */
 const mapStateToProps = state => ( {
-  rua: state.nw_rua.rua
+  rua: state.rua.rua
 } );
 
 /**

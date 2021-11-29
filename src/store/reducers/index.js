@@ -8,7 +8,6 @@ import municipio from '../Municipio/municipioReduce';
 import pais from '../Pais/paisReduce';
 import regiao from '../Regiao/regiaoReduce';
 import regionalSaude from '../RegionalSaude/regionalSaudeReduce';
-import rua from './Rua';
 import sidebar from './sidebar';
 import sidebarCoordGeral from './sidebarCoordGeral';
 import sidebarLab from './sidebarLab';
@@ -33,7 +32,7 @@ import ciclo from '../Ciclo/cicloReduce';
 import nw_trabalho from '../TrabalhoDiario/trabalhoDiarioReduce';
 import nw_relatorio from '../Relatorio/relatorioReduce';
 import nw_equipe from '../Equipe/equipeReduce';
-import nw_rua from '../Rua/ruaReduce';
+import rua from '../Rua/ruaReduce';
 
 export default combineReducers( {
   sidebarCoordGeral,
@@ -69,5 +68,4 @@ export default combineReducers( {
   nw_trabalho,
   nw_relatorio,
   nw_equipe,
-  nw_rua
 } );

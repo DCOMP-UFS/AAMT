@@ -10,7 +10,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { updateStreetRequest } from '../../../store/actions/RuaActions';
+import { updateStreetRequest } from '../../../store/Rua/ruaActions';
 import { getLocationByCityRequest } from '../../../store/Localidade/localidadeActions';
 
 // STYLES

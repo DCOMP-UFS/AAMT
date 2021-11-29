@@ -3,7 +3,6 @@ import { all, takeLatest, takeEvery } from 'redux-saga/effects';
 import { ActionTypes as AppConfig } from '../AppConfig/appConfigActions';
 import { ActionTypes as UserActions } from '../actions/UsuarioActions';
 import { ActionTypes as MunicipioActions } from '../actions/MunicipioActions';
-import { ActionTypes as LocalidadeActions } from '../actions/LocalidadeActions';
 import { ActionTypes as PaisActions } from '../actions/PaisActions';
 import { ActionTypes as RegiaoActions } from '../actions/RegiaoActions';
 import { ActionTypes as RegionalSaudeActions } from '../actions/RegionalSaudeActions';
@@ -32,7 +31,6 @@ import {
   getUsersByCity
 } from './UsuarioSagas';
 import { getMunicipios, createCity, updateCity, getCityById, getCityByRegionalHealth } from './MunicipioSagas';
-import { getLocalidades, createLocation, updateLocation, getLocationById, getLocationByCity } from './LocalidadeSagas';
 import { getNations } from './PaisSagas';
 import { GetRegionsByNation } from './RegiaoSagas';
 import { getRegionalHealthByState } from './RegionalSaudeSagas';
@@ -60,6 +58,7 @@ import { categoriaSaga } from '../Categoria/categoriaSagas';
 import { estadoSaga } from '../Estado/estadoSagas';
 import { zonaSaga } from '../Zona/zonaSagas';
 import { imovelSaga } from '../Imovel/imovelSagas';
+import { localidadeSaga } from '../Localidade/localidadeSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -82,11 +81,7 @@ export default function* rootSaga() {
     takeLatest( MunicipioActions.UPDATE_CITY_REQUEST, updateCity ),
 
     // Gerir Localidade
-    takeLatest( LocalidadeActions.GET_LOCATION_REQUEST, getLocalidades ),
-    takeLatest( LocalidadeActions.GET_LOCATION_BY_ID_REQUEST, getLocationById ),
-    takeLatest( LocalidadeActions.GET_LOCATION_BY_CITY_REQUEST, getLocationByCity ),
-    takeLatest( LocalidadeActions.CREATE_LOCATION_REQUEST, createLocation ),
-    takeLatest( LocalidadeActions.UPDATE_LOCATION_REQUEST, updateLocation ),
+    localidadeSaga(),
 
     // Gerir Categoria
     categoriaSaga(),

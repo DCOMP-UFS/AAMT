@@ -1,4 +1,4 @@
-import { ActionTypes } from '../actions/LocalidadeActions';
+import { ActionTypes } from './localidadeActions';
 
 const INITIAL_STATE = {
   localidade: {},

@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { updateStreetRequest } from '../../../store/actions/RuaActions';
-import { getLocationByCityRequest } from '../../../store/actions/LocalidadeActions';
+import { getLocationByCityRequest } from '../../../store/Localidade/localidadeActions';
 
 // STYLES
 import { ContainerArrow } from '../../../styles/util';

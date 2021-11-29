@@ -10,7 +10,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { createLocationRequest, clearCreate } from '../../../store/actions/LocalidadeActions';
+import { createLocationRequest, clearCreate } from '../../../store/Localidade/localidadeActions';
 import { getCategoryRequest } from '../../../store/Categoria/categoriaActions';
 
 // STYLES

@@ -16,7 +16,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/SidebarCoordGeral/sidebarCoordGeralActions';
-import { changeTableSelected } from '../../../store/actions/supportInfo';
+import { changeTableSelected } from '../../../store/SupportInfo/supportInfoActions';
 import { getCyclesRequest, setIndexArray } from '../../../store/Ciclo/cicloActions';
 import { showNotifyToast } from '../../../store/AppConfig/appConfigActions';
 

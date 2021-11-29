@@ -12,7 +12,7 @@ import sidebar from '../Sidebar/sidebarReduce';
 import sidebarCoordGeral from '../SidebarCoordGeral/sidebarCoordGeralReduce';
 import sidebarLab from '../SidebarLab/sidebarLabReduce';
 import sidebarSupervisor from '../SidebarSupervisor/sidebarSupervisorReduce';
-import supportInfo from './supportInfo';
+import supportInfo from '../SupportInfo/supportInfoReduce';
 import trabalhoDiario from './trabalhoDiario';
 import usuario from './Usuario';
 import zona from '../Zona/zonaReduce';

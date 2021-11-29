@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTION
-import { setVistoriaImovel, setImovelSelect, handleQuarteirao } from '../../../store/actions/supportInfo';
+import { setVistoriaImovel, setImovelSelect, handleQuarteirao } from '../../../store/SupportInfo/supportInfoActions';
 
 // COMPONENTS
 import { UlImovel, LiImovel, ContainerIcon, DivDescription, LiEmpty, Span } from './styles';

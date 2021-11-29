@@ -18,7 +18,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { showNotifyToast } from '../../../../../store/AppConfig/appConfigActions';
-import { addUnidade } from '../../../../../store/actions/supportInfo';
+import { addUnidade } from '../../../../../store/SupportInfo/supportInfoActions';
 import { atualizarRecipiente } from '../../../../../store/Vistoria/vistoriaActions';
 
 // STYLES

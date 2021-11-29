@@ -21,7 +21,7 @@ import { connect } from 'react-redux';
 import { changeSidebar } from '../../../store/SidebarAgente/sidebarAgenteActions';
 import { getRouteRequest } from '../../../store/Rota/rotaActions';
 import { resetHandleSave, routeNotStarted } from '../../../store/VistoriaCache/vistoriaCacheActions';
-import { changeTableSelected } from '../../../store/actions/supportInfo';
+import { changeTableSelected } from '../../../store/SupportInfo/supportInfoActions';
 import { isFinalizadoRequest } from '../../../store/Rota/rotaActions';
 
 // STYLES

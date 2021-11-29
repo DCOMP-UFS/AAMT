@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { addInspecao, addUnidade } from '../../../store/actions/supportInfo';
+import { addInspecao, addUnidade } from '../../../store/SupportInfo/supportInfoActions';
 
 // COMPONENTS
 import { ContainerUnidade } from './styles';

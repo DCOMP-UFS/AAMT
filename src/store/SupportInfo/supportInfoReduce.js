@@ -1,7 +1,4 @@
-import { ActionTypes } from '../actions/supportInfo';
-
-// ENUMERATE
-import { tipoImovel } from '../../config/enumerate';
+import { ActionTypes } from './supportInfoActions';
 
 // OBJETOS
 const createImovel = (idImovel, numero, sequencia, tipoImovel, complemento, responsavel, long, lat) => {

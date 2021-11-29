@@ -17,7 +17,6 @@ import { ActionTypes as TrabalhoDiarioActions } from '../actions/trabalhoDiario'
 import { ActionTypes as NW_RotaActions } from '../Rota/rotaActions';
 import { ActionTypes as NW_LaboratorioActions } from '../Laboratorio/laboratorioActions';
 import { ActionTypes as NW_MosquitoActions } from '../Mosquito/mosquitoActions';
-import { ActionTypes as NW_ImovelActions } from '../Imovel/imovelActions';
 import { ActionTypes as NW_TrabalhoActions } from '../TrabalhoDiario/trabalhoDiarioActions';
 import { ActionTypes as NW_RelatorioActions } from '../Relatorio/relatorioActions';
 import { ActionTypes as NW_EquipeActions } from '../Equipe/equipeActions';
@@ -47,7 +46,6 @@ import * as TrabalhoDiarioSagas from './TrabalhoDiarioSagas';
 import * as NW_RotaSagas from '../Rota/rotaSagas';
 import * as NW_LaboratorioSagas from '../Laboratorio/laboratorioSagas';
 import * as NW_MosquitoSagas from '../Mosquito/mosquitoSagas';
-import * as NW_ImovelSagas from '../Imovel/imovelSagas';
 import * as NW_TrabalhoSagas from '../TrabalhoDiario/trabalhoDiarioSagas';
 import * as NW_RelatorioSagas from '../Relatorio/relatorioSagas';
 import * as NW_EquipeSagas from '../Equipe/equipeSagas';
@@ -61,6 +59,7 @@ import { amostraSaga } from '../Amostra/amostraSagas';
 import { categoriaSaga } from '../Categoria/categoriaSagas';
 import { estadoSaga } from '../Estado/estadoSagas';
 import { zonaSaga } from '../Zona/zonaSagas';
+import { imovelSaga } from '../Imovel/imovelSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -157,9 +156,7 @@ export default function* rootSaga() {
     takeLatest( NW_MosquitoActions.GET_MOSQUITOS_REQUEST, NW_MosquitoSagas.getMosquitos ),
 
     // Gerir Imóvel
-    takeLatest( NW_ImovelActions.GET_IMOVEIS_MUNICIPIO_REQUEST, NW_ImovelSagas.getImoveis ),
-    takeLatest( NW_ImovelActions.ADD_IMOVEL_REQUEST, NW_ImovelSagas.addImovel ),
-    takeLatest( NW_ImovelActions.EDITAR_IMOVEL_REQUEST, NW_ImovelSagas.editarImovel ),
+    imovelSaga(),
 
     // Gerir Relatórios
     takeLatest( NW_RelatorioActions.GET_BOLETIM_SEMANAL_REQUEST, NW_RelatorioSagas.getBoletimSemanal ),

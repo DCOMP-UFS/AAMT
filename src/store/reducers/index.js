@@ -3,7 +3,6 @@ import { combineReducers } from 'redux';
 import appConfig from '../AppConfig/appConfigReduce';
 import categoria from '../Categoria/categoriaReduce';
 import estado from '../Estado/estadoReduce';
-import imovel from './Imovel';
 import localidade from './Localidade';
 import municipio from './Municipio';
 import pais from './Pais';
@@ -30,7 +29,7 @@ import nw_rota from '../Rota/rotaReduce';
 import amostra from '../Amostra/amostraReduce';
 import nw_laboratorio from '../Laboratorio/laboratorioReduce';
 import nw_mosquito from '../Mosquito/mosquitoReduce';
-import nw_imovel from '../Imovel/imovelReduce';
+import imovel from '../Imovel/imovelReduce';
 import quarteirao from '../Quarteirao/quarteiraoReduce';
 import ciclo from '../Ciclo/cicloReduce';
 import nw_trabalho from '../TrabalhoDiario/trabalhoDiarioReduce';
@@ -70,7 +69,6 @@ export default combineReducers( {
   amostra,
   nw_laboratorio,
   nw_mosquito,
-  nw_imovel,
   quarteirao,
   nw_trabalho,
   nw_relatorio,

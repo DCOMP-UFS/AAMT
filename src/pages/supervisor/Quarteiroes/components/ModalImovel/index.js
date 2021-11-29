@@ -15,9 +15,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { clearCreate } from '../../../../../store/actions/ImovelActions';
 import { setUpdated } from '../../../../../store/Quarteirao/quarteiraoActions';
-import { addImovelRequest, editarImovelRequest } from '../../../../../store/Imovel/imovelActions';
+import { addImovelRequest, editarImovelRequest, clearCreate } from '../../../../../store/Imovel/imovelActions';
 
 // STYLES
 import { ContainerArrow } from '../../../../../styles/util';

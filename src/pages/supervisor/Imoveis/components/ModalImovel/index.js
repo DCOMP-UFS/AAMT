@@ -420,8 +420,8 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
 
 const mapStateToProps = state => ({
   usuario     : state.appConfig.usuario,
-  imovel      : state.nw_imovel.imovel,
-  reload      : state.nw_imovel.reload,
+  imovel      : state.imovel.imovel,
+  reload      : state.imovel.reload,
   quarteiroes : state.quarteirao.quarteiroes,
   lados       : state.quarteirao.lados,
 })

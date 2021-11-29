@@ -188,9 +188,9 @@ export const Imoveis = ({ imoveis, usuario, ...props }) => {
 
 const mapStateToProps = state => ({
   usuario: state.appConfig.usuario,
-  imoveis: state.nw_imovel.imoveis,
-  imovel: state.nw_imovel.imovel,
-  reload: state.nw_imovel.reload,
+  imoveis: state.imovel.imoveis,
+  imovel: state.imovel.imovel,
+  reload: state.imovel.reload,
 })
 
 const mapDispatchToProps = {

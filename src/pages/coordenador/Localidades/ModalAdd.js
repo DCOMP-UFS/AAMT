@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { createLocationRequest, clearCreate } from '../../../store/actions/LocalidadeActions';
-import { getCategoryRequest } from '../../../store/actions/CategoriaActions';
+import { getCategoryRequest } from '../../../store/Categoria/categoriaActions';
 
 // STYLES
 import { ContainerArrow } from '../../../styles/util';

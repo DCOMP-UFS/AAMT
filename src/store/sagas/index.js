@@ -4,7 +4,6 @@ import { ActionTypes as AppConfig } from '../actions/appConfig';
 import { ActionTypes as UserActions } from '../actions/UsuarioActions';
 import { ActionTypes as MunicipioActions } from '../actions/MunicipioActions';
 import { ActionTypes as LocalidadeActions } from '../actions/LocalidadeActions';
-import { ActionTypes as CategoriaActions } from '../actions/CategoriaActions';
 import { ActionTypes as ZonaActions } from '../actions/ZonaActions';
 import { ActionTypes as PaisActions } from '../actions/PaisActions';
 import { ActionTypes as RegiaoActions } from '../actions/RegiaoActions';
@@ -38,7 +37,6 @@ import {
 import { getMunicipios, createCity, updateCity, getCityById, getCityByRegionalHealth } from './MunicipioSagas';
 import { getLocalidades, createLocation, updateLocation, getLocationById, getLocationByCity } from './LocalidadeSagas';
 import { getZoneByCity, createZone, updateZone, getZoneById, getZoneByLocality } from './ZonaSagas';
-import { getCategorys } from './CategoriaSagas';
 import { getNations } from './PaisSagas';
 import { GetRegionsByNation } from './RegiaoSagas';
 import { GetStatesByRegion } from './EstadoSagas';
@@ -64,6 +62,7 @@ import { rotaSaga } from '../Rota/rotaSagas';
 import { atividadeSaga } from '../Atividade/atividadeSagas';
 import { cicloSaga } from '../Ciclo/cicloSagas';
 import { amostraSaga } from '../Amostra/amostraSagas';
+import { categoriaSaga } from '../Categoria/categoriaSagas';
 
 export default function* rootSaga() {
   yield all([
@@ -93,7 +92,7 @@ export default function* rootSaga() {
     takeLatest( LocalidadeActions.UPDATE_LOCATION_REQUEST, updateLocation ),
 
     // Gerir Categoria
-    takeLatest( CategoriaActions.GET_CATEGORY_REQUEST, getCategorys ),
+    categoriaSaga(),
 
     // Gerir Zonas
     takeLatest( ZonaActions.GET_ZONE_BY_CITY_REQUEST, getZoneByCity ),

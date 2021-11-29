@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
 import appConfig from './appConfig';
-import categoria from './Categoria';
+import categoria from '../Categoria/categoriaReduce';
 import estado from './Estado';
 import imovel from './Imovel';
 import localidade from './Localidade';

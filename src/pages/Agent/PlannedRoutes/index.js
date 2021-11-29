@@ -204,10 +204,9 @@ const PlannedRoutes = ({
     try {
       const response = await api.get(`/rotas/${user_id}/usuarios/${date}/data`);
 
-      if (
-        response.data.trabalhoDiario &&
-        response.data.trabalhoDiario.horaFim === null
-      ) {
+      const data = response.data;
+
+      if (data.trabalhoDiario && data.trabalhoDiario.horaFim === null) {
         setActivities([response.data]);
         if (response.data.trabalhoDiario.horaInicio) {
           handleStartActivity(response.data);
@@ -215,8 +214,9 @@ const PlannedRoutes = ({
       }
 
       if (
-        response.data.trabalhoDiario &&
-        response.data.trabalhoDiario.horaFim !== null
+        data &&
+        Object.keys(data).length === 0 &&
+        Object.getPrototypeOf(data === Object.prototype)
       ) {
         setActivities([]);
       }

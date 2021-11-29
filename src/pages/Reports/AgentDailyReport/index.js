@@ -80,7 +80,7 @@ const AgentDailyReport = () => {
     let qtdLarvicida = larvicide;
 
     activity.map(inspection => {
-      switch (inspection.imovel.tipoImovel) {
+      switch (inspection.tipoImovelVistoria) {
         case 1:
           tipoImovel[0].value++;
           break;
@@ -201,30 +201,29 @@ const AgentDailyReport = () => {
   const route = useRoute();
   const { id, date } = route.params;
 
-  const loadActivity = useCallback(async () => {
-    try {
-      const response = await api.get(`/trabalhoDiario/${id}`);
+  useEffect(() => {
+    async function loadActivity() {
+      try {
+        const response = await api.get(`/trabalhoDiario/${id}`);
 
-      if (response.data.status) {
-        setActivity(response.data.data.vistorias);
-      }
-    } catch (err) {
-      if (err.response.status === 400) {
-        Alert.alert('Ocorreu um erro', 'Não foi possível carregar o relatório');
+        if (response.data.status) {
+          setActivity(response.data.data.vistorias);
+        }
+      } catch (err) {
+        Alert.alert(
+          'Ocorreu um erro',
+          'Não foi possível carregar o boletim diário'
+        );
       }
     }
+
+    loadActivity();
   }, []);
 
   useEffect(() => {
-    loadActivity();
-  }, [loadActivity]);
-
-  // useLayoutEffect(() => {
-  //   navigation.setOptions({ headerTitle: `Boletim Diário ${date}` });
-  // }, []);
-
-  useEffect(() => {
-    filter();
+    if (activity.length > 0) {
+      filter();
+    }
   }, [activity]);
 
   function Bar(data) {

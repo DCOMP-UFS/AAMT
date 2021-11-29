@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebarAgente';
 import { getRouteRequest, isStartedRequest, resetOpenModal } from '../../../store/actions/RotaActions';
-import { showNotifyToast } from '../../../store/actions/appConfig';
+import { showNotifyToast } from '../../../store/AppConfig/appConfigActions';
 import { resetShowNotStarted, clearInspection } from '../../../store/actions/VistoriaCacheActions';
 import { clearRotaCache } from '../../../store/actions/RotaCacheActions';
 import { isFinalizadoRequest, setIsFinalizado } from '../../../store/Rota/rotaActions';

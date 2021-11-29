@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 
-import appConfig from './appConfig';
+import appConfig from '../AppConfig/appConfigReduce';
 import categoria from '../Categoria/categoriaReduce';
 import estado from '../Estado/estadoReduce';
 import imovel from './Imovel';

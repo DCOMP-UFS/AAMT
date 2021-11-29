@@ -1,7 +1,7 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects';
 import * as servico from '../../services/requests/Estado';
 import * as EstadoActions from './estadoActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getStatesByRegion(action) {
   try {

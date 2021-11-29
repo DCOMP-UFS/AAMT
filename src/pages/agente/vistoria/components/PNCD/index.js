@@ -11,7 +11,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { showNotifyToast } from '../../../../../store/actions/appConfig';
+import { showNotifyToast } from '../../../../../store/AppConfig/appConfigActions';
 import { addVistoria, updateInspection } from '../../../../../store/actions/VistoriaCacheActions';
 import { setRecipient, setSequenceInspection, setImmobile } from '../../../../../store/actions/VistoriaActions';
 

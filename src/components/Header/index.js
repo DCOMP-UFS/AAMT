@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 // ACTIONS
-import { navToggle, signOut } from '../../store/actions/appConfig';
+import { navToggle, signOut } from '../../store/AppConfig/appConfigActions';
 
 // STYLES
 import './style.css';

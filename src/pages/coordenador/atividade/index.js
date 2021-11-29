@@ -7,7 +7,7 @@ import { Row } from 'react-bootstrap';
 import Select from 'react-select';
 import tasksIcon from '../../../assets/tasks-icons.png';
 import { situacaoAtividadeEnum } from '../../../config/enumerate';
-import { showNotifyToast } from '../../../store/actions/appConfig';
+import { showNotifyToast } from '../../../store/AppConfig/appConfigActions';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebar';

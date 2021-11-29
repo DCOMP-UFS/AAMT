@@ -4,7 +4,7 @@ import {
 } from '../../services/requests/Metodologia';
 
 import * as CicloActions from '../actions/MetodologiaActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getMethodologies(action) {
   try {

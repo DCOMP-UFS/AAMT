@@ -4,7 +4,7 @@ import {
 } from '../../services/requests/Mosquito';
 
 import * as MosquitoActions from './mosquitoActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getMosquitos() {
   try {

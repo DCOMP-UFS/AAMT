@@ -4,7 +4,7 @@ import {
 } from '../../services/requests/Utilitarios';
 
 import * as RuaActions from './ruaActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 import { Rua } from '../../config/models/index';
 

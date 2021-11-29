@@ -1,7 +1,7 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects';
 import * as service from '../../services/requests/Ciclo';
 import * as CicloActions from './cicloActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getCicloAberto( action ) {
   try {

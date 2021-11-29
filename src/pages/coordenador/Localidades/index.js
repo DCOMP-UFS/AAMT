@@ -16,7 +16,7 @@ import { connect } from 'react-redux';
 // ACTIONS
 import { changeSidebar } from '../../../store/actions/sidebar';
 import { changeTableSelected } from '../../../store/actions/supportInfo';
-import { clearToast } from '../../../store/actions/appConfig';
+import { clearToast } from '../../../store/AppConfig/appConfigActions';
 import { getLocationRequest, getLocationByCityRequest, changeIndex } from '../../../store/actions/LocalidadeActions';
 
 // STYLES

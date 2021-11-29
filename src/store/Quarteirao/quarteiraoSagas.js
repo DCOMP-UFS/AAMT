@@ -2,7 +2,7 @@ import { takeLatest, call, put, all } from 'redux-saga/effects';
 import * as service from '../../services/requests/Quarteirao';
 import * as imovelService from '../../services/requests/Imovel';
 import * as QuarteiraoActions from './quarteiraoActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 /**
  * Solicita ao service os quarteirões de um município

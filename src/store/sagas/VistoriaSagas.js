@@ -5,7 +5,7 @@ import {
 } from '../../services/requests/Vistoria';
 
 import * as VistoriaActions from '../actions/VistoriaActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getInspects(action) {
   try {

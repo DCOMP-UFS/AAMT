@@ -1,7 +1,7 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects';
 import * as service from '../../services/requests/Atividade';
 import * as AtividadeActions from './atividadeActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getResponsabilityActivities( action ) {
   try {

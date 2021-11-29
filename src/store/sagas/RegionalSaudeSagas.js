@@ -2,7 +2,7 @@ import { call, put } from 'redux-saga/effects';
 import { getRegionalHealthByStateRequest } from '../../services/requests/RegionalSaude';
 
 import * as RegionalSaudeActions from '../actions/RegionalSaudeActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getRegionalHealthByState(action) {
   try {

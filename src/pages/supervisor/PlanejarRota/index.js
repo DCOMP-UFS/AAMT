@@ -11,7 +11,7 @@ import MapaRotas from '../components/MapaRotas';
 import { getOpenCycleRequest } from '../../../store/Ciclo/cicloActions';
 import { getResponsabilityActivitiesRequest, setIndexEquipe, setIndexMembro } from '../../../store/Atividade/atividadeActions';
 import { planejarRotaRequest, setCarregandoRota, getRotasPlanejadasRequest } from '../../../store/Rota/rotaActions';
-import { showNotifyToast } from '../../../store/actions/appConfig';
+import { showNotifyToast } from '../../../store/AppConfig/appConfigActions';
 
 // STYLES
 import { PageIcon, PageHeader, PagePopUp, Steps, StepControl } from '../../../styles/util';

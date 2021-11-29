@@ -2,7 +2,7 @@ import { call, put } from 'redux-saga/effects';
 import { getNationsRequest } from '../../services/requests/Pais';
 
 import * as PaisActions from '../actions/PaisActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getNations(action) {
   try {

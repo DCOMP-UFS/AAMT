@@ -6,7 +6,7 @@ import {
 
 import * as TrabalhoDiarioActions from '../actions/trabalhoDiario';
 import * as VistoriaActions from '../actions/VistoriaActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getByUser( action ) {
   try {

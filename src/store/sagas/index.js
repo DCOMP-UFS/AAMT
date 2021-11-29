@@ -1,6 +1,6 @@
 import { all, takeLatest, takeEvery } from 'redux-saga/effects';
 
-import { ActionTypes as AppConfig } from '../actions/appConfig';
+import { ActionTypes as AppConfig } from '../AppConfig/appConfigActions';
 import { ActionTypes as UserActions } from '../actions/UsuarioActions';
 import { ActionTypes as MunicipioActions } from '../actions/MunicipioActions';
 import { ActionTypes as LocalidadeActions } from '../actions/LocalidadeActions';

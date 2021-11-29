@@ -1,4 +1,4 @@
-import { ActionTypes } from '../actions/appConfig';
+import { ActionTypes } from './appConfigActions';
 
 const INITIAL_STATE = {
   usuario: {
@@ -17,7 +17,7 @@ const INITIAL_STATE = {
   toast: {},
 }
 
-export default function quarteirao(state = INITIAL_STATE, action){
+export default function appConfig(state = INITIAL_STATE, action){
   switch( action.type ) {
     case ActionTypes.AUTHENTICATE_SUCCESS: {
       const usuario = action.payload.user;

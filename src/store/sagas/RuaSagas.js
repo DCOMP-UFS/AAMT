@@ -7,7 +7,7 @@ import {
 } from '../../services/requests/Rua';
 
 import * as RuaActions from '../actions/RuaActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getStreetByLocality(action) {
   try {

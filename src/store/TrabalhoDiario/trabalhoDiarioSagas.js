@@ -4,7 +4,7 @@ import {
 } from '../../services/requests/TrabalhoDiario';
 
 import * as TrabalhoActions from './trabalhoDiarioActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getTrabalhosUsuario( action ) {
   try {

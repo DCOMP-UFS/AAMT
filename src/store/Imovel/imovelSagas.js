@@ -6,7 +6,7 @@ import {
 } from '../../services/requests/Imovel';
 
 import * as ImovelActions from './imovelActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 /**
  * Saga de consulta de imóveis

@@ -11,7 +11,7 @@ import {
 } from '../../services/requests/Ciclo';
 
 import * as CicloActions from '../actions/CicloActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getCycle(action) {
   try {

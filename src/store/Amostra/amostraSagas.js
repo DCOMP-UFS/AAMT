@@ -1,7 +1,7 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects';
 import * as servico from '../../services/requests/Amostra';
 import * as AmostraActions from './amostraActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getAmostras( action ) {
   try {

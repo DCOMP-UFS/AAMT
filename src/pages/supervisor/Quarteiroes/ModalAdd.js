@@ -23,7 +23,7 @@ import { addQuarteiraoRequest, setCreated } from '../../../store/Quarteirao/quar
 import { getLocationByCityRequest } from '../../../store/actions/LocalidadeActions';
 import { getZoneByCityRequest } from '../../../store/Zona/zonaActions';
 import { getStreetByLocalityRequest } from '../../../store/actions/RuaActions';
-import { showNotifyToast } from '../../../store/actions/appConfig';
+import { showNotifyToast } from '../../../store/AppConfig/appConfigActions';
 
 // STYLES
 import { ContainerArrow } from '../../../styles/util';

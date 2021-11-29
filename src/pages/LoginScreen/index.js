@@ -15,8 +15,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { clearToast } from '../../store/actions/appConfig';
-import { authenticateRequest } from '../../store/actions/appConfig';
+import { clearToast, authenticateRequest } from '../../store/AppConfig/appConfigActions';
 
 function LoginScreen( props ) {
   const [ usuario, setUsuario ] = useState("");

@@ -17,7 +17,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { showNotifyToast } from '../../../../../store/actions/appConfig';
+import { showNotifyToast } from '../../../../../store/AppConfig/appConfigActions';
 import { addUnidade } from '../../../../../store/actions/supportInfo';
 import { atualizarRecipiente } from '../../../../../store/actions/VistoriaActions';
 

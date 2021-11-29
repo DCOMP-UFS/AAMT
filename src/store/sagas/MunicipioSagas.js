@@ -7,7 +7,7 @@ import { listRequest,
 } from '../../services/requests/Municipio';
 
 import * as MunicipioActions from '../actions/MunicipioActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getMunicipios(action) {
   try {

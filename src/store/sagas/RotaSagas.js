@@ -9,7 +9,7 @@ import {
 import * as RotaActions from '../actions/RotaCacheActions';
 import * as RotaCacheActions from '../actions/RotaCacheActions';
 import * as VistoriaCacheActions from '../actions/VistoriaCacheActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getRoute(action) {
   try {

@@ -8,7 +8,7 @@ import {
 } from '../../services/requests/Localidade';
 
 import * as LocalidadeActions from '../actions/LocalidadeActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getLocalidades(action) {
   try {

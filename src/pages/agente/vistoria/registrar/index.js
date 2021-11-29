@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../../../store/actions/sidebarAgente';
-import { showNotifyToast } from '../../../../store/actions/appConfig';
+import { showNotifyToast } from '../../../../store/AppConfig/appConfigActions';
 
 // STYLES
 import { PageIcon, PageHeader, Steps, StepControl } from '../../../../styles/util';

@@ -9,8 +9,8 @@ import {
 import { getUsuariosPorMunicipios, getUsuarioByIdRequest } from '../../services/requests/Usuario';
 
 import * as UserActions from '../actions/UsuarioActions';
-import * as AppConfigActions from '../actions/appConfig';
-import { setToken } from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
+import { setToken } from '../AppConfig/appConfigActions';
 
 export function* authenticate(action) {
   try {

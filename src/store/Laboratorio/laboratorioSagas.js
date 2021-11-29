@@ -5,7 +5,7 @@ import {
 } from '../../services/requests/Laboratorio';
 
 import * as LaboratorioActions from './laboratorioActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getLaboratorios( action ) {
   try {

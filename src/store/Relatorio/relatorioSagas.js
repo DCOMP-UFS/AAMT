@@ -7,7 +7,7 @@ import {
 } from '../../services/requests/Relatorio';
 
 import * as RelatorioActions from './relatorioActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getBoletimSemanal( action ) {
   try {

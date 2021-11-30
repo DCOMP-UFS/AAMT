@@ -1,9 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
-import Modal, { ModalBody, ModalFooter } from '../../../components/Modal';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Modal } from 'react-bootstrap';
 import Select from 'react-select';
-import $ from 'jquery';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -14,73 +12,124 @@ import { createLocationRequest, clearCreate } from '../../../store/Localidade/lo
 import { createLaboratoryRequest } from '../../../store/Laboratorio/laboratorioActions';
 import { getCategoryRequest } from '../../../store/Categoria/categoriaActions';
 
+// MODELS
+import { Laboratorio } from '../../../config/models';
+
 // STYLES
 import { ContainerArrow } from '../../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../../styles/global';
 
-function ModalAdd({ municipio, created, ...props }) {
-  const [ codigo, setCodigo ] = useState(null);
-  const [ nome, setNome ] = useState("");
-  const [ categoria, setCategoria ] = useState();
-  const [ optionCategoria, setOptionCategoria ] = useState([{value: 'sede', label: 'Sede'}, {value: 'privado', label: 'Privado'}]);
-  const [ endereco, setEndereco] = useState(null);
+const ModalAdd = ( { municipio, show, handleClose, created, ...props } ) => {
+  const [ cnpj, setCnpj ]                         = useState( null );
+  const [ isValidCnpj, setIsValidCnpj ]           = useState( true );
+  const [ nome, setNome ]                         = useState( "" );
+  const [ categoria, setCategoria ]               = useState( { value: null, label: '' } );
+  const [ isValidCategoria, setIsValidCategoria ] = useState( true );
+  const [ endereco, setEndereco]                  = useState( null );
+  const [ optionCategoria ]                       = useState( [ 
+    { value: 'sede', label: 'Sede' },
+    { value: 'privado', label: 'Privado' }
+  ] );
 
-  function handleCadastrar( e ) {
-    e.preventDefault();
-    console.log(codigo)
-    console.log(categoria.value)
-    console.log(municipio.id)
-    props.createLaboratoryRequest(codigo, nome, endereco, categoria.value, municipio.id)
-    $('#modal-novo-localidade').modal('hide')
-  }
-
-  useEffect(() => {
-    props.clearCreate();
-  }, []);
-
-  useEffect(() => {
+  /**
+   * Este effect moditora o state laboratorio.created para verificar
+   * se o laboratório foi criado na base, caso seja true
+   * limpa o formulário e fecha o modal.
+   */
+  useEffect( () => {
     if( created ) {
-      $('#modal-novo-localidade').modal('hide');
-      setCodigo(null);
-      setNome("");
+      handleClose();
       props.clearCreate();
       clearInput();
     }
-  }, [ created ]);
+  }, [ created ] );
 
-  function clearInput() {
-    setCodigo(null);
-    setNome("");
-    setCategoria({});
+  /**
+   * Limpa os campos do modal
+   * @returns void
+   */
+  const clearInput = () => {
+    setCnpj( null );
+    setNome( "" );
+    setCategoria( {} );
+  }
+
+  /**
+   * Valida e solicita a crição do laboratório
+   * @param {Element} e elemento HTML que acionou a função
+   * @returns void
+   */
+  const submit = ( e ) => {
+    e.preventDefault();
+
+    if( cnpj.length !== 14 ) {
+      setIsValidCnpj( false );
+      return;
+    } else {
+      setIsValidCnpj( true );
+    }
+
+    if( !categoria.value ) {
+      setIsValidCategoria( false );
+      return;
+    } else {
+      setIsValidCategoria( true );
+    }
+
+    props.createLaboratoryRequest( new Laboratorio( {
+      cnpj,
+      nome,
+      endereco,
+      tipoLaboratorio: categoria.value,
+      municipio_id: municipio.id
+    } ) );
   }
 
   return(
-    <Modal id="modal-novo-localidade" title="Cadastrar Laboratório" size='lg'>
-      <form onSubmit={ handleCadastrar }>
-        <ModalBody>
-          <Row>
-            <Col className="mb-3">
-              <h4 className="title">Município { municipio.nome }</h4>
-            </Col>
-          </Row>
+    <Modal show={ show } onHide={ handleClose } title="Cadastrar Laboratório" size='lg'>
+      <Modal.Header closeButton>
+        <Modal.Title>
+          Município { municipio.nome }
+        </Modal.Title>
+      </Modal.Header>
+      <form onSubmit={ submit }>
+        <Modal.Body>
           <Row>
             <Col sm='6'>
               <FormGroup>
-                <label htmlFor="codigo">CNPJ<code>*</code></label>
-                <input id="codigo" value={codigo ? codigo : ""} className="form-control" onChange={ e => setCodigo(e.target.value) } required/>
-                <font size = "1" color="red">14 dígitos, somente números</font>
+                <label htmlFor="cnpj">CNPJ<code>*</code></label>
+                <input 
+                  id        ="cnpj" 
+                  value     ={ cnpj ? cnpj : "" } 
+                  className ={ `form-control ${ !isValidCnpj ? 'invalid' : '' }` }
+                  onChange  ={ e => setCnpj( e.target.value ) } 
+                  maxlength ="14"
+                  required 
+                />
+                {
+                  !isValidCnpj ?
+                    <span class="form-label-invalid">CNPJ inválido</span> :
+                    ''
+                }
               </FormGroup>
             </Col>
             <Col sm='6'>
               <FormGroup>
                 <label htmlFor="categoria">Tipo<code>*</code></label>
                 <Select
-                  id="categoria"
-                  value={ categoria }
-                  styles={ selectDefault }
-                  options={ optionCategoria }
-                  onChange={ e => setCategoria(e) }
-                  required />
+                  id        ="categoria"
+                  value     ={ categoria }
+                  styles    ={ selectDefault }
+                  options   ={ optionCategoria }
+                  onChange  ={ e => setCategoria( e ) }
+                  className ={ !isValidCategoria ? 'invalid' : '' }
+                  required
+                />
+                {
+                  !isValidCategoria ?
+                    <span class="form-label-invalid">Campo obrigatório</span> :
+                    ''
+                }
               </FormGroup>
             </Col>
           </Row>
@@ -88,7 +137,7 @@ function ModalAdd({ municipio, created, ...props }) {
             <Col>
               <FormGroup>
                 <label htmlFor="nome">Nome <code>*</code></label>
-                <input id="nome" value={nome} className="form-control" onChange={ e => setNome(e.target.value) } required />
+                <input id="nome" value={ nome } className="form-control" onChange={ e => setNome( e.target.value ) } required />
               </FormGroup>
             </Col>
           </Row>
@@ -97,12 +146,12 @@ function ModalAdd({ municipio, created, ...props }) {
             <Col>
               <FormGroup>
                 <label htmlFor="nome">Endereco <code>*</code></label>
-                <input id="endereco" value={endereco} className="form-control" onChange={ e => setEndereco(e.target.value) } required />
+                <input id="endereco" value={ endereco } className="form-control" onChange={ e => setEndereco( e.target.value ) } required />
               </FormGroup>
             </Col>
           </Row>
-        </ModalBody>
-        <ModalFooter>
+        </Modal.Body>
+        <Modal.Footer>
           <ContainerArrow>
             <div>
               <Button type="button" className="warning" onClick={ clearInput }>Limpar</Button>
@@ -112,22 +161,37 @@ function ModalAdd({ municipio, created, ...props }) {
               <Button type="submit">Salvar</Button>
             </div>
           </ContainerArrow>
-        </ModalFooter>
+        </Modal.Footer>
       </form>
     </Modal>
   );
 }
 
-const mapStateToProps = state => ({
-  created: state.localidade.created,
-  municipio: state.appConfig.usuario.municipio,
+/**
+ * Mapeia os estados do reduce para o props do componente
+ * @param {Object} state estado global do reduce
+ * @returns {Object}
+ */
+const mapStateToProps = state => ( {
+  created   : state.localidade.created,
+  municipio : state.appConfig.usuario.municipio,
   categorias: state.categoria.categorias
- });
+ } );
 
+/**
+ * Mapeia as actions para o props do componente
+ * @param {*} dispatch 
+ * @returns 
+ */
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ createLaboratoryRequest, createLocationRequest, clearCreate, getCategoryRequest }, dispatch);
+  bindActionCreators( {
+    createLaboratoryRequest,
+    createLocationRequest,
+    clearCreate,
+    getCategoryRequest
+  }, dispatch );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ModalAdd);
+)( ModalAdd );

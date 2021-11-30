@@ -66,12 +66,10 @@ function RegistrarVistoria({ vistoria, trabalhoDiario, ...props }) {
   }
 
   const validarAlterarImovel = () => {
-    console.log('Validar Alterar Imóvel');
     return [ true, '' ];
   }
 
   const validarVistoria = () => {
-    console.log('Validar Vistoria');
     return [ true, '' ];
   }
 

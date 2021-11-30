@@ -8,10 +8,6 @@ import { Button } from '../../../../../styles/global';
 export const ModalDia = ({ equipe_id, ...props }) => {
   const [ data, setData ] = useState( '' );
 
-  useEffect(() => {
-    console.log( equipe_id );
-  }, [ equipe_id ]);
-
   const submit = e => {
     e.preventDefault();
     window.location = window.location.origin.toString() + '/sup/relatorio/diarioEquipe/' + equipe_id + '/' + data;

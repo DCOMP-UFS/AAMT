@@ -44,7 +44,7 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
     if( selectQuarteirao ) {
       let im = [];
       if(selectQuarteirao.value === -1) {
-        console.log('Todos');
+        
       } else {
         im = rota[ selectQuarteirao.value ].lados.reduce(( imvs, l ) => {
           l.imoveis = l.imoveis.map( i => {

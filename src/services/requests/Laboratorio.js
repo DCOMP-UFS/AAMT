@@ -7,34 +7,40 @@ export const getLaboratoriosRequest = data => {
   });
 }
 
+/**
+ * Solicita a API a inclusão de um novo laboratório
+ * @param {Object} data 
+ * @returns {Promise}
+ */
 export const createLaboratoryRequest = data => {
-  const { cnpj, nome, endereco, tipo, municipio } = data;
-  return api.post(`/laboratorios/${cnpj}/cnpj/${nome}/nome/${endereco}/endereco/${ tipo}/tipo_laboratorio/${municipio}/municipios`, {
+  const { cnpj, nome, endereco, tipoLaboratorio, municipio_id } = data.laboratorio;
+  return api.post( '/laboratorios/', {
     cnpj,
     endereco,
     nome,
-    tipo,
-    municipio
+    tipoLaboratorio,
+    municipio_id
   },
   { 
     ...headerAuthorization()
-  });
+  } );
 }
 
-
+/**
+ * Solicita a API alterar o laboratório
+ * @param {Object} data 
+ * @returns {Promise}
+ */
 export const setLaboratoryRequest = data =>{
-  const {cnpj_id, cnpj, nome, endereco, tipo, created_at, municipio } = data;
-  console.log(created_at)
-  return api.put(`/laboratorios/${cnpj_id}/cnpj_id/${cnpj}/cnpj/${nome}/nome/${endereco}/endereco/${ tipo}/tipo_laboratorio/${created_at}/created_at/${municipio}/municipios`, {
-    cnpj_id,
+  const { cnpj, nome, endereco, tipoLaboratorio, municipio_id } = data.laboratorio;
+  return api.put( '/laboratorios/', {
     cnpj,
     endereco,
     nome,
-    tipo,
-    created_at,
-    municipio
+    tipoLaboratorio,
+    municipio_id
   },
   { 
     ...headerAuthorization()
-  });
+  } );
 }

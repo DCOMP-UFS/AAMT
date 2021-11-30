@@ -7,7 +7,6 @@ function StepByStep({ init_step = 0, steps = [], handleFree = false, ...props })
   const [ indexStep, setIndexStep ] = useState( init_step );
 
   const next = () => {
-    console.log('Estou na next');
     // setIndexStep( indexStep + 1 < steps.length ? indexStep + 1 : indexStep );
   }
 

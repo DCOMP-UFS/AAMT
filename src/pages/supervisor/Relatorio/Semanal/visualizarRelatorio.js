@@ -135,7 +135,6 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
     setAtividade_id( atividade_id );
     setAno( ano );
     props.getBoletimSemanalRequest( semana, atividade_id, ano );
-    console.log(boletimSemanal);
   }, []);
 
   useEffect(() => {
@@ -210,8 +209,6 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
       setImoveisTipoData( iTipoData );
       dTipoData.reload = !dTipoData.reload;
       setDepositosTipoData( dTipoData );
-
-      console.log( boletimSemanal );
     }
   }, [ boletimSemanal ]);
 

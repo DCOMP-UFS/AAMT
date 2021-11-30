@@ -152,8 +152,6 @@ function DailyReport({ usuario, vistorias, trabalhoDiario, ...props }) {
         qtdPendencia    = 0,
         qtdRecuperado   = 0;
 
-    console.log( vistorias );
-
     vistorias.forEach(( vistoria, index ) => {
       switch ( vistoria.imovel.tipoImovel ) {
         case tipoImovelEnum.residencial.id:// residencial

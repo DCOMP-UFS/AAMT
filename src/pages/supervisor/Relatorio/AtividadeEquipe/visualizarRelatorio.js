@@ -226,7 +226,6 @@ export const VisualizarRelatorio = ({ membros, boletimAtividadeEquipe, ...props 
 
   useEffect(() => {
     if ( boletimAtividadeEquipe.equipe ) {
-      console.log(boletimAtividadeEquipe.equipe);
       setApelidoEquipe( boletimAtividadeEquipe.equipe.apelido );
     }
   }, [ boletimAtividadeEquipe ])
@@ -510,7 +509,6 @@ export const VisualizarRelatorio = ({ membros, boletimAtividadeEquipe, ...props 
     if( Object.entries( boletimAtividadeEquipe ).length > 0 ) {
       const imPorTipo     = boletimAtividadeEquipe.imoveisPorTipo;
       const imPorSituacao = boletimAtividadeEquipe.imoveisPorSituacao;
-      console.log( boletimAtividadeEquipe );
 
       // Alterando cardInfo númericos
       setQtdAmostra( boletimAtividadeEquipe.amostras.total );

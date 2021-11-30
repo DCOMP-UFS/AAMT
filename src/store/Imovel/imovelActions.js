@@ -72,7 +72,6 @@ export const setImovel = imovel => {
  * @returns
  */
 export const addImovelRequest = imovel => {
-  console.log( imovel );
   return {
     type: ActionTypes.ADD_IMOVEL_REQUEST,
     payload: {

@@ -324,7 +324,6 @@ export const VisualizarRelatorio = ({ membros, boletimDiarioEquipe, ...props }) 
     if( Object.entries( boletimDiarioEquipe ).length > 0 ) {
       const imPorTipo     = boletimDiarioEquipe.imoveisPorTipo;
       const imPorSituacao = boletimDiarioEquipe.imoveisPorSituacao;
-      console.log( boletimDiarioEquipe );
 
       // Alterando cardInfo númericos
       setQtdAmostra( boletimDiarioEquipe.amostras.total );

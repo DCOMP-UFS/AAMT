@@ -1,95 +1,148 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
-import Modal, { ModalBody, ModalFooter } from '../../../components/Modal';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Modal } from 'react-bootstrap';
 import Select from 'react-select';
-import $ from 'jquery';
 
 // REDUX
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { createLocationRequest, clearCreate } from '../../../store/Localidade/localidadeActions';
-import { createLaboratoryRequest, updateLaboratoryRequest } from '../../../store/Laboratorio/laboratorioActions';
+import { createLaboratoryRequest, updateLaboratoryRequest, setUpdated } from '../../../store/Laboratorio/laboratorioActions';
 import { getCategoryRequest } from '../../../store/Categoria/categoriaActions';
+
+// MODELS
+import { Laboratorio } from '../../../config/models';
 
 // STYLES
 import { ContainerArrow } from '../../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../../styles/global';
 
-function ModalUpdate({cnpj_rec, nome_rec, categoria_rec, endereco_rec, created_at, municipio, created, ...props }) {
-  const cnpj_id = cnpj_rec  //identificador do update
-  const [ cnpj, setCnpj ] = useState(cnpj_rec);
-  const [ nome, setNome ] = useState(nome_rec);
-  const [ categoria, setCategoria ] = useState();
-  const [ optionCategoria, setOptionCategoria ] = useState([{value: 'sede', label: 'Sede'}, {value: 'privado', label: 'Privado'}]);
-  const [ endereco, setEndereco] = useState(endereco_rec);
+function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, ...props } ) {
+  const [ cnpj, setCnpj ]                         = useState( null );
+  const [ isValidCnpj, setIsValidCnpj ]           = useState( true );
+  const [ nome, setNome ]                         = useState( "" );
+  const [ categoria, setCategoria ]               = useState( { value: null, label: '' } );
+  const [ isValidCategoria, setIsValidCategoria ] = useState( true );
+  const [ endereco, setEndereco]                  = useState( "" );
+  const [ optionCategoria ]                       = useState( [ 
+    { value: 'sede', label: 'Sede' },
+    { value: 'privado', label: 'Privado' }
+  ] );
 
-  useEffect(() => {
-    console.log(categoria_rec)
-    setCnpj(cnpj_rec);
-    setNome(nome_rec);
-    setCategoria({value: categoria_rec, label: categoria_rec});
-    setEndereco(endereco_rec);
-  }, [cnpj_rec, nome_rec, categoria_rec, endereco_rec]);
+  /**
+   * Este effect monitora o valor da variável laboratorio e seta os states de acordo
+   * com ela.
+   */
+  useEffect( () => {
+    setCnpj( laboratorio.cnpj );
+    setNome( laboratorio.nome );
+    setCategoria( 
+      laboratorio.tipoLaboratorio === 'sede' ? 
+        ( { value: 'sede', label: 'Sede' } ) : 
+        ( {value: 'privado', label: 'Privado' } ) 
+    );
+    setEndereco( laboratorio.endereco );
+  }, [ laboratorio ] );
 
-  function handleCadastrar( e ) {
-    e.preventDefault();
-    props.updateLaboratoryRequest(cnpj_id, cnpj, nome, endereco, descapitalize(categoria.value), created_at, municipio.id)
-
-  }
-
-  function descapitalize(str){
-    str = str.toString()
-    return str[0].toLowerCase()+str.slice(1)
-  }
-
-  useEffect(() => {
-    props.clearCreate();
-  }, []);
-
-  useEffect(() => {
-    if( created ) {
-      $('#modal-update-laboratorio').modal('hiden');
-      props.clearCreate();
+  /**
+   * Este effect moditora a variável updated para verificar se a requisição
+   * feita a API para atualização de laboratório foi finalizada com sucesso.
+   */
+  useEffect( () => {
+    if( updated ) {
+      handleClose();
       clearInput();
+      props.setUpdated( false );
     }
-  }, [ created ]);
+  }, [ updated ] );
 
-  function clearInput() {
-    setCnpj(null);
-    setNome("");
-    setCategoria({});
+  /**
+   * Limpa os campos do modal
+   * @returns void
+   */
+  const clearInput = () => {
+    setCnpj( null );
+    setNome( "" );
+    setCategoria( {} );
+  }
+
+  /**
+   * Valida e solicita a edição do laboratório
+   * @param {Element} e elemento HTML que acionou a função
+   * @returns void
+   */
+  const submit = ( e ) => {
+    e.preventDefault();
+
+    if( cnpj.length !== 14 ) {
+      setIsValidCnpj( false );
+      return;
+    } else {
+      setIsValidCnpj( true );
+    }
+
+    if( !categoria.value ) {
+      setIsValidCategoria( false );
+      return;
+    } else {
+      setIsValidCategoria( true );
+    }
+
+    props.updateLaboratoryRequest( new Laboratorio( {
+      cnpj,
+      nome,
+      endereco,
+      tipoLaboratorio: categoria.value,
+      municipio_id: municipio.id 
+    } ) );
   }
 
   return(
-    <Modal id="modal-update-laboratorio" title="Editar Laboratório" size='lg'>
-      <form onSubmit={ handleCadastrar }>
-        <ModalBody>
-          <Row>
-            <Col className="mb-3">
-              <h4 className="title">Município { municipio.nome }</h4>
-            </Col>
-          </Row>
+    <Modal show={ show } onHide={ handleClose } title="Editar Laboratório" size='lg'>
+      <Modal.Header closeButton>
+        <Modal.Title>
+          Município { municipio.nome }
+        </Modal.Title>
+      </Modal.Header>
+      <form onSubmit={ submit }>
+        <Modal.Body>
           <Row>
             <Col sm='6'>
               <FormGroup>
                 <label htmlFor="cnpj">CNPJ<code>*</code></label>
-                <input id="cnpj" value={cnpj ? cnpj : ""} className="form-control" onChange={ e => setCnpj(e.target.value) } required/>
-                <font size = "1" color="red">14 dígitos, somente números</font>
+                <input 
+                  id        ="cnpj" 
+                  value     ={ cnpj ? cnpj : "" } 
+                  className ={ `form-control ${ !isValidCnpj ? 'invalid' : '' }` }
+                  onChange  ={ e => setCnpj( e.target.value ) } 
+                  maxlength ="14"
+                  required 
+                />
+                {
+                  !isValidCnpj ?
+                    <span class="form-label-invalid">CNPJ inválido</span> :
+                    ''
+                }
               </FormGroup>
             </Col>
             <Col sm='6'>
               <FormGroup>
                 <label htmlFor="categoria">Tipo<code>*</code></label>
                 <Select
-                  id="categoria"
-                  value={ categoria }
-                  styles={ selectDefault }
-                  options={ optionCategoria }
-                  onChange={ e => setCategoria(e) }
-                  required />
+                  id        ="categoria"
+                  value     ={ categoria }
+                  styles    ={ selectDefault }
+                  options   ={ optionCategoria }
+                  onChange  ={ e => setCategoria( e ) }
+                  className ={ !isValidCategoria ? 'invalid' : '' }
+                  required
+                />
+                {
+                  !isValidCategoria ?
+                    <span class="form-label-invalid">Campo obrigatório</span> :
+                    ''
+                }
               </FormGroup>
             </Col>
           </Row>
@@ -110,8 +163,8 @@ function ModalUpdate({cnpj_rec, nome_rec, categoria_rec, endereco_rec, created_a
               </FormGroup>
             </Col>
           </Row>
-        </ModalBody>
-        <ModalFooter>
+        </Modal.Body>
+        <Modal.Footer>
           <ContainerArrow>
             <div>
               <Button type="button" className="warning" onClick={ clearInput }>Limpar</Button>
@@ -121,22 +174,37 @@ function ModalUpdate({cnpj_rec, nome_rec, categoria_rec, endereco_rec, created_a
               <Button type="submit">Salvar</Button>
             </div>
           </ContainerArrow>
-        </ModalFooter>
+        </Modal.Footer>
       </form>
     </Modal>
   );
 }
 
-const mapStateToProps = state => ({
-  created: state.localidade.created,
-  municipio: state.appConfig.usuario.municipio,
+/**
+ * Mapeia os estados do reduce para o props do componente
+ * @param {Object} state estado global do reduce
+ * @returns {Object}
+ */
+const mapStateToProps = state => ( {
+  updated   : state.localidade.updated,
+  municipio : state.appConfig.usuario.municipio,
   categorias: state.categoria.categorias
- });
+} );
 
+/**
+ * Mapeia as actions para o props do componente
+ * @param {*} dispatch 
+ * @returns 
+ */
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ createLaboratoryRequest, createLocationRequest, clearCreate, getCategoryRequest, updateLaboratoryRequest }, dispatch);
+  bindActionCreators( {
+    createLaboratoryRequest,
+    getCategoryRequest,
+    updateLaboratoryRequest,
+    setUpdated
+  }, dispatch );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ModalUpdate);
+)( ModalUpdate );

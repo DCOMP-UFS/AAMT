@@ -4,7 +4,8 @@ export const ActionTypes = {
   CREATE_LABORATORY_REQUEST : "CREATE_LABORATORY_REQUEST",
   CREATE_LABORATORY_SUCCESS : "CREATE_LABORATORY_SUCCESS",
   UPDATE_LABORATORY_REQUEST : "UPDATE_LABORATORY_REQUEST",
-  UPDATE_LABORATORY_SUCCESS : "UPDATE_LABORATORY_SUCCESS"
+  UPDATE_LABORATORY_SUCCESS : "UPDATE_LABORATORY_SUCCESS",
+  SET_UPDATED               : "SET_UPDATED"
 }
 
 /**
@@ -37,15 +38,16 @@ export const setLaboratorios = laboratorios => {
   }
 }
 
-export const createLaboratoryRequest = (cnpj, nome, endereco, tipo, municipio) =>{
-  return{
-    type: ActionTypes.CREATE_LABORATORY_REQUEST,
-    payload:{
-      cnpj,
-      nome,
-      endereco,
-      tipo,
-      municipio
+/**
+ * Solicita ao sagas a inclusão de um novo laboratório
+ * @param {Model} laboratorio modelo de dados Laboratório
+ * @returns {Object}
+ */
+export const createLaboratoryRequest = laboratorio =>{
+  return {
+    type    : ActionTypes.CREATE_LABORATORY_REQUEST,
+    payload : {
+      laboratorio
     }
   }
 }
@@ -59,17 +61,16 @@ export const createLaboratory = data =>{
   }
 }
 
-export const updateLaboratoryRequest = (cnpj_id, cnpj, nome, endereco, tipo, created_at, municipio) =>{
+/**
+ * Solicita ao sagas a atualização do laboratório
+ * @param {Model} laboratorio modelo de dados Laboratorio
+ * @returns {Object}
+ */
+export const updateLaboratoryRequest = laboratorio =>{
   return {
     type:ActionTypes.UPDATE_LABORATORY_REQUEST,
     payload:{
-      cnpj_id,
-      cnpj,
-      nome,
-      endereco,
-      tipo,
-      created_at,
-      municipio
+      laboratorio
     }
   }
 }
@@ -78,6 +79,20 @@ export const updateLaboratory = data =>{
   return{
     type: ActionTypes.UPDATE_LABORATORY_SUCCESS,
     payload: {
+      data
+    }
+  }
+}
+
+/**
+ * Solicita ao reducer a alteração da vairável updated
+ * @param {boolean} data 
+ * @returns {Object}
+ */
+export const setUpdated = data =>{
+  return {
+    type    : ActionTypes.SET_UPDATED,
+    payload : {
       data
     }
   }

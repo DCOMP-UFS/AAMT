@@ -52,8 +52,6 @@ export function* getBoletimAtividade( action ) {
   try {
     const { data, status } = yield call( servico.getBoletimAtividadeRequest, action.payload );
 
-    console.log(data);
-
     if( status === 200 ) {
       yield put( RelatorioActions.setBoletimAtividade( data ) );
     }else {

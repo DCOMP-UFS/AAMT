@@ -1,14 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import Table, { ButtonAdd, ButtonDesabled } from '../../../components/Table';
 import ModalAdd from './ModalAdd';
 import ModalDisabled from './ModalDisabled';
 import ModalUpdate from './ModalUpdate';
 import { FaVials, FaPenSquare } from 'react-icons/fa';
 import { Tooltip, IconButton } from '@material-ui/core';
-import $ from 'jquery';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -17,8 +14,10 @@ import { connect } from 'react-redux';
 // ACTIONS
 import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
 import { changeTableSelected } from '../../../store/SupportInfo/supportInfoActions';
-import { clearToast } from '../../../store/AppConfig/appConfigActions';
 import { getLaboratoriosRequest, updateLaboratoryRequest } from '../../../store/Laboratorio/laboratorioActions'; 
+
+// MODELS
+import { Laboratorio } from '../../../config/models';
 
 // STYLES
 import { GlobalStyle } from './styles';
@@ -69,24 +68,27 @@ const columns = [
   }
 ];
 
-function Laboratorios({ municipio_id, localidades, laboratorios, municipio, ...props }) {
-  const [ rows, setRows ] = useState([]);
-  const [cnpj_up, setCnpj] = useState([]);
-  const [nome_up, setNome] = useState([]);
-  const [tipo_up, setTipo] = useState([]);
-  const [endereco_up, setEndereco] = useState([]);
-  const [created_at, setCreated_at] = useState([]);
-  const options = {
+const Laboratorios = ( { municipio_id, localidades, laboratorios, municipio, ...props } ) => {
+  const [ rows, setRows ]                       = useState( [] );
+  const [ cnpj_up, setCnpj ]                    = useState( [] );
+  const [ nome_up, setNome ]                    = useState( [] );
+  const [ tipo_up, setTipo ]                    = useState( [] );
+  const [ endereco_up, setEndereco ]            = useState( [] );
+  const [ created_at, setCreated_at ]           = useState( [] );
+  const [ showModalAdd, setShowModalAdd ]       = useState( false );
+  const [ showModalEditar, setShowModalEditar ] = useState( false );
+  const [ laboratorio, setLaboratorio ]         = useState( new Laboratorio );
+  const options                                 = {
     customToolbar: () => {
       return (
         <ButtonAdd
           title="Adicionar"
-          data-toggle="modal"
-          data-target="#modal-novo-localidade" />
+          onClick={ () => { setShowModalAdd( true ); } }
+        />
       );
     },
-    customToolbarSelect: ({ data }) => {
-      props.changeTableSelected('tableLocation', data);
+    customToolbarSelect: ( { data } ) => {
+      props.changeTableSelected( 'tableLocation', data );
       return (
         <ButtonDesabled
           title="Desabilidade Laboratorio"
@@ -94,8 +96,8 @@ function Laboratorios({ municipio_id, localidades, laboratorios, municipio, ...p
           target="#modal-desativar-laboratorio" />
       );
     },
-    setRowProps: (row) => {
-      const className = row[8] === "Não" ? "row-desabled" : "";
+    setRowProps: row => {
+      const className = row[ 8 ] === "Não" ? "row-desabled" : "";
 
       return {
         className
@@ -103,85 +105,104 @@ function Laboratorios({ municipio_id, localidades, laboratorios, municipio, ...p
     },
   };
 
-  useEffect(() => {
-    props.changeSidebar(5, 0);
-    props.getLaboratoriosRequest(municipio_id);
-  }, []);
+  /**
+   * Effect acionado assim que o componente é construido.
+   * Esta função solicita a consulta da lista de laboratórios do usuário logado
+   */
+  useEffect( () => {
+    props.changeSidebar( 5, 0 );
+    props.getLaboratoriosRequest( municipio_id );
+  }, [] );
 
-  useEffect(() => {
+  /**
+   * Após a consulta dos laboratórios o state laboratorios é preenchido.
+   * Este effect monitora o state e aciona a função de criar linhas da tabela
+   * com os laboratórios consultados.
+   */
+  useEffect( () => {
     createRows();
-  }, [ laboratorios ]);
+  }, [ laboratorios, props.reload ] );
 
-  useEffect(() => {
-    createRows();
-  }, [ props.reload ]);
-
-  function createRows() { 
-    const list = laboratorios.map((lab, index) => {
-      console.log(laboratorios)
-      return([
+  /**
+   * Esta função cria as linahs da tabela e armazena na variável rows.
+   * @returns void
+   */
+  const createRows = () => {
+    const list = laboratorios.map( ( lab ) => {
+      return( [
         lab.cnpj,
         lab.nome,
         lab.endereco,
-        capitalize(lab.tipo_laboratorio),
-        getFormattedDate(lab.created_at),
-        getFormattedDate(lab.updated_at),
+        capitalize( lab.tipoLaboratorio ),
+        getFormattedDate( lab.createdAt ),
+        getFormattedDate( lab.updatedAt ),
         <Tooltip
-            className="bg-warning text-white"
-            title="Editar"
-            data-togle="modal"
-            data-target="modal-update-laboratorio"
-            onClick={ () => handlerLaboratorio( laboratorios[index].cnpj,  laboratorios[index].nome,  laboratorios[index].endereco,  laboratorios[index].tipo_laboratorio, laboratorios[index].created_at, municipio_id)}
-          >
-            <IconButton aria-label="Editar">
-              <FaPenSquare />
-            </IconButton>
-          </Tooltip>
-      ])
-    })
+          className   ="bg-warning text-white"
+          title       ="Editar"
+          onClick     ={ () => { setLaboratorio( lab ); setShowModalEditar( true ); } }
+        >
+          <IconButton aria-label="Editar">
+            <FaPenSquare />
+          </IconButton>
+        </Tooltip>
+      ] );
+    } );
     
     setRows( list );
   };
 
-  const handlerLaboratorio = (cnpj, nome, endereco, tipo, created_at, municipio_id) => {
-    setCnpj(cnpj)
-    setNome(nome)
-    setEndereco(endereco)
-    setTipo(capitalize(tipo))
-    setCreated_at(created_at)
-    $( '#modal-update-laboratorio' ).modal( 'show' );
-  };
+  /**
+   * Formata uma string data no padrão PT-BR
+   * @param {string} str 
+   * @returns {string}
+   */
+  const getFormattedDate = str => {
+    let date  = new Date( str );
+    let day   = date.getDate();
+    let month = date.getMonth() + 1;
+    let year  = date.getFullYear();
+    let formatterDay;
 
-  function notify() {
-    toast(props.toast.message, {
-      type: props.toast.type,
-      onClose: props.clearToast()
-    });
+    if( day < 10 ) {
+      formatterDay = '0'+ day;
+    } else {
+      formatterDay = day;
+    }
+
+    let formatterMonth;	
+    if( month < 10 ) {
+      formatterMonth = '0'+ month;
+    } else {
+      formatterMonth = month;
+    }
+    
+    return formatterDay + '/' + formatterMonth + '/' + year;
   }
 
-  function getFormattedDate(str) {
-    var date = new Date(str);
-    var day = date.getDate();
-    var month = date.getMonth() + 1;
-    var year = date.getFullYear();
-    var formatterDay;	
-    if (day < 10) {
-        formatterDay = '0'+ day;
-    } else {
-        formatterDay = day;
-    }	
-    var formatterMonth;	
-    if (month < 10) {
-        formatterMonth = '0'+ month;
-    } else {
-        formatterMonth = month;
-    }
-    return formatterDay +'/'+ formatterMonth +'/'+ year;
-}
+  /**
+   * Torna o texto em uppercase
+   * @param {string} str 
+   * @returns {string}
+   */
+  const capitalize = str => {
+    str = str.toString();
+    return str[ 0 ].toUpperCase() + str.slice( 1 );
+  }
 
-  function capitalize(str){
-    str = str.toString()
-    return str[0].toUpperCase()+str.slice(1)
+  /**
+   * Fecha o modal de adicionar
+   * @returns void
+   */
+  const handleCloseModalAdd = () => {
+    setShowModalAdd( false );
+  }
+
+  /**
+   * Fecha o modal de editar
+   * @returns void
+   */
+  const handleCloseModalEditar = () => {
+    setShowModalEditar( false );
   }
 
   return (
@@ -195,47 +216,56 @@ function Laboratorios({ municipio_id, localidades, laboratorios, municipio, ...p
       <section className="card-list">
         <GlobalStyle />
         <div className="row">
-
-          {/* Formulário básico */}
           <article className="col-md-12 stretch-card">
             <Table
-              title={ `Laboratórios de ${ municipio.nome }` }
-              columns={ columns }
-              data={ rows }
-              options={ options }
-              turnRed={ "ativo" } />
+              title   ={ `Laboratórios de ${ municipio.nome }` }
+              columns ={ columns }
+              data    ={ rows }
+              options ={ options }
+              turnRed ={ "ativo" }
+            />
           </article>
         </div>
-        <ModalUpdate cnpj_rec = {cnpj_up} nome_rec = {nome_up} categoria_rec = {tipo_up} endereco_rec = {endereco_up} created_at = {created_at}/>
-        <ModalAdd />
+        <ModalUpdate 
+          show={ showModalEditar }
+          handleClose={ handleCloseModalEditar }
+          laboratorio={ laboratorio }
+        />
+        <ModalAdd show={ showModalAdd } handleClose={ handleCloseModalAdd } />
         <ModalDisabled />
-
-        <ToastContainer />
-        { props.toast.message && notify() }
       </section>
     </>
   );
 }
 
-const mapStateToProps = state => ({
+/**
+ * Mapeia os estados do reduce para o props do componente
+ * @param {Object} state estado global do reduce
+ * @returns {Object}
+ */
+const mapStateToProps = state => ( {
   municipio_id: state.appConfig.usuario.municipio.id,
-  municipio: state.appConfig.usuario.municipio,
-  localidades: state.localidade.localidades,
+  municipio   : state.appConfig.usuario.municipio,
+  localidades : state.localidade.localidades,
   laboratorios: state.nw_laboratorio.laboratorios,
-  reload: state.localidade.reload,
-  toast: state.appConfig.toast
-});
+  reload      : state.localidade.reload,
+  toast       : state.appConfig.toast
+} );
 
+/**
+ * Mapeia as actions para o props do componente
+ * @param {*} dispatch 
+ * @returns 
+ */
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({
+  bindActionCreators( {
     changeSidebar,
     changeTableSelected,
-    clearToast,
     getLaboratoriosRequest,
     updateLaboratoryRequest,
-  }, dispatch);
+  }, dispatch );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Laboratorios);
+)( Laboratorios );

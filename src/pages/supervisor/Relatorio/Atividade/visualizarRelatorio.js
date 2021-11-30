@@ -133,7 +133,6 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
     props.changeSidebar( 6, 4 );
     setAtividade_id( atividade_id );
     props.getBoletimAtividadeRequest( atividade_id );
-    console.log(boletimAtividade);
   }, []);
 
   useEffect(() => {
@@ -208,8 +207,6 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
       setImoveisTipoData( iTipoData );
       dTipoData.reload = !dTipoData.reload;
       setDepositosTipoData( dTipoData );
-
-      console.log( boletimAtividade );
     }
   }, [ boletimAtividade ]);
 

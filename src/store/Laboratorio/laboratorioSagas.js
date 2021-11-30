@@ -22,15 +22,13 @@ export function* createLaboratory( action ) {
   try {
     const { data, status } = yield call( servico.createLaboratoryRequest, action.payload );
 
-    if( status === 200 ){
+    if( status === 201 ) {
       yield put( LaboratorioActions.createLaboratory( data ) );
       yield put( AppConfigActions.showNotifyToast( "Laboratório criado com sucesso", "success" ) );
-
-    }else{
+    } else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao criar a laboratorio: " + status, "error" ) );
     }
-  } catch (error) {
-    console.log(error)
+  } catch( error ) {
     yield put( AppConfigActions.showNotifyToast( "Erro ao criar a laboratorio, favor verifique sua conexão com a internet" + error, "error" ) );
   }
 }
@@ -40,8 +38,8 @@ export function* updateLaboratorio( action ) {
     const { data, status } = yield call( servico.setLaboratoryRequest, action.payload );
 
     if( status === 200 ) {
-      yield put( LaboratorioActions.updateLaboratory(data));
-      yield put( AppConfigActions.showNotifyToast( "Laboratório atualizado com sucesso", "success" ));
+      yield put( LaboratorioActions.updateLaboratory( data ) );
+      yield put( AppConfigActions.showNotifyToast( "Laboratório atualizado com sucesso", "success" ) );
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao atualizar laboratório: " + status, "error" ) );
     }

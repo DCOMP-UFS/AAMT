@@ -25,7 +25,6 @@ export const MapaRotas = ({ rotas_planejadas, fl_carregando_rota, ...props }) =>
   });
 
   useEffect(() => {
-    console.log( rotas_planejadas );
     props.setCarregandoRota( false );
   }, [ rotas_planejadas ]);
 

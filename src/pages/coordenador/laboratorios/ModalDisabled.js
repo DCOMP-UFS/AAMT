@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { updateLocationRequest, clearUpdate } from '../../../store/actions/LocalidadeActions';
+import { updateLocationRequest, clearUpdate } from '../../../store/Localidade/localidadeActions';
 
 // STYLES
 import { Button } from '../../../styles/global';

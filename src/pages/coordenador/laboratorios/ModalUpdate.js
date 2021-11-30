@@ -10,9 +10,9 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { createLocationRequest, clearCreate } from '../../../store/actions/LocalidadeActions';
+import { createLocationRequest, clearCreate } from '../../../store/Localidade/localidadeActions';
 import { createLaboratoryRequest, updateLaboratoryRequest } from '../../../store/Laboratorio/laboratorioActions';
-import { getCategoryRequest } from '../../../store/actions/CategoriaActions';
+import { getCategoryRequest } from '../../../store/Categoria/categoriaActions';
 
 // STYLES
 import { ContainerArrow } from '../../../styles/util';

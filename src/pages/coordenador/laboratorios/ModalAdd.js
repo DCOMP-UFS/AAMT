@@ -31,6 +31,7 @@ function ModalAdd({ municipio, created, ...props }) {
     console.log(categoria.value)
     console.log(municipio.id)
     props.createLaboratoryRequest(codigo, nome, endereco, categoria.value, municipio.id)
+    $('#modal-novo-localidade').modal('hide')
   }
 
   useEffect(() => {

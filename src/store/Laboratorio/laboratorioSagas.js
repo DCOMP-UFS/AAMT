@@ -32,6 +32,8 @@ export function* createLaboratory( action ) {
 
     if( status === 200 ){
       yield put( LaboratorioActions.createLaboratory( data ) );
+      yield put( AppConfigActions.showNotifyToast( "Laboratório criado com sucesso", "success" ) );
+
     }else{
       yield put( AppConfigActions.showNotifyToast( "Falha ao criar a laboratorio: " + status, "error" ) );
     }
@@ -47,6 +49,7 @@ export function* updateLaboratorio( action ) {
 
     if( status === 200 ) {
       yield put( LaboratorioActions.updateLaboratory(data));
+      yield put( AppConfigActions.showNotifyToast( "Laboratório atualizado com sucesso", "success" ));
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao atualizar laboratório: " + status, "error" ) );
     }

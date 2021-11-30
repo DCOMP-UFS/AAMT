@@ -13,11 +13,17 @@ const Amostra         = require('../models/Amostra');
 const Imovel          = require('../models/Imovel');
 const Equipe          = require('../models/Equipe');
 const Atividade       = require('../models/Atividade');
+const Atuacao         = require('../models/Atuacao');
+const Municipio       = require('../models/Municipio');
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
 const checkBlockSituation = require('../util/checkBlockSituation');
 
+/**
+ * Consulta a rota de trabalho de um agente em 
+ * uma determinada data.
+ */
 getRoute = async ( req, res ) => {
   const { usuario_id, data } = req.params;
   const userId = req.userId;
@@ -27,7 +33,7 @@ getRoute = async ( req, res ) => {
     include: {
       association: "atuacoes"
     }
-  });
+  } );
 
   let fl_agente = false;
   userRequest.atuacoes.forEach( at => {
@@ -36,18 +42,18 @@ getRoute = async ( req, res ) => {
   });
 
   if( fl_agente && parseInt( usuario_id ) !== userRequest.id )
-    return res.status(400).json({ error: "Acesso negado" });
+    return res.status( 400 ).json( { error: "Acesso negado" } );
 
   const usuario = await Usuario.findByPk( usuario_id );
 
   if( !usuario )
-    return res.status(400).json({ error: "Usuário não existe" });
-  // Fim validação
+    return res.status( 400 ).json( { error: "Usuário não existe" } );
 
-  const td = await TrabalhoDiario.findOne({
+  const td = await TrabalhoDiario.findOne( {
     where: {
       usuario_id: usuario.id,
-      data: `${ data }`
+      data:       `${ data }`,
+      horaFim:    null
     },
 
     include: {
@@ -62,17 +68,16 @@ getRoute = async ( req, res ) => {
           {
             association: 'objetivo',
             attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
-          }
+          },
         ]
       }
     }
-  });
+  } );
 
   if( !td )
-    return res.json({});
+    return res.json( {} );
 
-
-  let rota = await Quarteirao.findAll({
+  let rota = await Quarteirao.findAll( {
     include: {
       association: 'lados',
       include: [
@@ -88,9 +93,23 @@ getRoute = async ( req, res ) => {
         { association: 'rua' }
       ]
     }
-  });
+  } );
 
-  rota = rota.filter( r => r.lados.length > 0);
+  const sequencia_usuario = await Atuacao.findOne( {
+    where: {
+      usuario_id,
+      tipoPerfil: 4,
+      local_id:   td.equipe.atividade.municipio_id
+    }
+  } ).then( at => at.sequencia_usuario );
+
+  const codigo_municipio = await Municipio.findOne({
+    where: {
+      id: td.equipe.atividade.municipio_id
+    }
+  } ).then( mun => mun.codigo );
+
+  rota = rota.filter( r => r.lados.length > 0 );
 
   let equipe = {
     id: td.equipe.id,
@@ -98,21 +117,24 @@ getRoute = async ( req, res ) => {
   };
 
   let trabalhoDiario = {
-    id: td.id,
-    data: td.data,
-    horaInicio: td.horaInicio,
-    horaFim: td.horaFim,
-    usuario_id: td.usuario_id,
-    supervisor_id: td.supervisor_id,
-    equipe_id: td.supervisor_id,
-    equipe: equipe,
-    atividade: td.equipe.atividade
-  }
+    id:             td.id,
+    sequencia:      td.sequencia,
+    data:           td.data,
+    horaInicio:     td.horaInicio,
+    horaFim:        td.horaFim,
+    usuario_id:     td.usuario_id,
+    sequencia_usuario,
+    supervisor_id:  td.supervisor_id,
+    equipe_id:      td.supervisor_id,
+    equipe:         equipe,
+    atividade:      td.equipe.atividade,
+    codigo_municipio,
+  };
 
-  return res.json({
+  return res.json( {
     trabalhoDiario,
     rota
-  });
+  } );
 }
 
 planejarRota = async ( req, res ) => {
@@ -158,10 +180,10 @@ planejarRota = async ( req, res ) => {
   // Fim validação
 
   // en-GB: d/m/Y
-  const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split('/');
+  const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split( '/' );
   const current_date = `${ Y }-${ m }-${ d }`;
 
-  const td = await TrabalhoDiario.findOne({
+  const td = await TrabalhoDiario.findAll( {
     where: {
       [Op.and]: [
         {
@@ -170,33 +192,25 @@ planejarRota = async ( req, res ) => {
           }
         },
         { usuario_id },
-        { equipe_id }
       ]
-    }
-  });
+    },
+    order: [
+      [ 'sequencia', 'DESC' ]
+    ]
+  } );
 
-  let trabalho_diario = {};
-  if( !td ) {
-    trabalho_diario = await TrabalhoDiario.create({
-      data: current_date,
-      supervisor_id,
-      usuario_id,
-      equipe_id
-    });
-  } else {
-    trabalho_diario = td;
+  const trabalho_diario = await TrabalhoDiario.create( {
+    data: current_date,
+    supervisor_id,
+    usuario_id,
+    equipe_id,
+    sequencia: td.length > 0 ? td[ 0 ].sequencia + 1 : 1        
+  } );
 
-    await Rota.destroy({
-      where: {
-        trabalho_diario_id: trabalho_diario.id
-      }
-    });
-  }
-
-  const rota = lados.map( lado_id => ({
+  const rota = lados.map( lado_id => ( {
     lado_id,
     trabalho_diario_id: trabalho_diario.id
-  }));
+  } ) );
 
   Rota.bulkCreate( rota );
 
@@ -325,6 +339,9 @@ getPlain = async ( req, res ) => {
   return res.json( plainTeam );
 }
 
+/**
+ * Inicializa uma rota de trabalho diário.
+ */
 startRoute = async ( req, res ) => {
   const { trabalhoDiario_id } = req.body;
   const userId = req.userId;
@@ -401,6 +418,12 @@ startRoute = async ( req, res ) => {
   return res.json( rota );
 }
 
+/**
+ * Finaliza uma rota de trabalho diário e armazena
+ * as informações da vistoria.
+ * 
+ * @returns {Promise} reponse
+ */
 endRoute = async ( req, res ) => {
   const { trabalhoDiario_id, horaFim, vistorias } = req.body;
   const userId = req.userId;
@@ -408,99 +431,130 @@ endRoute = async ( req, res ) => {
   // Validando
   const td = await TrabalhoDiario.findByPk( trabalhoDiario_id );
   if( !td ) 
-    res.json({
+    res.json( {
       status: 'error',
       mensage: 'Impossível finalizar a rota, trabalho diário informado não existe!'
-    });
+    } );
 
   const userRequest = await Usuario.findByPk( userId, {
     include: {
       association: "atuacoes"
     }
-  });
+  } );
 
   let fl_agente = false;
   userRequest.atuacoes.forEach( at => {
     if( at.tipoPerfil === 4 )
       fl_agente = true;
-  });
+  } );
 
+  /**
+   * Verificando se o usuário solicitando finalização da rota é o responsável
+   * pelo trabalho diário informado
+   */
   if( fl_agente && td.usuario_id !== userRequest.id )
-    return res.json({ 
+    return res.json( { 
       status: 'error',
       mensage: 'Acesso negado'
-    });
-  // Validando
+    } );
+
+  // Concatenando todas amostras
+  let arrayCodigosAmostra = [];
+
+  vistorias.forEach( v => {
+    v.recipientes.forEach( recipiente => {
+      if( recipiente.fl_comFoco ) {
+        recipiente.amostras.forEach( amostra => {
+          arrayCodigosAmostra.push( amostra.idUnidade );
+        } );
+      }
+    } );
+  } );
+
+  // Verificando códigos de amostra repetidos
+  const temCodigoDuplicado = arrayCodigosAmostra.filter( ( item, index ) => arrayCodigosAmostra.indexOf( item ) !== index );
+
+  if( temCodigoDuplicado.length > 0 ) {
+    return res.status( 400 ).json( {
+      status:   'error',
+      tipo:     'codigo_amostra_duplicado',
+      message:  `Os códigos de amostra ${ temCodigoDuplicado.join( ', ' ) } estão repetidos. Por favor, verifique e corrija.`
+    } );
+  }
 
   // Apagando dados desatualizados
-  await Vistoria.destroy({
+  await Vistoria.destroy( {
     where: {
       trabalho_diario_id: trabalhoDiario_id
     }
-  });
-  // Apagando dados desatualizados
+  } );
 
-  // Salvando as vistorias  
-  let vists = [];
-  vistorias.forEach(async v => {
-    let vistoria = { ...v }
-    await Vistoria.create({
-      situacaoVistoria: v.situacaoVistoria,
-      horaEntrada: v.horaEntrada,
-      pendencia: v.pendencia,
-      sequencia: v.sequencia,
-      justificativa: v.justificativa,
-      imovel_id: v.imovel.id,
-      trabalho_diario_id: v.trabalhoDiario_id
-    })
-    .then(function( result ) {
+  // Salvando as vistorias 
+  for( let vistoria of vistorias ) {
+    await Vistoria.create( {
+      situacaoVistoria:   vistoria.situacaoVistoria,
+      horaEntrada:        vistoria.horaEntrada,
+      pendencia:          vistoria.pendencia,
+      sequencia:          vistoria.sequencia,
+      justificativa:      vistoria.justificativa,
+      imovel_id:          vistoria.imovel.id,
+      trabalho_diario_id: vistoria.trabalhoDiario_id,
+      responsavel:        vistoria.imovel.responsavel,
+      tipoImovelVistoria: vistoria.imovel.tipoImovel
+    } )
+    .then( result => {
       vistoria.id = result.dataValues.id;
-    });
+    } );
 
-    await Imovel.update({
-      numero: vistoria.imovel.numero,
-      sequencia: vistoria.imovel.sequencia,
-      responsavel: vistoria.imovel.responsavel,
-      complemento: vistoria.imovel.complemento,
-      tipoImovel: vistoria.imovel.tipoImovel
-    }, { where: { id: vistoria.imovel.id } } );
+    await Imovel.update( 
+      {
+        numero:       vistoria.imovel.numero,
+        sequencia:    vistoria.imovel.sequencia,
+        complemento:  vistoria.imovel.complemento,
+        responsavel:  vistoria.imovel.responsavel,
+        tipoImovel:   vistoria.imovel.tipoImovel
+      }, { 
+        where: { id: vistoria.imovel.id } 
+      } 
+    );
 
-    vistoria.recipientes.forEach(async r => {
-      let recipiente = { ...r };
-      await Deposito.create({
-        fl_comFoco: recipiente.fl_comFoco,
-        fl_tratado: recipiente.fl_tratado,
-        fl_eliminado: recipiente.fl_eliminado,
+    const recipientes = vistoria.recipientes;
+    for( let recipiente of recipientes ) {
+      await Deposito.create( {
+        fl_comFoco:     recipiente.fl_comFoco,
+        fl_tratado:     recipiente.fl_tratado,
+        fl_eliminado:   recipiente.fl_eliminado,
         tipoRecipiente: recipiente.tipoRecipiente,
-        sequencia: recipiente.sequencia,
-        vistoria_id: vistoria.id
-      })
-      .then(function( result ) {
+        sequencia:      recipiente.sequencia,
+        vistoria_id:    vistoria.id
+      } )
+      .then( result => {
         recipiente.id = result.dataValues.id;
-      });
+      } );
 
       if( recipiente.fl_tratado ) {
-        await Tratamento.create({
-          quantidade: recipiente.tratamento.quantidade,
-          tecnica: recipiente.tratamento.tecnica,
-          deposito_id: recipiente.id,
-          inseticida_id: 2
-        });
+        await Tratamento.create( {
+          quantidade:     recipiente.tratamento.quantidade,
+          tecnica:        recipiente.tratamento.tecnica,
+          deposito_id:    recipiente.id,
+          inseticida_id:  2
+        } );
       }
 
       if( recipiente.fl_comFoco ) {
-        recipiente.amostras.forEach(async a => {
-          await Amostra.create({
-            situacaoAmostra: a.situacao,
-            sequencia: a.sequencia,
-            deposito_id: recipiente.id,
-            laboratorio_id: null
-          });
-        });
+        const amostras = recipiente.amostras;
+        for( const amostra of amostras ) {
+          await Amostra.create( {
+            situacaoAmostra:  amostra.situacao,
+            sequencia:        amostra.sequencia,
+            codigo:           amostra.idUnidade,
+            deposito_id:      recipiente.id,
+            laboratorio_id:   null
+          } );
+        }
       }
-    });
-  });
-  // Salvando as vistorias
+    }
+  }
 
   // Finalizar rota
   const [ result ] = await TrabalhoDiario.update(
@@ -519,15 +573,14 @@ endRoute = async ( req, res ) => {
       status: 'error',
       mensage: 'Falha ao tentar finalizara rota, por favor, aguarde e tente novamente.'
     });
-  // Finalizar rota
 
   // Atualizando a situação dos quarteirões
-  await checkBlockSituation(trabalhoDiario_id);
+  await checkBlockSituation( trabalhoDiario_id );
   
-  return res.json({ 
+  return res.json( { 
     status: 'success',
     mensage: 'Vistorias registradas com sucesso!'
-  })
+  } );
 }
 
 isStarted = async ( req, res ) => {
@@ -840,16 +893,59 @@ const consultarRotasPlanejadas = async ( req, res ) => {
   return res.json( atividadesSupervisor );
 }
 
+/**
+ * Verifica se a rota está finalizada
+ * @param {*} req 
+ * @param {*} res 
+ * @returns {Boolean}
+ */
+const isFinalizado = async ( req, res ) => {
+  const { trabalhoDiario_id } = req.params;
+  const userId                = req.userId;
+
+  // Validando
+  const td = await TrabalhoDiario.findByPk( trabalhoDiario_id );
+  if( !td ) 
+    res.status( 404 ).json( {
+      status  : 'error',
+      mensage : 'Trabalho diário informado não existe!'
+    } );
+
+  const userRequest = await Usuario.findByPk( userId, {
+    include: {
+      association: "atuacoes"
+    }
+  } );
+
+  let fl_agente = false;
+  userRequest.atuacoes.forEach( at => {
+    if( at.tipoPerfil === 4 )
+      fl_agente = true;
+  } );
+
+  if( fl_agente && td.usuario_id !== userRequest.id )
+    return res.status( 401 ).json( { 
+      status: 'error',
+      mensage: 'Acesso negado'
+    } );
+
+  if( td.horaFim === null )
+    res.json( false );
+
+  res.json( true );
+}
+
 const router = express.Router();
 router.use(authMiddleware);
 
-router.get('/:usuario_id/usuarios/:data/data', getRoute);
-router.get('/planejamento/:usuario_id/usuarios', getPlain);
-router.post('/planejamento', planejarRota);
-router.post('/iniciar', startRoute);
-router.post('/finalizar', endRoute);
-router.get('/check/:trabalhoDiario_id/trabalhoDiario', isStarted);
-router.get('/abertas/:equipe_id/equipes', getOpenRouteByTeam);
-router.get('/planejadas/:ciclo_id/ciclo/:usuario_id/supervisor', consultarRotasPlanejadas);
+router.get( '/:usuario_id/usuarios/:data/data', getRoute );
+router.get( '/planejamento/:usuario_id/usuarios', getPlain );
+router.post( '/planejamento', planejarRota );
+router.post( '/iniciar', startRoute );
+router.post( '/finalizar', endRoute );
+router.get( '/check/:trabalhoDiario_id/trabalhoDiario', isStarted );
+router.get( '/abertas/:equipe_id/equipes', getOpenRouteByTeam );
+router.get( '/planejadas/:ciclo_id/ciclo/:usuario_id/supervisor', consultarRotasPlanejadas );
+router.get( '/isFinalizado/:trabalhoDiario_id/trabalhoDiario', isFinalizado );
 
-module.exports = app => app.use('/rotas', router);
+module.exports = app => app.use( '/rotas', router );

@@ -136,10 +136,6 @@ getSampleBySurpervision = async ( req, res ) => {
           association: 'vistoria',
           include: {
             association: 'trabalhoDiario',
-            where: {
-              supervisor_id: supervisor.id,
-              equipe_id: equipes
-            },
             include: {
               association: 'equipe'
             }

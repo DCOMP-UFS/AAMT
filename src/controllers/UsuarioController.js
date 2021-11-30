@@ -1,22 +1,21 @@
-const express = require('express');
-const bcrypt = require('bcryptjs');
-const { QueryTypes } = require('sequelize');
-
-const authMiddleware = require('../middlewares/auth');
-const Atuacao = require('../models/Atuacao');
-const Usuario = require('../models/Usuario');
-const Municipio = require('../models/Municipio');
-const RegionalSaude = require('../models/RegionalSaude');
+const express         = require( 'express' );
+const bcrypt          = require( 'bcryptjs' );
+const { Op }          = require( 'sequelize' );
+const authMiddleware  = require( '../middlewares/auth' );
+const Atuacao         = require( '../models/Atuacao' );
+const Usuario         = require( '../models/Usuario' );
+const Municipio       = require( '../models/Municipio' );
+const RegionalSaude   = require( '../models/RegionalSaude' );
 
 // UTILITY
-const allowFunction = require('../util/allowFunction');
-const getLocationByOperation = require('../util/getLocationByOperation');
-const checkLocationByOperation = require('../util/checkLocationByOperation');
-const getAllUsersByRegional = require('../util/getAllUsersByRegional');
+const allowFunction             = require( '../util/allowFunction' );
+const getLocationByOperation    = require( '../util/getLocationByOperation' );
+const checkLocationByOperation  = require( '../util/checkLocationByOperation' );
+const getAllUsersByRegional     = require( '../util/getAllUsersByRegional' );
 
 const router = express.Router();
 
-index = async (req, res) => {
+index = async ( req, res ) => {
   const allow = await allowFunction( req.userId, 'manter_usuario' );
 
   if( !allow ) {
@@ -200,15 +199,35 @@ store = async (req, res) => {
         break;
     }
 
-    const result = await Atuacao.create({
+    let sequencia_usuario = null;
+
+    if( tipoPerfil === 4 ) {
+      // Busca os agentes cadastrados naquela mesma localidade
+      const agentesCadastrados = await Atuacao.findAll( {
+        where: {
+          [Op.and]: [
+            { local_id },
+            { tipoPerfil: 4 }
+          ]
+        },
+        order: [
+          [ 'sequencia_usuario', 'DESC' ]
+        ]
+      });
+      
+      sequencia_usuario = agentesCadastrados.length > 0 ? agentesCadastrados[0].sequencia_usuario + 1 : 1;
+    }
+
+    const result = await Atuacao.create( {
       usuario_id: user.id,
       tipoPerfil,
       local_id,
-      escopo
-    });
-    result.dataValues.usuario_id = undefined;
-    result.dataValues.createdAt = undefined;
-    result.dataValues.updatedAt = undefined;
+      escopo,
+      sequencia_usuario
+    } );
+    result.dataValues.usuario_id  = undefined;
+    result.dataValues.createdAt   = undefined;
+    result.dataValues.updatedAt   = undefined;
 
     at.push( result );
   }

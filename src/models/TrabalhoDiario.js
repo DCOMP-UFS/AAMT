@@ -5,7 +5,8 @@ class TrabalhoDiario extends Model {
     super.init({
       data: DataTypes.DATE,
       horaInicio: DataTypes.TIME,
-      horaFim: DataTypes.TIME
+      horaFim: DataTypes.TIME,
+      sequencia: DataTypes.INTEGER
     }, {
       sequelize,
       tableName: 'trabalhos_diarios'

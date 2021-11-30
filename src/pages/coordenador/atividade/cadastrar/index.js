@@ -8,33 +8,33 @@ import { abrangencia as abrangenciaEnum }  from '../../../../config/enumerate';
 import ButtonSave from '../../../../components/ButtonSave';
 
 // ACTIONS
-import { changeSidebar } from '../../../../store/actions/sidebar';
-import { getMethodologiesRequest } from '../../../../store/actions/MetodologiaActions';
-import { getAllowedCyclesRequest } from '../../../../store/actions/CicloActions';
-import { createActiveRequest } from '../../../../store/actions/AtividadeActions';
+import { changeSidebar } from '../../../../store/Sidebar/sidebarActions';
+import { getMethodologiesRequest } from '../../../../store/Metodologia/metodologiaActions';
+import { getAllowedCyclesRequest } from '../../../../store/Ciclo/cicloActions';
+import { createActiveRequest } from '../../../../store/Atividade/atividadeActions';
 
 // STYLES
 import { FormGroup, selectDefault } from '../../../../styles/global';
 import { ContainerFixed } from '../../../../styles/util';
 
-
-function Atividades({ metodologias, ciclos, ...props }) {
-  const [ objetivoAtividade, setObjetivoAtividade ] = useState("");
-  const [ ciclo, setCiclo ] = useState({});
-  const [ flTodosImoveis, setFlTodosImoveis ] = useState({ value: false, label: "Não" });
-  const [ optionCiclo, setOptionCiclo ] = useState({});
-  const [ optionflTodosImoveis ] = useState([
+const Atividades = ( { metodologias, ciclos, ...props } ) => {
+  const [ objetivoAtividade, setObjetivoAtividade ] = useState( "" );
+  const [ ciclo, setCiclo ]                         = useState( {} );
+  const [ flTodosImoveis, setFlTodosImoveis ]       = useState( { value: false, label: "Não" } );
+  const [ optionCiclo, setOptionCiclo ]             = useState( {} );
+  const [ abrangencia, setAbrangencia ]             = useState( {} );
+  const [ metodologia, setMetodologia ]             = useState( {} );
+  const [ optionMetodologia, setOptionMetodologia ] = useState( [] );
+  const [ objetivo, setObjetivo ]                   = useState( {} );
+  const [ optionObjetivo, setoptionObjetivo ]       = useState( [] );
+  const [ optionflTodosImoveis ]                    = useState( [
     { value: true, label: "Sim" },
     { value: false, label: "Não" }
-  ]);
-  const [ abrangencia, setAbrangencia ] = useState({});
-  const optionAbrangencia = Object.entries(abrangenciaEnum).map(([key, value]) => {
-    return { value: value.id, label: value.label };
-  });
-  const [ metodologia, setMetodologia ] = useState({});
-  const [ optionMetodologia, setOptionMetodologia ] = useState([]);
-  const [ objetivo, setObjetivo ] = useState({});
-  const [ optionObjetivo, setoptionObjetivo ] = useState([]);
+  ] );
+  const optionAbrangencia                           = Object.entries( abrangenciaEnum )
+    .map( ( [ key, value ] ) => {
+      return { value: value.id, label: value.label };
+    } );
 
   useEffect(() => {
     props.changeSidebar(1, 2);
@@ -204,11 +204,11 @@ function Atividades({ metodologias, ciclos, ...props }) {
 }
 
 const mapStateToProps = state => ({
-  municipio_id: state.appConfig.usuario.municipio.id,
+  municipio_id    : state.appConfig.usuario.municipio.id,
   regionalSaude_id: state.appConfig.usuario.municipio.regional.id,
-  metodologias: state.metodologia.metodologias,
-  ciclos: state.ciclo.ciclos,
-  created: state.atividade.created
+  metodologias    : state.metodologia.metodologias,
+  ciclos          : state.ciclo.ciclos,
+  created         : state.atividade.created
 });
 
 const mapDispatchToProps = dispatch =>
@@ -217,9 +217,9 @@ const mapDispatchToProps = dispatch =>
     getMethodologiesRequest,
     getAllowedCyclesRequest,
     createActiveRequest
-  }, dispatch);
+  }, dispatch );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Atividades);
+)( Atividades );

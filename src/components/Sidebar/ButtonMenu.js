@@ -6,7 +6,7 @@ import { IoIosMenu } from 'react-icons/io';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { navToggleLab } from '../../store/actions/appConfig';
+import { navToggleLab } from '../../store/AppConfig/appConfigActions';
 
 import { ContainerButtonMenu } from './styles';
 

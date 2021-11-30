@@ -21,13 +21,17 @@ import { ModalConfirm } from '../../../../components/Modal';
 import $ from 'jquery';
 
 // ACTIONS
-import { changeSidebar } from '../../../../store/actions/sidebar';
-import { getActivitieByIdRequest, getLocationsRequest } from '../../../../store/actions/AtividadeActions';
-import { getUsersByCityRequest } from '../../../../store/actions/UsuarioActions';
-import { removeEstrato, removeEquipe, planActivityRequest } from '../../../../store/actions/AtividadeActions';
+import { changeSidebar } from '../../../../store/Sidebar/sidebarActions';
+import { getUsersByCityRequest } from '../../../../store/Usuario/usuarioActions';
+import {
+  getActivitieByIdRequest,
+  getLocationsRequest,
+  removeEstrato,
+  removeEquipe,
+  planActivityRequest
+} from '../../../../store/Atividade/atividadeActions';
 
 // STYLES
-// import { ContainerMap } from './styles';
 import {
   FormGroup,
   UlIcon,
@@ -38,37 +42,36 @@ import {
 } from '../../../../styles/global';
 import { PageIcon, PageHeader, ContainerFixed } from '../../../../styles/util';
 
-function PlanejarAtividade({ atividade, estratos, equipes, ...props }) {
-  const [ id ] = useState(props.match.params.id);
+const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
+  const [ id ]                                      = useState(props.match.params.id);
   const [ objetivoAtividade, setObjetivoAtividade ] = useState( "" );
   const [ abrangencia, setAbrangencia ]             = useState( undefined );
-  // const [ situacao, setSituacao ] = useState( undefined );
   const [ responsabilidade, setResponsabilidade ]   = useState( undefined );
   const [ flTodosImoveis, setFlTodosImoveis ]       = useState( false );
-  const [ metodologia, setMetodologia ]             = useState({
-    sigla: ""
-  });
   const [ objetivo, setObjetivo ]                   = useState( {} );
   const [ mensageEstrato, setMensageEstrato ]       = useState( "" );
   const [ mensageEquipe, setMensageEquipe ]         = useState( "" );
+  const [ metodologia, setMetodologia ]             = useState( {
+    sigla: ""
+  } );
 
-  useEffect(() => {
-    props.changeSidebar(1, 1);
+  useEffect( () => {
+    props.changeSidebar( 1, 1 );
     props.getActivitieByIdRequest( id );
     props.getUsersByCityRequest( props.municipio_id );
-  }, []);
+  }, [] );
 
-  useEffect(() => {
+  useEffect( () => {
     if( Object.entries( atividade ).length > 0 ) {
       setObjetivoAtividade( atividade.objetivoAtividade );
       setAbrangencia(
         Object.entries( abrangenciaEnum )
-          .filter(([ attr, data ]) => data.id === atividade.abrangencia )[0][1].label
+          .filter( ( [ attr, data ] ) => data.id === atividade.abrangencia )[ 0 ][ 1 ].label
       );
       // setSituacao( atividade.situacao );
       setResponsabilidade(
         Object.entries( responsabilidadeAtividade )
-          .filter(([ attr, data ]) => data.id === atividade.responsabilidade )[0][1].label
+          .filter( ( [ attr, data ] ) => data.id === atividade.responsabilidade )[ 0 ][ 1 ].label
       );
       setFlTodosImoveis( atividade.flTodosImoveis );
       setMetodologia( atividade.metodologia );
@@ -76,7 +79,7 @@ function PlanejarAtividade({ atividade, estratos, equipes, ...props }) {
 
       props.getLocationsRequest( atividade.abrangencia, props.municipio_id );
     }
-  }, [ atividade ]);
+  }, [ atividade ] );
 
   function handleSubmit( e ) {
     e.preventDefault();
@@ -387,15 +390,15 @@ function ListEquipe( props ) {
 
 const mapStateToProps = state => ({
   municipio_id: state.appConfig.usuario.municipio.id,
-  atividade: state.atividade.atividade,
-  locais: state.atividade.locais,
-  estratos: state.atividade.estratos,
-  equipes: state.atividade.equipes,
-  reload: state.atividade.reload
+  atividade   : state.atividade.atividade,
+  locais      : state.atividade.locais,
+  estratos    : state.atividade.estratos,
+  equipes     : state.atividade.equipes,
+  reload      : state.atividade.reload
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({
+  bindActionCreators( {
     changeSidebar,
     getActivitieByIdRequest,
     getLocationsRequest,
@@ -403,9 +406,9 @@ const mapDispatchToProps = dispatch =>
     removeEstrato,
     removeEquipe,
     planActivityRequest
-  }, dispatch);
+  }, dispatch );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)( PlanejarAtividade )
+)( PlanejarAtividade );

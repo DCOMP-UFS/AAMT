@@ -9,7 +9,7 @@ import $ from 'jquery';
 import { getDateBr } from '../../../../config/function';
 
 // ACTIONS
-import { changeSidebar } from '../../../../store/actions/sidebarSupervisor';
+import { changeSidebar } from '../../../../store/SidebarSupervisor/sidebarSupervisorActions';
 import { getResponsabilityActivitiesRequest } from '../../../../store/Atividade/atividadeActions';
 import { getCicloAbertoRequest } from '../../../../store/Ciclo/cicloActions';
 import { getTrabalhosUsuarioRequest, setTrabalhos } from '../../../../store/TrabalhoDiario/trabalhoDiarioActions';
@@ -101,11 +101,11 @@ export const RelatorioDiario = ({ atividades, ciclo, usuario, ...props }) => {
   )
 }
 
-const mapStateToProps = state => ({
-  usuario: state.appConfig.usuario,
-  ciclo: state.nw_ciclo.ciclo,
-  atividades: state.nw_atividade.atividades
-});
+const mapStateToProps = state => ( {
+  usuario   : state.appConfig.usuario,
+  ciclo     : state.ciclo.ciclo,
+  atividades: state.atividade.atividades
+} );
 
 const mapDispatchToProps = {
   changeSidebar,

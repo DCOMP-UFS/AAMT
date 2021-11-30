@@ -11,8 +11,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../../store/actions/sidebarAgente';
-import { showNotifyToast } from '../../../../store/actions/appConfig';
+import { changeSidebar } from '../../../../store/SidebarAgente/sidebarAgenteActions';
+import { showNotifyToast } from '../../../../store/AppConfig/appConfigActions';
 
 // STYLES
 import { PageIcon, PageHeader, Steps, StepControl } from '../../../../styles/util';
@@ -164,7 +164,7 @@ function RegistrarVistoria({ vistoria, trabalhoDiario, ...props }) {
 
 const mapStateToProps = state => ({
   trabalhoDiario: state.rotaCache.trabalhoDiario,
-  vistoria: state.nw_vistoria
+  vistoria: state.vistoria
 });
 
 const mapDispatchToProps = dispatch =>

@@ -8,10 +8,10 @@ import SelecionarQuarteiroes from '../components/SelecionarQuarteiroes';
 import MapaRotas from '../components/MapaRotas';
 
 // ACTIONS
-import { getOpenCycleRequest } from '../../../store/actions/CicloActions';
+import { getOpenCycleRequest } from '../../../store/Ciclo/cicloActions';
 import { getResponsabilityActivitiesRequest, setIndexEquipe, setIndexMembro } from '../../../store/Atividade/atividadeActions';
 import { planejarRotaRequest, setCarregandoRota, getRotasPlanejadasRequest } from '../../../store/Rota/rotaActions';
-import { showNotifyToast } from '../../../store/actions/appConfig';
+import { showNotifyToast } from '../../../store/AppConfig/appConfigActions';
 
 // STYLES
 import { PageIcon, PageHeader, PagePopUp, Steps, StepControl } from '../../../styles/util';
@@ -244,15 +244,15 @@ export const PlanejarRota = ({
 }
 
 const mapStateToProps = (state) => ({
-  ciclo: state.ciclo.cicloAberto,
-  regionalSaude_id: state.appConfig.usuario.municipio.regional.id,
-  usuario: state.appConfig.usuario,
-  indexAtividade: state.nw_atividade.indexAtividade,
-  indexMembro: state.nw_atividade.indexMembro,
-  equipes: state.nw_atividade.equipes,
-  indexEquipe: state.nw_atividade.indexEquipe,
-  fl_rota_planejada: state.nw_rota.fl_rota_planejada,
-  rota_equipe: state.nw_atividade.rota_equipe,
+  ciclo             : state.ciclo.cicloAberto,
+  regionalSaude_id  : state.appConfig.usuario.municipio.regional.id,
+  usuario           : state.appConfig.usuario,
+  indexAtividade    : state.atividade.indexAtividade,
+  indexMembro       : state.atividade.indexMembro,
+  equipes           : state.atividade.equipes,
+  indexEquipe       : state.atividade.indexEquipe,
+  fl_rota_planejada : state.rota.fl_rota_planejada,
+  rota_equipe       : state.atividade.rota_equipe,
 });
 
 const mapDispatchToProps = {

@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { closeRouteRequest, getRouteRequest } from '../../../../store/actions/RotaActions';
+import { closeRouteRequest, getRouteRequest } from '../../../../store/Rota/rotaActions';
 
 // import { Container } from './styles';
 // COMPONENTS

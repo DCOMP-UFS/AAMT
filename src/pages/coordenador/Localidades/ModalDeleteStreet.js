@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { deleteStreetRequest } from '../../../store/actions/RuaActions';
+import { deleteStreetRequest } from '../../../store/Rua/ruaActions';
 
 // STYLES
 import { Button } from '../../../styles/global';

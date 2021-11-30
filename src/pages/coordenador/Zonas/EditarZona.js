@@ -10,8 +10,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebar';
-import { updateZoneRequest, getZoneByIdRequest } from '../../../store/actions/ZonaActions';
+import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
+import { updateZoneRequest, getZoneByIdRequest } from '../../../store/Zona/zonaActions';
 
 // STYLES
 import { FormGroup, selectDefault } from '../../../styles/global';

@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { duplicateRecipient } from '../../../../../store/actions/VistoriaActions';
+import { duplicateRecipient } from '../../../../../store/Vistoria/vistoriaActions';
 
 // Styles
 import {

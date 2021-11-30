@@ -12,7 +12,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { navToggleLab } from '../../store/actions/appConfig';
+import { navToggleLab } from '../../store/AppConfig/appConfigActions';
 
 // COMPONENTS
 import './style.css';

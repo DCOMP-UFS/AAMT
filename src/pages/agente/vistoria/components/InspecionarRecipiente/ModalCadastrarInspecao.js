@@ -17,8 +17,9 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { addUnidade } from '../../../../../store/actions/supportInfo';
-import { addRecipiente } from '../../../../../store/actions/VistoriaActions';
+import { showNotifyToast } from '../../../../../store/AppConfig/appConfigActions';
+import { addUnidade } from '../../../../../store/SupportInfo/supportInfoActions';
+import { addRecipiente } from '../../../../../store/Vistoria/vistoriaActions';
 
 // STYLES
 import {
@@ -38,44 +39,67 @@ import {
   LiEmpty
 } from '../../../../../styles/global';
 
-function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, trabalhoDiario_id, objetivo, ...props }) {
-  const [ tipoRecipiente, setTipoRecipiente ] = useState({ value: null, label: null });
-  const [ fl_eliminado, setFl_eliminado ] = useState({ value: null, label: null });
-  const [ fl_tratado, setFl_tratado ] = useState({ value: null, label: null });
-  const [ fl_foco, setFl_foco ] = useState({ value: null, label: null });
-  const [ tecnicaTratamento, setTecnicaTratamento ] = useState({ value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label });
-  const [ numUnidade, setNumUnidade ] = useState(0);
-  const [ qtdTratamento, setQtdTratamento ] = useState( 0 );
-  const [ unidade, setUnidade ] = useState([]);
-  const [ reload, setReload ] = useState( false );
-  const [ optionsTipoRecipiente ] = useState(tipoRecipienteEnum.map( tipo => (
+function InspecionarRecipiente( {
+  sequenciaRecipiente,
+  recipientes,
+  vistorias,
+  trabalhoDiario_id,
+  data,
+  objetivo,
+  trabalhoDiario_sequencia,
+  codigoMunicipio,
+  sequenciaUsuario,
+  ...props 
+} ) {
+  const [ tipoRecipiente, setTipoRecipiente ]       = useState( { value: null, label: null } );
+  const [ fl_eliminado, setFl_eliminado ]           = useState( { value: null, label: null } );
+  const [ fl_tratado, setFl_tratado ]               = useState( { value: null, label: null } );
+  const [ fl_foco, setFl_foco ]                     = useState( { value: null, label: null } );
+  const [ dataFormatada, setDataFormatada ]         = useState( null );
+  const [ seqAmostra, setSeqAmostra ]               = useState( "" );
+  const [ tecnicaTratamento, setTecnicaTratamento ] = useState( { value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label } );
+  const [ numUnidade, setNumUnidade ]               = useState( 0 );
+  const [ qtdTratamento, setQtdTratamento ]         = useState( 0 );
+  const [ unidade, setUnidade ]                     = useState( [] );
+  const [ reload, setReload ]                       = useState( false );
+  const [ optionsTipoRecipiente ]                   = useState( tipoRecipienteEnum.map( tipo => (
     { value: tipo, label: tipo }
-  ) ));
-  const [ optionsSimNao ] = useState([
+  ) ) );
+  const [ optionsSimNao ]                           = useState( [
     { value: true, label: "Sim" },
     { value: false, label: "Não" }
-  ]);
-  const [ optionsTecnicaTratamento ] = useState(
-    Object.entries( tecnicaTratamentoEnum ).map(([ key, value ]) => ({ value: value.id, label: value.label }))
+  ] );
+  const [ optionsTecnicaTratamento ]                = useState(
+    Object.entries( tecnicaTratamentoEnum ).map( ( [ key, value ] ) => ( { value: value.id, label: value.label } ) )
   );
 
-  useEffect(() => {
+  useEffect( () => {
+    const [ ano, mes, dia ] = data.split( "-" );
+
+    setDataFormatada( `${ dia }${ mes }${ ano }` );
+  }, [ data ] );
+
+  useEffect( () => {
     $( '#modalCadastrarInspecao' ).on( 'shown.bs.modal', function() {
       $('#tipoRecipiente').focus();
-    });
-  }, []);
+    } );
+  }, [] );
 
-  function addUnidade() {
-    let nu = numUnidade + 1;
+  const addUnidade = () => {
+    if( seqAmostra == "" ) {
+      props.showNotifyToast( "Informe a sequência da amostra", "warning" );
+      return;
+    }
+
+    let seq         = parseInt( seqAmostra );
+    let nu          = numUnidade + 1;
     let listUnidade = unidade;
+    let unidade_id  = 
+      `${ codigoMunicipio }.${ sequenciaUsuario }.${ dataFormatada }.${ trabalhoDiario_sequencia }.${ seq }`;
 
-    const amostra = {
-      idUnidade:
-        trabalhoDiario_id + '.' +
-        ( vistorias.length + 1) + '.' +
-        sequenciaRecipiente + '.' +
-        nu,
-      sequencia: nu,
+    const amostra   = {
+      idUnidade: unidade_id,
+      sequencia: seq,
       situacao: situacaoAmostraEnum.coletada.id
     }
 
@@ -96,6 +120,7 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
   function submit() {
     // Validação
     let fl_valido = true;// true -> válido | false -> inválido
+
     if( !validInputIsNull( "#tipoRecipiente", tipoRecipiente.value ) ) fl_valido = false;
     if( objetivo === 'LI+T' || objetivo === 'T' ) {
       if( !validInputIsNull( "#fl_eliminado", fl_eliminado.value ) ) fl_valido = false;
@@ -104,7 +129,7 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
     if( !validInputIsNull( "#fl_foco", fl_foco.value ) ) fl_valido = false;
     if( fl_tratado.value && qtdTratamento === 0 ) {
       fl_valido = false;
-      
+
       var input_qtd_tratamento = $( '#qtdTratamento' ),
           form_group = input_qtd_tratamento.parent();
       input_qtd_tratamento.addClass( 'invalid' );
@@ -112,33 +137,92 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
       form_group.append( msgInputInvalid( 'O valor não pode ser zero' ) );
     }
 
+    /**
+     * Verifica a ocorrencia de códigos de amostra
+     * que são iguais em um mesmo depósito, em recipientes
+     * de uma mesma vistoria e entre diferentes vistorias.
+     */
+    const arrayCodigosAmostra = unidade.map( item => item.idUnidade );
+    const temCodigoDuplicado  = arrayCodigosAmostra.filter( ( item, index ) => arrayCodigosAmostra.indexOf( item ) !== index );
+
+    var input_seq_amostra = $( '#row-sequence' ),
+    form_group_amostra    = input_seq_amostra.parent();
+
+    let valida_entre_recipiente = true;
+
+    if( temCodigoDuplicado.length > 0 ) {
+      fl_valido = false;
+      $( '#row-sequence' ).parent().find('span.form-label-invalid').remove();
+      input_seq_amostra.addClass( 'invalid' );
+
+      form_group_amostra.append( msgInputInvalid( `Os códigos <strong>${ temCodigoDuplicado.join( ', ' ) }</strong> estão duplicados.` ) );
+    }
+
+    if( temCodigoDuplicado.length === 0 ) {
+      $( '#row-sequence' ).parent().find('span.form-label-invalid').remove();
+      recipientes.forEach( recipiente => {
+        recipiente.amostras.forEach( amostra => {
+          const index = arrayCodigosAmostra.findIndex( p => p === amostra.idUnidade );
+
+          if( index !== -1 ) {
+            fl_valido = false;
+            valida_entre_recipiente = false;
+            input_seq_amostra.addClass( 'invalid' );
+
+            form_group_amostra.append( msgInputInvalid( `O código <strong>${ arrayCodigosAmostra[ index ] }</strong> já foi gerado nesta vistoria para o recipiente ${ recipiente.sequencia }.` ) );
+          }
+        } )
+      } )
+    }
+
+    if( temCodigoDuplicado.length === 0 && valida_entre_recipiente ) {
+      $( '#row-sequence' ).parent().find( 'span.form-label-invalid' ).remove();
+      vistorias.forEach( ( vistoria, vistoriaIndex ) => {
+        vistoria.recipientes.forEach( recipiente => {
+          recipiente.amostras.forEach( amostra => {
+            const index = arrayCodigosAmostra.findIndex( p => p === amostra.idUnidade );
+
+            if( index !== -1 ) {
+              fl_valido = false;
+              input_seq_amostra.addClass( 'invalid' );
+
+              form_group_amostra.append( msgInputInvalid( `O código ${ arrayCodigosAmostra[ index ] } já foi gerado para o recipiente ${ recipiente.sequencia } <a href="/agente/vistoria/editar/${ vistoriaIndex }">em outro imóvel</a>.` ) );
+            }
+          } );
+        } );
+      } );
+    }
+
     if( fl_valido ) {
       const recipiente = {
-        fl_comFoco: fl_foco.value,
-        fl_tratado: fl_tratado.value,
-        fl_eliminado: fl_eliminado.value,
+        fl_comFoco:     fl_foco.value,
+        fl_tratado:     fl_tratado.value,
+        fl_eliminado:   fl_eliminado.value,
         tipoRecipiente: tipoRecipiente.value,
-        sequencia: sequenciaRecipiente,
-        tratamento: {
+        sequencia:      sequenciaRecipiente,
+        tratamento:     {
           quantidade: qtdTratamento,
-          tecnica: tecnicaTratamento.value
+          tecnica:    tecnicaTratamento.value
         },
-        amostras: unidade
+        amostras:       unidade
       };
 
       props.addRecipiente( recipiente );
 
       // Reset state
-      setTipoRecipiente({ value: null, label: null, name: "tipoRecipiente" });
-      setFl_eliminado({ value: null, label: null, name: "fl_eliminado" });
-      setFl_tratado({ value: null, label: null, name: "fl_tratado" });
-      setFl_foco({ value: null, label: null, name: "fl_foco" });
-      setNumUnidade( 0 );
+      setTipoRecipiente( { value: null, label: null, name: "tipoRecipiente" } );
+      setFl_eliminado( { value: null, label: null, name: "fl_eliminado" } );
+      setFl_tratado( { value: null, label: null, name: "fl_tratado" } );
+      setFl_foco( { value: null, label: null, name: "fl_foco" } );
+      // setNumUnidade( 0 );
       setUnidade( [] );
+      setSeqAmostra( "" );
       setQtdTratamento( 0 );
-      setTecnicaTratamento({ value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label });
+      setTecnicaTratamento( { value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label } );
 
-      $('#modalCadastrarInspecao').modal('hide');
+      $( '#modalCadastrarInspecao' ).modal( 'hide' );
+    } else {
+      props.showNotifyToast( "Existem campos obrigatórios não preenchidos", "warning" );
     }
   }
 
@@ -234,10 +318,30 @@ function InspecionarRecipiente({ sequenciaRecipiente, recipientes, vistorias, tr
 
               <h4>
                 Gerar código da(s) amostra(s)
-                <ButtonNewObject
-                  title="Gerar código"
-                  onClick={ addUnidade } />
               </h4>
+              <br />
+
+              <Row>
+                <Col md="12" className="form-group">
+                  <label>Nº da sequencia da amostra</label>
+                  <Row id="row-sequence">
+                    <Col className="form-group">
+                      <input
+                        id        ="sequencia-amostra"
+                        type      ="number"
+                        min       ="0"
+                        className ="form-control"
+                        value     ={ seqAmostra }
+                        onChange  ={ e => setSeqAmostra( parseInt( e.target.value ) ) }
+                        style     ={ { marginBottom: -24 } } 
+                      />
+                    </Col>
+                    <Col>
+                      <ButtonNewObject title="Adicionar Amostra" onClick={ addUnidade } />
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
 
               <ListUnidade unidade={ unidade } remove={ removeUnidade } />
             </ContainerUnidade>
@@ -291,15 +395,23 @@ function ListUnidade( props ) {
 
 const mapStateToProps = state => ({
   trabalhoDiario_id: state.rotaCache.trabalhoDiario.id,
+  data: state.rotaCache.trabalhoDiario.data,
+  trabalhoDiario_sequencia: state.rotaCache.trabalhoDiario.sequencia,
+  codigoMunicipio: state.rotaCache.trabalhoDiario.codigo_municipio,
+  sequenciaUsuario: state.rotaCache.trabalhoDiario.sequencia_usuario,
   vistorias: state.vistoriaCache.vistorias,
   recipientes: state.vistoria.recipientes,
   sequenciaRecipiente: state.vistoria.sequenciaRecipiente,
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ addUnidade, addRecipiente }, dispatch);
+  bindActionCreators( {
+    addUnidade,
+    addRecipiente,
+    showNotifyToast,
+  }, dispatch );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(InspecionarRecipiente);
+)( InspecionarRecipiente );

@@ -11,13 +11,13 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebar';
-import { updateUsuarioRequest, getUsuarioByIdRequest, clearUpdateUser } from '../../../store/actions/UsuarioActions';
-import { getNationsRequest } from '../../../store/actions/PaisActions';
-import { GetRegionsByNationRequest } from '../../../store/actions/RegiaoActions';
-import { GetStatesByRegionRequest } from '../../../store/actions/EstadoActions';
-import { getRegionalHealthByStateRequest } from '../../../store/actions/RegionalSaudeActions';
-import { getCityByRegionalHealthRequest } from '../../../store/actions/MunicipioActions';
+import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
+import { updateUsuarioRequest, getUsuarioByIdRequest, clearUpdateUser } from '../../../store/Usuario/usuarioActions';
+import { getNationsRequest } from '../../../store/Pais/paisActions';
+import { GetRegionsByNationRequest } from '../../../store/Regiao/regiaoActions';
+import { GetStatesByRegionRequest } from '../../../store/Estado/estadoActions';
+import { getRegionalHealthByStateRequest } from '../../../store/RegionalSaude/regionalSaudeActions';
+import { getCityByRegionalHealthRequest } from '../../../store/Municipio/municipioActions';
 
 // STYLES
 import { FormGroup, selectDefault } from '../../../styles/global';

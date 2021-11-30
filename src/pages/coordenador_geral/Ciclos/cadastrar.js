@@ -16,8 +16,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebarCoordGeral';
-import { createCycleRequest, changeFlAddActive } from '../../../store/actions/CicloActions';
+import { changeSidebar } from '../../../store/SidebarCoordGeral/sidebarCoordGeralActions';
+import { createCycleRequest, changeFlAddActive } from '../../../store/Ciclo/cicloActions';
 
 // STYLES
 import { FormGroup, selectDefault } from '../../../styles/global';

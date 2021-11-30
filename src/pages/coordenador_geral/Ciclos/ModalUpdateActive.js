@@ -11,7 +11,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { getMethodologiesRequest } from '../../../store/actions/MetodologiaActions';
+import { getMethodologiesRequest } from '../../../store/Metodologia/metodologiaActions';
 
 // STYLES
 import { ContainerArrow } from '../../../styles/util';

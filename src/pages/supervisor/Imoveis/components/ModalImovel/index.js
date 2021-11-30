@@ -4,10 +4,9 @@ import { connect } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
 import Modal, { ModalBody, ModalFooter } from '../../../../../components/Modal';
 import { tipoImovelEnum } from '../../../../../config/enumerate';
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { FaChevronDown, FaChevronUp, FaMapMarkerAlt } from 'react-icons/fa';
 import { Collapse } from 'react-bootstrap';
 import ReactMapGL, { Marker } from 'react-map-gl';
-import { FaMapMarkerAlt } from 'react-icons/fa';
 
 // ACTIONS
 import { getQuarteiroesMunicipioRequest, getLadosQuarteiraoRequest } from '../../../../../store/Quarteirao/quarteiraoActions';
@@ -420,11 +419,11 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
 }
 
 const mapStateToProps = state => ({
-  usuario: state.appConfig.usuario,
-  imovel: state.nw_imovel.imovel,
-  reload: state.nw_imovel.reload,
-  quarteiroes: state.nw_quarteirao.quarteiroes,
-  lados: state.nw_quarteirao.lados,
+  usuario     : state.appConfig.usuario,
+  imovel      : state.imovel.imovel,
+  reload      : state.imovel.reload,
+  quarteiroes : state.quarteirao.quarteiroes,
+  lados       : state.quarteirao.lados,
 })
 
 const mapDispatchToProps = {

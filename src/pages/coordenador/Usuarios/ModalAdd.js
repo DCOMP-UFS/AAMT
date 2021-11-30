@@ -11,7 +11,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { createUsuarioRequest, clearCreateUser } from '../../../store/actions/UsuarioActions';
+import { createUsuarioRequest, clearCreateUser } from '../../../store/Usuario/usuarioActions';
 
 // STYLES
 import { ContainerArrow } from '../../../styles/util';

@@ -1,11 +1,15 @@
 import axios from 'axios';
 require('dotenv').config();
 
-const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3333/'
-});
+const api = axios.create( {
+  baseURL: process.env.REACT_APP_API_URL || 'https://aamt-backend.herokuapp.com/'
+} );
 
 export default api;
+
+export const viacep_api = axios.create( {
+  baseURL: 'https://viacep.com.br/ws/'
+} );
 
 export const headerAuthorization = () => {
   const { token } = JSON.parse(JSON.parse(localStorage.getItem('persist:aamt')).appConfig);
@@ -15,4 +19,4 @@ export const headerAuthorization = () => {
       authorization: `Bearer ${ token }`
     }
   }
-}
+};

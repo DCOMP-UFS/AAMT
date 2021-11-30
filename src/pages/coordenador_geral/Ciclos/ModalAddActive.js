@@ -11,8 +11,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { getMethodologiesRequest } from '../../../store/actions/MetodologiaActions';
-import { changeFlAddActive } from '../../../store/actions/CicloActions';
+import { getMethodologiesRequest } from '../../../store/Metodologia/metodologiaActions';
+import { changeFlAddActive } from '../../../store/Ciclo/cicloActions';
 
 // STYLES
 import { ContainerArrow } from '../../../styles/util';

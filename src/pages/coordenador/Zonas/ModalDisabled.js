@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { updateZoneRequest, clearUpdate } from '../../../store/actions/ZonaActions';
+import { updateZoneRequest, clearUpdate } from '../../../store/Zona/zonaActions';
 
 // STYLES
 import { Button } from '../../../styles/global';

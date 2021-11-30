@@ -15,10 +15,10 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebarCoordGeral';
-import { changeTableSelected } from '../../../store/actions/supportInfo';
-import { getCyclesRequest, setIndexArray } from '../../../store/actions/CicloActions';
-import { showNotifyToast } from '../../../store/actions/appConfig';
+import { changeSidebar } from '../../../store/SidebarCoordGeral/sidebarCoordGeralActions';
+import { changeTableSelected } from '../../../store/SupportInfo/supportInfoActions';
+import { getCyclesRequest, setIndexArray } from '../../../store/Ciclo/cicloActions';
+import { showNotifyToast } from '../../../store/AppConfig/appConfigActions';
 
 // STYLES
 import { GlobalStyle } from './styles';

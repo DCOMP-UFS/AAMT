@@ -11,7 +11,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { removerRecipiente, changeUpdatedIndex, changeDuplicatorIndex } from '../../../../../store/actions/VistoriaActions';
+import { removerRecipiente, changeUpdatedIndex, changeDuplicatorIndex } from '../../../../../store/Vistoria/vistoriaActions';
 
 // STYLES
 import {
@@ -72,7 +72,7 @@ function ListRecipiente({ recipientes, trabalhoDiario_id, vistoriaSequencia, ...
         </ContainerIcon>
         <DivDescription>
           <div>
-            <span className="mr-2">Recipiente: { `${ trabalhoDiario_id }.${ vistoriaSequencia }.${ recipiente.sequencia }` }</span>
+            <span className="mr-2">Recipiente: { recipiente.sequencia }</span>
           </div>
           <span>Amostra(s): { recipiente.amostras.length }</span>
         </DivDescription>

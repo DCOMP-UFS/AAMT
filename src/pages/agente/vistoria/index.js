@@ -18,10 +18,11 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebarAgente';
-import { getRouteRequest } from '../../../store/actions/RotaActions';
-import { resetHandleSave, routeNotStarted } from '../../../store/actions/VistoriaCacheActions';
-import { changeTableSelected } from '../../../store/actions/supportInfo';
+import { changeSidebar } from '../../../store/SidebarAgente/sidebarAgenteActions';
+import { getRouteRequest } from '../../../store/Rota/rotaActions';
+import { resetHandleSave, routeNotStarted } from '../../../store/VistoriaCache/vistoriaCacheActions';
+import { changeTableSelected } from '../../../store/SupportInfo/supportInfoActions';
+import { isFinalizadoRequest } from '../../../store/Rota/rotaActions';
 
 // STYLES
 import { Button } from '../../../styles/global';
@@ -117,16 +118,16 @@ const columns = [
   }
 ];
 
-function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ...props }) {
-  const [ rows, setRows ]         = useState([]);
+const Vistoria = ( { vistorias, usuario, trabalhoDiario, rota, showNotStarted, ...props } ) => {
+  const [ rows, setRows ]         = useState( [] );
   const [ imoveis, setImoveis ]   = useState( [] );
-  const [ viewport, setViewport ] = useState({
-    width: '100%',
-    height: '100%',
-    latitude: -10.968002,
-    longitude: -37.081680,
-    zoom: 14
-  });
+  const [ viewport, setViewport ] = useState( {
+    width     : '100%',
+    height    : '100%',
+    latitude  : -10.968002,
+    longitude : -37.081680,
+    zoom      : 14
+  } );
   const options = {
     customToolbar: () => {
       return (
@@ -142,37 +143,62 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
           }/>
       );
     },
-    customToolbarSelect: ({ data }) => {
-      props.changeTableSelected('tableVistoria', data);
+    customToolbarSelect: ( { data } ) => {
+      props.changeTableSelected( 'tableVistoria', data );
       return (
         <ButtonDelete
-          title="Deletar usuário"
-          data-toggle="modal"
-          data-target="#modal-deletar-vistoria"
-          data={ data } />
+          title       ="Deletar usuário"
+          data-toggle ="modal"
+          data-target ="#modal-deletar-vistoria"
+          data        ={ data } 
+        />
       );
     },
-    // setRowProps: (row) => {
-    //   const className = row[7] === "Não" ? "row-desabled" : "";
-
-    //   return {
-    //     className
-    //   }
-    // },
-    onRowClick: (row, ...props) => {
+    onRowClick: ( row, ...props ) => {
       const index = row[ 0 ].props[ 'data-index' ];
 
       window.location = `${ window.location.origin.toString() }/agente/vistoria/editar/${ index }`;
     }
   };
 
-  useEffect(() => {
-    if( showNotStarted )
-      setTimeout(() => { window.location = window.location.origin + '/agente/home'; }, 300);
-  }, [ showNotStarted ]);
+  /**
+   * Este effect é acionado assim que o componente e montado e verifica se
+   * existe rota de trabalho já foi finalizada na base
+   */
+  useEffect( () => {
+    const initVistoria = () => {
+      props.isFinalizadoRequest( trabalhoDiario.id );
+    }
 
+    initVistoria();
+  }, [] );
+
+  /**
+   * Este effect monitora a variável isFinalizado, caso ela seja true
+   * significa que o trabalho diário salvo em cache já está finalizado na base
+   * de dados e não deve ser permitido cadastrar novas vistorias
+   */
   useEffect(() => {
-    function createRows() {
+    const checkFinalizado = () => {
+      if( props.isFinalizado ) {
+        window.location = window.location.origin + '/agente/home';
+      }
+    }
+
+    checkFinalizado();
+  }, [ props.isFinalizado ] );
+
+  /**
+   * Este effect monitora a variável showNotStarted que verifica se a rota de 
+   * trabalho foi iniciada
+   */
+  useEffect( () => {
+    if( showNotStarted )
+      setTimeout( () => { window.location = window.location.origin + '/agente/home'; }, 300 );
+  }, [ showNotStarted ] );
+
+  useEffect( () => {
+    const createRows = () => {
       const vists = vistorias.map( ( vistoria, index ) => (
         [
           index,
@@ -181,19 +207,19 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
           vistoria.imovel.numero,
           vistoria.imovel.sequencia,
           tipoImovelEnum[
-            Object.entries( tipoImovelEnum ).find(([ key, value ]) => value.id === vistoria.imovel.tipoImovel )[0]
+            Object.entries( tipoImovelEnum ).find( ( [ key, value ] ) => value.id === vistoria.imovel.tipoImovel )[ 0 ]
           ].sigla,
           vistoria.situacaoVistoria === "N" ? "Normal" : "Recuperada",
           vistoria.pendencia ? ( vistoria.pendencia === "F" ? "Fechada" : "Recusada" ) : "",
           vistoria.horaEntrada
         ]
-      ));
+      ) );
 
       setRows( vists );
     }
 
     createRows();
-  }, [ vistorias, props.reload ]);
+  }, [ vistorias, props.reload ] );
 
   useEffect(() => {
     if( !trabalhoDiario.id ) {
@@ -202,41 +228,41 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
       props.routeNotStarted();
     }
 
-    props.changeSidebar(2, 1);
+    props.changeSidebar( 2, 1 );
 
     const [ d, m, Y ]  = new Date().toLocaleDateString().split('/');
-    const current_date = `${Y}-${m}-${d}`;
+    const current_date = `${ Y }-${ m }-${ d }`;
 
     props.getRouteRequest( usuario.id, current_date );
     props.resetHandleSave();
-  }, []);
+  }, [ trabalhoDiario.horaInicio, trabalhoDiario.id, usuario.id ] );
 
   // pegando a lista de imóveis planejados para trabalho
-  useEffect(() => {
+  useEffect( () => {
     if( rota.length > 0 ) {
       let imo = [];
 
-      rota.forEach(q => {
-        q.lados.forEach(l => {
-          let i = l.imoveis.map(imovel => ({ ...imovel, rua: l.rua.nome, quarteirao: q.numero }));
+      rota.forEach( q => {
+        q.lados.forEach( l => {
+          let i = l.imoveis.map(imovel => ( { ...imovel, rua: l.rua.nome, quarteirao: q.numero } ) );
 
           imo = [ ...i, ...imo ];
-        });
-      });
+        } );
+      } );
 
-      setViewport({
-        width: '100%',
-        height: '100%',
-        latitude: imo[0].lat ? parseFloat(imo[0].lat) : -15.7801,
-        longitude: imo[0].lng ? parseFloat(imo[0].lng) : -47.9292,
-        zoom: 14
-      });
+      setViewport( {
+        width     : '100%',
+        height    : '100%',
+        latitude  : imo[ 0 ].lat ? parseFloat( imo[ 0 ].lat ) : -15.7801,
+        longitude : imo[ 0 ].lng ? parseFloat( imo[ 0 ].lng ) : -47.9292,
+        zoom      : 14
+      } );
       setImoveis( imo );
     }
-  }, [ rota ]);
+  }, [ rota ] );
 
   function openModalFinalizarRota() {
-    $('#modal-finalizar-rota').modal('show');
+    $('#modal-finalizar-rota').modal( 'show' );
   }
 
   return (
@@ -255,9 +281,10 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
               <Row>
                 <Col className="d-flex align-items-center">
                   <Button
-                    type="button"
-                    className="success btn-small mr-2"
-                    onClick={ openModalFinalizarRota }>
+                    type      ="button"
+                    className ="success btn-small mr-2"
+                    onClick   ={ openModalFinalizarRota }
+                  >
                     <FaCheckDouble className="btn-icon" />
                     Encerrar Rota
                   </Button>
@@ -276,23 +303,23 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
 
           <article className="col-md-12">
             <div className="card">
-              <div style={{ height: '300px', width: '100%', backgroundColor: '#ccc' }}>
+              <div style={ { height: '300px', width: '100%', backgroundColor: '#ccc' } }>
                 <ReactMapGL
                   { ...viewport }
-                  onViewportChange={ nextViewport => setViewport( nextViewport ) }
+                  onViewportChange    ={ nextViewport => setViewport( nextViewport ) }
                   mapboxApiAccessToken={ process.env.REACT_APP_MAP_TOKEN }
                 >
                   {
-                    rota.map( r => r.lados.map( lado => lado.imoveis.map(( imovel, index ) => {
-                      const inspection  = vistorias.find(vistoria => vistoria.imovel.id === imovel.id );
+                    rota.map( r => r.lados.map( lado => lado.imoveis.map( ( imovel, index ) => {
+                      const inspection = vistorias.find(vistoria => vistoria.imovel.id === imovel.id );
 
                       return (
                         <Marker
-                          key={ index }
-                          latitude={ parseFloat( imovel.lat ) }
-                          longitude={ parseFloat( imovel.lng ) }
+                          key       ={ index }
+                          latitude  ={ parseFloat( imovel.lat ) }
+                          longitude ={ parseFloat( imovel.lng ) }
                           offsetLeft={ -20 }
-                          offsetTop={ -10 }
+                          offsetTop ={ -10 }
                         >
                           <img
                             src={
@@ -303,14 +330,13 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
                           />
                         </Marker>
                       )
-                    })))
+                    } ) ) )
                   }
                 </ReactMapGL>
               </div>
             </div>
           </article>
         </Row>
-
         <Row>
           <article className="col-md-12 stretch-card mb-0">
               <Col className="p-0">
@@ -330,27 +356,29 @@ function Vistoria({ vistorias, usuario, trabalhoDiario, rota, showNotStarted, ..
   );
 }
 
-const mapStateToProps = state => ({
-  usuario: state.appConfig.usuario,
+const mapStateToProps = state => ( {
+  usuario       : state.appConfig.usuario,
   trabalhoDiario: state.rotaCache.trabalhoDiario,
-  rota: state.rotaCache.rota,
-  quarteirao: state.quarteirao.quarteirao,
-  form_vistoria: state.supportInfo.form_vistoria,
-  vistorias: state.vistoriaCache.vistorias,
+  rota          : state.rotaCache.rota,
+  quarteirao    : state.quarteirao.quarteirao,
+  form_vistoria : state.supportInfo.form_vistoria,
+  vistorias     : state.vistoriaCache.vistorias,
   showNotStarted: state.vistoriaCache.showNotStarted,
-  reload: state.vistoriaCache.reload
-});
+  reload        : state.vistoriaCache.reload,
+  isFinalizado  : state.rota.isFinalizado,
+} );
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({
+  bindActionCreators( {
   changeSidebar,
   getRouteRequest,
   resetHandleSave,
   routeNotStarted,
-  changeTableSelected
-}, dispatch);
+  changeTableSelected,
+  isFinalizadoRequest,
+}, dispatch );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Vistoria);
+)( Vistoria );

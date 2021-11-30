@@ -10,9 +10,9 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../../store/actions/sidebarSupervisor';
-import { getDailyWorkByIdRequest } from '../../../../store/actions/trabalhoDiario';
-import { getInspectsByDailyWorkRequest } from '../../../../store/actions/VistoriaActions';
+import { changeSidebar } from '../../../../store/SidebarSupervisor/sidebarSupervisorActions';
+import { getDailyWorkByIdRequest } from '../../../../store/TrabalhoDiario/trabalhoDiarioActions';
+import { getInspectsByDailyWorkRequest } from '../../../../store/Vistoria/vistoriaActions';
 
 // STYLES
 import { Color } from '../../../../styles/global';

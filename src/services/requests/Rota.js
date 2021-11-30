@@ -47,3 +47,16 @@ export const planejarRotaRequest = data => {
     ...headerAuthorization()
   });
 }
+
+/**
+ * Verifica junto a API se o trabalhoDiario_id está finalizado
+ * @param {Object} data 
+ * @returns {Promise}
+ */
+export const isFinalizadoRequest = data => {
+  const { trabalhoDiario_id } = data;
+
+  return api.get(`/rotas/isFinalizado/${ trabalhoDiario_id }/trabalhoDiario`, {
+    ...headerAuthorization()
+  } );
+}

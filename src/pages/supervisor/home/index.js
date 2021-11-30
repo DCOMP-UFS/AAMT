@@ -6,7 +6,7 @@ import ReactMapGL, { Marker } from 'react-map-gl';
 import Select from 'react-select';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebarSupervisor';
+import { changeSidebar } from '../../../store/SidebarSupervisor/sidebarSupervisorActions';
 
 // STYLES
 import { PageIcon, PageHeader } from '../../../styles/util';

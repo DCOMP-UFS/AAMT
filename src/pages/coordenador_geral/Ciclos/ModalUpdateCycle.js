@@ -11,7 +11,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { updateCycleRequest, changeFlUpdate } from '../../../store/actions/CicloActions';
+import { updateCycleRequest, changeFlUpdate } from '../../../store/Ciclo/cicloActions';
 
 // STYLES
 import { ContainerArrow } from '../../../styles/util';

@@ -10,7 +10,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { updateCityRequest, clearUpdateCity } from '../../../store/actions/MunicipioActions';
+import { updateCityRequest, clearUpdateCity } from '../../../store/Municipio/municipioActions';
 
 // STYLES
 import { Button, FormGroup, selectDefault } from '../../../styles/global';

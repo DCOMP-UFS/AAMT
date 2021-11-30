@@ -11,7 +11,7 @@ import { GlobalStyle } from './styles/global';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { clearToast } from './store/actions/appConfig';
+import { clearToast } from './store/AppConfig/appConfigActions';
 
 const App = (props) => {
   function notify() {

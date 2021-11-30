@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../../store/actions/sidebarAgente';
+import { changeSidebar } from '../../../../store/SidebarAgente/sidebarAgenteActions';
 
 // STYLES
 import { PageIcon, PageHeader } from '../../../../styles/util';

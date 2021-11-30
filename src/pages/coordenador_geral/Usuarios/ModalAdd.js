@@ -12,12 +12,12 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { createUsuarioRequest, clearCreateUser } from '../../../store/actions/UsuarioActions';
-import { getNationsRequest } from '../../../store/actions/PaisActions';
-import { GetRegionsByNationRequest } from '../../../store/actions/RegiaoActions';
-import { GetStatesByRegionRequest } from '../../../store/actions/EstadoActions';
-import { getRegionalHealthByStateRequest } from '../../../store/actions/RegionalSaudeActions';
-import { getCityByRegionalHealthRequest } from '../../../store/actions/MunicipioActions';
+import { createUsuarioRequest, clearCreateUser } from '../../../store/Usuario/usuarioActions';
+import { getNationsRequest } from '../../../store/Pais/paisActions';
+import { GetRegionsByNationRequest } from '../../../store/Regiao/regiaoActions';
+import { GetStatesByRegionRequest } from '../../../store/Estado/estadoActions';
+import { getRegionalHealthByStateRequest } from '../../../store/RegionalSaude/regionalSaudeActions';
+import { getCityByRegionalHealthRequest } from '../../../store/Municipio/municipioActions';
 
 // STYLES
 import { ContainerArrow } from '../../../styles/util';

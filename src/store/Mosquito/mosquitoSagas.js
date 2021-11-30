@@ -1,14 +1,11 @@
-import { call, put } from 'redux-saga/effects';
-import {
-  getMosquitosRequest
-} from '../../services/requests/Mosquito';
-
+import { takeLatest, call, put, all } from 'redux-saga/effects';
+import * as servico from '../../services/requests/Mosquito';
 import * as MosquitoActions from './mosquitoActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getMosquitos() {
   try {
-    const { data, status } = yield call( getMosquitosRequest );
+    const { data, status } = yield call( servico.getMosquitosRequest );
 
     if( status === 200 ) {
       yield put( MosquitoActions.setMosquitos( data ) );
@@ -19,4 +16,14 @@ export function* getMosquitos() {
   } catch (error) {
     yield put( AppConfigActions.showNotifyToast( "Erro ao consultar mosquitos, favor verifique a conexão", "error" ) );
   }
+}
+
+function* watchGetMosquitos() {
+  yield takeLatest( MosquitoActions.ActionTypes.GET_MOSQUITOS_REQUEST, getMosquitos );
+}
+
+export function* mosquitoSaga() {
+  yield all( [
+    watchGetMosquitos(),
+  ] );
 }

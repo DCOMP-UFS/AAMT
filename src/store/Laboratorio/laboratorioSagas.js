@@ -1,19 +1,11 @@
-import { call, put } from 'redux-saga/effects';
-import {
-  getLaboratoriosRequest,
-  createLaboratoryRequest,
-  enviarAmostrasRequest,
-  setLaboratoryRequest,
-  updateLaboratory,
-  
-} from '../../services/requests/Laboratorio';
-
+import { takeLatest, call, put, all } from 'redux-saga/effects';
+import * as servico from '../../services/requests/Laboratorio';
 import * as LaboratorioActions from './laboratorioActions';
-import * as AppConfigActions from '../actions/appConfig';
+import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getLaboratorios( action ) {
   try {
-    const { data, status } = yield call( getLaboratoriosRequest, action.payload );
+    const { data, status } = yield call( servico.getLaboratoriosRequest, action.payload );
 
     if( status === 200 ) {
       yield put( LaboratorioActions.setLaboratorios( data ) );
@@ -28,7 +20,7 @@ export function* getLaboratorios( action ) {
 
 export function* createLaboratory( action ) {
   try {
-    const { data, status } = yield call( createLaboratoryRequest, action.payload );
+    const { data, status } = yield call( servico.createLaboratoryRequest, action.payload );
 
     if( status === 200 ){
       yield put( LaboratorioActions.createLaboratory( data ) );
@@ -45,7 +37,7 @@ export function* createLaboratory( action ) {
 
 export function* updateLaboratorio( action ) {
   try {
-    const { data, status } = yield call( setLaboratoryRequest, action.payload );
+    const { data, status } = yield call( servico.setLaboratoryRequest, action.payload );
 
     if( status === 200 ) {
       yield put( LaboratorioActions.updateLaboratory(data));
@@ -59,3 +51,22 @@ export function* updateLaboratorio( action ) {
   } 
 }
 
+function* watchGetLaboratorios() {
+  yield takeLatest( LaboratorioActions.ActionTypes.GET_LABORATORIOS_REQUEST, getLaboratorios );
+}
+
+function* watchCreateLaboratory() {
+  yield takeLatest( LaboratorioActions.ActionTypes.CREATE_LABORATORY_REQUEST, createLaboratory );
+}
+
+function* watchUpdateLaboratorio() {
+  yield takeLatest( LaboratorioActions.ActionTypes.UPDATE_LABORATORY_REQUEST, updateLaboratorio );
+}
+
+export function* laboratorioSaga() {
+  yield all( [
+    watchGetLaboratorios(),
+    watchCreateLaboratory(),
+    watchUpdateLaboratorio(),
+  ] );
+}

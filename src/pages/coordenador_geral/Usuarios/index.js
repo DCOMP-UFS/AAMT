@@ -16,10 +16,10 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebarCoordGeral';
-import { changeTableSelected } from '../../../store/actions/supportInfo';
-import { clearToast } from '../../../store/actions/appConfig';
-import { getUsersByRegionalRequest, changeUserEditIndex, } from '../../../store/actions/UsuarioActions';
+import { changeSidebar } from '../../../store/SidebarCoordGeral/sidebarCoordGeralActions';
+import { changeTableSelected } from '../../../store/SupportInfo/supportInfoActions';
+import { clearToast } from '../../../store/AppConfig/appConfigActions';
+import { getUsersByRegionalRequest, changeUserEditIndex, } from '../../../store/Usuario/usuarioActions';
 
 // STYLES
 import { GlobalStyle } from './styles';

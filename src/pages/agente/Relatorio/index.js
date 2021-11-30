@@ -11,8 +11,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebarAgente';
-import { getByUserRequest } from '../../../store/actions/trabalhoDiario';
+import { changeSidebar } from '../../../store/SidebarAgente/sidebarAgenteActions';
+import { getByUserRequest } from '../../../store/TrabalhoDiario/trabalhoDiarioActions';
 
 // STYLES
 import { PageIcon, PageHeader } from '../../../styles/util';

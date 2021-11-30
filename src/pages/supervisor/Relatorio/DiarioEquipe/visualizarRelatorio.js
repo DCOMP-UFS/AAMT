@@ -6,7 +6,7 @@ import { tipoImovelEnum, tipoRecipiente as tipoRecipienteEnum, situacao_imovel_e
 import { Row, Col } from 'react-bootstrap';
 
 // ACTIONS
-import { changeSidebar } from '../../../../store/actions/sidebarSupervisor';
+import { changeSidebar } from '../../../../store/SidebarSupervisor/sidebarSupervisorActions';
 import { getBoletimDiarioEquipeRequest } from '../../../../store/Relatorio/relatorioActions';
 import { getMembrosRequest } from '../../../../store/Equipe/equipeActions';
 

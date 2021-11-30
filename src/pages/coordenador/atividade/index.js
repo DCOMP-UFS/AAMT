@@ -7,12 +7,12 @@ import { Row } from 'react-bootstrap';
 import Select from 'react-select';
 import tasksIcon from '../../../assets/tasks-icons.png';
 import { situacaoAtividadeEnum } from '../../../config/enumerate';
-import { showNotifyToast } from '../../../store/actions/appConfig';
+import { showNotifyToast } from '../../../store/AppConfig/appConfigActions';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebar';
-import { getAllowedCyclesRequest } from '../../../store/actions/CicloActions';
-import { getActivitiesByCityRequest } from '../../../store/actions/AtividadeActions';
+import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
+import { getAllowedCyclesRequest } from '../../../store/Ciclo/cicloActions';
+import { getActivitiesByCityRequest } from '../../../store/Atividade/atividadeActions';
 
 // STYLES
 import { ContainerAtividade, ContainerCiclo, Header, Body } from './styles';
@@ -50,17 +50,19 @@ function PlanejarAtividade({ ciclos, atividades, ...props }) {
   }, [ ciclos ]);
 
   useEffect(() => {
-    props.getActivitiesByCityRequest( ciclo.value, props.municipio_id );
+    if (ciclo.value) {
+      props.getActivitiesByCityRequest( ciclo.value, props.municipio_id );
 
-    let current_date = new Date();
-    current_date.setHours(0,0,0,0);
+      let current_date = new Date();
+      current_date.setHours(0,0,0,0);
 
-    if( ciclo.dataInicio > current_date )
-      setSituacaoCiclo({ situacao: "Planejado", class: "bg-warning text-white ml-3" });
-    else if( ciclo.dataFim < current_date )
-      setSituacaoCiclo({ situacao: "Finalizado", class: "bg-info text-white ml-3" });
-    else
-      setSituacaoCiclo({ situacao: "Em aberto", class: "bg-info text-white ml-3" });
+      if( ciclo.dataInicio > current_date )
+        setSituacaoCiclo({ situacao: "Planejado", class: "bg-warning text-white ml-3" });
+      else if( ciclo.dataFim < current_date )
+        setSituacaoCiclo({ situacao: "Finalizado", class: "bg-info text-white ml-3" });
+      else
+        setSituacaoCiclo({ situacao: "Em aberto", class: "bg-info text-white ml-3" });
+    }
   }, [ ciclo ]);
 
   return (
@@ -152,22 +154,22 @@ function PlanejarAtividade({ ciclos, atividades, ...props }) {
   );
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = state => ( {
   regionalSaude_id: state.appConfig.usuario.municipio.regional.id,
-  municipio_id: state.appConfig.usuario.municipio.id,
-  atividades: state.atividade.atividades,
-  ciclos: state.ciclo.ciclos,
-});
+  municipio_id    : state.appConfig.usuario.municipio.id,
+  atividades      : state.atividade.atividades,
+  ciclos          : state.ciclo.ciclos,
+} );
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({
+  bindActionCreators( {
     changeSidebar,
     getAllowedCyclesRequest,
     getActivitiesByCityRequest,
     showNotifyToast
-  }, dispatch);
+  }, dispatch );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)( PlanejarAtividade )
+)( PlanejarAtividade );

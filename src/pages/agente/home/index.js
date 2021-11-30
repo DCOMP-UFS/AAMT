@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { FaRoute, FaPlay, FaHome, FaHouseDamage, FaStore, FaMapMarkerAlt } from 'react-icons/fa';
 import ModalIniciarTrabalho from '../components/ModalIniciarTrabalho';
-import ReactMapGL, { Marker } from 'react-map-gl';
 import dotenv from 'dotenv';
+import ReactMapGL, { Marker } from 'react-map-gl';
 import img_home_icon from '../../../assets/home-icon.png';
 import img_home_icon_green from '../../../assets/home-icon-green.png';
 import Typography from "@material-ui/core/Typography";
@@ -17,10 +17,17 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { changeSidebar } from '../../../store/actions/sidebarAgente';
-import { getRouteRequest, isStartedRequest, resetOpenModal } from '../../../store/actions/RotaActions';
-import { showNotifyToast } from '../../../store/actions/appConfig';
-import { resetShowNotStarted } from '../../../store/actions/VistoriaCacheActions';
+import { changeSidebar } from '../../../store/SidebarAgente/sidebarAgenteActions';
+import { showNotifyToast } from '../../../store/AppConfig/appConfigActions';
+import { resetShowNotStarted, clearInspection } from '../../../store/VistoriaCache/vistoriaCacheActions';
+import { clearRotaCache } from '../../../store/RotaCache/rotaCacheActions';
+import {
+  isFinalizadoRequest,
+  setIsFinalizado,
+  getRouteRequest,
+  isStartedRequest,
+  resetOpenModal
+} from '../../../store/Rota/rotaActions';
 
 // STYLES
 import { Button } from '../../../styles/global';
@@ -35,7 +42,7 @@ const columns = [
     options: {
       filter: false,
       display: 'false',
-      customBodyRender: (value, tableMeta, updateValue) => (
+      customBodyRender: ( value, tableMeta, updateValue ) => (
         <Typography data-index={ value }>{ value }</Typography>
       )
     }
@@ -87,85 +94,94 @@ const columns = [
   }
 ];
 
-function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vistorias, ...props }) {
+const HomeAgente = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vistorias, ...props } ) => {
   const [ trabalhoDiario_date, setTrabalhoDiario_date ] = useState( '' );
-  const [ viewport, setViewport ] = useState({
-    width: '100%',
-    height: '100%',
-    latitude: -15.7801,
-    longitude: -47.9292,
-    zoom: 2
-  });
-  // const [ qtdQuarteirao, setQtdQuarteirao ] = useState( 0 );
-  const [ qtdTipoImovel, setQtdTipoImovel ] = useState( [ 0, 0, 0, 0 ] );
-  const [ imoveis, setImoveis ] = useState( [] );
-  const [ rows, setRows ] = useState( [] );
-  const options = {
+  const [ viewport, setViewport ]                       = useState( {
+    width:      '100%',
+    height:     '100%',
+    latitude:   -15.7801,
+    longitude:  -47.9292,
+    zoom:       2
+  } );
+  const [ qtdTipoImovel, setQtdTipoImovel ]             = useState( [ 0, 0, 0, 0 ] );
+  const [ imoveis, setImoveis ]                         = useState( [] );
+  const [ rows, setRows ]                               = useState( [] );
+  const options                                         = {
     selectableRows: 'none'
   };
 
-  useEffect(() => {
-    props.changeSidebar(1, 1);
+  useEffect( () => {
+    const initHome = () => {
+      const [ d, m, Y ]  = new Date().toLocaleDateString().split( '/' );
+      const current_date = `${ Y }-${ m }-${ d }`;
+      
+      props.changeSidebar( 1, 1 );
+      props.getRouteRequest( usuario.id, current_date );
+      props.isFinalizadoRequest( trabalhoDiario.id );
+    }
 
-    const [ d, m, Y ]  = new Date().toLocaleDateString().split('/');
-    const current_date = `${Y}-${m}-${d}`;
-
-    props.getRouteRequest( usuario.id, current_date );
-  }, []);
+    initHome();
+  }, [] );
 
   useEffect(() => {
     if( props.showNotStarted ) {
       if( !trabalhoDiario.id ) props.showNotifyToast( "Você não possui uma rota planejada para hoje!", "warning" );
       if( !trabalhoDiario.horaInicio ) props.showNotifyToast( "Você deve iniciar a rota antes de registrar as vistorias!", "warning" );
 
-      setTimeout(() => { props.resetShowNotStarted() }, 500);
+      setTimeout( () => { props.resetShowNotStarted() }, 500 );
     }
-  }, [ props.showNotStarted ]);
+  }, [ props.showNotStarted, trabalhoDiario.horaInicio, trabalhoDiario.id ] );
 
-  useEffect(() => {
+  useEffect( () => {
     if( fl_iniciada ) // consultando os dados da rota, a rota back end já faz verificação se está iniciado ou n.
       window.location = window.location.origin.toString() + '/agente/vistoria';
-  }, [ fl_iniciada ]);
+  }, [ fl_iniciada ] );
 
-  useEffect(() => {
+  useEffect( () => {
     if( openModal && trabalhoDiario.id ) {
-      $('#modal-iniciar-rota').modal('show');
+      $('#modal-iniciar-rota').modal( 'show' );
       props.resetOpenModal();
     }
-  }, [ openModal ]);
+  }, [ openModal, trabalhoDiario.id ] );
 
-  useEffect(() => {
+  /**
+   * Este effect verifica se existe algum trabalho diário valido em cache
+   * caso tenha, seta a data, caso não limpa o cache.
+   */
+  useEffect( () => {
     if( Object.entries( trabalhoDiario ).length > 0 ) {
       let date = trabalhoDiario.data.split( 'T' )[ 0 ].split( '-' );
 
       setTrabalhoDiario_date( `${ date[ 2 ] }/${ date[ 1 ] }/${ date[ 0 ] }` );
+    } else {
+      props.clearInspection();
     }
-  }, [ trabalhoDiario ]);
+  }, [ trabalhoDiario ] );
 
-  useEffect(() => {
+  useEffect( () => {
     if( rota.length > 0 ) {
       let imo = [];
 
-      rota.forEach(q => {
-        q.lados.forEach(l => {
-          let i = l.imoveis.map(imovel => ({ ...imovel, rua: l.rua.nome, quarteirao: q.numero }));
+      rota.forEach( q => {
+        q.lados.forEach( l => {
+          let i = l.imoveis.map( imovel => ( { ...imovel, rua: l.rua.nome, quarteirao: q.numero } ) );
 
           imo = [ ...i, ...imo ];
-        });
-      });
+        } );
+      } );
 
-      setViewport({
-        width: '100%',
-        height: '100%',
-        latitude: imo[0].lat ? parseFloat(imo[0].lat) : -15.7801,
-        longitude: imo[0].lng ? parseFloat(imo[0].lng) : -47.9292,
-        zoom: 14
-      });
+      setViewport( {
+        width:      '100%',
+        height:     '100%',
+        latitude:   imo[ 0 ].lat ? parseFloat( imo[ 0 ].lat ) : -15.7801,
+        longitude:  imo[ 0 ].lng ? parseFloat( imo[ 0 ].lng ) : -47.9292,
+        zoom:       14
+      } );
       setImoveis( imo );
     }
-  }, [ rota ]);
+  }, [ rota ] );
 
-  useEffect(() => {
+  useEffect( () => {
     function createRows() {
       let qtdTipo = [ 0, 0, 0, 0 ];
       const imovs = imoveis.map( ( imovel, index ) => {
@@ -188,17 +204,76 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
             imovel.quarteirao,
           ]
         )
-      });
+      } );
 
       setRows( imovs );
       setQtdTipoImovel( qtdTipo );
     }
 
     createRows();
-  }, [ imoveis ]);
+  }, [ imoveis ] );
 
+  /**
+   * Este effect monitora a variável isFinalizado, caso ela seja true
+   * significa que o trabalho diário salvo em cache já está finalizado na base
+   * de dados e não deve ser permitido cadastrar novas vistorias
+   */
+   useEffect(() => {
+    const checkFinalizado = () => {
+      if( props.isFinalizado ) {
+        const [ d, m, Y ]  = new Date().toLocaleDateString().split( '/' );
+        const current_date = `${ Y }-${ m }-${ d }`;
+        
+        props.clearRotaCache();
+        props.setIsFinalizado( undefined );
+        props.getRouteRequest( usuario.id, current_date );
+      }
+    }
+
+    checkFinalizado();
+  }, [ props.isFinalizado ] );
+
+  /**
+   * Verica se o trabalho diário foi startado.
+   */
   function checkRota() {
     props.isStartedRequest( trabalhoDiario.id );
+  }
+  
+  /**
+   * Função que checa a situação do trabalho diário e retorna um componente
+   * de notificação ao usuário
+   * @returns {Component}
+   */
+  const informacoesRota = () => {    
+    if( typeof trabalhoDiario.id === 'undefined' ) {
+      return (
+        <label className="m-0">Você não possui nenhuma rota em aberto!</label>
+      );
+    } else if ( trabalhoDiario.horaInicio ) {
+      return (
+        <label className="m-0">Você possui uma rota iniciada, realize as vistorias e finalize a rota antes de iniciar uma nova rota!</label>
+      );
+    } else {
+      return (
+        <Row>
+          <Col className="d-flex justify-content-between align-items-center">
+            <label className="m-0">
+              <mark className="bg-warning mr-2">Atenção</mark>
+              { `Você possui uma rota planejada em aberto, ${ trabalhoDiario_date }!`}
+            </label>
+            <Button
+              type="button"
+              className="success btn-small"
+              onClick={ checkRota }>
+              <FaPlay className="btn-icon"
+            />
+              Iniciar Rota
+            </Button>
+          </Col>
+        </Row>
+      );
+    }
   }
 
   return (
@@ -216,28 +291,7 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
           <PagePopUp className="w-100 col-12">
             <div className="card">
               {
-                typeof trabalhoDiario.id === 'undefined' ?
-                  (
-                    <label className="m-0">Você não possui uma rota planejada para hoje!</label>
-                  ) :
-                  (
-                    <Row>
-                      <Col className="d-flex justify-content-between align-items-center">
-                        <label className="m-0">
-                          <mark className="bg-warning mr-2">Atenção</mark>
-                          { `Você possui uma rota planejada para hoje, ${ trabalhoDiario_date }!`}
-                        </label>
-                        <Button
-                          type="button"
-                          className="success btn-small"
-                          onClick={ checkRota }>
-                          <FaPlay className="btn-icon"
-                        />
-                          Iniciar Rota
-                        </Button>
-                      </Col>
-                    </Row>
-                  )
+                informacoesRota()
               }
             </div>
           </PagePopUp>
@@ -248,24 +302,23 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
             <ProgressBar className="bg-success" percentage={ vistorias.length } total={ imoveis.length } />
           </article>
           <article className="col-md-8">
-            <div className="card" style={{ height: '350px' }}>
+            <div className="card" style={ { height: '350px' } }>
               <ReactMapGL
                 { ...viewport }
                 onViewportChange={ nextViewport => setViewport( nextViewport ) }
                 mapboxApiAccessToken={ process.env.REACT_APP_MAP_TOKEN }
-                // mapStyle="mapbox://styles/mapbox/satellite-streets-v11"
               >
                 {
                   rota.map( r => r.lados.map( lado => lado.imoveis.map(( imovel, index ) => {
-                    const inspection  = vistorias.find(vistoria => vistoria.imovel.id === imovel.id );
+                    const inspection = vistorias.find( vistoria => vistoria.imovel.id === imovel.id );
 
                     return (
                       <Marker
-                        key={ index }
-                        latitude={ parseFloat( imovel.lat ) }
-                        longitude={ parseFloat( imovel.lng ) }
+                        key       ={ index }
+                        latitude  ={ parseFloat( imovel.lat ) }
+                        longitude ={ parseFloat( imovel.lng ) }
                         offsetLeft={ -20 }
-                        offsetTop={ -10 }
+                        offsetTop ={ -10 }
                       >
                         <img
                           src={
@@ -276,7 +329,7 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
                         />
                       </Marker>
                     )
-                  })))
+                  } ) ) )
                 }
               </ReactMapGL>
             </div>
@@ -331,27 +384,32 @@ function HomeAgente({ openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
   );
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = state => ( {
   usuario:        state.appConfig.usuario,
   trabalhoDiario: state.rotaCache.trabalhoDiario,
   rota:           state.rotaCache.rota,
   fl_iniciada:    state.rota.fl_iniciada,
   openModal:      state.rota.openModal,
   showNotStarted: state.vistoriaCache.showNotStarted,
-  vistorias:      state.vistoriaCache.vistorias
-});
+  vistorias:      state.vistoriaCache.vistorias,
+  isFinalizado:   state.rota.isFinalizado,
+} );
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({
+  bindActionCreators( {
     changeSidebar,
     getRouteRequest,
     isStartedRequest,
     showNotifyToast,
     resetShowNotStarted,
-    resetOpenModal
-  }, dispatch);
+    resetOpenModal,
+    clearInspection,
+    clearRotaCache,
+    isFinalizadoRequest,
+    setIsFinalizado,
+  }, dispatch );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(HomeAgente);
+)( HomeAgente );

@@ -76,9 +76,9 @@ export const SelecionarAgente = ({ equipes, ...props }) => {
 }
 
 const mapStateToProps = state => ({
-  equipes: state.nw_atividade.equipes,
-  indexEquipe: state.nw_atividade.indexEquipe,
-  indexMembro: state.nw_atividade.indexMembro
+  equipes     : state.atividade.equipes,
+  indexEquipe : state.atividade.indexEquipe,
+  indexMembro : state.atividade.indexMembro
 })
 
 const mapDispatchToProps = {

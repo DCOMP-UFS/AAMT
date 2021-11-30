@@ -7,7 +7,7 @@ import ModalDia from '../components/ModalDia';
 import $ from 'jquery';
 
 // ACTIONS
-import { changeSidebar } from '../../../../store/actions/sidebarSupervisor';
+import { changeSidebar } from '../../../../store/SidebarSupervisor/sidebarSupervisorActions';
 import { getCicloAbertoRequest } from '../../../../store/Ciclo/cicloActions';
 import { getResponsabilityActivitiesRequest } from '../../../../store/Atividade/atividadeActions';
 
@@ -85,11 +85,11 @@ export const RelatorioDiarioEquipe = ({ atividades, ciclo, usuario, ...props }) 
   )
 }
 
-const mapStateToProps = state => ({
-  usuario: state.appConfig.usuario,
-  ciclo: state.nw_ciclo.ciclo,
-  atividades: state.nw_atividade.atividades
-});
+const mapStateToProps = state => ( {
+  usuario   : state.appConfig.usuario,
+  ciclo     : state.ciclo.ciclo,
+  atividades: state.atividade.atividades
+} );
 
 const mapDispatchToProps = {
   changeSidebar,

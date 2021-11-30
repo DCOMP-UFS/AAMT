@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { setImovelSelect, addImovelQuarteirao } from '../../../store/actions/supportInfo';
+import { setImovelSelect, addImovelQuarteirao } from '../../../store/SupportInfo/supportInfoActions';
 
 // COMPONENTS
 // import { Container } from './styles';

@@ -18,7 +18,7 @@ class Laboratorio extends Model {
 
   static associate( models ) {
     this.belongsToMany( models.Municipio, { through: 'laboratorios_municipios', foreignKey: 'cnpj', as: 'municipios' } );
-    this.hasMany( models.Amostra, { foreignKey: 'cnpj', as: 'amostras' } );
+    this.hasMany( models.Amostra, { foreignKey: 'laboratorio_cnpj', as: 'amostras' } );
   }
 }
 

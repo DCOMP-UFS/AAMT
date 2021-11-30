@@ -519,6 +519,7 @@ endRoute = async ( req, res ) => {
     );
 
     const recipientes = vistoria.recipientes;
+    let amostras      = [];
     for( let recipiente of recipientes ) {
       await Deposito.create( {
         fl_comFoco:     recipiente.fl_comFoco,
@@ -542,18 +543,19 @@ endRoute = async ( req, res ) => {
       }
 
       if( recipiente.fl_comFoco ) {
-        const amostras = recipiente.amostras;
-        for( const amostra of amostras ) {
-          await Amostra.create( {
-            situacaoAmostra:  amostra.situacao,
-            sequencia:        amostra.sequencia,
-            codigo:           amostra.idUnidade,
-            deposito_id:      recipiente.id,
-            laboratorio_id:   null
-          } );
-        }
+        let amostrasInsert = recipiente.amostras.map( amostra => ( {
+          situacaoAmostra:  amostra.situacao,
+          sequencia:        amostra.sequencia,
+          codigo:           amostra.idUnidade,
+          deposito_id:      recipiente.id,
+          laboratorio_cnpj: null
+        } ) );
+
+        amostras = [ ...amostras, ...amostrasInsert ];
       }
     }
+
+    await Amostra.bulkCreate( amostras );
   }
 
   // Finalizar rota

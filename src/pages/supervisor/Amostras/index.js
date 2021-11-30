@@ -64,7 +64,7 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
   const [ rows, setRows ] = useState( [] );
   const [ rowsSelected, setRowsSelected ] = useState( [] );
   const [ laboratoriosOptions, setLaboratoriosOptions ] = useState( [] );
-  const [ laboratorioSelect, setLaboratorioSelect ] = useState( {} );
+  const [ laboratorioSelect, setLaboratorioSelect ] = useState( { value: null, label: '' } );
   const options = {
     customToolbarSelect: () => {
       return (

@@ -6,6 +6,7 @@ module.exports = {
       queryInterface.addColumn('vistorias', 'tipo_imovel_vistoria', {
         type: Sequelize.INTEGER,
         allowNull: false,
+        defaultValue: 1,
       }),
     ]);
   },

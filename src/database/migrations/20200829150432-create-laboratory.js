@@ -18,7 +18,7 @@ module.exports = {
           allowNull: false,
         },
         tipo_laboratorio:{
-          type: Sequelize.ENUM('sede', 'privado'),
+          type: Sequelize.ENUM( 'sede', 'privado' ),
           allowNull: false,
         },
         created_at: {

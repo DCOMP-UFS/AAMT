@@ -907,8 +907,9 @@ const isFinalizado = async ( req, res ) => {
 
   // Validando
   const td = await TrabalhoDiario.findByPk( trabalhoDiario_id );
+  console.log(td);
   if( !td ) 
-    res.status( 404 ).json( {
+    return res.status( 404 ).json( {
       status  : 'error',
       mensage : 'Trabalho diário informado não existe!'
     } );
@@ -932,9 +933,9 @@ const isFinalizado = async ( req, res ) => {
     } );
 
   if( td.horaFim === null )
-    res.json( false );
+    return res.json( false );
 
-  res.json( true );
+  return res.json( true );
 }
 
 const router = express.Router();

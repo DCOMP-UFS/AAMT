@@ -85,12 +85,14 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
     props.changeSidebar( 3, 1 );
     props.getAmostrasRequest( usuario.id );
     props.getLaboratoriosRequest( usuario.municipio.id );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [] );
 
   useEffect(() => {
     if( laboratorios.length > 0 ) {
+      console.log(laboratorios)
       setLaboratoriosOptions( laboratorios.map( lab => ( {
-        value: lab.id, label: lab.nome
+        value: lab.cnpj, label: lab.nome
       } ) ) );
     }
   }, [ laboratorios ]);
@@ -135,6 +137,7 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
     } );
 
     setRows( r );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ amostras ] );
 
   const handlerSample = index => {
@@ -145,6 +148,8 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
 
   const enviarAmostras = e => {
     e.preventDefault();
+
+    console.log(laboratorioSelect);
 
     if( laboratorioSelect.value ) {
       const amostras_ids = rowsSelected.map( r => amostras[ r ].id );

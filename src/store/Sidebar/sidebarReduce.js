@@ -42,12 +42,12 @@ const INITIAL_STATE = {
     createLink( 4, "Zonas", false, ViewCompactIcon, "/coord/zonas"),
     createLink( 5, "Laboratórios", false, FaVials, "/coord/laboratorios"),
     // createLink( 7, "Quarteirão", false, BorderAllIcon, "/quarteiroes"),
-    createCategory( "Recursos de Interface" ),
-    createNav( 8, "Elementos Básicos", false, IoIosCode, [
-      createSubmenu( 1, false, "Botões", "/elementos/botoes" ),
-      createSubmenu( 2, false, "Tipografia", "/elementos/tipografia" ),
-    ]),
-    createLink( 9, "Formulários", false, IoIosCheckboxOutline, "/elementos/formulario" )
+    // createCategory( "Recursos de Interface" ),
+    // createNav( 8, "Elementos Básicos", false, IoIosCode, [
+    //   createSubmenu( 1, false, "Botões", "/elementos/botoes" ),
+    //   createSubmenu( 2, false, "Tipografia", "/elementos/tipografia" ),
+    // ]),
+    // createLink( 9, "Formulários", false, IoIosCheckboxOutline, "/elementos/formulario" )
   ]
 }
 

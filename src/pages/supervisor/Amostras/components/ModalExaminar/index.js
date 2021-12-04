@@ -30,7 +30,8 @@ export const ModalExaminar = ({ mosquitos, amostra, ...props }) => {
 
   useEffect(() => {
     props.getMosquitosRequest();
-  }, [props]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Consultando os mosquitos na API e preenchendo as opções do select
   useEffect(() => {
@@ -90,7 +91,8 @@ export const ModalExaminar = ({ mosquitos, amostra, ...props }) => {
         setExamination( [] );
       }
     }
-  }, [amostra, examination, gnatOptions, sampleSituationOptions])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [amostra, gnatOptions, sampleSituationOptions])
 
   const addExamination = () => {
     let e = examination;

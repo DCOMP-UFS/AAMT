@@ -26,7 +26,7 @@ const ModalAdd = ( { municipio, show, handleClose, created, ...props } ) => {
   const [ categoria, setCategoria ]               = useState( { value: null, label: '' } );
   const [ isValidCategoria, setIsValidCategoria ] = useState( true );
   const [ endereco, setEndereco]                  = useState( null );
-  const [ optionCategoria ]                       = useState( [ 
+  const [ optionCategoria ]                       = useState( [
     { value: 'sede', label: 'Sede' },
     { value: 'privado', label: 'Privado' }
   ] );
@@ -98,13 +98,13 @@ const ModalAdd = ( { municipio, show, handleClose, created, ...props } ) => {
             <Col sm='6'>
               <FormGroup>
                 <label htmlFor="cnpj">CNPJ<code>*</code></label>
-                <input 
-                  id        ="cnpj" 
-                  value     ={ cnpj ? cnpj : "" } 
+                <input
+                  id        ="cnpj"
+                  value     ={ cnpj ? cnpj : "" }
                   className ={ `form-control ${ !isValidCnpj ? 'invalid' : '' }` }
-                  onChange  ={ e => setCnpj( e.target.value ) } 
+                  onChange  ={ e => setCnpj( e.target.value ) }
                   maxlength ="14"
-                  required 
+                  required
                 />
                 {
                   !isValidCnpj ?
@@ -145,7 +145,7 @@ const ModalAdd = ( { municipio, show, handleClose, created, ...props } ) => {
           <Row>
             <Col>
               <FormGroup>
-                <label htmlFor="nome">Endereco <code>*</code></label>
+                <label htmlFor="nome">Endereço <code>*</code></label>
                 <input id="endereco" value={ endereco } className="form-control" onChange={ e => setEndereco( e.target.value ) } required />
               </FormGroup>
             </Col>
@@ -180,8 +180,8 @@ const mapStateToProps = state => ( {
 
 /**
  * Mapeia as actions para o props do componente
- * @param {*} dispatch 
- * @returns 
+ * @param {*} dispatch
+ * @returns
  */
 const mapDispatchToProps = dispatch =>
   bindActionCreators( {

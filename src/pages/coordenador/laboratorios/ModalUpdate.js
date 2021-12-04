@@ -25,7 +25,7 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, ...p
   const [ categoria, setCategoria ]               = useState( { value: null, label: '' } );
   const [ isValidCategoria, setIsValidCategoria ] = useState( true );
   const [ endereco, setEndereco]                  = useState( "" );
-  const [ optionCategoria ]                       = useState( [ 
+  const [ optionCategoria ]                       = useState( [
     { value: 'sede', label: 'Sede' },
     { value: 'privado', label: 'Privado' }
   ] );
@@ -37,10 +37,10 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, ...p
   useEffect( () => {
     setCnpj( laboratorio.cnpj );
     setNome( laboratorio.nome );
-    setCategoria( 
-      laboratorio.tipoLaboratorio === 'sede' ? 
-        ( { value: 'sede', label: 'Sede' } ) : 
-        ( {value: 'privado', label: 'Privado' } ) 
+    setCategoria(
+      laboratorio.tipoLaboratorio === 'sede' ?
+        ( { value: 'sede', label: 'Sede' } ) :
+        ( {value: 'privado', label: 'Privado' } )
     );
     setEndereco( laboratorio.endereco );
   }, [ laboratorio ] );
@@ -94,7 +94,7 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, ...p
       nome,
       endereco,
       tipoLaboratorio: categoria.value,
-      municipio_id: municipio.id 
+      municipio_id: municipio.id
     } ) );
   }
 
@@ -111,13 +111,14 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, ...p
             <Col sm='6'>
               <FormGroup>
                 <label htmlFor="cnpj">CNPJ<code>*</code></label>
-                <input 
-                  id        ="cnpj" 
-                  value     ={ cnpj ? cnpj : "" } 
+                <input
+                  id        ="cnpj"
+                  value     ={ cnpj ? cnpj : "" }
                   className ={ `form-control ${ !isValidCnpj ? 'invalid' : '' }` }
-                  onChange  ={ e => setCnpj( e.target.value ) } 
+                  onChange  ={ e => setCnpj( e.target.value ) }
                   maxlength ="14"
-                  required 
+                  required
+                  disabled
                 />
                 {
                   !isValidCnpj ?
@@ -158,7 +159,7 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, ...p
           <Row>
             <Col>
               <FormGroup>
-                <label htmlFor="nome">Endereco <code>*</code></label>
+                <label htmlFor="nome">Endereço <code>*</code></label>
                 <input id="endereco" value={endereco} className="form-control" onChange={ e => setEndereco(e.target.value) } required />
               </FormGroup>
             </Col>
@@ -193,8 +194,8 @@ const mapStateToProps = state => ( {
 
 /**
  * Mapeia as actions para o props do componente
- * @param {*} dispatch 
- * @returns 
+ * @param {*} dispatch
+ * @returns
  */
 const mapDispatchToProps = dispatch =>
   bindActionCreators( {

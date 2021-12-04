@@ -30,7 +30,7 @@ export const ModalExaminar = ({ mosquitos, amostra, ...props }) => {
 
   useEffect(() => {
     props.getMosquitosRequest();
-  }, []);
+  }, [props]);
 
   // Consultando os mosquitos na API e preenchendo as opções do select
   useEffect(() => {
@@ -90,7 +90,7 @@ export const ModalExaminar = ({ mosquitos, amostra, ...props }) => {
         setExamination( [] );
       }
     }
-  }, [ amostra ])
+  }, [amostra, examination, gnatOptions, sampleSituationOptions])
 
   const addExamination = () => {
     let e = examination;

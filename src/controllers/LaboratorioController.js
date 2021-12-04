@@ -3,6 +3,7 @@ const express               = require( 'express' );
 const Laboratorio           = require( '../models/Laboratorio' );
 const Municipio             = require( '../models/Municipio' );
 const LaboratorioMunicipio  = require( '../models/LaboratorioMunicipio' );
+const fillCnpj              = require( '../util/fillCnpj' );
 
 // UTILITY
 const allowFunction = require( '../util/allowFunction' );
@@ -21,14 +22,24 @@ getLaboratorio = async ( req, res ) => {
   if( !municipio )
     res.status( 404 ).json( { error: 'Município não existe' } );
 
-  const laboratorios = await Laboratorio.findAll( {
+  let laboratorios = await Laboratorio.findAll( {
     include: {
       association: 'municipios',
       where: {
         id: municipio_id
       }
-    }
-  } );
+    },
+  } ).then(laboratorios => {
+    return laboratorios.map(laboratorio => ({
+      cnpj: fillCnpj(laboratorio.cnpj),
+      nome: laboratorio.nome,
+      endereco: laboratorio.nome,
+      tipoLaboratorio: laboratorio.tipoLaboratorio,
+      createdAt: laboratorio.createdAt,
+      updatedAt: laboratorio.updatedAt,
+      municipios: laboratorio.municipios
+    }))
+  });
 
   res.json( laboratorios );
 }
@@ -67,6 +78,9 @@ updateLaboratorio = async( req, res ) =>{
   const { cnpj, nome, endereco, tipoLaboratorio } = req.body;
 
   const laboratorio = await Laboratorio.findByPk( cnpj );
+
+  console.log(laboratorio);
+
   if( !laboratorio )
     res.status( 404 ).json( { error: "CNPJ não existe" } );
 

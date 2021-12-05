@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { TouchableOpacity, Alert } from 'react-native';
+import { TouchableOpacity, Alert, Text } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { format, parseISO } from 'date-fns';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
 import {
   Collapse,
@@ -28,8 +30,9 @@ import {
   SelectActivityButton,
 } from './styles';
 
-const ChooseActivity = () => {
+const ChooseActivity = ({ regionalSaude }) => {
   const [activities, setActivities] = useState([]);
+  const [cycle, setCycle] = useState(null);
 
   const userId = useSelector(state => state.user.profile.id);
 
@@ -38,10 +41,31 @@ const ChooseActivity = () => {
   const { observation } = route.params;
 
   useEffect(() => {
+    async function getCycle() {
+      try {
+        const response = await api.get(
+          `/ciclos/open/${regionalSaude}/regionaisSaude`
+        );
+
+        if (response.data) {
+          setCycle(response.data.id);
+        }
+      } catch (err) {
+        Alert.alert(
+          'Ocorreu um erro',
+          'Não foi possível determinar o ciclo atual'
+        );
+      }
+    }
+
+    getCycle();
+  }, []);
+
+  useEffect(() => {
     async function loadActivities() {
       try {
         const response = await api.get(
-          `/atividades/abertas/${userId}/usuarios`
+          `/atividades/supervisor/${userId}/responsavel/${cycle}/ciclos`
         );
 
         setActivities(response.data);
@@ -53,8 +77,10 @@ const ChooseActivity = () => {
       }
     }
 
-    loadActivities();
-  }, []);
+    if (cycle) {
+      loadActivities();
+    }
+  }, [cycle]);
 
   function navigationTo(id, equipe_id) {
     if (observation === 'diary-report-agent') {
@@ -87,6 +113,7 @@ const ChooseActivity = () => {
 
   return (
     <Container>
+      <Text>Olá!</Text>
       {activities.map(activity => (
         <Card key={activity.id}>
           <Header>
@@ -95,10 +122,10 @@ const ChooseActivity = () => {
           </Header>
           <Label>Objetivo</Label>
           <Smaller>{activity.objetivo.descricao}</Smaller>
-          <Label>Data de início</Label>
+          {/* <Label>Data de início</Label>
           <Smaller>
             {format(parseISO(activity.createdAt), 'dd/MM/yyyy')}
-          </Smaller>
+          </Smaller> */}
 
           {observation === 'weekly-report' && (
             <SelectActivityButton onPress={() => navigationTo(activity.id, 0)}>
@@ -118,14 +145,16 @@ const ChooseActivity = () => {
               <Collapse key={index} style={{ margin: 5 }}>
                 <CollapseHeader>
                   <AccordionHeader>
-                    <AccordionTitle>{`Equipe ${index + 1}`}</AccordionTitle>
+                    <AccordionTitle>{`Equipe ${
+                      team.apelido ? team.apelido : ''
+                    }`}</AccordionTitle>
                   </AccordionHeader>
                 </CollapseHeader>
                 <CollapseBody>
                   <Box>
                     {team.membros.map(
                       member =>
-                        member.tipo_perfil === 4 && (
+                        member.tipoPerfil === 4 && (
                           <TouchableOpacity
                             key={member.usuario.id}
                             onPress={() =>
@@ -148,4 +177,10 @@ const ChooseActivity = () => {
   );
 };
 
-export default ChooseActivity;
+const mapStateToProps = state => ({
+  regionalSaude: state.user.profile.municipio.regional.id,
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({}, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChooseActivity);

@@ -206,6 +206,8 @@ const AgentDailyReport = () => {
       try {
         const response = await api.get(`/trabalhoDiario/${id}`);
 
+        console.log(JSON.stringify(response.data));
+
         if (response.data.status) {
           setActivity(response.data.data.vistorias);
         }

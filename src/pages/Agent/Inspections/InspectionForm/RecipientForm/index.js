@@ -43,13 +43,13 @@ const RecipientForm = ({
   ...props
 }) => {
   const [recipientOptions, setRecipientOptions] = useState([
-    { name: 'Tipo A1', id: 1 },
-    { name: 'Tipo A2', id: 2 },
-    { name: 'Tipo B', id: 3 },
-    { name: 'Tipo C', id: 4 },
-    { name: 'Tipo D1', id: 5 },
-    { name: 'Tipo D2', id: 6 },
-    { name: 'Tipo E', id: 7 },
+    { name: 'Tipo A1', id: 'A1' },
+    { name: 'Tipo A2', id: 'A2' },
+    { name: 'Tipo B', id: 'B' },
+    { name: 'Tipo C', id: 'C' },
+    { name: 'Tipo D1', id: 'D1' },
+    { name: 'Tipo D2', id: 'D2' },
+    { name: 'Tipo E', id: 'E' },
   ]);
   const [focusOptions, setFocusOptions] = useState([
     { id: true, label: 'Sim' },
@@ -140,10 +140,7 @@ const RecipientForm = ({
   useEffect(() => {
     if (recipientIndex >= 0) {
       const recipient = form.recipientes[recipientIndex];
-      formRef.current.setFieldValue(
-        'recipientType',
-        recipientOptions[recipient.tipoRecipiente - 1].id
-      );
+      formRef.current.setFieldValue('recipientType', recipient.tipoRecipiente);
       formRef.current.setFieldValue('focus', recipient.fl_comFoco);
       formRef.current.setFieldValue('samples', recipient.amostras);
       formRef.current.setFieldValue('treatment', recipient.fl_tratado);

@@ -390,6 +390,7 @@ const PlannedRoutes = ({
                     isStarted: activity.trabalhoDiario.horaInicio,
                   })
                 }
+                isDisabled={true}
               >
                 Ver rota
               </RouteButton>

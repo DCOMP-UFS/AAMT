@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 import {
   Collapse,
@@ -20,27 +20,17 @@ import {
   Header,
   Card,
   Title,
-  Small,
   Box,
   Street,
   StreetText,
 } from './styles';
-import { useEffect } from 'react/cjs/react.development';
 
 const BlocksList = ({ currentIndex, routes, ...props }) => {
   const navigation = useNavigation();
   const route = useRoute();
   const { isStarted, rota } = route.params;
 
-  const [currentRoute, setCurrentRoute] = useState([]);
-
-  useEffect(() => {
-    if (currentIndex >= 0) {
-      setCurrentRoute(routes[currentIndex].rota);
-    } else {
-      setCurrentRoute(rota);
-    }
-  }, []);
+  const currentRoute = routes[currentIndex].rota;
 
   return (
     <Container>

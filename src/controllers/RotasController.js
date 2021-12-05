@@ -696,49 +696,54 @@ const getOpenRouteByTeam = async ( req, res ) => {
   ).then( data => {
     const [ rows ] = data;
 
-    let rota          = [],
-        quarteirao_id = rows[ 0 ].id,
-        quarteirao    = {
-          id: rows[ 0 ].id,
-          numero: rows[ 0 ].numero,
-          ativo: rows[ 0 ].ativo,
-          localidade_id: rows[ 0 ].localidade_id,
-          zona_id: rows[ 0 ].zona_id,
-          lados: []
-        };
-    
-    rows.forEach(row => {
-      if( row.id !== quarteirao_id ) {
-        rota.push( quarteirao );
-        quarteirao_id = row.id;
-        quarteirao    = {
-          id: row.id,
-          numero: row.numero,
-          ativo: row.ativo,
-          localidade_id: row.localidade_id,
-          zona_id: row.zona_id,
-          lados: []
-        };
-      }
+    if( rows.length > 0 ) {
+      let rota          = [],
+          quarteirao_id = null,
+          quarteirao    = {
+            id: null,
+            numero: null,
+            ativo: null,
+            localidade_id: null,
+            zona_id: null,
+            lados: []
+          };
+      
+      rows.forEach(row => {
+        if( !quarteirao_id || row.id !== quarteirao_id ) {
+          quarteirao_id = row.id;
+          quarteirao    = {
+            id: row.id,
+            numero: row.numero,
+            ativo: row.ativo,
+            localidade_id: row.localidade_id,
+            zona_id: row.zona_id,
+            lados: []
+          };
 
-      quarteirao.lados.push({
-        id: row.lado_id,
-        numero: row.lado_numero,
-        rua_id: row.lado_rua_id,
-        quarteirao_id: row.lado_quarteirao_id,
-        rua: {
-          id: row.rua_id,
-          nome: row.rua_nome,
-          cep: row.rua_cep,
-          localidade_id: row.rua_localidade_id
-        },
-        imoveis: row.imoveis,
-        vistorias: row.vistorias,
-        situacao: row.imoveis === row.vistorias ? 3 : ( row.vistorias > 0 ? 2 : 1 )
+          rota.push( quarteirao );
+        }
+  
+        quarteirao.lados.push({
+          id: row.lado_id,
+          numero: row.lado_numero,
+          rua_id: row.lado_rua_id,
+          quarteirao_id: row.lado_quarteirao_id,
+          rua: {
+            id: row.rua_id,
+            nome: row.rua_nome,
+            cep: row.rua_cep,
+            localidade_id: row.rua_localidade_id
+          },
+          imoveis: row.imoveis,
+          vistorias: row.vistorias,
+          situacao: row.imoveis === row.vistorias ? 3 : ( row.vistorias > 0 ? 2 : 1 )
+        });
       });
-    });
-
-    return rota;
+  
+      return rota;
+    } else {
+      return [];
+    }
   });
 
   // Consultando lados já planejando do dia de uma equipe.

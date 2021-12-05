@@ -163,21 +163,22 @@ const RecipientForm = ({
    */
 
   function handleRecipientSubmit(data) {
-    const recipient = {
-      fl_comFoco: data.focus,
-      tipoRecipiente: data.recipientType,
-      fl_tratado: data.treatment,
-      fl_eliminado: !data.treatment,
-      sequencia: recipientSequence,
-      tratamento: {
-        quantidade: parseFloat(data.quantity ? data.quantity : 0),
-        tecnica: data.treatmentType,
-      },
-      amostras: data.focus ? data.samples : [],
-      idUnidade: recipientSequence,
-    };
-
     if (recipientIndex >= 0) {
+      const { sequencia, idUnidade } = form.recipientes[recipientIndex];
+      const recipient = {
+        fl_comFoco: data.focus,
+        tipoRecipiente: data.recipientType,
+        fl_tratado: data.treatment,
+        fl_eliminado: !data.treatment,
+        sequencia,
+        tratamento: {
+          quantidade: parseFloat(data.quantity ? data.quantity : 0),
+          tecnica: data.treatmentType,
+        },
+        amostras: data.focus ? data.samples : [],
+        idUnidade,
+      };
+
       Alert.alert(
         'Atenção!',
         `Tem certeza que deseja editar os dados da inspeção neste recipiente?`,
@@ -197,6 +198,20 @@ const RecipientForm = ({
         { cancelable: false }
       );
     } else {
+      const recipient = {
+        fl_comFoco: data.focus,
+        tipoRecipiente: data.recipientType,
+        fl_tratado: data.treatment,
+        fl_eliminado: !data.treatment,
+        sequencia: recipientSequence,
+        tratamento: {
+          quantidade: parseFloat(data.quantity ? data.quantity : 0),
+          tecnica: data.treatmentType,
+        },
+        amostras: data.focus ? data.samples : [],
+        idUnidade: recipientSequence,
+      };
+
       props.addRecipientToForm(recipient);
 
       navigation.navigate('Depósitos inspecionados');

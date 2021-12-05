@@ -78,6 +78,7 @@ export default function routes(state = INITIAL_STATE, action) {
           justificativa: justification,
           trabalhoDiario_id: dailyWorkId,
           sequencia: state.totalInspections + 1,
+          recipientSequence: state.recipientSequence,
         };
         draft.recipientSequence = 1;
         draft.totalInspections = state.totalInspections + 1;
@@ -90,9 +91,14 @@ export default function routes(state = INITIAL_STATE, action) {
         draft.routes[index].rota[blockIndex].lados[streetIndex].imoveis[
           propertyIndex
         ]['inspection'] = {
-          ...form,
+          situacaoVistoria: form.situacaoVistoria,
+          pendencia: form.pendencia,
+          horaEntrada: form.horaEntrada,
+          recipientes: form.recipientes,
+          justificativa: form.justificativa,
           trabalhoDiario_id: dailyWorkId,
           sequencia: state.totalInspections + 1,
+          recipientSequence: state.recipientSequence,
         };
         draft.recipientSequence = 1;
         draft.totalInspections = state.totalInspections + 1;
@@ -136,6 +142,16 @@ export default function routes(state = INITIAL_STATE, action) {
     case '@inspectionform/ADD_RECIPIENT_TO_FORM': {
       return produce(state, draft => {
         draft.recipientSequence = draft.recipientSequence + 1;
+      });
+    }
+    case '@inspectionform/LOAD_INSPECTION_FORM': {
+      return produce(state, draft => {
+        draft.recipientSequence = 1;
+      });
+    }
+    case '@inspectionform/LOAD_INSPECTION_EDIT_FORM': {
+      return produce(state, draft => {
+        draft.recipientSequence = action.payload.inspection.recipientSequence;
       });
     }
     case '@auth/SIGN_OUT':

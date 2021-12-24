@@ -3,7 +3,9 @@ import { ActionTypes } from './rotaCacheActions';
 const INITIAL_STATE = {
   fl_iniciada: false,
   openModal: false,
-  trabalhoDiario: {},
+  trabalhoDiario: {
+    data: ""
+  },
   rota: []
 }
 

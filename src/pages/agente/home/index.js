@@ -117,7 +117,6 @@ const HomeAgente = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vi
       
       props.changeSidebar( 1, 1 );
       props.getRouteRequest( usuario.id, current_date );
-      props.isFinalizadoRequest( trabalhoDiario.id );
     }
 
     initHome();

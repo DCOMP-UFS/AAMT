@@ -5,7 +5,7 @@ import Close from '@material-ui/icons/Close';
 
 // import { Container } from './styles';
 
-const ButtonNewObject = (props) => (
+const ButtonClose = props => (
   <Tooltip
     title={ props.title }
     data-toggle={ props["data-toggle"] }
@@ -13,7 +13,9 @@ const ButtonNewObject = (props) => (
     onClick={ props.onClick }
     className={ props.className }
     data-dismiss={ props["data-dismiss"] }
-    aria-label={ props["data-label"] } >
+    aria-label={ props["data-label"] }
+    { ...props }
+  >
 
     <IconButton className={ props.classIcon } aria-label="more">
       <Close />
@@ -21,4 +23,4 @@ const ButtonNewObject = (props) => (
   </Tooltip>
 );
 
-export default ButtonNewObject;
+export default ButtonClose;

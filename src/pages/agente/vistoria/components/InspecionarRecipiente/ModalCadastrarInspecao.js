@@ -39,7 +39,29 @@ import {
   LiEmpty
 } from '../../../../../styles/global';
 
-function InspecionarRecipiente( {
+export const INITIAL_STATE = {
+  tipoRecipiente: { value: null, label: null },
+  fl_eliminado: { value: null, label: null },
+  fl_tratado: { value: null, label: null },
+  fl_foco: { value: null, label: null },
+  dataFormatada: null,
+  seqAmostra: "",
+  tecnicaTratamento: { value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label },
+  numUnidade: 0,
+  qtdTratamento: 0,
+  unidade: [],
+  reload: false,
+  optionsTipoRecipiente: tipoRecipienteEnum.map( tipo => (
+    { value: tipo, label: tipo }
+  ) ),
+  optionsSimNao: [
+    { value: true, label: "Sim" },
+    { value: false, label: "Não" }
+  ],
+  optionsTecnicaTratamento: Object.entries( tecnicaTratamentoEnum ).map( ( [ key, value ] ) => ( { value: value.id, label: value.label } ) )
+}
+
+function ModalCadastrarInspecao( {
   sequenciaRecipiente,
   recipientes,
   vistorias,
@@ -49,29 +71,23 @@ function InspecionarRecipiente( {
   trabalhoDiario_sequencia,
   codigoMunicipio,
   sequenciaUsuario,
+  STATE = INITIAL_STATE,
   ...props 
 } ) {
-  const [ tipoRecipiente, setTipoRecipiente ]       = useState( { value: null, label: null } );
-  const [ fl_eliminado, setFl_eliminado ]           = useState( { value: null, label: null } );
-  const [ fl_tratado, setFl_tratado ]               = useState( { value: null, label: null } );
-  const [ fl_foco, setFl_foco ]                     = useState( { value: null, label: null } );
-  const [ dataFormatada, setDataFormatada ]         = useState( null );
-  const [ seqAmostra, setSeqAmostra ]               = useState( "" );
-  const [ tecnicaTratamento, setTecnicaTratamento ] = useState( { value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label } );
-  const [ numUnidade, setNumUnidade ]               = useState( 0 );
-  const [ qtdTratamento, setQtdTratamento ]         = useState( 0 );
-  const [ unidade, setUnidade ]                     = useState( [] );
-  const [ reload, setReload ]                       = useState( false );
-  const [ optionsTipoRecipiente ]                   = useState( tipoRecipienteEnum.map( tipo => (
-    { value: tipo, label: tipo }
-  ) ) );
-  const [ optionsSimNao ]                           = useState( [
-    { value: true, label: "Sim" },
-    { value: false, label: "Não" }
-  ] );
-  const [ optionsTecnicaTratamento ]                = useState(
-    Object.entries( tecnicaTratamentoEnum ).map( ( [ key, value ] ) => ( { value: value.id, label: value.label } ) )
-  );
+  const [ tipoRecipiente, setTipoRecipiente ]       = useState( STATE.tipoRecipiente );
+  const [ fl_eliminado, setFl_eliminado ]           = useState( STATE.fl_eliminado );
+  const [ fl_tratado, setFl_tratado ]               = useState( STATE.fl_tratado );
+  const [ fl_foco, setFl_foco ]                     = useState( STATE.fl_foco );
+  const [ dataFormatada, setDataFormatada ]         = useState( STATE.dataFormatada );
+  const [ seqAmostra, setSeqAmostra ]               = useState( STATE.seqAmostra );
+  const [ tecnicaTratamento, setTecnicaTratamento ] = useState( STATE.tecnicaTratamento );
+  const [ numUnidade, setNumUnidade ]               = useState( STATE.numUnidade );
+  const [ qtdTratamento, setQtdTratamento ]         = useState( STATE.qtdTratamento );
+  const [ unidade, setUnidade ]                     = useState( STATE.unidade );
+  const [ reload, setReload ]                       = useState( STATE.reload );
+  const [ optionsTipoRecipiente ]                   = useState( STATE.optionsTipoRecipiente );
+  const [ optionsSimNao ]                           = useState( STATE.optionsSimNao );
+  const [ optionsTecnicaTratamento ]                = useState( STATE.optionsTecnicaTratamento );
 
   useEffect( () => {
     const [ ano, mes, dia ] = data.split( "-" );
@@ -254,6 +270,7 @@ function InspecionarRecipiente( {
                 <label htmlFor="fl_eliminado">Depósito eliminado? <code>*</code></label>
                 <Select
                   id="fl_eliminado"
+                  data-testid="fl_eliminado"
                   options={ optionsSimNao }
                   value={ fl_eliminado }
                   styles={ selectDefault }
@@ -307,44 +324,52 @@ function InspecionarRecipiente( {
 
               <Select
                 id="fl_foco"
+                data-testid="fl_foco"
                 options={ optionsSimNao }
                 value={ fl_foco }
                 styles={ selectDefault }
-                onChange={ option => setFl_foco( option ) } />
+                onChange={ option => setFl_foco( option ) }
+              />
             </div>
+            {
+              ( fl_foco.value && ( objetivo === 'LI+T' || objetivo === 'LI' ) ) ?
+                (
+                  <ContainerUnidade className={ ( fl_foco.value && ( objetivo === 'LI+T' || objetivo === 'LI' ) ) ? "active" : "" } >
+                    <Separator />
 
-            <ContainerUnidade className={ ( fl_foco.value && ( objetivo === 'LI+T' || objetivo === 'LI' ) ) ? "active" : "" } >
-              <Separator />
+                    <h4>
+                      Gerar código da(s) amostra(s)
+                    </h4>
+                    <br />
 
-              <h4>
-                Gerar código da(s) amostra(s)
-              </h4>
-              <br />
+                    <Row>
+                      <Col md="12" className="form-group">
+                        <label>Nº da sequencia da amostra</label>
+                        <Row id="row-sequence">
+                          <Col className="form-group">
+                            <input
+                              id          ="sequencia-amostra"
+                              data-testid ="sequencia-amostra"
+                              type        ="number"
+                              min         ="0"
+                              className   ="form-control"
+                              value       ={ seqAmostra }
+                              onChange    ={ e => setSeqAmostra( parseInt( e.target.value ) ) }
+                              style       ={ { marginBottom: -24 } } 
+                            />
+                          </Col>
+                          <Col>
+                            <ButtonNewObject id="btn-add-amostra" data-testid="btn-add-amostra" title="Adicionar Amostra" onClick={ addUnidade } />
+                          </Col>
+                        </Row>
+                      </Col>
+                    </Row>
 
-              <Row>
-                <Col md="12" className="form-group">
-                  <label>Nº da sequencia da amostra</label>
-                  <Row id="row-sequence">
-                    <Col className="form-group">
-                      <input
-                        id        ="sequencia-amostra"
-                        type      ="number"
-                        min       ="0"
-                        className ="form-control"
-                        value     ={ seqAmostra }
-                        onChange  ={ e => setSeqAmostra( parseInt( e.target.value ) ) }
-                        style     ={ { marginBottom: -24 } } 
-                      />
-                    </Col>
-                    <Col>
-                      <ButtonNewObject title="Adicionar Amostra" onClick={ addUnidade } />
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-
-              <ListUnidade unidade={ unidade } remove={ removeUnidade } />
-            </ContainerUnidade>
+                    <ListUnidade unidade={ unidade } remove={ removeUnidade } />
+                  </ContainerUnidade>
+                ) :
+                <div />
+            }
           </div>
           <div className="modal-footer">
             <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
@@ -361,7 +386,7 @@ function ListUnidade( props ) {
   const remove = props.remove;
 
   let li = unidade.map(( unidade, index ) =>
-    <LiIcon key={ index } >
+    <LiIcon key={ index } className="item">
       <ListContainer>
         <ContainerIcon>
           <FaVial />
@@ -381,13 +406,13 @@ function ListUnidade( props ) {
   );
 
   if( unidade.length === 0 ) {
-    li = <LiEmpty>
+    li = <LiEmpty className="empty">
       <h4>Nenhuma amostra cadastrada</h4>
     </LiEmpty>;
   }
 
   return (
-    <UlIcon>
+    <UlIcon id="lista-amostras">
       { li }
     </UlIcon>
   )
@@ -414,4 +439,4 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)( InspecionarRecipiente );
+)( ModalCadastrarInspecao );

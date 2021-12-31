@@ -4,7 +4,7 @@
 
 import 'regenerator-runtime/runtime';
 import React from 'react';
-import InspecionarRecipiente, { INITIAL_STATE } from '../../src/pages/agente/vistoria/components/InspecionarRecipiente/ModalCadastrarInspecao.js';
+import InspecionarRecipiente, { INITIAL_STATE } from '../../src/pages/vistoria/components/InspecionarRecipiente/ModalCadastrarInspecao.js';
 import { Provider } from 'react-redux';
 import { store } from '../../src/store';
 import { screen, render, userEvent, fireEvent } from '../index';

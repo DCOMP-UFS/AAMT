@@ -9,14 +9,10 @@ import pais from './Pais/paisReduce';
 import regiao from './Regiao/regiaoReduce';
 import regionalSaude from './RegionalSaude/regionalSaudeReduce';
 import sidebar from './Sidebar/sidebarReduce';
-import sidebarCoordGeral from './SidebarCoordGeral/sidebarCoordGeralReduce';
-import sidebarLab from './SidebarLab/sidebarLabReduce';
-import sidebarSupervisor from './SidebarSupervisor/sidebarSupervisorReduce';
 import supportInfo from './SupportInfo/supportInfoReduce';
 import usuario from './Usuario/usuarioReduce';
 import zona from './Zona/zonaReduce';
 import metodologia from './Metodologia/metodologiaReduce';
-import sidebarAgente from './SidebarAgente/sidebarAgenteReduce';
 import rota from './Rota/rotaReduce';
 import rotaCache from './RotaCache/rotaCacheReduce';
 import vistoriaCache from './VistoriaCache/vistoriaCacheReduce';
@@ -34,10 +30,7 @@ import nw_equipe from './Equipe/equipeReduce';
 import rua from './Rua/ruaReduce';
 
 export default combineReducers( {
-  sidebarCoordGeral,
   sidebar,
-  sidebarLab,
-  sidebarSupervisor,
   trabalhoDiario,
   supportInfo,
   appConfig,
@@ -54,7 +47,6 @@ export default combineReducers( {
   imovel,
   ciclo,
   metodologia,
-  sidebarAgente,
   rota,
   rotaCache,
   vistoria,

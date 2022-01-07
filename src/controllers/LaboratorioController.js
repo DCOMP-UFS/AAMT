@@ -6,6 +6,7 @@ const LaboratorioMunicipio  = require( '../models/LaboratorioMunicipio' );
 
 // UTILITY
 const allowFunction = require( '../util/allowFunction' );
+const { setDayWithOptions } = require('date-fns/fp');
 
 const router = express.Router();
 router.use( authMiddleware );
@@ -64,21 +65,47 @@ createLaboratorio = async( req, res ) => {
  * @returns {Object} Laboratorio
  */
 updateLaboratorio = async( req, res ) =>{
-  const { cnpj, nome, endereco, tipoLaboratorio } = req.body;
+  const { cnpjId, cnpj, nome, endereco, tipoLaboratorio, ativo } = req.body;
 
+  const cnpjExists = await Laboratorio.findByPk( cnpj );
+
+  if ( !cnpjExists ){
+    const query = `UPDATE laboratorios SET cnpj = '${cnpj}' WHERE cnpj = '${cnpjId}';`;
+    await Laboratorio.sequelize.query(query);
+  }else{
+    if ( cnpj != cnpjId){
+      res.status( 404 ).json( { error: "CNPJ já existe" } );
+    }
+  }
+  
   const laboratorio = await Laboratorio.findByPk( cnpj );
-  if( !laboratorio )
+
+  if( !laboratorio ){
     res.status( 404 ).json( { error: "CNPJ não existe" } );
+  }
 
   laboratorio.set( {
     cnpj,
     nome,
     endereco,
-    tipoLaboratorio
-  } );
+    tipoLaboratorio,
+    ativo,
+  });
 
   await laboratorio.save();
-  return res.json( laboratorio );
+  const resp = {
+    cnpjId:          cnpjId,
+    cnpj:            laboratorio.cnpj,
+    nome:            laboratorio.nome,
+    endereco:        laboratorio.endereco,
+    tipoLaboratorio: laboratorio.tipoLaboratorio,
+    ativo:           laboratorio.ativo,
+    createdAt:       laboratorio.createdAt,
+    updatedAt:       laboratorio.updatedAt
+  }
+
+  console.log(resp);
+  return res.json( resp );
 }
 
 router.get( '/:municipio_id', getLaboratorio );

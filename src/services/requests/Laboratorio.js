@@ -32,12 +32,14 @@ export const createLaboratoryRequest = data => {
  * @returns {Promise}
  */
 export const setLaboratoryRequest = data =>{
-  const { cnpj, nome, endereco, tipoLaboratorio, municipio_id } = data.laboratorio;
+  const {cnpjId, cnpj, nome, endereco, tipoLaboratorio, ativo, municipio_id } = data.laboratorio;
   return api.put( '/laboratorios/', {
+    cnpjId,
     cnpj,
     endereco,
     nome,
     tipoLaboratorio,
+    ativo,
     municipio_id
   },
   { 

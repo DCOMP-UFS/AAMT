@@ -32,6 +32,14 @@ const ModalAdd = ( { municipio, show, handleClose, created, ...props } ) => {
   ] );
 
   /**
+   * Use effect para resetar os 'isValid' ao abrir o modal
+   */
+  useEffect( () => {
+    setIsValidCnpj( true );
+    setIsValidCategoria( true );
+  }, [ show ]);
+
+  /**
    * Este effect moditora o state laboratorio.created para verificar
    * se o laboratório foi criado na base, caso seja true
    * limpa o formulário e fecha o modal.
@@ -52,6 +60,17 @@ const ModalAdd = ( { municipio, show, handleClose, created, ...props } ) => {
     setCnpj( null );
     setNome( "" );
     setCategoria( {} );
+    setEndereco ("");
+  }
+
+  /**
+   * Limpa os campos do Modal e fecha ele
+   * @returns void
+   */
+
+  const cancel = () => {
+    clearInput();
+    handleClose();
   }
 
   /**
@@ -63,6 +82,13 @@ const ModalAdd = ( { municipio, show, handleClose, created, ...props } ) => {
     e.preventDefault();
 
     if( cnpj.length !== 14 ) {
+      setIsValidCnpj( false );
+      return;
+    } else {
+      setIsValidCnpj( true );
+    }
+
+    if( isNum(cnpj) === false ) {
       setIsValidCnpj( false );
       return;
     } else {
@@ -83,6 +109,17 @@ const ModalAdd = ( { municipio, show, handleClose, created, ...props } ) => {
       tipoLaboratorio: categoria.value,
       municipio_id: municipio.id
     } ) );
+
+    handleClose();
+  }
+
+  /**
+   * Verifica se a string é um número
+   * @param {val} v valor da string
+   * @returns boolean
+   */
+   const isNum = val =>{
+    return !isNaN(val)
   }
 
   return(
@@ -157,7 +194,7 @@ const ModalAdd = ( { municipio, show, handleClose, created, ...props } ) => {
               <Button type="button" className="warning" onClick={ clearInput }>Limpar</Button>
             </div>
             <div>
-              <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
+              <Button type="button" className="secondary" onClick = { cancel } data-dismiss="modal">Cancelar</Button>
               <Button type="submit">Salvar</Button>
             </div>
           </ContainerArrow>

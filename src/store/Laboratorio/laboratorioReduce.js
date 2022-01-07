@@ -24,6 +24,7 @@ export default function Laboratorio( state = INITIAL_STATE, action ) {
         nome            : action.payload.data.nome, 
         endereco        : action.payload.data.endereco, 
         tipoLaboratorio : action.payload.data.tipoLaboratorio,
+        ativo           : action.payload.data.ativo,
         createdAt       : action.payload.data.createdAt,
         updatedAt       : action.payload.data.updatedAt
       }
@@ -38,13 +39,14 @@ export default function Laboratorio( state = INITIAL_STATE, action ) {
     
     case ActionTypes.UPDATE_LABORATORY_SUCCESS: {
       let laboratorios  = state.laboratorios;
-      const cnpj        = action.payload.data.cnpj;
+      const cnpj        = action.payload.data.cnpjId;
       var index         = laboratorios.findIndex( l => l.cnpj === cnpj );
       const laboratorio = {
         cnpj            : action.payload.data.cnpj,
         nome            : action.payload.data.nome,
         endereco        : action.payload.data.endereco,
         tipoLaboratorio : action.payload.data.tipoLaboratorio,
+        ativo           : action.payload.data.ativo,
         createdAt       : action.payload.data.createdAt,
         createdAt       : action.payload.data.createdAt,
         updatedAt       : action.payload.data.updatedAt

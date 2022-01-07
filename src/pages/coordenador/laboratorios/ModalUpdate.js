@@ -17,8 +17,9 @@ import { Laboratorio } from '../../../config/models';
 // STYLES
 import { ContainerArrow } from '../../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../../styles/global';
+import SelectInput from '@material-ui/core/Select/SelectInput';
 
-function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, ...props } ) {
+function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, cnpjId, ...props } ) {
   const [ cnpj, setCnpj ]                         = useState( null );
   const [ isValidCnpj, setIsValidCnpj ]           = useState( true );
   const [ nome, setNome ]                         = useState( "" );
@@ -29,13 +30,21 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, ...p
     { value: 'sede', label: 'Sede' },
     { value: 'privado', label: 'Privado' }
   ] );
+  const [ ativo, setAtivo ]                       = useState( { value: null, label: '' });
+  const [ optionAtivo ]                           = useState( [
+    {value: true , label: 'Sim'},
+    {value: false, label: "Não"},
+  ]);
 
   /**
    * Este effect monitora o valor da variável laboratorio e seta os states de acordo
    * com ela.
    */
+
   useEffect( () => {
-    setCnpj( laboratorio.cnpj );
+    setIsValidCnpj(true);
+    setIsValidCategoria(true);
+    setCnpj( fill0(laboratorio.cnpj) );
     setNome( laboratorio.nome );
     setCategoria( 
       laboratorio.tipoLaboratorio === 'sede' ? 
@@ -43,7 +52,8 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, ...p
         ( {value: 'privado', label: 'Privado' } ) 
     );
     setEndereco( laboratorio.endereco );
-  }, [ laboratorio ] );
+    setAtivo( laboratorio.ativo ? {value: true , label: "Sim"} : {value: false, label: "Não" });
+  }, [ show, laboratorio ] );
 
   /**
    * Este effect moditora a variável updated para verificar se a requisição
@@ -65,6 +75,34 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, ...p
     setCnpj( null );
     setNome( "" );
     setCategoria( {} );
+    setEndereco( "" );
+    setAtivo( "" );
+  }
+
+  /**
+   * Preenche o CNPJ com zeros a esquerda
+   * @param {string} str 
+   * @returns {string}
+   */
+
+   const fill0 = str =>{
+    if (str == null){
+      return
+    };
+    while (str.length < 14){
+      str = '0' + str;
+    };
+    return str; 
+  }
+
+  /**
+   * Fecha o modal
+   * @returns void
+   */
+
+   const cancel = () => {
+    clearInput();
+    handleClose();
   }
 
   /**
@@ -81,6 +119,13 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, ...p
     } else {
       setIsValidCnpj( true );
     }
+    
+    if( isNum(cnpj) === false ) {
+      setIsValidCnpj( false );
+      return;
+    } else {
+      setIsValidCnpj( true );
+    }
 
     if( !categoria.value ) {
       setIsValidCategoria( false );
@@ -90,12 +135,22 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, ...p
     }
 
     props.updateLaboratoryRequest( new Laboratorio( {
+      cnpjId,
       cnpj,
       nome,
       endereco,
       tipoLaboratorio: categoria.value,
-      municipio_id: municipio.id 
+      ativo: ativo.value,
     } ) );
+  }
+
+  /**
+   * Verifica se a string é um número
+   * @param {val} v valor da string
+   * @returns boolean
+   */
+  const isNum = val =>{
+      return !isNaN(val)
   }
 
   return(
@@ -153,6 +208,25 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, ...p
                 <input id="nome" value={nome} className="form-control" onChange={ e => setNome(e.target.value) } required />
               </FormGroup>
             </Col>
+            <Col>
+              <FormGroup>
+                <label htmlFor="ativo">Ativo <code>*</code></label>
+                <Select
+                  id        ="ativo"
+                  value     ={ ativo }
+                  styles    ={ selectDefault }
+                  options   ={ optionAtivo }
+                  onChange  ={ e => setAtivo( e ) }
+                  className ={ !isValidCategoria ? 'invalid' : '' }
+                  required
+                />
+                {
+                  !isValidCategoria ?
+                    <span class="form-label-invalid">Campo obrigatório</span> :
+                    ''
+                }
+              </FormGroup>
+            </Col>
           </Row>
 
           <Row>
@@ -170,7 +244,7 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, ...p
               <Button type="button" className="warning" onClick={ clearInput }>Limpar</Button>
             </div>
             <div>
-              <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
+              <Button type="button" className="secondary" onClick = { cancel } data-dismiss="modal">Cancelar</Button>
               <Button type="submit">Salvar</Button>
             </div>
           </ContainerArrow>

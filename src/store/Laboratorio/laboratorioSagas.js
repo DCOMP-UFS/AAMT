@@ -1,4 +1,4 @@
-import { takeLatest, call, put, all } from 'redux-saga/effects';
+import { takeEvery , takeLatest, call, put, all } from 'redux-saga/effects';
 import * as servico from '../../services/requests/Laboratorio';
 import * as LaboratorioActions from './laboratorioActions';
 import * as AppConfigActions from '../AppConfig/appConfigActions';
@@ -58,7 +58,7 @@ function* watchCreateLaboratory() {
 }
 
 function* watchUpdateLaboratorio() {
-  yield takeLatest( LaboratorioActions.ActionTypes.UPDATE_LABORATORY_REQUEST, updateLaboratorio );
+  yield takeEvery( LaboratorioActions.ActionTypes.UPDATE_LABORATORY_REQUEST, updateLaboratorio );
 }
 
 export function* laboratorioSaga() {

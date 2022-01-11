@@ -118,7 +118,7 @@ const Localidades = ({ municipio_id, localidades, municipio, ...props }) => {
     onRowClick: (row, ...props) => {
       const id = row[0].props['data-id'];
 
-      window.location = `${ window.location.origin.toString() }/coord/localidades/${ id }`;
+      window.location = `${ window.location.origin.toString() }/localidades/${ id }`;
     }
   };
 

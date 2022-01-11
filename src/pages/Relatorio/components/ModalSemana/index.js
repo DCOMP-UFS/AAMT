@@ -26,7 +26,7 @@ export const ModalSemana = ({ atividade_id, ...props }) => {
 
   const submit = e => {
     e.preventDefault();
-    window.location = window.location.origin.toString() + '/sup/relatorio/semanal/' + semana + '/' + atividade_id + '/' + ano.label;
+    window.location = window.location.origin.toString() + '/relatorio/semanal/' + semana + '/' + atividade_id + '/' + ano.label;
   }
 
   return (

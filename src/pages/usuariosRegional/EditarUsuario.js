@@ -23,7 +23,7 @@ import { getCityByRegionalHealthRequest } from '../../store/Municipio/municipioA
 import { FormGroup, selectDefault } from '../../styles/global';
 import { ContainerFixed, PageIcon, PageHeader } from '../../styles/util';
 
-const UsuariosRegEditar = ( { usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequest, ...props } ) => {
+const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
   const [ id ] = useState(props.match.params.id);
   const [ nome, setNome ] = useState("");
   const [ cpf, setCpf ] = useState("");
@@ -57,10 +57,10 @@ const UsuariosRegEditar = ( { usuarioUpdate, getUsuarioByIdRequest, updateUsuari
 
   const [ optionAtivo ] = useState([ { value: 1, label: 'Sim' }, { value: 0, label: 'Não' } ]);
 
-  useEffect(() => {
+  useEffect( () => {
     props.changeSidebar( "usuario" );
-    getUsuarioByIdRequest( id );
-  }, []);
+    props.getUsuarioByIdRequest( id );
+  }, [] );
 
   useEffect(() => {
     if( Object.entries(pais).length > 0 ) {
@@ -216,7 +216,7 @@ const UsuariosRegEditar = ( { usuarioUpdate, getUsuarioByIdRequest, updateUsuari
       at.local_id = municipio.value;
     }
 
-    updateUsuarioRequest( id, {
+    props.updateUsuarioRequest( id, {
       nome,
       cpf,
       rg,

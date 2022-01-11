@@ -26,7 +26,7 @@ export const RelatorioAtividade = ({ atividades, ciclo, usuario, ...props }) => 
   }, [ ciclo ]);
 
   const submit = (atividade_id) => {
-    window.location = window.location.origin.toString() + '/sup/relatorio/atividade/' + atividade_id;
+    window.location = window.location.origin.toString() + '/relatorio/atividade/' + atividade_id;
   }
 
   return (

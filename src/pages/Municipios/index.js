@@ -43,7 +43,7 @@ const columns = [
   "Ativo"
 ];
 
-const Municipios = ({ municipios, ...props }) => {
+const Municipios = ( { municipios, ...props } ) => {
   const [ rows, setRows ] = useState([]);
   const options = {
     customToolbar: () => {
@@ -51,27 +51,29 @@ const Municipios = ({ municipios, ...props }) => {
         <ButtonAdd
           title="Adicionar"
           data-toggle="modal"
-          data-target="#modal-novo-municipio" />
+          data-target="#modal-novo-municipio" 
+        />
       );
     },
-    customToolbarSelect: ({ data }) => {
-      props.changeTableSelected('tableCity', data);
+    customToolbarSelect: ( { data } ) => {
+      props.changeTableSelected( 'tableCity', data );
       return (
         <ButtonDesabled
           title="Desativar município"
           data-toggle="modal"
-          data-target="#modal-desativar-municipio" />
+          data-target="#modal-desativar-municipio" 
+        />
       );
     },
-    setRowProps: (row) => {
-      const className = row[5] === "Não" ? "row-desabled" : "";
+    setRowProps: ( row ) => {
+      const className = row[ 5 ] === "Não" ? "row-desabled" : "";
 
       return {
         className
       }
     },
-    onRowClick: (row, ...props) => {
-      const id = row[0].props['data-id'];
+    onRowClick: ( row, ...props ) => {
+      const id = row[ 0 ].props[ 'data-id' ];
 
       window.location = `${ window.location.origin.toString() }/municipios/${ id }`;
     }

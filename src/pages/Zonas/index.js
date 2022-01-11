@@ -90,7 +90,7 @@ function Zonas({ zonas, municipio, ...props }) {
     onRowClick: (row, ...props) => {
       const id = row[0].props['data-id'];
 
-      window.location = `${ window.location.origin.toString() }/coord/zonas/${ id }`;
+      window.location = `${ window.location.origin.toString() }/zonas/${ id }`;
     }
   };
 

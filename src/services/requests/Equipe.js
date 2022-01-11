@@ -2,7 +2,7 @@ import api, { headerAuthorization } from '../../services/api';
 
 export const getActivitiesSupRequest = data => {
   const { id } = data;
-  return api.get(`/equipes/sup/${ id }/`, {
+  return api.get(`/equipes/${ id }/`, {
     ...headerAuthorization()
   });
 }

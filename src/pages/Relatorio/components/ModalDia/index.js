@@ -10,7 +10,7 @@ export const ModalDia = ({ equipe_id, ...props }) => {
 
   const submit = e => {
     e.preventDefault();
-    window.location = window.location.origin.toString() + '/sup/relatorio/diarioEquipe/' + equipe_id + '/' + data;
+    window.location = window.location.origin.toString() + '/relatorio/diarioEquipe/' + equipe_id + '/' + data;
   }
 
   return (

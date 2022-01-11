@@ -14,7 +14,7 @@ export const ModalTrabalhoDiario = ({ trabalhos, id, title, ...props }) => {
   const abrirRelatorio = index => {
     const trabalho = trabalhos[ index ];
     if( trabalho.horaFim )
-      window.location = window.location.origin.toString() + '/sup/relatorio/diario/' + trabalho.id;
+      window.location = window.location.origin.toString() + '/relatorio/diario/' + trabalho.id;
     else
       props.showNotifyToast( 'Não é possível visualizar boletim diário em aberto', 'warning' );
   }

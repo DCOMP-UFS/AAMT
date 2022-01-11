@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { IoIosArrowDown, IoIosReturnRight } from 'react-icons/io';
-import { menus } from '../../config/menus';
+import { menus, categorias, itens as itensMenu } from '../../config/menus';
 import { perfil as tipoPerfilEnum } from '../../config/enumerate';
 
 // REDUX
@@ -19,10 +19,17 @@ const Sidebar = ( { menu, roles, usuario, ...props } ) => {
     props.setMenuSidebar( getMenusPermitidos( menus, roles ) );
   }, [] );
 
+  /**
+   * Esta função consulta todos os menus permitidos de acordo com as permissões
+   * @param {array} menus 
+   * @param {array} roles permissões que o usuário tem
+   * @returns array
+   */
   const getMenusPermitidos = ( menus, roles ) => {
     const perfil        = usuario.atuacoes[ 0 ].tipoPerfil;
     let menusPermitidos = roles.map( role => menus[ role ] );
-    let response        = [];
+    let listaMenus      = [];
+    let relatorios      = [];
 
     if( perfil == tipoPerfilEnum.coordenadorGeral.id )
       menusPermitidos.unshift( menus[ "dashboard_regional" ] );
@@ -34,16 +41,40 @@ const Sidebar = ( { menu, roles, usuario, ...props } ) => {
     menusPermitidos.forEach( itens => {
       if( itens ) {
         const roleMenu = itens.filter( item => {
-          const contem = response.findIndex( res => res.slug == item.slug );
-  
-          return contem == -1 ? true : false;
+          if( item.slug.startsWith( 'rlt_' ) ) {
+            relatorios.push( item );
+
+            return false;
+          } else {
+            const contem = listaMenus.findIndex( res => res.slug == item.slug );
+    
+            return contem == -1 ? true : false;
+          }
         } );
   
-        response = [ ...response, ...roleMenu ];
+        listaMenus = [ ...listaMenus, ...roleMenu ];
       }
     } );
 
-    return response;
+    if( relatorios.length > 0 ) {
+      let menuRelatorio = itensMenu.relatorio;
+
+      menuRelatorio.submenu = relatorios;
+      listaMenus.push( menuRelatorio );
+    }
+
+    let data = [];
+    categorias.forEach( cat => {
+      let m = listaMenus.filter( r => r.categoria == cat.slug );
+
+      if( m.length > 0 ) {
+        data.push( cat );
+
+        data = [ ...data, ...m ];
+      }
+    } );
+
+    return data;
   };
 
   return (

@@ -12,13 +12,14 @@ import { getOpenCycleRequest } from '../../../store/Ciclo/cicloActions';
 import { getResponsabilityActivitiesRequest, setIndexEquipe, setIndexMembro } from '../../../store/Atividade/atividadeActions';
 import { planejarRotaRequest, setCarregandoRota, getRotasPlanejadasRequest } from '../../../store/Rota/rotaActions';
 import { showNotifyToast } from '../../../store/AppConfig/appConfigActions';
+import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
 
 // STYLES
 import { PageIcon, PageHeader, PagePopUp, Steps, StepControl } from '../../../styles/util';
 import { Button } from '../../../styles/global';
 import { Container } from './styles';
 
-export const PlanejarRota = ({
+export const PlanejarRota = ( {
   fl_rota_planejada,
   indexEquipe,
   indexMembro,
@@ -30,7 +31,7 @@ export const PlanejarRota = ({
   usuario,
   rota_equipe,
   ...props
-}) => {
+} ) => {
   const [ currentDate, setCurrentDate] = useState( '' );
   const [ steps, setSteps ] = useState([
     { valid: false, name: 'Atividades', slug: 'selecionar_atividade', content: <SelecionarAtividade /> },
@@ -39,12 +40,13 @@ export const PlanejarRota = ({
   ]);
   const [ indexStep, setIndexStep ] = useState( 0 );
 
-  useEffect(() => {
+  useEffect( () => {
+    props.changeSidebar( "planejar_rota" );
     props.getOpenCycleRequest( regionalSaude_id );
 
     const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split('/');
     setCurrentDate( `${ d <= 9 ? '0' + d : d }/${ m <= 9 ? '0' + m : m }/${ Y }` );
-  }, []);
+  }, [] );
 
   useEffect(() => {
     if( Object.entries( ciclo ).length > 0 ) {
@@ -263,7 +265,8 @@ const mapDispatchToProps = {
   setIndexEquipe,
   setIndexMembro,
   setCarregandoRota,
-  getRotasPlanejadasRequest
+  getRotasPlanejadasRequest,
+  changeSidebar
 }
 
 export default connect(

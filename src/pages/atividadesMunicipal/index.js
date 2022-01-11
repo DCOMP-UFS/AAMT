@@ -107,7 +107,7 @@ function PlanejarAtividade({ ciclos, atividades, ...props }) {
                     () => {
                       switch( situacao.id ) {
                         case 1: // Em aberto
-                          window.location = `${ window.location.origin.toString() }/coord/atividades/planejamento/${ atv.id }`;
+                          window.location = `${ window.location.origin.toString() }/atividadesMunicipal/planejamento/${ atv.id }`;
                           break;
                         default:
                           props.showNotifyToast( "Somente é possível planejar atividades em aberto.", "warning" );

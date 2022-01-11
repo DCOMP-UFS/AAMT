@@ -111,7 +111,7 @@ export function* planActivity( action ) {
     const { status } = yield call( service.planActivityRequest, action.payload );
 
     if( status === 200 ) {
-      window.location = window.location.origin.toString() + '/coord/atividades';
+      window.location = window.location.origin.toString() + '/atividadesMunicipal';
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao criar atividade: " + status, "error" ) );
     }

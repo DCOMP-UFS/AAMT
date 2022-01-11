@@ -27,7 +27,7 @@ export const RelatorioAtividadeEquipe = ({ atividades, ciclo, usuario, ...props 
   }, [ ciclo ]);
 
   const clickTeam = (equipe_id) => {
-    window.location = window.location.origin.toString() + '/sup/relatorio/atividadeEquipe/' + equipe_id;
+    window.location = window.location.origin.toString() + '/relatorio/atividadeEquipe/' + equipe_id;
   }
 
   return (

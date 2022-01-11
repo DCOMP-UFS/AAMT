@@ -21,87 +21,87 @@ import { getRegionalHealthByStateRequest } from '../../store/RegionalSaude/regio
 import { ContainerArrow } from '../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../styles/global';
 
-function ModalAdd({ createCityRequest, createdCity, ...props }) {
-  const [ codigo, setCodigo ] = useState(null);
-  const [ nome, setNome ] = useState("");
-  const [ pais, setPais ] = useState({ value: 37, label: 'BRASIL' });
-  const [ optionPais, setOptionPais ] = useState([]);
-  const [ regiao, setRegiao ] = useState({});
-  const [ optionRegiao, setOptionRegiao ] = useState([]);
-  const [ estado, setEstado ] = useState({});
-  const [ optionEstado, setOptionEstado ] = useState([]);
-  const [ regionalSaude, setRegionalSaude ] = useState({});
-  const [ optionRegionalSaude, setOptionRegionalSaude ] = useState([]);
-  const [ flLoading, setFlLoading ] = useState( false );
+function ModalAdd( { createCityRequest, createdCity, ...props } ) {
+  const [ codigo, setCodigo ]                           = useState( null );
+  const [ nome, setNome ]                               = useState( "" );
+  const [ pais, setPais ]                               = useState( { value: 37, label: 'BRASIL' } );
+  const [ optionPais, setOptionPais ]                   = useState( [] );
+  const [ regiao, setRegiao ]                           = useState( {} );
+  const [ optionRegiao, setOptionRegiao ]               = useState( [] );
+  const [ estado, setEstado ]                           = useState( {} );
+  const [ optionEstado, setOptionEstado ]               = useState( [] );
+  const [ regionalSaude, setRegionalSaude ]             = useState( {} );
+  const [ optionRegionalSaude, setOptionRegionalSaude ] = useState( [] );
+  const [ flLoading, setFlLoading ]                     = useState( false );
 
-  useEffect(() => {
+  useEffect( () => {
     props.clearCreateCity();
     props.getNationsRequest();
-  }, []);
+  }, [] );
 
-  useEffect(() => {
-    const options = props.paises.map(( p ) => ({ value: p.id, label: p.nome }));
+  useEffect( () => {
+    const options = props.paises.map( ( p ) => ( { value: p.id, label: p.nome } ) );
 
     setOptionPais( options );
-  }, [ props.paises ]);
+  }, [ props.paises ] );
 
-  useEffect(() => {
-    if( Object.entries(pais).length > 0 ) {
+  useEffect( () => {
+    if( Object.entries( pais ).length > 0 ) {
       props.GetRegionsByNationRequest( pais.value );
-      setRegiao({});
-      setEstado({});
-      setOptionEstado([]);
-      setRegionalSaude({});
-      setOptionRegionalSaude([]);
+      setRegiao( {} );
+      setEstado( {} );
+      setOptionEstado( [] );
+      setRegionalSaude( {} );
+      setOptionRegionalSaude( [] );
     }
-  }, [ pais ]);
+  }, [ pais ] );
 
-  useEffect(() => {
-    const options = props.regioes.map(( r ) => ({ value: r.id, label: r.nome }));
+  useEffect( () => {
+    const options = props.regioes.map( r => ( { value: r.id, label: r.nome } ) );
 
     setOptionRegiao( options );
-  }, [ props.regioes ]);
+  }, [ props.regioes ] );
 
-  useEffect(() => {
-    if( Object.entries(regiao).length > 0 ) {
+  useEffect( () => {
+    if( Object.entries( regiao ).length > 0 ) {
       props.GetStatesByRegionRequest( regiao.value );
-      setEstado({});
-      setRegionalSaude({});
-      setOptionRegionalSaude([]);
+      setEstado( {} );
+      setRegionalSaude( {} );
+      setOptionRegionalSaude( [] );
     }
-  }, [ regiao ]);
+  }, [ regiao ] );
 
-  useEffect(() => {
-    const options = props.estados.map(( e ) => ({ value: e.id, label: e.nome }));
+  useEffect( () => {
+    const options = props.estados.map( e => ( { value: e.id, label: e.nome } ) );
 
     setOptionEstado( options );
-  }, [ props.estados ]);
+  }, [ props.estados ] );
 
-  useEffect(() => {
-    if( Object.entries(estado).length > 0 ) {
+  useEffect( () => {
+    if( Object.entries( estado ).length > 0 ) {
       props.getRegionalHealthByStateRequest( estado.value );
-      setRegionalSaude({});
+      setRegionalSaude( {} );
     }
-  }, [ estado ]);
+  }, [ estado ] );
 
-  useEffect(() => {
-    const options = props.regionaisSaude.map(( r ) => ({ value: r.id, label: r.nome }));
+  useEffect( () => {
+    const options = props.regionaisSaude.map( r => ( { value: r.id, label: r.nome } ) );
 
     setOptionRegionalSaude( options );
-  }, [ props.regionaisSaude ]);
+  }, [ props.regionaisSaude ] );
 
-  useEffect(() => {
+  useEffect( () => {
     if( createdCity ) {
-      $('#modal-novo-municipio').modal('hide');
+      $( '#modal-novo-municipio' ).modal( 'hide' );
       clearInput();
       setFlLoading( false );
       props.clearCreateCity();
     }
-  }, [ createdCity ]);
+  }, [ createdCity ] );
 
   function clearInput() {
-    setCodigo(null);
-    setNome("");
+    setCodigo( null );
+    setNome( "" );
   }
 
   function handleCadastrar( e ) {
@@ -220,16 +220,16 @@ function ModalAdd({ createCityRequest, createdCity, ...props }) {
   );
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = state => ( {
   createdCity: state.municipio.createdCity,
   paises: state.pais.paises,
   regioes: state.regiao.regioes,
   estados: state.estado.estados,
   regionaisSaude: state.regionalSaude.regionaisSaude
- });
+ } );
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({
+  bindActionCreators( {
     createCityRequest,
     clearCreateCity,
     getNationsRequest,
@@ -237,9 +237,9 @@ const mapDispatchToProps = dispatch =>
     GetStatesByRegionRequest,
     getRegionalHealthByStateRequest,
     getCityByRegionalHealthRequest
-  }, dispatch);
+  }, dispatch );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ModalAdd);
+)( ModalAdd );

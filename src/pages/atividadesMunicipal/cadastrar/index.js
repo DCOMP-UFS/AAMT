@@ -72,7 +72,7 @@ const Atividades = ( { metodologias, ciclos, ...props } ) => {
 
   useEffect(() => {
     if( props.created )
-      window.location = window.location.origin.toString() + "/coord/atividades";
+      window.location = window.location.origin.toString() + "/atividadesMunicipal";
   }, [ props.created ]);
 
   function handleSubmit( e ) {

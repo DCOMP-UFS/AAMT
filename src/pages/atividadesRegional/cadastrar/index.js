@@ -92,7 +92,7 @@ const AtividadesRegCadastrar = ( { metodologias, ciclos, ...props } ) => {
 
   useEffect(() => {
     if( props.created )
-      window.location = window.location.origin.toString() + "/cg/atividades";
+      window.location = window.location.origin.toString() + "/atividadesRegional";
   }, [ props.created ]);
 
   function handleSubmit( e ) {

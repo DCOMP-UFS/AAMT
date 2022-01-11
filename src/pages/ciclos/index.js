@@ -70,7 +70,7 @@ function Ciclos({ ciclos, regionalSaude_id, ...props }) {
         <ButtonAdd
           title="Adicionar"
           onClick={
-            () => window.location = `${ window.location.origin.toString() }/cg/ciclos/cadastrar`
+            () => window.location = `${ window.location.origin.toString() }/ciclos/cadastrar`
           }
         />
       );

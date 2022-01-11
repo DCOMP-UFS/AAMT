@@ -110,7 +110,7 @@ const UsuariosRegConsultar = ( { regionalSaude_id, usuarios, ...props } ) => {
     onRowClick: (row, ...props) => {
       const id = row[0].props['data-id'];
 
-      window.location = `${ window.location.origin.toString() }/cg/usuarios/${ id }`;
+      window.location = `${ window.location.origin.toString() }/usuariosRegional/${ id }`;
     }
   };
 

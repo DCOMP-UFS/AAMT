@@ -26,6 +26,7 @@ import Imoveis from './pages/Imoveis';
 
 // Dashboard
 import DashMunicipio from './pages/Dashboard/Municipal';
+import DashRegional from './pages/Dashboard/Regional';
 
 // Relatórios
 import RelatorioDiario from './pages/Relatorio/Diario';
@@ -47,7 +48,6 @@ import Zonas from './pages/Zonas';
 import EditarZona from './pages/Zonas/EditarZona';
 
 // Ciclos
-import DashBoardCiclo from './pages/ciclos/dashboard';
 import CicloConsultar from './pages/ciclos';
 import CicloCadastrar from './pages/ciclos/cadastrar';
 
@@ -134,12 +134,12 @@ const Routes = props => {
         <PrivateRoute path="/atividadesRegional/cadastrar" component={ AtividadesRegCadastrar } tipoPerfil={ perfil } />
 
         {/* Ciclos */}
-        <PrivateRoute exact path="/ciclos" component={ DashBoardCiclo } tipoPerfil={ perfil } />
         <PrivateRoute path="/ciclos/consultar" component={ CicloConsultar } tipoPerfil={ perfil } />
         <PrivateRoute path="/ciclos/cadastrar" component={ CicloCadastrar } tipoPerfil={ perfil } />
 
         {/* Dashboard */}
         <PrivateRoute exact path="/dash/municipio" component={ DashMunicipio } tipoPerfil={ perfil } />
+        <PrivateRoute exact path="/dash/regional" component={ DashRegional } tipoPerfil={ perfil } />
 
         {/* Imóveis */}
         <PrivateRoute path="/imoveis" component={ Imoveis } tipoPerfil={ perfil } />

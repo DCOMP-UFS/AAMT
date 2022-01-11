@@ -24,8 +24,8 @@ const criarCategoriaMenu = ( description, slug ) => {
  * @param {String} url 
  * @returns {Object}
  */
-const criarLink = ( slug, description, active, icon, url ) => {
-  return { slug, description, type: "link", active, icon, url: location + url, submenu: [] }
+const criarLink = ( slug, description, active, icon, url, categoriaSlug ) => {
+  return { slug, description, type: "link", active, icon, url: location + url, submenu: [], categoria: categoriaSlug }
 }
 
 /**
@@ -39,8 +39,8 @@ const criarLink = ( slug, description, active, icon, url ) => {
  * @param {Object} submenu 
  * @returns {Object} 
  */
-function criarNav( slug, description, active, icon, submenu ){
-  return { slug, description, type: "nav", active, icon, submenu }
+function criarNav( slug, description, active, icon, submenu, categoriaSlug ){
+  return { slug, description, type: "nav", active, icon, submenu, categoria: categoriaSlug }
 }
 
 /**
@@ -56,121 +56,122 @@ function criarSubmenu( slug, active, description, url ) {
   return { slug, active, description, url: location + url }
 }
 
-const itens = {
-  categoriaDashboard: criarCategoriaMenu( "Dashboard", "dashboard" ),
-  dashboardRegional: criarLink( "dashboard_ragional", "Dashboard", false, FA.FaChartPie, "/dash/regional" ),
-  dashboardLaboratorio: criarLink( "dashboard_laboratorio", "Dashboard", false, FA.FaChartPie, "/dash/laboratorio" ),
-  dashboardMunicipio: criarLink( "dashboard_municipío", "Dashboard", false, FA.FaChartPie, "/dash/municipio" ),
-  categoriaOperacional: criarCategoriaMenu( "Operacional", "operacional" ),
+export const itens = {
+  dashboardRegional: criarLink( "dashboard_ragional", "Dashboard", false, FA.FaChartPie, "/dash/regional", "dashboard" ),
+  dashboardLaboratorio: criarLink( "dashboard_laboratorio", "Dashboard", false, FA.FaChartPie, "/dash/laboratorio", "dashboard" ),
+  dashboardMunicipio: criarLink( "dashboard_municipío", "Dashboard", false, FA.FaChartPie, "/dash/municipio", "dashboard" ),
   ciclo: criarNav( "ciclo", "Ciclos", false, FA.FaSyncAlt, [
-    criarSubmenu( "ci_dashboard", false, "Dashboard", "/ciclos" ),
     criarSubmenu( "ci_consultar", false, "Consultar", "/ciclos/consultar" ),
     criarSubmenu( "ci_cadastrar", false, "Cadastrar", "/ciclos/cadastrar" ),
-  ] ),
+  ], "operacional" ),
   atividade: criarNav( "atividade", "Atividades", false, IoIosPaper, [
     criarSubmenu( "at_consultar", false, "Consultar", "/atividadesRegional/" ),
     criarSubmenu( "at_cadastrar", false, "Cadastrar", "/atividadesRegional/cadastrar" ),
-  ] ),
-  cadastroBasico: criarCategoriaMenu( "Cadastros Básicos", "cadastroBasico" ),
-  usuario: criarLink( "usuario", "Usuários", false, FA.FaUsers, "/usuariosRegional" ),
-  municipio: criarLink( "municipio", "Municípios", false, FA.FaCity, "/municipios" ),
-  amostra: criarLink( "amostra", "Amostras", false, FA.FaVial, "/amostras" ),
+  ], "operacional" ),
+  usuario: criarLink( "usuario", "Usuários", false, FA.FaUsers, "/usuariosRegional", "cadastroBasico" ),
+  municipio: criarLink( "municipio", "Municípios", false, FA.FaCity, "/municipios", "cadastroBasico" ),
+  amostra: criarLink( "amostra", "Amostras", false, FA.FaVial, "/amostras", "operacional" ),
   atividadeMunicipio: criarNav( "atividade_municipio", "Atividades", false, IoIosPaper, [
     criarSubmenu( "atm_consultar", false, "Consultar", "/atividadesMunicipal/" ),
     criarSubmenu( "atm_cadastrar", false, "Cadastrar", "/atividadesMunicipal/cadastrar" ),
-  ] ),
-  usuarioMunicipio: criarLink( "usuario_municipio", "Usuários", false, FA.FaUsers, "/usuarios" ),
-  localidade: criarLink( "localidade", "Bairro/Localidade", false, FA.FaMapSigns, "/localidades" ),
-  zona: criarLink( "zona", "Zonas", false, ViewCompactIcon, "/zonas" ),
-  quarteirao: criarLink( "quarteirao", "Quarteirões", false, BorderAllIcon, "/quarteiroes" ),
-  imovel: criarLink( "imovel", "Imóveis", false, IoIosHome, "/imoveis" ),
-  laboratorio: criarLink( "laboratorio", "Laboratórios", false, FA.FaVials, "/laboratorios" ),
-  rota: criarLink( "rota", "Rota", false, FA.FaRoute, "/rota" ),
-  vistoria: criarLink( "vistoria", "Vistorias", false, FA.FaClipboardCheck, "/vistoria" ),
-  meu_boletim: criarLink( "meu_boletim", "Relatórios", false, FA.FaChartPie, "/relatorio/meuBoletim/" ),
-  planejar_rota: criarLink( "planejar_rota", "Planejar Rota", false, FA.FaRoute, "/rota/planejar" ),
-  categoriaCadastrosBasicos: criarCategoriaMenu( "Cadastros Básicos", "cadastrosBasicos" ),
-  usuarios: criarLink( "usuarios", "Usuários", false, FA.FaUsers, "/cg/usuarios" ),
-  municipios: criarLink( "municipios","Municípios", false, FA.FaCity, "/municipios"),
+  ], "operacional" ),
+  usuarioMunicipio: criarLink( "usuario_municipio", "Usuários", false, FA.FaUsers, "/usuarios", "cadastroBasico" ),
+  localidade: criarLink( "localidade", "Bairro/Localidade", false, FA.FaMapSigns, "/localidades", "cadastroBasico" ),
+  zona: criarLink( "zona", "Zonas", false, ViewCompactIcon, "/zonas", "cadastroBasico" ),
+  quarteirao: criarLink( "quarteirao", "Quarteirões", false, BorderAllIcon, "/quarteiroes", "cadastroBasico" ),
+  imovel: criarLink( "imovel", "Imóveis", false, IoIosHome, "/imoveis", "cadastroBasico" ),
+  laboratorio: criarLink( "laboratorio", "Laboratórios", false, FA.FaVials, "/laboratorios", "cadastroBasico" ),
+  rota: criarLink( "rota", "Rota", false, FA.FaRoute, "/rota", "operacional" ),
+  vistoria: criarLink( "vistoria", "Vistorias", false, FA.FaClipboardCheck, "/vistoria", "operacional" ),
+  meu_boletim: criarLink( "meu_boletim", "Relatórios", false, FA.FaChartPie, "/relatorio/meuBoletim/", "operacional" ),
+  planejar_rota: criarLink( "planejar_rota", "Planejar Rota", false, FA.FaRoute, "/rota/planejar", "operacional" ),
+  relatorio: criarNav( "relatorio", "Relatórios", false, FA.FaChartPie, [], "operacional" ),
+  boletimDiario: criarSubmenu( "rlt_boletimDiario", false, "Boletim diário", "/relatorio/diario" ),
+  boletimDiarioEquipe: criarSubmenu( "rlt_boletimDiarioEquipe", false, "Boletim diário por Equipe", "/relatorio/diarioEquipe" ),
+  boletimSemanal: criarSubmenu( "rlt_boletimSemanal", false, "Boletim semanal", "/relatorio/semanal" ),
+  porAtividade: criarSubmenu( "rlt_porAtividade", false, "Boletim por atividade", "/relatorio/atividade" ),
+  porAtividadeEquipe: criarSubmenu( "rlt_porAtividadeEquipe", false, "Boletim por atividade por equipe", "/relatorio/atividadeEquipe" ),
 };
+
+/**
+ * Categorias de menu
+ */
+export const categorias = [
+  criarCategoriaMenu( "Dashboard", "dashboard" ),
+  criarCategoriaMenu( "Operacional", "operacional" ),
+  criarCategoriaMenu( "Cadastros Básicos", "cadastroBasico" ),
+]
 
 /**
  * Menus por função
  */
 export const menus = {
   definir_ciclo: [
-    itens.categoriaOperacional,
     itens.ciclo,
   ],
   manter_atividade: [
-    itens.categoriaOperacional,
     itens.atividade,
   ],
   manter_municipio: [
-    itens.cadastroBasico,
     itens.municipio,
   ],
   manter_usuario: [
-    itens.cadastroBasico,
     itens.usuario,
   ],
   realizar_vistoria: [
-    itens.categoriaOperacional,
     itens.rota,
     itens.vistoria,
     itens.meu_boletim,
   ],
   definir_trabalho_diario: [
-    itens.categoriaOperacional,
     itens.planejar_rota,
-    itens.vistoria,
-  ],
-  manter_municipio: [
-    itens.cadastroBasico,
-    itens.municipios
   ],
   visualizar_amostra: [
-    itens.categoriaOperacional,
     itens.amostra
   ],
   manter_atividade_municipio: [
-    itens.categoriaOperacional,
     itens.atividadeMunicipio
   ],
   manter_usuario_municipio: [
-    itens.cadastroBasico,
     itens.usuarioMunicipio,
   ],
   manter_localidade: [
-    itens.cadastroBasico,
     itens.localidade,
   ],
   manter_zona: [
-    itens.cadastroBasico,
     itens.zona,
   ],
   manter_quarteirao: [
-    itens.cadastroBasico,
     itens.quarteirao,
   ],
   manter_imovel: [
-    itens.cadastroBasico,
     itens.imovel,
   ],
   manter_laboratorio: [
-    itens.cadastroBasico,
     itens.laboratorio,
   ],
   dashboard_regional: [
-    itens.categoriaDashboard,
     itens.dashboardRegional
   ],
   dashboard_laboratorio: [
-    itens.categoriaDashboard,
     itens.dashboardLaboratorio
   ],
   dashboard_municipal: [
-    itens.categoriaDashboard,
     itens.dashboardMunicipio
+  ],
+  relatorio_boletim_diario: [
+    itens.boletimDiario
+  ],
+  relatorio_boletim_diario_equipe: [
+    itens.boletimDiarioEquipe
+  ],
+  relatorio_boletim_semanal: [
+    itens.boletimSemanal
+  ],
+  relatorio_por_atividade: [
+    itens.porAtividade
+  ],
+  relatorio_por_atividade_da_equipe: [
+    itens.porAtividadeEquipe
   ],
 };

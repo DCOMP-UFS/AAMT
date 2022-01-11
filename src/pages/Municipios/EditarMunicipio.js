@@ -33,101 +33,101 @@ import {
   ContainerUl
 } from '../../styles/util';
 
-const EditarMunicipio = ({ municipio, localidades, ...props }) => {
-  const [ id ] = useState(props.match.params.id);
-  const [ codigo, setCodigo ] = useState(null);
-  const [ nome, setNome ] = useState("");
-  const [ ativo, setAtivo ] = useState({});
-  const [ pais, setPais ] = useState({});
-  const [ optionPais, setOptionPais ] = useState([]);
-  const [ regiao, setRegiao ] = useState({});
-  const [ optionRegiao, setOptionRegiao ] = useState([]);
-  const [ estado, setEstado ] = useState({});
-  const [ optionEstado, setOptionEstado ] = useState([]);
-  const [ regionalSaude, setRegionalSaude ] = useState({});
-  const [ optionRegionalSaude, setOptionRegionalSaude ] = useState([]);
-  const [ flLoading, setFlLoading ] = useState( false );
+const EditarMunicipio = ( { municipio, localidades, ...props } ) => {
+  const [ id ]                                          = useState( props.match.params.id );
+  const [ codigo, setCodigo ]                           = useState( null );
+  const [ nome, setNome ]                               = useState( "" );
+  const [ ativo, setAtivo ]                             = useState( {} );
+  const [ pais, setPais ]                               = useState( {} );
+  const [ optionPais, setOptionPais ]                   = useState( [] );
+  const [ regiao, setRegiao ]                           = useState( {} );
+  const [ optionRegiao, setOptionRegiao ]               = useState( [] );
+  const [ estado, setEstado ]                           = useState( {} );
+  const [ optionEstado, setOptionEstado ]               = useState( [] );
+  const [ regionalSaude, setRegionalSaude ]             = useState( {} );
+  const [ optionRegionalSaude, setOptionRegionalSaude ] = useState( [] );
+  const [ flLoading, setFlLoading ]                     = useState( false );
 
   const optionAtivo = [ { value: 1, label: 'Sim' }, { value: 0, label: 'Não' } ];
 
-  useEffect(() => {
+  useEffect( () => {
     props.changeSidebar( "municipio" );
     props.getCityByIdRequest( id );
     props.getLocationByCityRequest( id );
-  }, []);
+  }, [] );
 
-  useEffect(() => {
-    const options = props.paises.map(( p ) => {
+  useEffect( () => {
+    const options = props.paises.map( p => {
       if( p.id === municipio.pais_id )
         setPais( { value: p.id, label: p.nome } );
 
-      return ({ value: p.id, label: p.nome })
-    });
+      return ( { value: p.id, label: p.nome } );
+    } );
 
     setOptionPais( options );
-  }, [ props.paises ]);
+  }, [ props.paises ] );
 
-  useEffect(() => {
-    if( Object.entries(pais).length > 0 ) {
+  useEffect( () => {
+    if( Object.entries( pais ).length > 0 ) {
       props.GetRegionsByNationRequest( pais.value );
-      setRegiao({});
-      setEstado({});
-      setOptionEstado([]);
-      setRegionalSaude({});
-      setOptionRegionalSaude([]);
+      setRegiao( {} );
+      setEstado( {} );
+      setOptionEstado( [] );
+      setRegionalSaude( {} );
+      setOptionRegionalSaude( [] );
     }
-  }, [ pais ]);
+  }, [ pais ] );
 
-  useEffect(() => {
-    const options = props.regioes.map(( r ) => {
+  useEffect( () => {
+    const options = props.regioes.map( r => {
       if( r.id === municipio.regiao_id )
         setRegiao( { value: r.id, label: r.nome } );
 
-      return ({ value: r.id, label: r.nome });
-    });
+      return ( { value: r.id, label: r.nome } );
+    } );
 
     setOptionRegiao( options );
-  }, [ props.regioes ]);
+  }, [ props.regioes ] );
 
-  useEffect(() => {
-    if( Object.entries(regiao).length > 0 ) {
+  useEffect( () => {
+    if( Object.entries( regiao ).length > 0 ) {
       props.GetStatesByRegionRequest( regiao.value );
-      setEstado({});
-      setRegionalSaude({});
-      setOptionRegionalSaude([]);
+      setEstado( {} );
+      setRegionalSaude( {} );
+      setOptionRegionalSaude( [] );
     }
-  }, [ regiao ]);
+  }, [ regiao ] );
 
-  useEffect(() => {
-    const options = props.estados.map(( e ) => {
+  useEffect( () => {
+    const options = props.estados.map( e => {
       if( e.id === municipio.estado_id )
         setEstado( { value: e.id, label: e.nome } );
 
-      return ({ value: e.id, label: e.nome });
-    });
+      return ( { value: e.id, label: e.nome } );
+    } );
 
     setOptionEstado( options );
   }, [ props.estados ]);
 
-  useEffect(() => {
-    if( Object.entries(estado).length > 0 ) {
+  useEffect( () => {
+    if( Object.entries( estado ).length > 0 ) {
       props.getRegionalHealthByStateRequest( estado.value );
-      setRegionalSaude({});
+      setRegionalSaude( {} );
     }
-  }, [ estado ]);
+  }, [ estado ] );
 
-  useEffect(() => {
-    const options = props.regionaisSaude.map(( r ) => {
+  useEffect( () => {
+    const options = props.regionaisSaude.map( r => {
       if( r.id === municipio.regional_saude_id )
         setRegionalSaude( { value: r.id, label: r.nome } );
 
-      return ({ value: r.id, label: r.nome });
-    });
+      return ( { value: r.id, label: r.nome } );
+    } );
 
     setOptionRegionalSaude( options );
-  }, [ props.regionaisSaude ]);
+  }, [ props.regionaisSaude ] );
 
-  useEffect(() => {
+  useEffect( () => {
     if( Object.entries( municipio ).length > 0 ) {
       props.getNationsRequest();
 
@@ -135,14 +135,14 @@ const EditarMunicipio = ({ municipio, localidades, ...props }) => {
       setNome( municipio.nome );
       setAtivo( { value: municipio.ativo, label: municipio.ativo ? 'Sim' : 'Não' } );
     }
-  }, [ municipio ]);
+  }, [ municipio ] );
 
-  useEffect(() => {
+  useEffect( () => {
     if( props.updatedCity ) {
       setFlLoading( false );
       props.clearUpdateCity();
     }
-  }, [ props.updatedCity ]);
+  }, [ props.updatedCity ] );
 
   function handleSubmit( e ) {
     e.preventDefault();
@@ -153,7 +153,7 @@ const EditarMunicipio = ({ municipio, localidades, ...props }) => {
       nome,
       regionalSaude_id: regionalSaude.value,
       ativo: ativo.value
-    });
+    } );
   }
 
   return (
@@ -290,7 +290,7 @@ function ListLocation( props ) {
     <LiIcon
       key={ index }
     >
-      <ContainerUl onClick={ () => props.openModalUpdate( index ) }>
+      <ContainerUl onClick={ () => console.log( "Em desenvolvimento" ) }>
         <ContainerIcon className="ContainerIcon" >
           <FaMapSigns />
         </ContainerIcon>

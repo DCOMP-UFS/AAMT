@@ -203,7 +203,7 @@ function CardAtividades({ municipio }) {
         key={ index }
         onClick={
           () => {
-            window.location = `${ window.location.origin.toString() }/cg/atividades/${ atv.id }`
+            window.location = `${ window.location.origin.toString() }/atividadesRegional/${ atv.id }`
           }
         }
       >

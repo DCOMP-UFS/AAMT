@@ -2,24 +2,24 @@
 import React, { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Doughnut from '../../components/Charts/Doughnut';
+import Doughnut from '../../../components/Charts/Doughnut';
 import { Card, Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
 import { FaSyncAlt } from 'react-icons/fa';
 
 
 // ACTIONS
-import { changeSidebar } from '../../store/Sidebar/sidebarActions';
-import { getCyclesForYearRequest } from '../../store/Ciclo/cicloActions';
+import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
+import { getCyclesForYearRequest } from '../../../store/Ciclo/cicloActions';
 
 // STYLES
 import { Container } from './styles';
-import { Color, FormGroup, selectDefault } from '../../styles/global';
-import { PagePopUp, PageIcon, PageHeader } from '../../styles/util';
+import { Color, FormGroup, selectDefault } from '../../../styles/global';
+import { PagePopUp, PageIcon, PageHeader } from '../../../styles/util';
 
 function DashBoardCiclo({ ciclos, regional_id, ...props }) {
   useEffect(() => {
-    props.changeSidebar( "ci_consultar", "ci_dashboard" );
+    props.changeSidebar( "dashboard_ragional" );
     props.getCyclesForYearRequest( regional_id, "2020" );
   }, []);
 

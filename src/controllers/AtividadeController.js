@@ -361,7 +361,7 @@ store = async ( req, res ) => {
     objetivo_id
   } = req.body;
 
-  const allow = await allowFunction( req.userId, 'manter_atividade' );
+  const allow = await allowFunction( req.userId, 'manter_atividade', 'manter_atividade_municipio' );
   if( !allow )
     return res.status(403).json({ error: 'Acesso negado' });
 
@@ -389,18 +389,11 @@ store = async ( req, res ) => {
   return res.status(201).json( atividade );
 }
 
-update = async ( req, res ) => {
-  
-}
-
-destroy = async ( req, res ) => {
-}
-
 plain = async ( req, res ) => {
   const { id } = req.params;
   const { estratos, equipes, abrangencia_id } = req.body;
 
-  const allow = await allowFunction( req.userId, 'manter_atividade' );
+  const allow = await allowFunction( req.userId, "manter_atividade_municipio" );
   if( !allow )
     return res.status(403).json({ error: 'Acesso negado' });
 
@@ -547,23 +540,23 @@ getResponsibilityActivities = async ( req, res ) => {
 
   const allow = await allowFunction( req.userId, 'definir_trabalho_diario' );
   if( !allow )
-    return res.status(403).json({ error: 'Acesso negado' });
+    return res.status( 403 ).json( { error: 'Acesso negado' } );
 
   if( parseInt( user_id ) !== req.userId )
-    return res.status(403).json({ error: 'Acesso negado' });
+    return res.status( 403 ).json( { error: 'Acesso negado' } );
 
   const supervisor = await Usuario.findByPk( user_id, {
     include: {
       association: "atuacoes"
     }
-  });
+  } );
   if( !supervisor )
-    return res.status(400).json({ error: "Usuário não existe" });
+    return res.status( 400 ).json( { error: "Usuário não existe" } );
 
   if( supervisor.atuacoes[ 0 ].escopo !== 2 )
-    return res.json([]);
+    return res.json( [] );
 
-  const activities = await Atividade.findAll({
+  const activities = await Atividade.findAll( {
     where: {
       ciclo_id: cycle_id,
       municipio_id: supervisor.atuacoes[ 0 ].local_id
@@ -604,29 +597,29 @@ getResponsibilityActivities = async ( req, res ) => {
         ]
       }
     ]
-  });
+  } );
 
   const responsabilityActivities = [];
 
   activities.forEach(( activity ) => {
     let act = activity;
 
-    const teams = activity.equipes.filter( (team, index) => {
+    let teams = activity.equipes.filter( team => {
       let fl_team = false;
       
       team.membros.forEach( member => {
         if( member.usuario_id === supervisor.id && member.tipoPerfil === 3 )
           fl_team = true;
-      });
+      } );
 
       return fl_team;
-    });
+    } );
 
     act.dataValues.equipes = teams;
 
     if( teams.length > 0 )
       responsabilityActivities.push( act );
-  });
+  } );
 
   return res.json( responsabilityActivities );
 }
@@ -640,10 +633,8 @@ router.get('/:regionalSaude_id/regionaisSaude', getActivitiesOfCity);
 router.get('/abertas/:usuario_id/usuarios', getUserActivities);
 router.get('/todas/:usuario_id/usuarios', getAllUserActivities);
 router.get('/locais/:abrangencia_id/abrangencia/:municipio_id/municipios', getLocations);
-router.put('/:id', update);
 router.post('/', store);
 router.post('/planejar/:id', plain);
-router.delete('/:id', destroy);
 router.get('/supervisor/:user_id/responsavel/:cycle_id/ciclos', getResponsibilityActivities);
 
 module.exports = app => app.use('/atividades', router);

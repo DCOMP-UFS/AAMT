@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  up: (queryInterface, Sequelize) => {
+  up: ( queryInterface, Sequelize ) => {
     const date = new Date();
 
     return queryInterface.bulkInsert( 'mosquitos', [
@@ -15,10 +15,10 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date()
       },
-    ]);
+    ] );
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete( 'mosquitos', null, {});
+    return queryInterface.bulkDelete( 'mosquitos', null, {} );
   }
 };

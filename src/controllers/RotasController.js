@@ -137,6 +137,15 @@ getRoute = async ( req, res ) => {
   } );
 }
 
+/**
+ * Esta função registra na base um trabalho diário para um determinado
+ * agente
+ * 
+ * @body {Integer} supervisor_id responsável da equipe
+ * @body {Integer} usuario_id usuário a qual a rota será atribuída
+ * @body {Integer} equipe_id equipe a qual a rota se refere
+ * @body {Array} lados lados dos quarteirões planejado para o usuário
+ */
 planejarRota = async ( req, res ) => {
   const { supervisor_id, usuario_id, equipe_id, lados } = req.body;
   const userId = req.userId;
@@ -146,26 +155,11 @@ planejarRota = async ( req, res ) => {
 
   const allow = await allowFunction( usuario_req.id, 'definir_trabalho_diario' );
   if( !allow )
-    return res.status(403).json({ error: 'Acesso negado' });
-
-  const supervisor = await Usuario.findByPk( supervisor_id, {
-    include: {
-      association: "atuacoes"
-    }
-  });
-
-  let fl_supervisor = false;
-  supervisor.atuacoes.forEach( at => {
-    if( at.tipoPerfil === 3 )
-      fl_supervisor = true;
-  });
-
-  if( !fl_supervisor )
-    return res.status(400).json({ error: "Usuário informado não é um supervisor!" });
+    return res.status( 403 ).json( { error: 'Acesso negado' } );
 
   const usuario = await Usuario.findByPk( usuario_id );
   if( !usuario )
-    return res.status(400).json({ error: "Usuário não existe" });
+    return res.status( 400 ).json( { error: "Usuário não existe" } );
 
   const equipe = await Equipe.findByPk( equipe_id, {
     include: {
@@ -174,10 +168,10 @@ planejarRota = async ( req, res ) => {
         usuario_id
       }
     }
-  });
+  } );
+
   if( !equipe )
-    return res.status(400).json({ error: "Equipe não existe ou usuário não pertence a esta equipe" });
-  // Fim validação
+    return res.status( 400 ).json( { error: "Equipe não existe ou usuário não pertence a esta equipe" } );
 
   // en-GB: d/m/Y
   const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split( '/' );
@@ -522,9 +516,9 @@ endRoute = async ( req, res ) => {
     let amostras      = [];
     for( let recipiente of recipientes ) {
       await Deposito.create( {
-        fl_comFoco:     recipiente.fl_comFoco,
-        fl_tratado:     recipiente.fl_tratado,
-        fl_eliminado:   recipiente.fl_eliminado,
+        fl_comFoco:     recipiente.fl_comFoco ? true : false,
+        fl_tratado:     recipiente.fl_tratado ? true : false,
+        fl_eliminado:   recipiente.fl_eliminado ? true : false,
         tipoRecipiente: recipiente.tipoRecipiente,
         sequencia:      recipiente.sequencia,
         vistoria_id:    vistoria.id

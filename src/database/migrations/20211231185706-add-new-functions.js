@@ -25,6 +25,11 @@ module.exports = {
         updated_at: new Date()
       },
       {
+        nome: 'relatorio_meu_boletim',
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
         nome: 'relatorio_boletim_diario',
         created_at: new Date(),
         updated_at: new Date()

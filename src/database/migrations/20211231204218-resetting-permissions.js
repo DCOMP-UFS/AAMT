@@ -12,7 +12,7 @@ module.exports = {
     const [ coodGeralFuncoes ]    = await queryInterface.sequelize.query( "SELECT * FROM funcoes WHERE nome IN ( 'definir_ciclo', 'manter_municipio', 'manter_usuario', 'manter_atividade' );" );
     const [ coodFuncoes ]         = await queryInterface.sequelize.query( "SELECT * FROM funcoes WHERE nome IN ( 'relatorio_por_atividade_da_equipe', 'relatorio_por_atividade', 'relatorio_boletim_semanal', 'relatorio_boletim_diario_equipe', 'relatorio_boletim_diario', 'manter_atividade_municipio', 'manter_usuario_municipio', 'manter_localidade', 'manter_zona', 'manter_quarteirao', 'manter_imovel', 'manter_laboratorio' );" );
     const [ supervisorFuncoes ]   = await queryInterface.sequelize.query( "SELECT * FROM funcoes WHERE nome IN ( 'relatorio_por_atividade_da_equipe', 'relatorio_por_atividade', 'relatorio_boletim_semanal', 'relatorio_boletim_diario_equipe', 'relatorio_boletim_diario', 'manter_localidade', 'manter_imovel', 'manter_quarteirao', 'definir_trabalho_diario', 'visualizar_amostra', 'realizar_exame_amostra', 'encaminhar_amostra' );" );
-    const [ agenteFuncoes ]       = await queryInterface.sequelize.query( "SELECT * FROM funcoes WHERE nome IN ( 'relatorio_boletim_diario', 'realizar_vistoria' );" );
+    const [ agenteFuncoes ]       = await queryInterface.sequelize.query( "SELECT * FROM funcoes WHERE nome IN ( 'relatorio_meu_boletim', 'realizar_vistoria' );" );
     const [ laboratorioFuncoes ]  = await queryInterface.sequelize.query( "SELECT * FROM funcoes WHERE nome IN ( 'realizar_exame_amostra', 'visualizar_amostra' );" );
 
     let permissoesCoordGeral  = coodGeralFuncoes.map( f => createPermission( f.id, 1 ) );

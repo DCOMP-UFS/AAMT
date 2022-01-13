@@ -39,7 +39,7 @@ module.exports = async ( usuario_id ) => {
   if( fl_agente ) {
     permissoesVariaveis = [
       ...permissoesVariaveis,
-      'relatorio_boletim_diario', 
+      'relatorio_meu_boletim', 
       'realizar_vistoria'
     ];
   }

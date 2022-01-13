@@ -83,14 +83,14 @@ export const itens = {
   laboratorio: criarLink( "laboratorio", "Laboratórios", false, FA.FaVials, "/laboratorios", "cadastroBasico" ),
   rota: criarLink( "rota", "Rota", false, FA.FaRoute, "/rota", "operacional" ),
   vistoria: criarLink( "vistoria", "Vistorias", false, FA.FaClipboardCheck, "/vistoria", "operacional" ),
-  meu_boletim: criarLink( "meu_boletim", "Relatórios", false, FA.FaChartPie, "/relatorio/meuBoletim/", "operacional" ),
   planejar_rota: criarLink( "planejar_rota", "Planejar Rota", false, FA.FaRoute, "/rota/planejar", "operacional" ),
   relatorio: criarNav( "relatorio", "Relatórios", false, FA.FaChartPie, [], "operacional" ),
+  meu_boletim: criarSubmenu( "rlt_meu_boletim", false, "Meu Boletim", "/relatorio/meuBoletim/" ),
   boletimDiario: criarSubmenu( "rlt_boletimDiario", false, "Boletim diário", "/relatorio/diario" ),
-  boletimDiarioEquipe: criarSubmenu( "rlt_boletimDiarioEquipe", false, "Boletim diário por Equipe", "/relatorio/diarioEquipe" ),
+  boletimDiarioEquipe: criarSubmenu( "rlt_boletimDiarioEquipe", false, "Boletim diário por equipe", "/relatorio/diarioEquipe" ),
   boletimSemanal: criarSubmenu( "rlt_boletimSemanal", false, "Boletim semanal", "/relatorio/semanal" ),
   porAtividade: criarSubmenu( "rlt_porAtividade", false, "Boletim por atividade", "/relatorio/atividade" ),
-  porAtividadeEquipe: criarSubmenu( "rlt_porAtividadeEquipe", false, "Boletim por atividade por equipe", "/relatorio/atividadeEquipe" ),
+  porAtividadeEquipe: criarSubmenu( "rlt_porAtividadeEquipe", false, "Boletim da equipe por atividade", "/relatorio/atividadeEquipe" ),
 };
 
 /**
@@ -121,7 +121,6 @@ export const menus = {
   realizar_vistoria: [
     itens.rota,
     itens.vistoria,
-    itens.meu_boletim,
   ],
   definir_trabalho_diario: [
     itens.planejar_rota,
@@ -158,6 +157,9 @@ export const menus = {
   ],
   dashboard_municipal: [
     itens.dashboardMunicipio
+  ],
+  relatorio_meu_boletim: [
+    itens.meu_boletim
   ],
   relatorio_boletim_diario: [
     itens.boletimDiario

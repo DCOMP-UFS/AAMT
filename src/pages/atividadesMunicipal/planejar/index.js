@@ -126,7 +126,7 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
                   title="Confirmar planejamento"
                   confirm={() => props.planActivityRequest( id, estratos, equipes, atividade.abrangencia ) }
                 >
-                  <p>Deseja salvar o planjemaneot? A atividade uma vez planejada não poderá ser editada</p>
+                  <p>Deseja salvar o planejamento? A atividade uma vez planejada não poderá ser editada</p>
                 </ModalConfirm>
 
                 <Row>

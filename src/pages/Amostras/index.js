@@ -90,7 +90,6 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
 
   useEffect(() => {
     if( laboratorios.length > 0 ) {
-      console.log(laboratorios)
       setLaboratoriosOptions( laboratorios.map( lab => ( {
         value: lab.cnpj, label: lab.nome
       } ) ) );
@@ -148,8 +147,6 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
 
   const enviarAmostras = e => {
     e.preventDefault();
-
-    console.log(laboratorioSelect);
 
     if( laboratorioSelect.value ) {
       const amostras_ids = rowsSelected.map( r => amostras[ r ].id );

@@ -107,7 +107,7 @@ function BoletimDiario({ usuario, vistorias, trabalhoDiario, ...props }) {
   const [ data, setData ] = useState( '' );
 
   useEffect(() => {
-    props.changeSidebar( 3, 1 );
+    props.changeSidebar( "relatorio" );
     props.getDailyWorkByIdRequest( props.match.params.trabalho_diario_id );
     props.getInspectsByDailyWorkRequest( props.match.params.trabalho_diario_id );
   }, []);
@@ -261,7 +261,7 @@ function BoletimDiario({ usuario, vistorias, trabalhoDiario, ...props }) {
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaChartPie /></PageIcon>
-          Resumo diário - { data }
+          Boletim diário - { data }
         </h3>
       </PageHeader>
 

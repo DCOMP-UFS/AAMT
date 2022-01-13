@@ -20,7 +20,7 @@ import { PageIcon, PageHeader } from '../../../styles/util';
 
 export const RelatorioDiario = ({ atividades, ciclo, usuario, ...props }) => {
   useEffect(() => {
-    props.changeSidebar( 6, 1 );
+    props.changeSidebar( "relatorio", "rlt_boletimDiario" );
     props.getCicloAbertoRequest( usuario.municipio.regional.id );
   }, []);
 

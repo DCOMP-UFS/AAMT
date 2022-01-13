@@ -21,7 +21,7 @@ export const RelatorioDiarioEquipe = ({ atividades, ciclo, usuario, ...props }) 
   const [ equipe_id, setEquipe_id ] = useState( undefined );
 
   useEffect(() => {
-    props.changeSidebar( 6, 2 );
+    props.changeSidebar( "relatorio", "rlt_boletimDiarioEquipe" );
     props.getCicloAbertoRequest( usuario.municipio.regional.id );
   }, []);
 
@@ -41,7 +41,7 @@ export const RelatorioDiarioEquipe = ({ atividades, ciclo, usuario, ...props }) 
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaChartLine /></PageIcon>
-          Boletim Diário por Equipe
+          Boletim diário por equipe
         </h3>
       </PageHeader>
 

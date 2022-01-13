@@ -130,7 +130,7 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
   useEffect(() => {
     const { semana, atividade_id, ano } = props.match.params;
 
-    props.changeSidebar( 6, 3 );
+    props.changeSidebar( "relatorio", "rlt_boletimSemanal" );
     setSemana( semana );
     setAtividade_id( atividade_id );
     setAno( ano );
@@ -217,7 +217,7 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaChartPie /></PageIcon>
-          Boletim Semanal - Semana Epidemiológica { semana } de { ano }
+          Boletim semanal - Semana epidemiológica { semana } de { ano }
         </h3>
       </PageHeader>
       <section className="card-list">

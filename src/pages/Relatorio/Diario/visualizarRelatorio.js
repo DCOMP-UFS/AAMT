@@ -107,7 +107,7 @@ function VisualizarRelatorioDiario({ usuario, vistorias, trabalhoDiario, ...prop
   const [ data, setData ] = useState( '' );
 
   useEffect(() => {
-    props.changeSidebar( 6, 1 );
+    props.changeSidebar( "relatorio" );
     props.getDailyWorkByIdRequest( props.match.params.trabalho_id );
     props.getInspectsByDailyWorkRequest( props.match.params.trabalho_id );
   }, []);
@@ -261,7 +261,7 @@ function VisualizarRelatorioDiario({ usuario, vistorias, trabalhoDiario, ...prop
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaChartPie /></PageIcon>
-          Boletim Diário de { trabalhoDiario ? trabalhoDiario.usuario.nome : '' } - { data }
+          Boletim diário de { trabalhoDiario ? trabalhoDiario.usuario.nome : '' } - { data }
         </h3>
       </PageHeader>
 

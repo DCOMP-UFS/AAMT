@@ -22,7 +22,7 @@ export const RelatorioSemanal = ({ atividades, ciclo, usuario, ...props }) => {
   const idElementMOdal                    = '#' + idMOdal;
 
   useEffect(() => {
-    props.changeSidebar( 6, 3 );
+    props.changeSidebar( "relatorio", "rlt_boletimSemanal" );
     props.getCicloAbertoRequest( usuario.municipio.regional.id );
   }, []);
 
@@ -44,7 +44,7 @@ export const RelatorioSemanal = ({ atividades, ciclo, usuario, ...props }) => {
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaChartLine /></PageIcon>
-          Relatório Semanal
+          Boletim semanal
         </h3>
       </PageHeader>
 

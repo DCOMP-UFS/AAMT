@@ -106,7 +106,7 @@ function Agent_DailyReport({ user, dailyJobs, ...props }) {
   const [ rows, setRows ] = useState([]);
 
   useEffect(() => {
-    props.changeSidebar(3, 2);
+    props.changeSidebar( "relatorio", "rlt_meu_boletim" );
     props.getByUserRequest( user.id );
   }, []);
 
@@ -150,7 +150,7 @@ function Agent_DailyReport({ user, dailyJobs, ...props }) {
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaChartPie /></PageIcon>
-          Boletins Diário
+          Meu Boletim
         </h3>
       </PageHeader>
 

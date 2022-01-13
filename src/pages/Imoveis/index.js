@@ -153,9 +153,6 @@ export const Imoveis = ({ imoveis, usuario, ...props }) => {
   }
 
   const desativarImoveis = () => {
-    console.log('====================================');
-    console.log( rowsSelected );
-    console.log('====================================');
   }
 
   return (

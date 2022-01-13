@@ -181,7 +181,7 @@ const EditarMunicipio = ( { municipio, localidades, ...props } ) => {
                     <Row>
                       <Col sm="6">
                         <FormGroup>
-                          <label htmlFor="pais">Páis <code>*</code></label>
+                          <label htmlFor="pais">País <code>*</code></label>
                           <Select
                             id="pais"
                             value={ pais }

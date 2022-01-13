@@ -16,7 +16,7 @@ import { PageIcon, PageHeader } from '../../../styles/util';
 
 export const RelatorioAtividadeEquipe = ({ atividades, ciclo, usuario, ...props }) => {
   useEffect(() => {
-    props.changeSidebar( 6, 5 );
+    props.changeSidebar( "relatorio", "rlt_porAtividadeEquipe" );
     props.getCicloAbertoRequest( usuario.municipio.regional.id );
   }, []);
 
@@ -35,7 +35,7 @@ export const RelatorioAtividadeEquipe = ({ atividades, ciclo, usuario, ...props 
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaChartLine /></PageIcon>
-          Boletim da Equipe por Atividade
+          Boletim da equipe por atividade
         </h3>
       </PageHeader>
 

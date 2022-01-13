@@ -12,9 +12,7 @@ import { setMenuSidebar } from '../../store/Sidebar/sidebarActions';
 
 import './style.css';
 
-const Sidebar = ( { menu, roles, usuario, ...props } ) => {
-  const [ navToggle ] = useState( props.navToggle );
-
+const Sidebar = ( { menu, roles, usuario, navToggle, ...props } ) => {
   useEffect( () => {
     props.setMenuSidebar( getMenusPermitidos( menus, roles ) );
   }, [] );

@@ -149,7 +149,7 @@ export const VisualizarRelatorio = ({ membros, boletimDiarioEquipe, ...props }) 
     setEquipe_id( eq );
     setData( props.match.params.data );
 
-    props.changeSidebar( 6, 2 );
+    props.changeSidebar( "relatorio", "rlt_boletimDiarioEquipe" );
   }, []);
 
   useEffect(() => {
@@ -446,7 +446,7 @@ export const VisualizarRelatorio = ({ membros, boletimDiarioEquipe, ...props }) 
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaChartPie /></PageIcon>
-          Boletim Diário por Equipe Furia - 17/05/2021
+          Boletim diário por equipe
         </h3>
       </PageHeader>
       <section className="card-list">

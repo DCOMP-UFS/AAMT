@@ -3,6 +3,18 @@ import { Color } from '../../../../../styles/global';
 
 export const Container = styled.div`
   position: relative;
+
+  .info-empty {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    text-align: center;
+    padding-top: 50px;
+
+    p {
+      font-size: 1.2rem;
+    }
+  }
 `;
 
 export const StreetCard = styled.div`

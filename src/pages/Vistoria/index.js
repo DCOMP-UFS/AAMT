@@ -162,12 +162,15 @@ const Vistoria = ( { vistorias, usuario, trabalhoDiario, rota, showNotStarted, .
   };
 
   /**
-   * Este effect é acionado assim que o componente e montado e verifica se
-   * existe rota de trabalho já foi finalizada na base
+   * Este effect é acionado assim que o componente e montado e verifica se existe
+   * algum trabalho diário iniciado e, se sim, se a rota de trabalho já foi 
+   * finalizada na base
    */
   useEffect( () => {
     const initVistoria = () => {
-      props.isFinalizadoRequest( trabalhoDiario.id );
+      if( trabalhoDiario.id ) {
+        props.isFinalizadoRequest( trabalhoDiario.id );
+      }
     }
 
     initVistoria();
@@ -178,7 +181,7 @@ const Vistoria = ( { vistorias, usuario, trabalhoDiario, rota, showNotStarted, .
    * significa que o trabalho diário salvo em cache já está finalizado na base
    * de dados e não deve ser permitido cadastrar novas vistorias
    */
-  useEffect(() => {
+  useEffect( () => {
     const checkFinalizado = () => {
       if( props.isFinalizado ) {
         window.location = window.location.origin + '/rota';

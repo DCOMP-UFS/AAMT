@@ -58,7 +58,8 @@ export default function Atividade(state = INITIAL_STATE, action) {
 
       return {
         ...state,
-        rota_equipe
+        rota_equipe,
+        fl_loading: false
       };
 
     case ActionTypes.SET_INDEX:

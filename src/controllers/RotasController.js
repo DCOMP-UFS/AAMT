@@ -98,8 +98,7 @@ getRoute = async ( req, res ) => {
   const sequencia_usuario = await Atuacao.findOne( {
     where: {
       usuario_id,
-      tipoPerfil: 4,
-      local_id:   td.equipe.atividade.municipio_id
+      local_id: td.equipe.atividade.municipio_id
     }
   } ).then( at => at.sequencia_usuario );
 
@@ -681,70 +680,73 @@ const getOpenRouteByTeam = async ( req, res ) => {
   });
 
   // Consultando quarteirões e verificando a situação dos lados.
-  let quarteirao_situacao = await Quarteirao.sequelize.query(
-    sql, 
-    {
-      bind: q,
-      logging: console.log,
-    }
-  ).then( data => {
-    const [ rows ] = data;
-
-    if( rows.length > 0 ) {
-      let rota          = [],
-          quarteirao_id = null,
-          quarteirao    = {
-            id: null,
-            numero: null,
-            ativo: null,
-            localidade_id: null,
-            zona_id: null,
-            lados: []
-          };
-      
-      rows.forEach(row => {
-        if( !quarteirao_id || row.id !== quarteirao_id ) {
-          quarteirao_id = row.id;
-          quarteirao    = {
-            id: row.id,
-            numero: row.numero,
-            ativo: row.ativo,
-            localidade_id: row.localidade_id,
-            zona_id: row.zona_id,
-            lados: []
-          };
-
-          rota.push( quarteirao );
-        }
+  let quarteirao_situacao = [];
+  if( q.length > 0 ) {
+    quarteirao_situacao = await Quarteirao.sequelize.query(
+      sql, 
+      {
+        bind: q,
+        logging: console.log,
+      }
+    ).then( data => {
+      const [ rows ] = data;
   
-        quarteirao.lados.push({
-          id: row.lado_id,
-          numero: row.lado_numero,
-          rua_id: row.lado_rua_id,
-          quarteirao_id: row.lado_quarteirao_id,
-          rua: {
-            id: row.rua_id,
-            nome: row.rua_nome,
-            cep: row.rua_cep,
-            localidade_id: row.rua_localidade_id
-          },
-          imoveis: row.imoveis,
-          vistorias: row.vistorias,
-          situacao: row.imoveis === row.vistorias ? 3 : ( row.vistorias > 0 ? 2 : 1 )
-        });
-      });
+      if( rows.length > 0 ) {
+        let rota          = [];
+        let quarteirao_id = null;
+        let quarteirao    = {
+          id: null,
+          numero: null,
+          ativo: null,
+          localidade_id: null,
+          zona_id: null,
+          lados: []
+        };
+        
+        rows.forEach( row => {
+          if( !quarteirao_id || row.id !== quarteirao_id ) {
+            quarteirao_id = row.id;
+            quarteirao    = {
+              id: row.id,
+              numero: row.numero,
+              ativo: row.ativo,
+              localidade_id: row.localidade_id,
+              zona_id: row.zona_id,
+              lados: []
+            };
   
-      return rota;
-    } else {
-      return [];
-    }
-  });
+            rota.push( quarteirao );
+          }
+    
+          quarteirao.lados.push( {
+            id: row.lado_id,
+            numero: row.lado_numero,
+            rua_id: row.lado_rua_id,
+            quarteirao_id: row.lado_quarteirao_id,
+            rua: {
+              id: row.rua_id,
+              nome: row.rua_nome,
+              cep: row.rua_cep,
+              localidade_id: row.rua_localidade_id
+            },
+            imoveis: row.imoveis,
+            vistorias: row.vistorias,
+            situacao: row.imoveis === row.vistorias ? 3 : ( row.vistorias > 0 ? 2 : 1 )
+          } );
+        } );
+    
+        return rota;
+      } else {
+        return [];
+      }
+    } );
+  }
 
   // Consultando lados já planejando do dia de uma equipe.
-  const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split('/');
-  const current_date = `${Y}-${m}-${d}`;
+  const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split( '/' );
+  const current_date = `${ Y }-${ m }-${ d }`;
 
-  const rotas = await Rota.findAll({
+  const rotas = await Rota.findAll( {
     include: {
       association: "trabalhoDiario",
       where: {
@@ -752,25 +754,25 @@ const getOpenRouteByTeam = async ( req, res ) => {
         equipe_id
       }
     }
-  });
+  } );
 
-  quarteirao_situacao = quarteirao_situacao.map(quarteirao => {
+  quarteirao_situacao = quarteirao_situacao.map( quarteirao => {
     let q = quarteirao;
 
-    q.lados = quarteirao.lados.map(lado => {
+    q.lados = quarteirao.lados.map( lado => {
       rotas.forEach(r => {
         if( lado.id === r.lado_id ) {
           if( lado.situacao !== 3 )
             lado.situacao = 4;
           lado.usuario_id = r.trabalhoDiario.usuario_id
         }
-      });
+      } );
 
       return lado;
-    });
+    } );
 
     return q;
-  });
+  } );
 
   return res.json( quarteirao_situacao );
 }

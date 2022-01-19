@@ -83,15 +83,15 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
   )
 }
 
-const ExibirQuarteiroes = ( rota_equipe, fl_loading, indexEquipe, indexMembro, equipes, toggleLado ) => {
-  if( rota_equipe.rota_equipe.length == 0 ) {
+const ExibirQuarteiroes = ( { rota_equipe, fl_loading, indexEquipe, indexMembro, equipes, toggleLado, ...props } ) => {
+  if( fl_loading ) {
+    return <Loading element="#list-quarteirao" />;
+  } else if( rota_equipe.length == 0 ) {
     return (
       <div className="info-empty text-muted">
         <p>Não existe nenhum quarteirão planejado para sua equipe</p>
       </div>
     );
-  } else if( fl_loading ) {
-    return <Loading element="#list-quarteirao" />;
   } else {
     return rota_equipe.map( ( quarteirao, indexQuarteirao ) => (
       <Col key={ "qrt_" + quarteirao.id } xs="12" sm="6">

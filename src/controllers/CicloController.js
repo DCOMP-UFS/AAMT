@@ -8,14 +8,19 @@ const Municipio = require('../models/Municipio');
 // UTILITY
 const allowFunction = require('../util/allowFunction');
 
-index = async ( req, res ) => {
+/**
+ * Esta função retorna a lista de ciclos de uma regional
+ * 
+ * @params {Integer} regionalSaude_id
+ */
+getCiclosPorRegional = async ( req, res ) => {
   const { regionalSaude_id } = req.params;
 
   const allow = await allowFunction( req.userId, 'definir_ciclo' );
   if( !allow ) 
-    return res.status(403).json({ error: 'Acesso negado' });
+    return res.status( 403 ).json( { error: 'Acesso negado' } );
 
-  const ciclos = await Ciclo.findAll({
+  const ciclos = await Ciclo.findAll( {
     where: {
       regional_saude_id: regionalSaude_id
     },
@@ -25,13 +30,20 @@ index = async ( req, res ) => {
         attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
       }
     ],
-    order: [[ 'ano', 'desc' ], [ 'sequencia', 'asc' ]]
-  });
+    order: [ 
+      [ 'ano', 'desc' ], 
+      [ 'sequencia', 'asc' ]
+    ]
+  } );
 
   return res.json( ciclos );
 }
 
-getCycle = async ( req, res ) => {
+/**
+ * Essa função consulta um ciclo pelo ID
+ * @params {Integer} id
+ */
+getCiclo = async ( req, res ) => {
   const { id } = req.params;
 
   const ciclo = await Ciclo.findByPk( id, {
@@ -46,19 +58,24 @@ getCycle = async ( req, res ) => {
         { association: 'objetivo', attributes:{ exclude: [ 'createdAt', 'updatedAd' ] } }
       ]
     }
-  });
+  } );
+
   if( !ciclo )
-    return res.status(400).json({ error: 'Ciclo não existe' });
+    return res.status( 400 ).json( { error: 'Ciclo não existe' } );
 
   return res.json( ciclo );
 }
 
-getOpenCycles = async ( req, res ) => {
-  const { regionalSaude_id } = req.params;
-  const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split('/');
-  const current_date = `${Y}-${m}-${d}`;
+/**
+ * Consultar ciclo, em aberto de uma regional
+ * @params {Integer} regionalSaude_id
+ */
+getCicloAberto = async ( req, res ) => {
+  const { regionalSaude_id }  = req.params;
+  const [ m, d, Y ]           = new Date().toLocaleDateString( 'en-US' ).split( '/' );
+  const current_date          = `${ Y }-${ m }-${ d }`;
 
-  const ciclos = await Ciclo.findOne({
+  const ciclos = await Ciclo.findOne( {
     where: Sequelize.and(
       { regional_saude_id: regionalSaude_id } ,
       Sequelize.where(
@@ -70,15 +87,20 @@ getOpenCycles = async ( req, res ) => {
         '>=', current_date
       )
     )
-  });
+  } );
 
   return res.json( ciclos );
 }
 
-getCyclesForYear = async ( req, res ) => {
+/**
+ * Consultar os ciclos de uma regional de um determinado ano
+ * @params {Integer} ano
+ * @params {Integer} regionalSaude_id
+ */
+getCiclosPorAno = async ( req, res ) => {
   const { ano, regionalSaude_id } = req.params;
 
-  const ciclos = await Ciclo.findAll({
+  const ciclos = await Ciclo.findAll( {
     where: {
       regional_saude_id: regionalSaude_id,
       ano
@@ -86,24 +108,29 @@ getCyclesForYear = async ( req, res ) => {
     include: {
       association: 'atividades'
     }
-  });
+  } );
 
   return res.json( ciclos );
 }
 
-getAllowedCycles = async ( req, res ) => {
-  const { regionalSaude_id } = req.params;
-  let current_date = new Date();
-  current_date.setHours(0,0,0,0);
+/**
+ * Consultar os ciclos cujo a data fim é maior que a data atual
+ * @params {Integer} regionalSaude_id
+ */
+getCiclosPermitidos = async ( req, res ) => {
+  const { regionalSaude_id }  = req.params;
+  let current_date            = new Date();
 
-  const ciclos = await Ciclo.findAll({
+  current_date.setHours( 0, 0, 0, 0 );
+
+  const ciclos = await Ciclo.findAll( {
     where: {
       regional_saude_id: regionalSaude_id,
       dataFim: {
         [Sequelize.Op.gt]: current_date
       }
     }
-  });
+  } );
 
   return res.json( ciclos );
 }
@@ -229,15 +256,15 @@ destroy = async ( req, res ) => {
 }
 
 const router = express.Router();
-router.use(authMiddleware);
+router.use( authMiddleware );
 
-router.get('/:regionalSaude_id/regionaisSaude', index);
-router.get('/open/:regionalSaude_id/regionaisSaude', getOpenCycles);
-router.get('/allowedCycles/:regionalSaude_id/regionaisSaude', getAllowedCycles);
-router.get('/:ano/:regionalSaude_id/regionaisSaude', getCyclesForYear);
-router.get('/:id', getCycle);
-router.put('/:id', update);
-router.post('/', store);
-router.delete('/:id', destroy);
+router.get( '/:regionalSaude_id/regionaisSaude', getCiclosPorRegional );
+router.get( '/open/:regionalSaude_id/regionaisSaude', getCicloAberto );
+router.get( '/allowedCycles/:regionalSaude_id/regionaisSaude', getCiclosPermitidos );
+router.get( '/:ano/:regionalSaude_id/regionaisSaude', getCiclosPorAno );
+router.get( '/:id', getCiclo );
+router.put( '/:id', update );
+router.post( '/', store );
+router.delete( '/:id', destroy );
 
 module.exports = app => app.use('/ciclos', router);

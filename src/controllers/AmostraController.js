@@ -24,13 +24,16 @@ getSampleBySurpervision = async ( req, res ) => {
 
   const allow = await allowFunction( req.userId, 'definir_trabalho_diario' );
   if( !allow )
-    return res.status(403).json({ error: 'Acesso negado' });
+    return res.status( 403 ).json( { error: 'Acesso negado' } );
 
   const userRequest = await Usuario.findByPk( req.userId, {
     include: {
       association: 'atuacoes'
     }
-  });
+  } );
+
+  if( userRequest.id !== parseInt( id ) )
+    return res.status( 403 ).json( { error: 'Acesso negado' } );
 
   /**
    * Checando se o usuário que está requisitando é um supervisor,
@@ -38,23 +41,8 @@ getSampleBySurpervision = async ( req, res ) => {
    */
   if( userRequest.atuacoes[ 0 ].tipoPerfil === 3 ) {
     if( parseInt( id ) !== req.userId )
-      return res.status(403).json({ error: 'Acesso negado' });
+      return res.status( 403 ).json( { error: 'Acesso negado' } );
   }
-
-  /**
-   * Chegando se o usuário de pesquisa é um supervisor
-   */
-   const supervisor = await Usuario.findByPk( id, {
-    include: {
-      association: 'atuacoes'
-    }
-  });
-
-  if( !supervisor )
-    return res.status(400).json({ error: "Usuário não existe" });
-
-  if( supervisor.atuacoes[ 0 ].tipoPerfil !== 3 )
-    return res.status(400).json({ error: "Usuário não é um supervisor" });
 
   // Consultando Regional ID
   let regional_id;
@@ -79,10 +67,10 @@ getSampleBySurpervision = async ( req, res ) => {
   }
 
   // Consultando o ciclo em aberto da regional de saúde
-  const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split('/');
-  const current_date = `${Y}-${m}-${d}`;
+  const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split( '/' );
+  const current_date = `${ Y }-${ m }-${ d }`;
 
-  const ciclo = await Ciclo.findOne({
+  const ciclo = await Ciclo.findOne( {
     where: Sequelize.and(
       { regional_saude_id: regional_id } ,
       Sequelize.where(
@@ -94,13 +82,13 @@ getSampleBySurpervision = async ( req, res ) => {
         '>=', current_date
       )
     )
-  });
+  } );
 
   // Pegando as equipes que o usuário é supervisor
-  const atividades = await Atividade.findAll({
+  const atividades = await Atividade.findAll( {
     where: {
       ciclo_id: ciclo.id,
-      municipio_id: supervisor.atuacoes[ 0 ].local_id
+      municipio_id: userRequest.atuacoes[ 0 ].local_id
     },
     include: [
       {
@@ -116,7 +104,7 @@ getSampleBySurpervision = async ( req, res ) => {
         association: 'objetivo'
       }
     ]
-  });
+  } );
 
   let equipes = [];
   atividades.forEach( atividade => {
@@ -124,11 +112,11 @@ getSampleBySurpervision = async ( req, res ) => {
       equipe.membros.forEach( membro => {
         if( membro.usuario_id === parseInt( id ) && membro.tipoPerfil === 4 )
           equipes.push( equipe.id );
-      });
-    });
-  });
+      } );
+    } );
+  } );
 
-  let amostras = await Amostra.findAll({
+  let amostras = await Amostra.findAll( {
     include: [
       {
         association: 'deposito',
@@ -146,7 +134,7 @@ getSampleBySurpervision = async ( req, res ) => {
         association: 'exemplares'
       }
     ]
-  });
+  } );
 
   // Tratando resultados
   amostras.forEach(async ( amostra, index ) => {

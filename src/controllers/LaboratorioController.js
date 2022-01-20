@@ -3,7 +3,6 @@ const express               = require( 'express' );
 const Laboratorio           = require( '../models/Laboratorio' );
 const Municipio             = require( '../models/Municipio' );
 const LaboratorioMunicipio  = require( '../models/LaboratorioMunicipio' );
-const fillCnpj              = require( '../util/fillCnpj' );
 
 // UTILITY
 const allowFunction = require( '../util/allowFunction' );
@@ -22,24 +21,14 @@ getLaboratorio = async ( req, res ) => {
   if( !municipio )
     res.status( 404 ).json( { error: 'Município não existe' } );
 
-  let laboratorios = await Laboratorio.findAll( {
+  const laboratorios = await Laboratorio.findAll( {
     include: {
       association: 'municipios',
       where: {
         id: municipio_id
       }
-    },
-  } ).then(laboratorios => {
-    return laboratorios.map(laboratorio => ({
-      cnpj: fillCnpj(laboratorio.cnpj),
-      nome: laboratorio.nome,
-      endereco: laboratorio.nome,
-      tipoLaboratorio: laboratorio.tipoLaboratorio,
-      createdAt: laboratorio.createdAt,
-      updatedAt: laboratorio.updatedAt,
-      municipios: laboratorio.municipios
-    }))
-  });
+    }
+  } );
 
   res.json( laboratorios );
 }
@@ -75,24 +64,47 @@ createLaboratorio = async( req, res ) => {
  * @returns {Object} Laboratorio
  */
 updateLaboratorio = async( req, res ) =>{
-  const { cnpj, nome, endereco, tipoLaboratorio } = req.body;
+  const { cnpjId, cnpj, nome, endereco, tipoLaboratorio, ativo } = req.body;
 
+  const cnpjExists = await Laboratorio.findByPk( cnpj );
+
+  if ( !cnpjExists ){
+    const query = `UPDATE laboratorios SET cnpj = '${cnpj}' WHERE cnpj = '${cnpjId}';`;
+    await Laboratorio.sequelize.query(query);
+  }else{
+    if ( cnpj != cnpjId){
+      res.status( 404 ).json( { error: "CNPJ já existe" } );
+    }
+  }
+  
   const laboratorio = await Laboratorio.findByPk( cnpj );
 
-  console.log(laboratorio);
-
-  if( !laboratorio )
+  if( !laboratorio ){
     res.status( 404 ).json( { error: "CNPJ não existe" } );
+  }
 
   laboratorio.set( {
     cnpj,
     nome,
     endereco,
-    tipoLaboratorio
-  } );
+    tipoLaboratorio,
+    ativo,
+  });
 
   await laboratorio.save();
-  return res.json( laboratorio );
+  const resp = {
+    cnpjId:          cnpjId,
+    cnpj:            laboratorio.cnpj,
+    nome:            laboratorio.nome,
+    endereco:        laboratorio.endereco,
+    tipoLaboratorio: laboratorio.tipoLaboratorio,
+    ativo:           laboratorio.ativo,
+    createdAt:       laboratorio.createdAt,
+    updatedAt:       laboratorio.updatedAt
+  }
+
+  console.log(resp);
+  return res.json( resp );
 }
 
 router.get( '/:municipio_id', getLaboratorio );

@@ -98,8 +98,7 @@ getRoute = async ( req, res ) => {
   const sequencia_usuario = await Atuacao.findOne( {
     where: {
       usuario_id,
-      tipoPerfil: 4,
-      local_id:   td.equipe.atividade.municipio_id
+      local_id: td.equipe.atividade.municipio_id
     }
   } ).then( at => at.sequencia_usuario );
 
@@ -137,6 +136,15 @@ getRoute = async ( req, res ) => {
   } );
 }
 
+/**
+ * Esta função registra na base um trabalho diário para um determinado
+ * agente
+ * 
+ * @body {Integer} supervisor_id responsável da equipe
+ * @body {Integer} usuario_id usuário a qual a rota será atribuída
+ * @body {Integer} equipe_id equipe a qual a rota se refere
+ * @body {Array} lados lados dos quarteirões planejado para o usuário
+ */
 planejarRota = async ( req, res ) => {
   const { supervisor_id, usuario_id, equipe_id, lados } = req.body;
   const userId = req.userId;
@@ -146,26 +154,11 @@ planejarRota = async ( req, res ) => {
 
   const allow = await allowFunction( usuario_req.id, 'definir_trabalho_diario' );
   if( !allow )
-    return res.status(403).json({ error: 'Acesso negado' });
-
-  const supervisor = await Usuario.findByPk( supervisor_id, {
-    include: {
-      association: "atuacoes"
-    }
-  });
-
-  let fl_supervisor = false;
-  supervisor.atuacoes.forEach( at => {
-    if( at.tipoPerfil === 3 )
-      fl_supervisor = true;
-  });
-
-  if( !fl_supervisor )
-    return res.status(400).json({ error: "Usuário informado não é um supervisor!" });
+    return res.status( 403 ).json( { error: 'Acesso negado' } );
 
   const usuario = await Usuario.findByPk( usuario_id );
   if( !usuario )
-    return res.status(400).json({ error: "Usuário não existe" });
+    return res.status( 400 ).json( { error: "Usuário não existe" } );
 
   const equipe = await Equipe.findByPk( equipe_id, {
     include: {
@@ -174,10 +167,10 @@ planejarRota = async ( req, res ) => {
         usuario_id
       }
     }
-  });
+  } );
+
   if( !equipe )
-    return res.status(400).json({ error: "Equipe não existe ou usuário não pertence a esta equipe" });
-  // Fim validação
+    return res.status( 400 ).json( { error: "Equipe não existe ou usuário não pertence a esta equipe" } );
 
   // en-GB: d/m/Y
   const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split( '/' );
@@ -522,9 +515,9 @@ endRoute = async ( req, res ) => {
     let amostras      = [];
     for( let recipiente of recipientes ) {
       await Deposito.create( {
-        fl_comFoco:     recipiente.fl_comFoco,
-        fl_tratado:     recipiente.fl_tratado,
-        fl_eliminado:   recipiente.fl_eliminado,
+        fl_comFoco:     recipiente.fl_comFoco ? true : false,
+        fl_tratado:     recipiente.fl_tratado ? true : false,
+        fl_eliminado:   recipiente.fl_eliminado ? true : false,
         tipoRecipiente: recipiente.tipoRecipiente,
         sequencia:      recipiente.sequencia,
         vistoria_id:    vistoria.id
@@ -687,70 +680,73 @@ const getOpenRouteByTeam = async ( req, res ) => {
   });
 
   // Consultando quarteirões e verificando a situação dos lados.
-  let quarteirao_situacao = await Quarteirao.sequelize.query(
-    sql, 
-    {
-      bind: q,
-      logging: console.log,
-    }
-  ).then( data => {
-    const [ rows ] = data;
-
-    if( rows.length > 0 ) {
-      let rota          = [],
-          quarteirao_id = null,
-          quarteirao    = {
-            id: null,
-            numero: null,
-            ativo: null,
-            localidade_id: null,
-            zona_id: null,
-            lados: []
-          };
-      
-      rows.forEach(row => {
-        if( !quarteirao_id || row.id !== quarteirao_id ) {
-          quarteirao_id = row.id;
-          quarteirao    = {
-            id: row.id,
-            numero: row.numero,
-            ativo: row.ativo,
-            localidade_id: row.localidade_id,
-            zona_id: row.zona_id,
-            lados: []
-          };
-
-          rota.push( quarteirao );
-        }
+  let quarteirao_situacao = [];
+  if( q.length > 0 ) {
+    quarteirao_situacao = await Quarteirao.sequelize.query(
+      sql, 
+      {
+        bind: q,
+        logging: console.log,
+      }
+    ).then( data => {
+      const [ rows ] = data;
   
-        quarteirao.lados.push({
-          id: row.lado_id,
-          numero: row.lado_numero,
-          rua_id: row.lado_rua_id,
-          quarteirao_id: row.lado_quarteirao_id,
-          rua: {
-            id: row.rua_id,
-            nome: row.rua_nome,
-            cep: row.rua_cep,
-            localidade_id: row.rua_localidade_id
-          },
-          imoveis: row.imoveis,
-          vistorias: row.vistorias,
-          situacao: row.imoveis === row.vistorias ? 3 : ( row.vistorias > 0 ? 2 : 1 )
-        });
-      });
+      if( rows.length > 0 ) {
+        let rota          = [];
+        let quarteirao_id = null;
+        let quarteirao    = {
+          id: null,
+          numero: null,
+          ativo: null,
+          localidade_id: null,
+          zona_id: null,
+          lados: []
+        };
+        
+        rows.forEach( row => {
+          if( !quarteirao_id || row.id !== quarteirao_id ) {
+            quarteirao_id = row.id;
+            quarteirao    = {
+              id: row.id,
+              numero: row.numero,
+              ativo: row.ativo,
+              localidade_id: row.localidade_id,
+              zona_id: row.zona_id,
+              lados: []
+            };
   
-      return rota;
-    } else {
-      return [];
-    }
-  });
+            rota.push( quarteirao );
+          }
+    
+          quarteirao.lados.push( {
+            id: row.lado_id,
+            numero: row.lado_numero,
+            rua_id: row.lado_rua_id,
+            quarteirao_id: row.lado_quarteirao_id,
+            rua: {
+              id: row.rua_id,
+              nome: row.rua_nome,
+              cep: row.rua_cep,
+              localidade_id: row.rua_localidade_id
+            },
+            imoveis: row.imoveis,
+            vistorias: row.vistorias,
+            situacao: row.imoveis === row.vistorias ? 3 : ( row.vistorias > 0 ? 2 : 1 )
+          } );
+        } );
+    
+        return rota;
+      } else {
+        return [];
+      }
+    } );
+  }
 
   // Consultando lados já planejando do dia de uma equipe.
-  const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split('/');
-  const current_date = `${Y}-${m}-${d}`;
+  const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split( '/' );
+  const current_date = `${ Y }-${ m }-${ d }`;
 
-  const rotas = await Rota.findAll({
+  const rotas = await Rota.findAll( {
     include: {
       association: "trabalhoDiario",
       where: {
@@ -758,25 +754,25 @@ const getOpenRouteByTeam = async ( req, res ) => {
         equipe_id
       }
     }
-  });
+  } );
 
-  quarteirao_situacao = quarteirao_situacao.map(quarteirao => {
+  quarteirao_situacao = quarteirao_situacao.map( quarteirao => {
     let q = quarteirao;
 
-    q.lados = quarteirao.lados.map(lado => {
+    q.lados = quarteirao.lados.map( lado => {
       rotas.forEach(r => {
         if( lado.id === r.lado_id ) {
           if( lado.situacao !== 3 )
             lado.situacao = 4;
           lado.usuario_id = r.trabalhoDiario.usuario_id
         }
-      });
+      } );
 
       return lado;
-    });
+    } );
 
     return q;
-  });
+  } );
 
   return res.json( quarteirao_situacao );
 }

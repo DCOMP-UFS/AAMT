@@ -1,16 +1,22 @@
 const Permissao = require('../models/Permissao');
 
+/**
+ * Consulta todas as permissões que o usuário tem direito de acordo
+ * com suas atuações.
+ * @param {array} atuacoes 
+ * @returns {array}
+ */
 module.exports = async ( atuacoes ) => {
-  const tipoPerfil = atuacoes.map( at => (at.tipoPerfil));
+  const tipoPerfil = atuacoes.map( at => ( at.tipoPerfil ) );
 
   let where = "WHERE ";
-  tipoPerfil.forEach( (tp, index) => {
-    if( index < tipoPerfil.length - 1 ){
+  tipoPerfil.forEach( ( tp, index ) => {
+    if( index < tipoPerfil.length - 1 ) {
       where += `tipo_perfil = $${ index + 1 } OR `;
-    }else {
+    } else {
       where += `tipo_perfil = $${ index + 1 } `;
     }
-  });
+  } );
 
   const [ permissoes ] = await Permissao.sequelize.query(
     'SELECT DISTINCT ON( f.nome ) ' +
@@ -28,5 +34,5 @@ module.exports = async ( atuacoes ) => {
     }
   );
 
-  return permissoes;
+  return permissoes.map( p => p.nome );
 }

@@ -147,7 +147,7 @@ listByCity = async ( req, res ) => {
   return res.json(users);
 }
 
-store = async (req, res) => {
+store = async ( req, res ) => {
   const { 
     nome,
     cpf,
@@ -162,15 +162,14 @@ store = async (req, res) => {
   const checkLocation = await checkLocationByOperation( atuacoes );
 
   if( !checkLocation )
-    return res.status(400).json({ error: 'Local não existe, cheque as localidades das atuações!' });
+    return res.status( 400 ).json( { error: 'Local não existe, cheque as localidades das atuações!' } );
 
-  const salt = bcrypt.genSaltSync(10);
-  const senhaHash = bcrypt.hashSync(senha, salt);
+  const salt      = bcrypt.genSaltSync( 10 );
+  const senhaHash = bcrypt.hashSync( senha, salt );
   let user = {};
   
   try {
-
-    user = await Usuario.create({ 
+    user = await Usuario.create( { 
       nome,
       cpf,
       rg,
@@ -179,17 +178,16 @@ store = async (req, res) => {
       usuario,
       senha: senhaHash,
       ativo: 1
-    });
-
-  }catch(e) {
-    return res.status(400).json({ error: "Usuário, CPF, RG ou e-mail já existe na base" });
+    } );
+  } catch( e ) {
+    return res.status( 400 ).json( { error: "Usuário, CPF, RG ou e-mail já existe na base" } );
   }
 
   let at = [];
-  for (atuacao of atuacoes) {
+  for( atuacao of atuacoes ) {
     const { tipoPerfil, local_id } = atuacao;
     let escopo = 3;
-    switch (tipoPerfil) {
+    switch( tipoPerfil ) {
       case 1:
         escopo = 1;
         break;
@@ -201,13 +199,19 @@ store = async (req, res) => {
 
     let sequencia_usuario = null;
 
-    if( tipoPerfil === 4 ) {
-      // Busca os agentes cadastrados naquela mesma localidade
+    if( [ 2, 3, 4 ].includes( tipoPerfil ) ) {
+      // Busca os usuários cadastrados naquela mesma localidade
       const agentesCadastrados = await Atuacao.findAll( {
         where: {
           [Op.and]: [
             { local_id },
-            { tipoPerfil: 4 }
+            { 
+              [Op.or]: [
+                { tipoPerfil: 2 },
+                { tipoPerfil: 3 },
+                { tipoPerfil: 4 }
+              ] 
+            }
           ]
         },
         order: [
@@ -215,7 +219,14 @@ store = async (req, res) => {
         ]
       });
       
-      sequencia_usuario = agentesCadastrados.length > 0 ? agentesCadastrados[0].sequencia_usuario + 1 : 1;
+      // sequencia_usuario = agentesCadastrados.length > 0 ? agentesCadastrados[0].sequencia_usuario + 1 : 1;
+      if( agentesCadastrados.length > 0 ) {
+        const max = Math.max.apply( Math, agentesCadastrados.map( agente => agente.sequencia_usuario ) )
+
+        sequencia_usuario = max + 1;
+      } else {
+        sequencia_usuario = 1;
+      }
     }
 
     const result = await Atuacao.create( {

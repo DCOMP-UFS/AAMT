@@ -5,21 +5,21 @@ module.exports = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if(!authHeader) 
-    return res.status(401).send({ error: 'No token provided' });
+    return res.status(401).send({ error: 'Token não informado' });
   
   const parts = authHeader.split(' ');
 
   if(!parts.length === 2)
-    return res.status(401).send({ error: 'Token error' });
+    return res.status(401).send({ error: 'Token incorreto' });
 
   const [ scheme, token ] = parts;
 
   // REGEX
   if(!/^Bearer$/i.test(scheme)) 
-    return res.status(401).send({ error: 'Token malformatted' });
+    return res.status(401).send({ error: 'Token mal formatado' });
 
   jwt.verify(token, authConfig.secret, (err, decoded) => {
-    if(err) return res.status(401).send({ error: 'Token invalid' });
+    if(err) return res.status(401).send({ error: 'Token inválido' });
 
     req.userId = decoded.id;
     return next();

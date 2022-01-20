@@ -17,36 +17,40 @@ import { connect } from 'react-redux';
 // ACTIONS
 import { clearToast, authenticateRequest } from '../../store/AppConfig/appConfigActions';
 
-function LoginScreen( props ) {
-  const [ usuario, setUsuario ] = useState("");
-  const [ senha, setSenha ] = useState("");
-  const [ conectado, setConectado ] = useState(false);
+const LoginScreen = ( props ) => {
+  const [ usuario, setUsuario ]     = useState( "" );
+  const [ senha, setSenha ]         = useState( "" );
+  const [ conectado, setConectado ] = useState( false );
 
+  /**
+   * Função de call back em caso de login success
+   * @param {array} atuacoes 
+   */
   const redirectUser = atuacoes => {
     const atuacao = atuacoes[0];
     switch( atuacao.tipoPerfil ) {
       case perfil.coordenadorGeral.id: {
-        window.location = window.location.origin.toString() + "/cg/home";
+        window.location = window.location.origin.toString() + "/dash/regional";
         break;
       }
 
       case perfil.coordenador.id: {
-        window.location = window.location.origin.toString() + "/coord/atividades";
+        window.location = window.location.origin.toString() + "/dash/municipio";
         break;
       }
 
       case perfil.supervisor.id: {
-        window.location = window.location.origin.toString() + "/sup/dashboard";
+        window.location = window.location.origin.toString() + "/dash/municipio";
         break;
       }
 
       case perfil.agente.id: {
-        window.location = window.location.origin.toString() + "/agente/home";
+        window.location = window.location.origin.toString() + "/dash/municipio";
         break;
       }
 
       case perfil.laboratorista.id: {
-        window.location = window.location.origin.toString() + "/lab/home";
+        window.location = window.location.origin.toString() + "/dash/laboratorio";
         break;
       }
 
@@ -57,6 +61,10 @@ function LoginScreen( props ) {
     }
   }
 
+  /**
+   * Submit de login
+   * @param {Element} e Element oque acionou a função
+   */
   async function handleSubmit( e ) {
     e.preventDefault();
 
@@ -64,10 +72,10 @@ function LoginScreen( props ) {
   }
 
   function notify() {
-    toast(props.toast.message, {
+    toast( props.toast.message, {
       type: props.toast.type,
       onClose: props.clearToast()
-    });
+    } );
   }
 
   return (
@@ -128,15 +136,15 @@ function LoginScreen( props ) {
   );
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = state => ( {
   toast: state.appConfig.toast,
-});
+} );
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ authenticateRequest, clearToast }, dispatch);
+  bindActionCreators( { authenticateRequest, clearToast }, dispatch );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(LoginScreen);
+)( LoginScreen );
 

@@ -100,7 +100,7 @@ export function* createCycle( action ) {
     if( status === 201 ) {
       yield put( AppConfigActions.showNotifyToast( "Ciclo criado com sucesso", "success" ) );
 
-      window.location = window.location.origin.toString() + "/cg/ciclos/consultar";
+      window.location = window.location.origin.toString() + "/ciclos/consultar";
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao criar ciclo: " + status, "error" ) );
       yield put( AppConfigActions.showNotifyToast( "Atenção! Não é permitido duplicidade de ciclo", "warning" ) );

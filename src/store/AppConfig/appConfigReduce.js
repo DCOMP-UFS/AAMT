@@ -4,7 +4,8 @@ const INITIAL_STATE = {
   usuario: {
     atuacoes: [
       { tipoPerfil: null }
-    ]
+    ],
+    permissoes: []
   },
   /*
    * navToggle:

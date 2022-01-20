@@ -89,7 +89,7 @@ export function* startRoute(action) {
     if( status === 200 ) {
       yield put( RotaCacheActions.saveRoute( data, action.payload.horaInicio ) );
       yield put( VistoriaCacheActions.clearInspection() );
-      window.location = window.location.origin.toString() + '/agente/vistoria';
+      window.location = window.location.origin.toString() + '/vistoria';
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao iniciar rota: " + status, "error" ) );
     }
@@ -112,7 +112,7 @@ export function* closeRoute(action) {
         yield put( RotaCacheActions.getRoute( data ) );
         yield put( AppConfigActions.showNotifyToast( "Rota finalizada e vistorias registradas com sucesso!", "success" ) );
 
-        window.location = window.location.origin.toString() + '/agente/relatorio/boletim_diario/' + action.payload.trabalhoDiario_id;
+        window.location = window.location.origin.toString() + '/relatorio/boletimDiario/' + action.payload.trabalhoDiario_id;
       }else {
         yield put( AppConfigActions.showNotifyToast( "Ocorreu um erro no servidor durante a requisição! Por favor, aguarde e tente novamente mais tarde.", "error" ) );
       }

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import CardAtividade from '../../../components/CardAtividade';
-import ModalIniciarTrabalho from '../../../pages/agente/components/ModalIniciarTrabalho';
+import ModalIniciarTrabalho from '../../../components/ModalIniciarTrabalho';
 
 // REDUX
 import { bindActionCreators } from 'redux';

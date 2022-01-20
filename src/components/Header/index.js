@@ -8,8 +8,6 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-// import DraftsIcon from '@material-ui/icons/Drafts';
-// import SendIcon from '@material-ui/icons/Send';
 import { IoIosArrowDown } from 'react-icons/io';
 
 // REDUX
@@ -81,6 +79,7 @@ function Header({ usuario, ...props }) {
 
   const handleSignOut = () => {
     props.signOut();
+    window.location = window.location.origin;
   };
 
   return (
@@ -116,7 +115,7 @@ function Header({ usuario, ...props }) {
                 style={ buttonMenu }
                 onClick={ handleClick }
               >
-                <Avatar style={ avatarSmall } >{ usuario.nome[0] }</Avatar>
+                <Avatar style={ avatarSmall } >{ usuario.nome ? usuario.nome[0] : ""  }</Avatar>
                 <UserName>{ usuario.nome }</UserName>
                 <IoIosArrowDown className="menu-arrow ml-2" />
               </Button>
@@ -127,18 +126,6 @@ function Header({ usuario, ...props }) {
                 open={ Boolean( anchorEl ) }
                 onClose={ handleClose }
               >
-                {/* <PerfilItem className="active">
-                  <ListItemIcon>
-                    <SendIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText primary="Sent mail" />
-                </PerfilItem>
-                <PerfilItem>
-                  <ListItemIcon>
-                    <DraftsIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText primary="Drafts" />
-                </PerfilItem> */}
                 <PerfilItem
                   onClick={ handleSignOut }
                 >

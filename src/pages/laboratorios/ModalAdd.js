@@ -26,10 +26,18 @@ const ModalAdd = ( { municipio, show, handleClose, created, ...props } ) => {
   const [ categoria, setCategoria ]               = useState( { value: null, label: '' } );
   const [ isValidCategoria, setIsValidCategoria ] = useState( true );
   const [ endereco, setEndereco]                  = useState( null );
-  const [ optionCategoria ]                       = useState( [
+  const [ optionCategoria ]                       = useState( [ 
     { value: 'sede', label: 'Sede' },
     { value: 'privado', label: 'Privado' }
   ] );
+
+  /**
+   * Use effect para resetar os 'isValid' ao abrir o modal
+   */
+  useEffect( () => {
+    setIsValidCnpj( true );
+    setIsValidCategoria( true );
+  }, [ show ]);
 
   /**
    * Este effect moditora o state laboratorio.created para verificar
@@ -52,6 +60,17 @@ const ModalAdd = ( { municipio, show, handleClose, created, ...props } ) => {
     setCnpj( null );
     setNome( "" );
     setCategoria( {} );
+    setEndereco ("");
+  }
+
+  /**
+   * Limpa os campos do Modal e fecha ele
+   * @returns void
+   */
+
+  const cancel = () => {
+    clearInput();
+    handleClose();
   }
 
   /**
@@ -63,6 +82,13 @@ const ModalAdd = ( { municipio, show, handleClose, created, ...props } ) => {
     e.preventDefault();
 
     if( cnpj.length !== 14 ) {
+      setIsValidCnpj( false );
+      return;
+    } else {
+      setIsValidCnpj( true );
+    }
+
+    if( isNum(cnpj) === false ) {
       setIsValidCnpj( false );
       return;
     } else {
@@ -83,6 +109,17 @@ const ModalAdd = ( { municipio, show, handleClose, created, ...props } ) => {
       tipoLaboratorio: categoria.value,
       municipio_id: municipio.id
     } ) );
+
+    handleClose();
+  }
+
+  /**
+   * Verifica se a string é um número
+   * @param {val} v valor da string
+   * @returns boolean
+   */
+   const isNum = val =>{
+    return !isNaN(val)
   }
 
   return(
@@ -98,13 +135,13 @@ const ModalAdd = ( { municipio, show, handleClose, created, ...props } ) => {
             <Col sm='6'>
               <FormGroup>
                 <label htmlFor="cnpj">CNPJ<code>*</code></label>
-                <input
-                  id        ="cnpj"
-                  value     ={ cnpj ? cnpj : "" }
+                <input 
+                  id        ="cnpj" 
+                  value     ={ cnpj ? cnpj : "" } 
                   className ={ `form-control ${ !isValidCnpj ? 'invalid' : '' }` }
-                  onChange  ={ e => setCnpj( e.target.value ) }
+                  onChange  ={ e => setCnpj( e.target.value ) } 
                   maxlength ="14"
-                  required
+                  required 
                 />
                 {
                   !isValidCnpj ?
@@ -145,7 +182,7 @@ const ModalAdd = ( { municipio, show, handleClose, created, ...props } ) => {
           <Row>
             <Col>
               <FormGroup>
-                <label htmlFor="nome">Endereço <code>*</code></label>
+                <label htmlFor="nome">Endereco <code>*</code></label>
                 <input id="endereco" value={ endereco } className="form-control" onChange={ e => setEndereco( e.target.value ) } required />
               </FormGroup>
             </Col>
@@ -157,7 +194,7 @@ const ModalAdd = ( { municipio, show, handleClose, created, ...props } ) => {
               <Button type="button" className="warning" onClick={ clearInput }>Limpar</Button>
             </div>
             <div>
-              <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
+              <Button type="button" className="secondary" onClick = { cancel } data-dismiss="modal">Cancelar</Button>
               <Button type="submit">Salvar</Button>
             </div>
           </ContainerArrow>
@@ -180,8 +217,8 @@ const mapStateToProps = state => ( {
 
 /**
  * Mapeia as actions para o props do componente
- * @param {*} dispatch
- * @returns
+ * @param {*} dispatch 
+ * @returns 
  */
 const mapDispatchToProps = dispatch =>
   bindActionCreators( {

@@ -7,7 +7,7 @@ import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* planejarRota(action) {
   try {
-    const { data, status } = yield call( service.planejarRotaRequest, action.payload );
+    const { status } = yield call( service.planejarRotaRequest, action.payload );
 
     if( status === 200 ) {
       yield put( RotaActions.setRotaPlanejada( true ) );

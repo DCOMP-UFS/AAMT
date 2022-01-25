@@ -100,7 +100,7 @@ const InspecionarRecipiente = ( {
    * @returns void
    */
   const addUnidade = () => {
-    if( seqAmostra == "" ) {
+    if( seqAmostra === "" ) {
       props.showNotifyToast( "Informe a sequência da amostra", "warning" );
       return;
     }

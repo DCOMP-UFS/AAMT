@@ -6,6 +6,7 @@ import ModalDisabled from './ModalDisabled';
 import ModalUpdate from './ModalUpdate';
 import { FaVials, FaPenSquare } from 'react-icons/fa';
 import { Tooltip, IconButton } from '@material-ui/core';
+import $ from 'jquery';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -45,7 +46,13 @@ const columns = [
   {
     label: "Tipo",
     options: {
-      filter: false
+
+    }
+  },
+  {
+    label: "Ativo",
+    options: {
+
     }
   },
   {
@@ -78,6 +85,7 @@ const Laboratorios = ( { municipio_id, localidades, laboratorios, municipio, ...
   const [ showModalAdd, setShowModalAdd ]       = useState( false );
   const [ showModalEditar, setShowModalEditar ] = useState( false );
   const [ laboratorio, setLaboratorio ]         = useState( new Laboratorio );
+  const [ cnpjId , setCnpjId ]                  = useState( null );
   const options                                 = {
     customToolbar: () => {
       return (
@@ -91,9 +99,10 @@ const Laboratorios = ( { municipio_id, localidades, laboratorios, municipio, ...
       props.changeTableSelected( 'tableLocation', data );
       return (
         <ButtonDesabled
+          //onClick = { $('#modal-desativar-laboratorio').modal('show') }
           title="Desabilidade Laboratorio"
-          toggle="modal"
-          target="#modal-desativar-laboratorio" />
+          data-toggle="modal"
+          data-target="#modal-desativar-laboratorio" />
       );
     },
     setRowProps: row => {
@@ -130,16 +139,17 @@ const Laboratorios = ( { municipio_id, localidades, laboratorios, municipio, ...
   const createRows = () => {
     const list = laboratorios.map( ( lab ) => {
       return( [
-        lab.cnpj,
+        fill0(lab.cnpj.toString()).replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5"),
         lab.nome,
         lab.endereco,
         capitalize( lab.tipoLaboratorio ),
+        lab.ativo ? "Sim" : "Não",
         getFormattedDate( lab.createdAt ),
         getFormattedDate( lab.updatedAt ),
         <Tooltip
           className   ="bg-warning text-white"
           title       ="Editar"
-          onClick     ={ () => { setLaboratorio( lab ); setShowModalEditar( true ); } }
+          onClick     ={ () => { setLaboratorio( lab ); setShowModalEditar( true ); setCnpjId( lab.cnpj ); } }
         >
           <IconButton aria-label="Editar">
             <FaPenSquare />
@@ -150,7 +160,18 @@ const Laboratorios = ( { municipio_id, localidades, laboratorios, municipio, ...
     
     setRows( list );
   };
+  /**
+   * Preenche o CNPJ com zeros a esquerda
+   * @param {string} str 
+   * @returns {string}
+   */
 
+  const fill0 = str =>{
+    while (str.length < 14){
+      str = '0' + str;
+    };
+    return str; 
+  }
   /**
    * Formata uma string data no padrão PT-BR
    * @param {string} str 
@@ -230,9 +251,10 @@ const Laboratorios = ( { municipio_id, localidades, laboratorios, municipio, ...
           show={ showModalEditar }
           handleClose={ handleCloseModalEditar }
           laboratorio={ laboratorio }
+          cnpjId = { cnpjId }
         />
         <ModalAdd show={ showModalAdd } handleClose={ handleCloseModalAdd } />
-        <ModalDisabled />
+        <ModalDisabled/>
       </section>
     </>
   );

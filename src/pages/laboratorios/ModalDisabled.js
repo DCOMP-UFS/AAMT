@@ -8,7 +8,11 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { updateLocationRequest, clearUpdate } from '../../store/Localidade/localidadeActions';
+import { clearUpdate } from '../../store/Localidade/localidadeActions';
+import { getLaboratoriosRequest, updateLaboratoryRequest } from '../../store/Laboratorio/laboratorioActions'; 
+
+// MODELS
+import { Laboratorio } from '../../config/models';
 
 // STYLES
 import { Button } from '../../styles/global';
@@ -16,28 +20,34 @@ import { Button } from '../../styles/global';
 function ModalDisabled( props ) {
   function handleClick() {
     props.tableSelected.forEach( row => {
-      const { id } = props.localidades[ row.dataIndex ];
+      const lab = props.laboratorios[ row.dataIndex ];
+      props.updateLaboratoryRequest( new Laboratorio( {
+        cnpjId: lab.cnpj,
+        cnpj: lab.cnpj,
+        nome: lab.nome,
+        endereco: lab.endereco,
+        tipoLaboratorio: lab.tipoLaboratorio,
+        ativo: false,
+      }));
+    })}
 
-      props.updateLocationRequest( id, { ativo: 0 } );
-    });
-
-    props.clearUpdate();
-  }
-
+    //props.clearUpdate();
+  
+ 
   useEffect(() => {
-    props.clearUpdate();
+    //props.clearUpdate();
   }, []);
 
   useEffect(() => {
     if( props.updated ) {
-      $('#modal-desativar-localidade').modal('hide');
+      $('#modal-desativar-laboratorio').modal('hide');
     }
   }, [ props.updated ]);
 
   return(
-    <Modal id="modal-desativar-localidade" title="Desativar Localidade(s)" centered={ true }>
+    <Modal id="modal-desativar-laboratorio" title="Desativar Laboratorios(s)" centered={ true }>
       <ModalBody>
-        <p>Deseja desativar a(s) localidade(s)?</p>
+        <p>Deseja desativar o(s) laboratorios(s)?</p>
       </ModalBody>
       <ModalFooter>
         <Button className="secondary" data-dismiss="modal">Cancelar</Button>
@@ -49,12 +59,13 @@ function ModalDisabled( props ) {
 
 const mapStateToProps = state => ({
   tableSelected: state.supportInfo.tableSelection.tableLocation,
-  localidades: state.localidade.localidades,
-  updated: state.localidade.updated
+  laboratorios: state.nw_laboratorio.laboratorios,
+  updated: state.nw_laboratorio.updated
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ updateLocationRequest, clearUpdate }, dispatch);
+  bindActionCreators({clearUpdate, getLaboratoriosRequest, updateLaboratoryRequest }, dispatch);
+
 
 export default connect(
   mapStateToProps,

@@ -10,6 +10,7 @@ import ReactMapGL, { Marker } from 'react-map-gl';
 import $ from 'jquery';
 
 // ACTIONS
+import { showNotifyToast } from '../../../../store/AppConfig/appConfigActions';
 import { getQuarteiroesMunicipioRequest, getLadosQuarteiraoRequest } from '../../../../store/Quarteirao/quarteiraoActions';
 import { addImovelRequest, editarImovelRequest, clearCreate } from '../../../../store/Imovel/imovelActions';
 
@@ -244,6 +245,9 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
         });
       }
     } else {
+      document.getElementById( 'modal-imovel' ).scrollTop = 0;
+
+      props.showNotifyToast( "Existem campos inválidos", "error" );
       setReload( !reload );
     }
   };
@@ -455,7 +459,8 @@ const mapDispatchToProps = {
   getLadosQuarteiraoRequest,
   addImovelRequest,
   editarImovelRequest,
-  clearCreate
+  clearCreate,
+  showNotifyToast,
 }
 
 export default connect(

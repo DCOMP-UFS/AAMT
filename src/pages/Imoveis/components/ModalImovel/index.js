@@ -292,14 +292,17 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
               <FormGroup>
                 <label htmlFor="numero">Nº Imóvel<code>*</code></label>
                 <input
-                  id="numero"
-                  className={ "form-control " + clss[ 'numero' ] }
-                  onBlur={ () => limparClss( 'numero' ) }
-                  value={ numero ? numero : "" }
-                  type="number"
-                  pattern="[0-9]*"
-                  onChange={ e => setNumero( e.target.value ) }
-                  min="1"
+                  id        ="numero"
+                  className ={ "form-control " + clss[ 'numero' ] }
+                  onBlur    ={ () => limparClss( 'numero' ) }
+                  value     ={ numero ? numero : "" }
+                  type      ="number"
+                  pattern   ="[0-9]*"
+                  onKeyDown ={ e =>
+                    ["e", "E", "+", "-", "."].includes( e.key ) && e.preventDefault()
+                  }
+                  onChange  ={ e => setNumero( e.target.value ) }
+                  min       ="1"
                 />
               </FormGroup>
             </Col>
@@ -307,13 +310,14 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
               <FormGroup>
                 <label htmlFor="sequencia">Sequência</label>
                 <input
-                  id="sequencia"
-                  value={ sequencia ? sequencia : "" }
-                  type="number"
-                  className="form-control"
-                  pattern="[0-9]*"
-                  onChange={ e => setSequencia( e.target.value ) }
-                  min="1"
+                  id        ="sequencia"
+                  value     ={ sequencia ? sequencia : "" }
+                  type      ="number"
+                  className ="form-control"
+                  pattern   ="[0-9]*"
+                  onKeyDown ={ e => [ "e", "E", "+", "-", "." ].includes( e.key ) && e.preventDefault() }
+                  onChange  ={ e => setSequencia( e.target.value ) }
+                  min       ="1"
                 />
               </FormGroup>
             </Col>

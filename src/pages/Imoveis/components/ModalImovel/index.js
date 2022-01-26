@@ -393,21 +393,25 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
                       <FormGroup>
                         <label htmlFor="lng">Longitude<code>*</code></label>
                         <input
-                          id="lng"
-                          value={ lng }
-                          type="number"
-                          className="form-control"
-                          onChange={ e => { setLng( e.target.value ); checkLocValida( e.target.value, "lng" ); } }
+                          id        ="lng"
+                          value     ={ lng }
+                          type      ="number"
+                          pattern   ="[0-9]*"
+                          onKeyDown ={ e => [ "e", "E", "+", "," ].includes( e.key ) && e.preventDefault() }
+                          className ="form-control"
+                          onChange  ={ e => { setLng( e.target.value ); checkLocValida( e.target.value, "lng" ); } }
                         />
                       </FormGroup>
                       <FormGroup className="mb-0">
                         <label htmlFor="lat">Latitude<code>*</code></label>
                         <input
-                          id="lat"
-                          value={ lat }
-                          type="number"
-                          className="form-control"
-                          onChange={ e => { setLat( e.target.value ); checkLocValida( e.target.value, "lat" ); } }
+                          id        ="lat"
+                          value     ={ lat }
+                          type      ="number"
+                          pattern   ="[0-9]*"
+                          onKeyDown ={ e => [ "e", "E", "+", "," ].includes( e.key ) && e.preventDefault() }
+                          className ="form-control"
+                          onChange  ={ e => { setLat( e.target.value ); checkLocValida( e.target.value, "lat" ); } }
                         />
                       </FormGroup>
                     </div>

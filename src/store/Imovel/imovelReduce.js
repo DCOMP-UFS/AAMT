@@ -17,12 +17,40 @@ export default function Imovel( state = INITIAL_STATE, action ) {
         reload: !state.reload
       };
 
+    case ActionTypes.SET_IMOVEIS_POR_IMOVEL_ID: {
+      let imoveis = state.imoveis;
+
+      const index = imoveis.findIndex( imovel => imovel.id === action.payload.imovel_id );
+
+      if( index > -1 )
+        imoveis.splice( index, 1 );
+
+      return {
+        ...state,
+        imoveis,
+        reload: !state.reload
+      };
+    }
+
     case ActionTypes.SET_IMOVEL:
       return {
         ...state,
         imovel: action.payload.imovel,
         reload: !state.reload
       };
+
+    case ActionTypes.ADD_IMOVEL_REDUCE: {
+      let imoveis   = state.imoveis;
+      const imovel  = action.payload.imovel;
+
+      imoveis = [ imovel, ...imoveis ];
+
+      return {
+        ...state,
+        imoveis,
+        created: true
+      }
+    }
 
     case ActionTypes.CREATE_HOUSE_SUCCESS: {
       let imoveis = state.imoveis;

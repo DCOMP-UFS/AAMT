@@ -7,10 +7,11 @@ import { tipoImovelEnum } from '../../../../config/enumerate';
 import { FaChevronDown, FaChevronUp, FaMapMarkerAlt } from 'react-icons/fa';
 import { Collapse } from 'react-bootstrap';
 import ReactMapGL, { Marker } from 'react-map-gl';
+import $ from 'jquery';
 
 // ACTIONS
 import { getQuarteiroesMunicipioRequest, getLadosQuarteiraoRequest } from '../../../../store/Quarteirao/quarteiraoActions';
-import { addImovelRequest, editarImovelRequest } from '../../../../store/Imovel/imovelActions';
+import { addImovelRequest, editarImovelRequest, clearCreate } from '../../../../store/Imovel/imovelActions';
 
 // STYLES
 import { Button, FormGroup, selectDefault } from '../../../../styles/global';
@@ -72,19 +73,22 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
       setLocalizacao( imovel.lng && imovel.lat ? `{ ${ imovel.lng }, ${ imovel.lat } }` : "" );
       setMarcador( imovel.lng && imovel.lat ? { lng: parseFloat( imovel.lng ), lat: parseFloat( imovel.lat ) } : {} );
     } else {
-      setNumero( null );
-      setSequencia( null );
-      setResponsavel( '' );
-      setComplemento( '' );
-      setTipoImovel( {} );
-      setQuarteirao( {} );
-      setLado( {} );
-      setLng( "" );
-      setLat( "" );
-      setLocalizacao( "" );
-      setMarcador( {} );
+      limparCampos();
     }
   }, [ imovel ]);
+
+  /**
+   * Esse effect analisa se o imóvel foi criado, se sim limpa os dados e fecha o
+   * modal
+   */
+  useEffect( () => {
+    if( props.created ) {
+      $( '#modal-imovel' ).modal( 'hide' );
+
+      limparCampos();
+      props.clearCreate();
+    }
+  }, [ props.created ] );
 
   /**
    * Toda vez que a variável quarteirao for alterada é consultado os lados
@@ -102,6 +106,23 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
 
     setOptionLado( options );
   }, [ lados ]);
+
+  /**
+   * Esta função limpa os campos do modal de imóvel
+   */
+  const limparCampos = () => {
+    setNumero( null );
+    setSequencia( null );
+    setResponsavel( '' );
+    setComplemento( '' );
+    setTipoImovel( {} );
+    setQuarteirao( {} );
+    setLado( {} );
+    setLng( "" );
+    setLat( "" );
+    setLocalizacao( "" );
+    setMarcador( {} );
+  }
 
   const limparClss = index => {
     let c = clss;
@@ -272,6 +293,7 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
                   onBlur={ () => limparClss( 'numero' ) }
                   value={ numero ? numero : "" }
                   type="number"
+                  pattern="[0-9]*"
                   onChange={ e => setNumero( e.target.value ) }
                   min="1"
                 />
@@ -285,6 +307,7 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
                   value={ sequencia ? sequencia : "" }
                   type="number"
                   className="form-control"
+                  pattern="[0-9]*"
                   onChange={ e => setSequencia( e.target.value ) }
                   min="1"
                 />
@@ -424,13 +447,15 @@ const mapStateToProps = state => ({
   reload      : state.imovel.reload,
   quarteiroes : state.quarteirao.quarteiroes,
   lados       : state.quarteirao.lados,
+  created     : state.imovel.created
 })
 
 const mapDispatchToProps = {
   getQuarteiroesMunicipioRequest,
   getLadosQuarteiraoRequest,
   addImovelRequest,
-  editarImovelRequest
+  editarImovelRequest,
+  clearCreate
 }
 
 export default connect(

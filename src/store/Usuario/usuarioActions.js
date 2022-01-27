@@ -15,7 +15,38 @@ export const ActionTypes = {
   UPDATE_ALL_USUARIO_REQUEST: "UPDATE_ALL_USUARIO_REQUEST",
   UPDATE_USUARIO_SUCCESS: "UPDATE_USUARIO_SUCCESS",
   CLEAR_UPDATE_USER: "CLEAR_UPDATE_USER",
-  CHANGE_USER_EDIT_INDEX: "CHANGE_USER_EDIT_INDEX"
+  CHANGE_USER_EDIT_INDEX: "CHANGE_USER_EDIT_INDEX",
+  VALIDAR_CPF_REQUEST: "VALIDAR_CPF_REQUEST",
+  SET_CPF_VALIDO: "SET_CPF_VALIDO",
+}
+
+/**
+ * Aciona o sagas a validação do CPF
+ * @param {string} cpf 
+ * @returns {Object}
+ */
+export const validarCpfRequest = ( cpf, usuario_id = undefined ) => {
+  return {
+    type: ActionTypes.VALIDAR_CPF_REQUEST,
+    payload: {
+      cpf,
+      usuario_id
+    }
+  }
+}
+
+/**
+ * Aciona o reduce para alterar a variável cpfValido
+ * @param {boolean} valido 
+ * @returns {Object}
+ */
+export const setCpfValido = valido => {
+  return {
+    type: ActionTypes.SET_CPF_VALIDO,
+    payload: {
+      valido,
+    }
+  }
 }
 
 export const getUsuariosRequest = municipio_id => {

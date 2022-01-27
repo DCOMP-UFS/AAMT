@@ -9,7 +9,7 @@ import sagas from './rootSagas';
 const persistConfig = {
   key: 'aamt',
   storage,
-  whitelist: [ 'usuario', 'appConfig', 'definirRotaCache', 'vistoriaCache', 'rotaCache' ]
+  whitelist: [ 'appConfig', 'definirRotaCache', 'vistoriaCache', 'rotaCache' ]
 }
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

@@ -79,3 +79,22 @@ export const getUsuarioByIdRequest = id => {
     ...headerAuthorization()
   });
 }
+
+/**
+ * Solicita valiação do CPF
+ * @param {Object} data 
+ * @returns {Object}
+ */
+export const validarCpfRequest = data => {
+  const { cpf, usuario_id } = data;
+  return api.post(
+    `/usuarios/validarCpf`, 
+    {
+      cpf,
+      usuario_id
+    },
+    {
+      ...headerAuthorization()
+    }
+  );
+}

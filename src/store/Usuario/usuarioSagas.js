@@ -116,6 +116,23 @@ export function* updateUsuario( action ) {
   }
 }
 
+export function* validarCpf( action ) {
+  try {
+    const { data, status } = yield call( servico.validarCpfRequest, action.payload );
+
+    if( status === 200 ) {
+      yield put( UsuarioActions.setCpfValido( data.valido ) );
+      if( !data.valido )
+        yield put( AppConfigActions.showNotifyToast( data.mensagem, "error" ) );
+    } else {
+      yield put( UsuarioActions.setCpfValido( false ) );
+      yield put( AppConfigActions.showNotifyToast( "Falha ao tentar validar CPF: " + status, "error" ) );
+    }
+  } catch (error) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao tentar validar CPF, favor verifique sua conexão com a internet", "error" ) );
+  }
+}
+
 function* watchAuthenticate() {
   yield takeLatest( AppConfigActions.ActionTypes.AUTHENTICATE_REQUEST, authenticate );
 }
@@ -148,6 +165,10 @@ function* watchUpdateEveryUsuario() {
   yield takeEvery( UsuarioActions.ActionTypes.UPDATE_ALL_USUARIO_REQUEST, updateUsuario );
 }
 
+function* watchValidarCpf() {
+  yield takeEvery( UsuarioActions.ActionTypes.VALIDAR_CPF_REQUEST, validarCpf );
+}
+
 export function* usuarioSaga() {
   yield all( [
     watchAuthenticate(),
@@ -158,5 +179,6 @@ export function* usuarioSaga() {
     watchCreateUsuario(),
     watchUpdateUsuario(),
     watchUpdateEveryUsuario(),
+    watchValidarCpf(),
   ] );
 }

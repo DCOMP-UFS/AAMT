@@ -4,7 +4,8 @@ import { Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
 import ButtonSave from '../../components/ButtonSave';
 import { perfil } from '../../config/enumerate';
-import { FaUsers } from 'react-icons/fa';
+import { cpfMask } from '../../config/mask';
+import { FaUsers, FaSpinner, FaCheck, FaTimes } from 'react-icons/fa';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -12,7 +13,13 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../store/Sidebar/sidebarActions';
-import { updateUsuarioRequest, getUsuarioByIdRequest, clearUpdateUser } from '../../store/Usuario/usuarioActions';
+import {
+  updateUsuarioRequest,
+  getUsuarioByIdRequest,
+  validarCpfRequest,
+  clearUpdateUser,
+  setCpfValido,
+} from '../../store/Usuario/usuarioActions';
 import { getNationsRequest } from '../../store/Pais/paisActions';
 import { GetRegionsByNationRequest } from '../../store/Regiao/regiaoActions';
 import { GetStatesByRegionRequest } from '../../store/Estado/estadoActions';
@@ -20,34 +27,35 @@ import { getRegionalHealthByStateRequest } from '../../store/RegionalSaude/regio
 import { getCityByRegionalHealthRequest } from '../../store/Municipio/municipioActions';
 
 // STYLES
-import { FormGroup, selectDefault } from '../../styles/global';
+import { FormGroup, selectDefault, InputGroup } from '../../styles/global';
 import { ContainerFixed, PageIcon, PageHeader } from '../../styles/util';
 
 function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequest, ...props }) {
-  const [ id ] = useState(props.match.params.id);
-  const [ nome, setNome ] = useState("");
-  const [ cpf, setCpf ] = useState("");
-  const [ rg, setRg ] = useState("");
-  const [ email, setEmail ] = useState("");
-  const [ celular, setCelular ] = useState("");
-  const [ usuario, setUsuario ] = useState("");
-  const [ ativo, setAtivo ] = useState("");
-  const [ tipoPerfil, setTipoPerfil ] = useState({});
-  const [ pais, setPais ] = useState({});
-  const [ optionPais ] = useState([]);
-  const [ regiao, setRegiao ] = useState({});
-  const [ optionRegiao, setOptionRegiao ] = useState([]);
-  const [ estado, setEstado ] = useState({});
-  const [ optionEstado, setOptionEstado ] = useState([]);
-  const [ regionalSaude, setRegionalSaude ] = useState({});
-  const [ optionRegionalSaude, setOptionRegionalSaude ] = useState([]);
-  const [ municipio, setMunicipio ] = useState({});
-  const [ optionMunicipio, setOptionMunicipio ] = useState([]);
-  const [ userRegiao, setUserRegiao ] = useState({});
-  const [ userEstado, setUserEstado ] = useState({});
-  const [ userRegionalSaude, setUserRegionalSaude ] = useState({});
-  const [ userMunicipio, setUserMunicipio ] = useState({});
-  const [ flBtnLoading, setFlBtnLoading ] = useState( false );
+  const [ id ]                                          = useState( props.match.params.id );
+  const [ nome, setNome ]                               = useState( "" );
+  const [ cpf, setCpf ]                                 = useState( "" );
+  const [ rg, setRg ]                                   = useState( "" );
+  const [ email, setEmail ]                             = useState( "" );
+  const [ celular, setCelular ]                         = useState( "" );
+  const [ usuario, setUsuario ]                         = useState( "" );
+  const [ ativo, setAtivo ]                             = useState( "" );
+  const [ tipoPerfil, setTipoPerfil ]                   = useState( {} );
+  const [ pais, setPais ]                               = useState( {} );
+  const [ optionPais ]                                  = useState( [] );
+  const [ regiao, setRegiao ]                           = useState( {} );
+  const [ optionRegiao, setOptionRegiao ]               = useState( [] );
+  const [ estado, setEstado ]                           = useState( {} );
+  const [ optionEstado, setOptionEstado ]               = useState( [] );
+  const [ regionalSaude, setRegionalSaude ]             = useState( {} );
+  const [ optionRegionalSaude, setOptionRegionalSaude ] = useState( [] );
+  const [ municipio, setMunicipio ]                     = useState( {} );
+  const [ optionMunicipio, setOptionMunicipio ]         = useState( [] );
+  const [ userRegiao, setUserRegiao ]                   = useState( {} );
+  const [ userEstado, setUserEstado ]                   = useState( {} );
+  const [ userRegionalSaude, setUserRegionalSaude ]     = useState( {} );
+  const [ userMunicipio, setUserMunicipio ]             = useState( {} );
+  const [ flBtnLoading, setFlBtnLoading ]               = useState( false );
+  const [ loadingCpf, setLoadingCpf ]                   = useState( false );
 
   const optionPerfil = Object.entries(perfil)
     .filter( ([ key, value ]) => {
@@ -200,6 +208,21 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
     }
   }, [ props.update ]);
 
+  useEffect( () => {
+    if( props.cpfValido || props.cpfValido === false )
+      setLoadingCpf( false );
+  }, [ props.cpfValido ] );
+
+  /**
+   * Essa função aciona o action para validação do CPF
+   */
+  const validarCpf = () => {
+    setLoadingCpf( true );
+
+    props.setCpfValido( null );
+    props.validarCpfRequest( cpf, id );
+  }
+
   function handleSubmit( e ) {
     e.preventDefault();
     setFlBtnLoading( true );
@@ -263,7 +286,34 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
                       <Col sm="6">
                         <FormGroup>
                           <label htmlFor="cpf">CPF <code>*</code></label>
-                          <input id="cpf" value={ cpf } className="form-control" onChange={ e => setCpf(e.target.value) }  required />
+                          <InputGroup className="right">
+                            <input 
+                              id="cpf" 
+                              value={ cpf } 
+                              className={ `form-control ${ props.cpfValido === false ? 'invalid' : '' }` }
+                              maxLength="14"
+                              onChange={ e => setCpf( cpfMask( e.target.value ) ) }
+                              onBlur={ validarCpf }
+                              required 
+                            />
+                            <div className="field-icon right">
+                              {
+                                props.cpfValido && !loadingCpf ?
+                                  <FaCheck className="success" /> :
+                                  <div />
+                              }
+                              {
+                                props.cpfValido === false && !loadingCpf ?
+                                  <FaTimes className="error" /> :
+                                  <div />
+                              }
+                              {
+                                loadingCpf ?
+                                  <FaSpinner className="loading" /> :
+                                  <div />
+                              }
+                            </div>
+                          </InputGroup>
                         </FormGroup>
                       </Col>
                       <Col sm="6">
@@ -421,7 +471,7 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
   );
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = state => ( {
   municipios: state.municipio.municipios,
   usuarioUpdate: state.usuario.usuarioUpdate,
   paises: state.pais.paises,
@@ -429,8 +479,9 @@ const mapStateToProps = state => ({
   estados: state.estado.estados,
   regionaisSaude: state.regionalSaude.regionaisSaude,
   municipiosList: state.municipio.municipiosList,
-  update: state.usuario.updateUser
-});
+  update: state.usuario.updateUser,
+  cpfValido: state.usuario.cpfValido,
+} );
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
@@ -442,7 +493,9 @@ const mapDispatchToProps = dispatch =>
     GetStatesByRegionRequest,
     getRegionalHealthByStateRequest,
     getCityByRegionalHealthRequest,
-    clearUpdateUser
+    clearUpdateUser,
+    validarCpfRequest,
+    setCpfValido,
   }, dispatch);
 
 export default connect(

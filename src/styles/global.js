@@ -668,6 +668,48 @@ export const CardDark = styled.div`
   }
 `;
 
+export const InputGroup = styled.div`
+  display: flex;
+
+  &.right {
+    .form-control {
+      border-right: 0;
+      border-top-right-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+
+  .field-icon {
+    width: 50px;
+    border: 1px solid ${ Color.border_input };
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .loading {
+      animation: spinner-border .75s linear infinite;
+      font-size: 1.3rem;
+    }
+    
+    .success {
+      color: ${ Color.success };
+      font-size: 1.3rem;
+    }
+    
+    .error {
+      color: ${ Color.danger };
+      font-size: 1.3rem;
+    }
+  }
+
+  .field-icon.right {
+    border-left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+`;
+
 export const FormGroup = styled.div`
   margin-bottom: 1.5rem;
 

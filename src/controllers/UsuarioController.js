@@ -1,6 +1,8 @@
-const express         = require( 'express' );
-const bcrypt          = require( 'bcryptjs' );
-const { Op }          = require( 'sequelize' );
+const express               = require( 'express' );
+const bcrypt                = require( 'bcryptjs' );
+const { Op }                = require( 'sequelize' );
+const { cpf: cpfValidador } = require( 'cpf-cnpj-validator' ); 
+
 const authMiddleware  = require( '../middlewares/auth' );
 const Atuacao         = require( '../models/Atuacao' );
 const Usuario         = require( '../models/Usuario' );
@@ -40,7 +42,7 @@ index = async ( req, res ) => {
 getUserById = async ( req, res ) => {
   const { id } = req.params;
   const userId = req.userId
-  const allow = await allowFunction( req.userId, 'manter_usuario' );
+  const allow = await allowFunction( req.userId, 'manter_usuario', 'manter_usuario_municipio' );
 
   if( userId !== parseInt(id) && !allow ) 
     return res.status(403).json({ error: 'Acesso negado' });
@@ -338,13 +340,45 @@ update = async (req, res) => {
   });
 }
 
-router.use(authMiddleware);
+/**
+ * Essa função verifica se o CPF do usuário é válido ou não.
+ */
+validar_cpf = async ( req, res ) => {
+  let { cpf, usuario_id } = req.body;
 
-router.get('/', index);
-router.get('/:id', getUserById);
-router.get('/:municipio_id/municipios', listByCity);
-router.get('/:regionalSaude_id/regionaisSaude', getUsersByRegional);
-router.post('/', store);
-router.put('/:id', update);
+  // Verificando se o CPF informado é um número
+  cpf = cpf.replace( /\D/g, '' );
+  if( isNaN( parseFloat( cpf ) ) && !isFinite( cpf ) )
+    return res.json( { valido: false, mensagem: "Formato de CPF inválido" } );
 
-module.exports = app => app.use('/usuarios', router);
+  // Verificando se o CPF é válido
+  const valido = cpfValidador.isValid( cpf );
+  if( !valido )
+    return res.json( { valido: false, mensagem: "CPF inválido" } );
+
+  // Verificando se o CPF já ta cadastraddo
+  const usuario = await Usuario.findOne( {
+    where: {
+      cpf: cpfValidador.format( cpf )
+    }
+  } );
+
+  if( usuario ) {
+    if( !usuario_id || usuario_id != usuario.id )
+      return res.json( { valido: false, mensagem: "CPF já cadastrado" } );
+  }
+
+  return res.json( { valido: true, mensagem: "CPF válido" } );
+}
+
+router.use( authMiddleware );
+
+router.get( '/', index );
+router.get( '/:id', getUserById );
+router.get( '/:municipio_id/municipios', listByCity );
+router.get( '/:regionalSaude_id/regionaisSaude', getUsersByRegional );
+router.post( '/', store );
+router.post( '/validarCpf', validar_cpf );
+router.put( '/:id', update );
+
+module.exports = app => app.use( '/usuarios', router );

@@ -10,7 +10,6 @@ class Laboratorio extends Model {
       nome            : DataTypes.STRING,
       endereco        : DataTypes.STRING,
       tipoLaboratorio : DataTypes.ENUM( 'sede', 'privado' ),
-      ativo           : DataTypes.BOOLEAN,
     }, {
       sequelize,
       tableName: 'laboratorios'

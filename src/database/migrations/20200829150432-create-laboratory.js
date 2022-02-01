@@ -21,11 +21,6 @@ module.exports = {
           type: Sequelize.ENUM( 'sede', 'privado' ),
           allowNull: false,
         },
-        ativo:{
-          type: Sequelize.BOOLEAN,
-          defaultValue: true,
-          allowNull: false,
-        },
         created_at: {
           type: Sequelize.DATE,
           allowNull: false,

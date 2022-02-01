@@ -13,7 +13,6 @@ module.exports = {
                 cnpj: {
                     type: Sequelize.BIGINT,
                     allowNull: false,
-                    unique: true,
                     references: {model: 'laboratorios', key: 'cnpj'},
                     onUpdate: 'CASCADE',
                     onDelete: 'CASCADE'
@@ -25,6 +24,11 @@ module.exports = {
                     onUpdate: 'CASCADE',
                     onDelete: 'CASCADE'
                 },
+                ativo:{
+                    type: Sequelize.BOOLEAN,
+                    defaultValue: true,
+                    allowNull: false,
+                  },
                 created_at: {
                     type: Sequelize.DATE,
                     allowNull: false,

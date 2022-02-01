@@ -5,6 +5,7 @@ class LaboratorioMunicipio extends Model {
     super.init({
       cnpj: DataTypes.BIGINT,
       municipio_id: DataTypes.INTEGER,
+      ativo           : DataTypes.BOOLEAN,
     }, {
       sequelize,
       tableName: 'laboratorios_municipios'

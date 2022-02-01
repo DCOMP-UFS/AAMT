@@ -28,7 +28,6 @@ export default function Laboratorio( state = INITIAL_STATE, action ) {
         createdAt       : action.payload.data.createdAt,
         updatedAt       : action.payload.data.updatedAt
       }
-
       laboratorios = [ laboratorio, ...laboratorios ];
       return{
         ...state,

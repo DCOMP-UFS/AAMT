@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from 'react';
-import Modal, { ModalBody, ModalFooter } from '../../components/Modal';
-import $ from 'jquery';
+import React, { useState, useEffect } from 'react';
+import { Modal } from 'react-bootstrap';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -17,7 +16,7 @@ import { Laboratorio } from '../../config/models';
 // STYLES
 import { Button } from '../../styles/global';
 
-function ModalDisabled( props ) {
+function ModalDisabled( { show, handleClose, municipio, ...props } ) {
   function handleClick() {
     props.tableSelected.forEach( row => {
       const lab = props.laboratorios[ row.dataIndex ];
@@ -28,31 +27,22 @@ function ModalDisabled( props ) {
         endereco: lab.endereco,
         tipoLaboratorio: lab.tipoLaboratorio,
         ativo: false,
+        municipio_id: municipio.id
       }));
+    handleClose();
     })}
 
-    //props.clearUpdate();
-  
- 
-  useEffect(() => {
-    //props.clearUpdate();
-  }, []);
-
-  useEffect(() => {
-    if( props.updated ) {
-      $('#modal-desativar-laboratorio').modal('hide');
-    }
-  }, [ props.updated ]);
 
   return(
-    <Modal id="modal-desativar-laboratorio" title="Desativar Laboratorios(s)" centered={ true }>
-      <ModalBody>
+    <Modal show={ show } onHide={ handleClose } id="modal-desativar-laboratorio" title="Desativar Laboratorios(s)" centered={ true } >
+      <Modal.Header closeButton></Modal.Header>
+      <Modal.Body>
         <p>Deseja desativar o(s) laboratorios(s)?</p>
-      </ModalBody>
-      <ModalFooter>
+      </Modal.Body>
+      <Modal.Footer>
         <Button className="secondary" data-dismiss="modal">Cancelar</Button>
         <Button className="danger" onClick={ handleClick }>Confirmar</Button>
-      </ModalFooter>
+      </Modal.Footer>
     </Modal>
   );
 }
@@ -60,6 +50,7 @@ function ModalDisabled( props ) {
 const mapStateToProps = state => ({
   tableSelected: state.supportInfo.tableSelection.tableLocation,
   laboratorios: state.nw_laboratorio.laboratorios,
+  municipio : state.appConfig.usuario.municipio,
   updated: state.nw_laboratorio.updated
 });
 

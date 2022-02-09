@@ -10,7 +10,7 @@ export const authenticateRequest = data => {
 }
 
 export const createUsuarioRequest = data => {
-  const { nome, cpf, rg, email, celular, usuario, senha, tipoPerfil, regionalSaude_id, municipio_id } = data;
+  const { nome, cpf, email, celular, usuario, senha, tipoPerfil, regionalSaude_id, municipio_id } = data;
 
   let local_id = null;
   switch (tipoPerfil) {
@@ -26,7 +26,6 @@ export const createUsuarioRequest = data => {
   return api.post(`/usuarios/`, {
     nome,
     cpf,
-    rg,
     email,
     celular,
     usuario,
@@ -91,6 +90,44 @@ export const validarCpfRequest = data => {
     `/usuarios/validarCpf`, 
     {
       cpf,
+      usuario_id
+    },
+    {
+      ...headerAuthorization()
+    }
+  );
+}
+
+/**
+ * Solicita valiação do e-mail
+ * @param {Object} data 
+ * @returns {Object}
+ */
+export const validarEmailRequest = data => {
+  const { email, usuario_id } = data;
+  return api.post(
+    `/usuarios/validarEmail`, 
+    {
+      email,
+      usuario_id
+    },
+    {
+      ...headerAuthorization()
+    }
+  );
+}
+
+/**
+ * Solicita valiação do e-mail
+ * @param {Object} data 
+ * @returns {Object}
+ */
+export const validarUsuarioRequest = data => {
+  const { usuario, usuario_id } = data;
+  return api.post(
+    `/usuarios/validarUsuario`, 
+    {
+      usuario,
       usuario_id
     },
     {

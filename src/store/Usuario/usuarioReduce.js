@@ -8,6 +8,8 @@ const INITIAL_STATE = {
   createUser: null,
   updateUser: null,
   cpfValido: null,
+  emailValido: null,
+  usuarioValido: null,
   reload: false
 }
 
@@ -120,6 +122,20 @@ export default function Usuario(state = INITIAL_STATE, action) {
       return {
         ...state,
         cpfValido: action.payload.valido
+      }
+    }
+
+    case ActionTypes.SET_EMAIL_VALIDO: {
+      return {
+        ...state,
+        emailValido: action.payload.valido
+      }
+    }
+
+    case ActionTypes.SET_USUARIO_VALIDO: {
+      return {
+        ...state,
+        usuarioValido: action.payload.valido
       }
     }
 

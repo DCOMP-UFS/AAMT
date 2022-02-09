@@ -123,13 +123,51 @@ export function* validarCpf( action ) {
     if( status === 200 ) {
       yield put( UsuarioActions.setCpfValido( data.valido ) );
       if( !data.valido )
-        yield put( AppConfigActions.showNotifyToast( data.mensagem, "error" ) );
+        yield put( AppConfigActions.showNotifyToast( data.mensagem, "warning" ) );
     } else {
       yield put( UsuarioActions.setCpfValido( false ) );
       yield put( AppConfigActions.showNotifyToast( "Falha ao tentar validar CPF: " + status, "error" ) );
     }
   } catch (error) {
     yield put( AppConfigActions.showNotifyToast( "Erro ao tentar validar CPF, favor verifique sua conexão com a internet", "error" ) );
+  }
+}
+
+export function* validarEmail( action ) {
+  try {
+    const { data, status } = yield call( servico.validarEmailRequest, action.payload );
+
+    if( status === 200 ) {
+      yield put( UsuarioActions.setEmailValido( data.valido ) );
+      if( !data.valido )
+        yield put( AppConfigActions.showNotifyToast( data.mensagem, "warning" ) );
+    } else {
+      yield put( UsuarioActions.setEmailValido( false ) );
+      yield put( AppConfigActions.showNotifyToast( "Falha ao tentar validar e-mail: " + status, "error" ) );
+    }
+  } catch (error) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao tentar validar e-mail, favor verifique sua conexão com a internet", "error" ) );
+  }
+}
+
+export function* validarUsuario( action ) {
+  try {
+    const { data, status } = yield call( servico.validarUsuarioRequest, action.payload );
+
+    if( status === 200 ) {
+      yield put( UsuarioActions.setUsuarioValido( data.valido ) );
+      if( !data.valido )
+        yield put( AppConfigActions.showNotifyToast( data.mensagem, "warning" ) );
+    } else {
+      yield put( UsuarioActions.setUsuarioValido( false ) );
+
+      if( data.mensagem )
+        yield put( AppConfigActions.showNotifyToast( data.mensagem, "error" ) );
+      else
+        yield put( AppConfigActions.showNotifyToast( "Falha ao tentar validar usuário: " + status, "error" ) );
+    }
+  } catch ( error ) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao tentar validar e-mail, favor verifique sua conexão com a internet", "error" ) );
   }
 }
 
@@ -169,6 +207,14 @@ function* watchValidarCpf() {
   yield takeEvery( UsuarioActions.ActionTypes.VALIDAR_CPF_REQUEST, validarCpf );
 }
 
+function* watchValidarEmail() {
+  yield takeEvery( UsuarioActions.ActionTypes.VALIDAR_EMAIL_REQUEST, validarEmail );
+}
+
+function* watchValidarUsuario() {
+  yield takeEvery( UsuarioActions.ActionTypes.VALIDAR_USUARIO_REQUEST, validarUsuario );
+}
+
 export function* usuarioSaga() {
   yield all( [
     watchAuthenticate(),
@@ -180,5 +226,7 @@ export function* usuarioSaga() {
     watchUpdateUsuario(),
     watchUpdateEveryUsuario(),
     watchValidarCpf(),
+    watchValidarEmail(),
+    watchValidarUsuario(),
   ] );
 }

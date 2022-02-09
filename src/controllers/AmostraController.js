@@ -22,7 +22,7 @@ router.use(authMiddleware);
 getSampleBySurpervision = async ( req, res ) => {
   const { id } = req.params;
 
-  const allow = await allowFunction( req.userId, 'definir_trabalho_diario' );
+  const allow = await allowFunction( req.userId, 'visualizar_amostra' );
   if( !allow )
     return res.status( 403 ).json( { error: 'Acesso negado' } );
 
@@ -161,7 +161,7 @@ getSampleBySurpervision = async ( req, res ) => {
 sendSample = async ( req, res ) => {
   const { amostras, laboratorio_id } = req.body;
 
-  const allow = await allowFunction( req.userId, 'definir_trabalho_diario' );
+  const allow = await allowFunction( req.userId, 'encaminhar_amostra' );
   if( !allow )
     return res.status(403).json({ error: 'Acesso negado' });
 
@@ -188,7 +188,7 @@ sendSample = async ( req, res ) => {
 insertExamination = async ( req, res ) => {
   const { id, situacaoAmostra, exemplares } = req.body;
 
-  const allow = await allowFunction( req.userId, 'definir_trabalho_diario' );
+  const allow = await allowFunction( req.userId, 'realizar_exame_amostra' );
   if( !allow )
     return res.status( 403 ).json({ error: 'Acesso negado' });
 
@@ -218,4 +218,4 @@ router.get( '/:id', getSampleBySurpervision );
 router.post( '/enviar', sendSample );
 router.post( '/examinar', insertExamination );
 
-module.exports = app => app.use('/amostras', router);
+module.exports = app => app.use( '/amostras', router );

@@ -80,7 +80,6 @@ authenticate = async ( req, res ) => {
       id: user.id,
       nome: user.nome,
       cpf: user.cpf,
-      rg: user.rg,
       email: user.email,
       usuario: user.usuario,
       ativo: user.ativo,

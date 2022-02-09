@@ -5,8 +5,8 @@ class Usuario extends Model {
     super.init({
       nome: DataTypes.STRING,
       cpf:DataTypes.STRING,
-      rg: DataTypes.STRING,
       email: DataTypes.STRING,
+      celular: DataTypes.STRING,
       usuario: DataTypes.STRING,
       senha: DataTypes.STRING,
       ativo: DataTypes.INTEGER
@@ -19,11 +19,6 @@ class Usuario extends Model {
     this.hasMany( models.Atuacao, { foreignKey: 'usuario_id', as: 'atuacoes' } );
     this.hasMany( models.TrabalhoDiario, { foreignKey: 'usuario_id', as: 'trabalhosDiarios' } );
     this.hasMany( models.TrabalhoDiario, { foreignKey: 'supervisor_id', as: 'planejamentos' } );
-    // this.belongsToMany( models.Equipe, {
-    //   through: 'membros',
-    //   as: 'equipes',
-    //   foreignKey: 'usuario_id'
-    // });
   }
 }
 

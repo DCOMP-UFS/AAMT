@@ -18,7 +18,7 @@ const getAllUsersByRegional     = require( '../util/getAllUsersByRegional' );
 const router = express.Router();
 
 index = async ( req, res ) => {
-  const allow = await allowFunction( req.userId, 'manter_usuario' );
+  const allow = await allowFunction( req.userId, 'manter_usuario', 'manter_usuario_municipio' );
 
   if( !allow ) {
     return res.status(403).json({ error: 'Acesso negado' });
@@ -39,48 +39,53 @@ index = async ( req, res ) => {
   return res.json( usuarios );
 }
 
+/**
+ * Esta função consulta um usuário pelo seu ID
+ * @params {Integer} id
+ * @returns {Object} usuario
+ */
 getUserById = async ( req, res ) => {
   const { id } = req.params;
   const userId = req.userId
   const allow = await allowFunction( req.userId, 'manter_usuario', 'manter_usuario_municipio' );
 
-  if( userId !== parseInt(id) && !allow ) 
-    return res.status(403).json({ error: 'Acesso negado' });
+  if( userId !== parseInt( id ) && !allow ) 
+    return res.status( 403 ).json({ error: 'Acesso negado' });
 
   const usuario = await Usuario.findByPk( id, { 
     include: { 
       association: 'atuacoes',
       attributes: { exclude: [ 'createdAt', 'updatedAt', 'usuario_id' ] } 
     }
-  });
+  } );
   
-  if(!usuario) 
-    return res.status(400).send({ error: 'Usuário não encontrado' });
+  if( !usuario ) 
+    return res.status( 400 ).send({ error: 'Usuário não encontrado' });
 
   usuario.senha = undefined;
 
   // Consultando os locais do usuário de acordo com sua atuação
   const locais = await getLocationByOperation( usuario.atuacoes );
 
-  res.send({ 
+  res.send( { 
     id: usuario.id,
     nome: usuario.nome,
     cpf: usuario.cpf,
-    rg: usuario.rg,
     email: usuario.email,
+    celular: usuario.celular,
     usuario: usuario.usuario,
     ativo: usuario.ativo,
     ...locais,
     createdAt: usuario.createdAt,
     updatedAt: usuario.updatedAt,
     atuacoes: usuario.atuacoes
-  });
+  } );
 }
 
 getUsersByRegional = async ( req, res ) => {
   const { regionalSaude_id } = req.params;
   const userId = req.userId
-  const allow = await allowFunction( userId, 'manter_usuario' );
+  const allow = await allowFunction( userId, 'manter_usuario', 'manter_usuario_municipio' );
 
   if( !allow ) 
     return res.status(403).json({ error: 'Acesso negado' });
@@ -135,7 +140,6 @@ listByCity = async ( req, res ) => {
       id: u.id,
       nome: u.nome,
       cpf: u.cpf,
-      rg: u.rg,
       email: u.email,
       usuario: u.usuario,
       ativo: u.ativo,
@@ -153,7 +157,6 @@ store = async ( req, res ) => {
   const { 
     nome,
     cpf,
-    rg,
     celular,
     email,
     usuario,
@@ -171,18 +174,17 @@ store = async ( req, res ) => {
   let user = {};
   
   try {
-    user = await Usuario.create( { 
+    user = await Usuario.create( {
       nome,
       cpf,
-      rg,
-      celular,
       email,
+      celular,
       usuario,
       senha: senhaHash,
       ativo: 1
     } );
   } catch( e ) {
-    return res.status( 400 ).json( { error: "Usuário, CPF, RG ou e-mail já existe na base" } );
+    return res.status( 400 ).json( { error: "Usuário, CPF ou e-mail já existe na base" } );
   }
 
   let at = [];
@@ -259,7 +261,7 @@ update = async (req, res) => {
   const { id } = req.params;
   const { atuacoes, ...body } = req.body;
   const userId = req.userId;
-  const allow = await allowFunction( req.userId, 'manter_usuario' );
+  const allow = await allowFunction( req.userId, 'manter_usuario', 'manter_usuario_municipio' );
 
   if( userId !== parseInt(id) && !allow ) 
     return res.status(403).json({ error: 'Acesso negado' });
@@ -285,14 +287,14 @@ update = async (req, res) => {
   );
 
   if( isRejected )
-    return res.status(400).json({ error: 'Não foi possível atualizar usuário' });
+    return res.status( 400 ).json({ error: 'Não foi possível atualizar usuário' });
 
   if( atuacoes ) {
-    await Atuacao.destroy({
+    await Atuacao.destroy( {
       where: {
         usuario_id: id
       }
-    });
+    } );
 
     for (atuacao of atuacoes) {
       const { tipoPerfil, local_id } = atuacao;
@@ -307,12 +309,12 @@ update = async (req, res) => {
           break;
       }
   
-      const result = await Atuacao.create({
+      const result = await Atuacao.create( {
         usuario_id: id,
         tipoPerfil,
         local_id,
         escopo
-      });
+      } );
     }
   }
 
@@ -321,15 +323,14 @@ update = async (req, res) => {
       association: 'atuacoes',
       attributes: { exclude: [ 'createdAt', 'updatedAt', 'usuario_id' ] } 
     }
-  });
+  } );
 
   const locais = await getLocationByOperation( result.dataValues.atuacoes );
 
-  return res.json({
+  return res.json( {
     id: result.id,
     nome: result.nome,
     cpf: result.cpf,
-    rg: result.rg,
     email: result.email,
     usuario: result.usuario,
     ativo: result.ativo,
@@ -337,13 +338,13 @@ update = async (req, res) => {
     createdAt: result.createdAt,
     updatedAt: result.updatedAt,
     atuacoes: result.atuacoes
-  });
+  } );
 }
 
 /**
  * Essa função verifica se o CPF do usuário é válido ou não.
  */
-validar_cpf = async ( req, res ) => {
+validarCpf = async ( req, res ) => {
   let { cpf, usuario_id } = req.body;
 
   // Verificando se o CPF informado é um número
@@ -371,6 +372,48 @@ validar_cpf = async ( req, res ) => {
   return res.json( { valido: true, mensagem: "CPF válido" } );
 }
 
+/**
+ * Essa função verifica se o e-mail já existe na base.
+ */
+validarEmail = async ( req, res ) => {
+  let { email, usuario_id } = req.body;
+
+  // Verificando se o CPF já ta cadastraddo
+  const usuario = await Usuario.findOne( {
+    where: {
+      email
+    }
+  } );
+
+  if( usuario ) {
+    if( !usuario_id || usuario_id != usuario.id )
+      return res.json( { valido: false, mensagem: "E-mail já cadastrado" } );
+  }
+
+  return res.json( { valido: true, mensagem: "E-mail válido" } );
+}
+
+/**
+ * Essa função verifica se o campo usuário já existe na base.
+ */
+validarUsuario = async ( req, res ) => {
+  let { usuario, usuario_id } = req.body;
+
+  // Verificando se o CPF já ta cadastraddo
+  const response = await Usuario.findOne( {
+    where: {
+      usuario
+    }
+  } );
+
+  if( response ) {
+    if( !usuario_id || usuario_id != response.id )
+      return res.json( { valido: false, mensagem: "Nome de usuário já cadastrado" } );
+  }
+
+  return res.json( { valido: true, mensagem: "Nome de usuário válido" } );
+}
+
 router.use( authMiddleware );
 
 router.get( '/', index );
@@ -378,7 +421,9 @@ router.get( '/:id', getUserById );
 router.get( '/:municipio_id/municipios', listByCity );
 router.get( '/:regionalSaude_id/regionaisSaude', getUsersByRegional );
 router.post( '/', store );
-router.post( '/validarCpf', validar_cpf );
+router.post( '/validarCpf', validarCpf );
+router.post( '/validarEmail', validarEmail );
+router.post( '/validarUsuario', validarUsuario );
 router.put( '/:id', update );
 
 module.exports = app => app.use( '/usuarios', router );

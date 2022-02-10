@@ -47,3 +47,5 @@ R.: O papel do supervisor e só de supervisionar os trabalhados executados e nã
 
 ### Reunião de 10/02/2022
 14. Porquer o laboratório retornou a ter o ID como chave primarária e não CNPJ?
+R.: - Voltar como ID para que seja possível editar CNPJ, caso seja digitado errado;
+    - ID deve ser primary key e CNPJ deve ser unique;

@@ -38,11 +38,12 @@ R.: Cada município é responsável de fazer seus análises, ficando do lacen fa
 ### Reunião de 12/01/2022
 
 [EM ABERTO]
-1. A troca de perfil necessita de validação antes de trocar um perfil de escopo municipal?
+12. A troca de perfil necessita de validação antes de trocar um perfil de escopo municipal?
 R.: Sim, é necessário verificar se o usuário em questão está com um trabalho diário ou uma equipe para supervisionar em aberto.
 
 [EM ABERTO]
-2. O supervisor de uma equipe poderá planejar uma rota para si mesmo (acúmulo de atuação enquanto agente e supervisor)?
+13. O supervisor de uma equipe poderá planejar uma rota para si mesmo (acúmulo de atuação enquanto agente e supervisor)?
 R.: O papel do supervisor e só de supervisionar os trabalhados executados e não executar. (Validado com Oliveira)
 
-### Reunião de 26/01/2022
+### Reunião de 10/02/2022
+14. Porquer o laboratório retornou a ter o ID como chave primarária e não CNPJ?

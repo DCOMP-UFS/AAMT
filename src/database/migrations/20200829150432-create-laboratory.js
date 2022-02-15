@@ -4,9 +4,14 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable(
       'laboratorios', { 
+        id: {
+          type: Sequelize.INTEGER,
+          primaryKey: true,
+          allowNull: false,
+          autoIncrement: true
+        },
         cnpj: {
           type: Sequelize.BIGINT,
-          primaryKey: true,
           allowNull: false,
         },
         nome: {

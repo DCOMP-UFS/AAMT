@@ -117,6 +117,7 @@ getSampleBySurpervision = async ( req, res ) => {
   } );
 
   let amostras = await Amostra.findAll( {
+    attributes: {exclude: ['cnpj']},
     include: [
       {
         association: 'deposito',
@@ -214,7 +215,23 @@ insertExamination = async ( req, res ) => {
   });
 }
 
+/**
+ * Essa função retorna todas as amostras de um laboratório
+ */
+getSamplesByLab = async (req, res) => {
+  const { laboratorio_cnpj } = req.params;
+
+  const amostras = await Amostra.findAll({
+    where: {laboratorio_cnpj: null},
+    attributes: {exclude: ['cnpj']},
+  });
+  
+  console.log(amostras)
+  res.json( amostras );
+}
+
 router.get( '/:id', getSampleBySurpervision );
+router.get( '/laboratorio/:laboratorio_cnpj', getSamplesByLab);
 router.post( '/enviar', sendSample );
 router.post( '/examinar', insertExamination );
 

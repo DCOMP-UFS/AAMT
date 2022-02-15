@@ -10,10 +10,10 @@ module.exports = {
                     primaryKey: true,
                     allowNull: false
                 },
-                cnpj: {
-                    type: Sequelize.BIGINT,
+                laboratorio_id: {
+                    type: Sequelize.INTEGER,
                     allowNull: false,
-                    references: {model: 'laboratorios', key: 'cnpj'},
+                    references: {model: 'laboratorios', key: 'id'},
                     onUpdate: 'CASCADE',
                     onDelete: 'CASCADE'
                 },

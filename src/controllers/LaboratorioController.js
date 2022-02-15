@@ -22,6 +22,7 @@ getLaboratorio = async ( req, res ) => {
     where: { municipio_id : municipio_id },
     attributes:{
         include: [
+          [Sequelize.col('laboratorios.cnpj'), 'cnpj'],
           [Sequelize.col('laboratorios.nome'), 'nome'],
           [Sequelize.col('laboratorios.endereco'), 'endereco'],
           [Sequelize.col('laboratorios.tipo_laboratorio'), 'tipoLaboratorio']
@@ -46,9 +47,12 @@ getLaboratorio = async ( req, res ) => {
 createLaboratorio = async( req, res ) => {
   const { cnpj, nome, endereco, tipoLaboratorio, municipio_id } = req.body;
 
-  let laboratorio = await Laboratorio.findByPk( cnpj );
-  if( laboratorio )
-    res.status( 400 ).json( {  error: "CNPJ já existe" } );
+  const userId = req.userId;
+
+  const allow = await allowFunction( userId, 'manter_laboratorio' );
+  if( !allow ) {
+    return res.status(403).json({ error: 'Acesso negado' });
+  }
 
   laboratorio = await Laboratorio.create( {
     cnpj,
@@ -56,9 +60,9 @@ createLaboratorio = async( req, res ) => {
     endereco,
     tipoLaboratorio
   } );
-  
+
   await LaboratorioMunicipio.create( {
-    cnpj,
+    laboratorio_id: laboratorio.id,
     municipio_id
   } );
 
@@ -72,11 +76,19 @@ createLaboratorio = async( req, res ) => {
  * @returns {Object} Laboratorio
  */
 updateLaboratorio = async( req, res ) =>{
-  const { cnpjId, cnpj, nome, endereco, tipoLaboratorio, ativo, municipio_id } = req.body;
-  const laboratorio = await Laboratorio.findByPk( cnpj );
+  const { id, cnpj, nome, endereco, tipoLaboratorio, ativo, municipio_id } = req.body;
+
+  const userId = req.userId;
+  
+  const allow = await allowFunction( userId, 'manter_laboratorio' );
+  if( !allow ) {
+    return res.status(403).json({ error: 'Acesso negado' });
+  }
+
+  const laboratorio = await Laboratorio.findByPk( id );
 
   if( !laboratorio ){
-    res.status( 404 ).json( { error: "CNPJ não existe" } );
+    res.status( 404 ).json( { error: "Laboratório não existe" } );
   }
 
   laboratorio.set( {
@@ -90,8 +102,8 @@ updateLaboratorio = async( req, res ) =>{
 
   const laboratorio_municipio = await LaboratorioMunicipio.findOne( {
       where: {
-        cnpj: cnpj,
-        municipio_id: municipio_id
+        laboratorio_id : id,
+        municipio_id   : municipio_id
       }
   } );
 
@@ -105,7 +117,7 @@ updateLaboratorio = async( req, res ) =>{
   await laboratorio_municipio.save();
 
   const resp = {
-    cnpjId:          cnpjId,
+    id:              laboratorio.id,
     cnpj:            laboratorio.cnpj,
     nome:            laboratorio.nome,
     endereco:        laboratorio.endereco,

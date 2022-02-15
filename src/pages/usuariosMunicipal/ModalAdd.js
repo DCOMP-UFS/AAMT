@@ -245,7 +245,7 @@ function ModalAdd({ createUsuarioRequest, municipio, createUser, ...props }) {
                   <div className="field-icon right">
                     {
                       loadingCpf ?
-                        <FaTimes className="error" /> :
+                        <FaSpinner className="loading" /> :
                       props.cpfValido ?
                         <FaCheck className="success" /> :
                       props.cpfValido === false ?

@@ -247,7 +247,7 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
       setLoadingEmail( true );
   
       props.setEmailValido( null );
-      props.validarEmailRequest( email );
+      props.validarEmailRequest( email, id );
     } else {
       props.setEmailValido( false );
       props.showNotifyToast( "E-mail inválido", "warning" );
@@ -325,9 +325,18 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
           <article className="col-md-12 stretch-card">
             <div className="card">
               <h4 className="title">{ usuarioUpdate.nome }</h4>
-              <p className="text-description">
-                Atenção os campos com <code>*</code> são obrigatórios
-              </p>
+              <Row>
+                <Col>
+                  <p className="text-description">
+                    Atenção, os campos com <code>*</code> são obrigatórios
+                  </p>
+                </Col>
+                <Col>
+                  <p className="text-description">
+                    Os campos abaixo são informações da localização de trabalho do usuário
+                  </p>
+                </Col>
+              </Row>
               <form onSubmit={ handleSubmit }>
                 <Row>
                   <Col sm='6'>
@@ -354,6 +363,7 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
                             <input 
                               id="cpf" 
                               value={ cpf } 
+                              type="text"
                               className={ `form-control ${ props.cpfValido === false ? 'invalid' : '' }` }
                               maxLength="14"
                               onChange={ e => setCpf( cpfCnpjMask( e.target.value ) ) }
@@ -362,18 +372,12 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
                             />
                             <div className="field-icon right">
                               {
-                                props.cpfValido && !loadingCpf ?
-                                  <FaCheck className="success" /> :
-                                  <div />
-                              }
-                              {
-                                props.cpfValido === false && !loadingCpf ?
-                                  <FaTimes className="error" /> :
-                                  <div />
-                              }
-                              {
                                 loadingCpf ?
                                   <FaSpinner className="loading" /> :
+                                props.cpfValido ?
+                                  <FaCheck className="success" /> :
+                                props.cpfValido === false ?
+                                  <FaTimes className="error" /> :
                                   <div />
                               }
                             </div>
@@ -395,11 +399,11 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
                             />
                             <div className="field-icon right">
                               {
-                                loadingCpf ?
-                                  <FaTimes className="error" /> :
-                                props.cpfValido ?
+                                loadingEmail ?
+                                  <FaSpinner className="loading" /> :
+                                props.emailValido ?
                                   <FaCheck className="success" /> :
-                                props.cpfValido === false ?
+                                props.emailValido === false ?
                                   <FaTimes className="error" /> :
                                   <div />
                               }
@@ -412,7 +416,14 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
                       <Col sm="6">
                         <FormGroup>
                           <label htmlFor="usuario">Usuário <code>*</code></label>
-                          <input id="usuario" value={ usuario } className="form-control" onChange={ e => setUsuario(e.target.value) } disabled required />
+                          <input 
+                            id="usuario" 
+                            value={ usuario } 
+                            className="form-control" 
+                            onChange={ e => setUsuario( e.target.value ) } 
+                            disabled 
+                            required 
+                          />
                         </FormGroup>
                       </Col>
                       <Col sm="6">
@@ -455,7 +466,6 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
                       </Col>
                     </Row>
                   </Col>
-
                   <Col sm='6'>
                     <Row>
                       <Col sm="6">

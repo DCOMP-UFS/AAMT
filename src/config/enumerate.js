@@ -64,11 +64,11 @@ export const situacao_imovel2_enum = [
 ];
 
 export const perfil = {
-  agente: { id: 4, label: "Agente" },
-  coordenador: { id: 2, label: "Coordenador" },
   coordenadorGeral: { id: 1, label: "Coordenador Geral" },
-  laboratorista: { id: 5, label: "Laboratorista"},
+  coordenador: { id: 2, label: "Coordenador" },
   supervisor: { id: 3, label: "Supervisor"},
+  agente: { id: 4, label: "Agente" },
+  laboratorista: { id: 5, label: "Laboratorista"},
 }
 
 export const abrangencia = {

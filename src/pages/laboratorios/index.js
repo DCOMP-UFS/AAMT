@@ -79,16 +79,11 @@ const columns = [
 
 const Laboratorios = ( { municipio_id, localidades, laboratorios, municipio, ...props } ) => {
   const [ rows, setRows ]                           = useState( [] );
-  const [ cnpj_up, setCnpj ]                        = useState( [] );
-  const [ nome_up, setNome ]                        = useState( [] );
-  const [ tipo_up, setTipo ]                        = useState( [] );
-  const [ endereco_up, setEndereco ]                = useState( [] );
-  const [ created_at, setCreated_at ]               = useState( [] );
   const [ showModalAdd, setShowModalAdd ]           = useState( false );
   const [ showModalEditar, setShowModalEditar ]     = useState( false );
   const [ showModalDisabled, setShowModalDisabled ] = useState( false );
   const [ laboratorio, setLaboratorio ]             = useState( new Laboratorio );
-  const [ cnpjId , setCnpjId ]                      = useState( null );
+  const [ id , setId ]                      = useState( null );
   const options                                     = {
     customToolbar: () => {
       return (
@@ -152,7 +147,7 @@ const Laboratorios = ( { municipio_id, localidades, laboratorios, municipio, ...
         <Tooltip
           className   ="bg-warning text-white"
           title       ="Editar"
-          onClick     ={ () => { setLaboratorio( lab ); setShowModalEditar( true ); setCnpjId( lab.cnpj ); } }
+          onClick     ={ () => { setLaboratorio( lab ); setShowModalEditar( true ); setId( lab.id ); } }
         >
           <IconButton aria-label="Editar">
             <FaPenSquare />
@@ -262,7 +257,7 @@ const Laboratorios = ( { municipio_id, localidades, laboratorios, municipio, ...
           show={ showModalEditar }
           handleClose={ handleCloseModalEditar }
           laboratorio={ laboratorio }
-          cnpjId = { cnpjId }
+          id = { id }
         />
         <ModalAdd show={ showModalAdd } handleClose={ handleCloseModalAdd } />
         <ModalDisabled show={ showModalDisabled } handleClose = { handleCloseModalDisabled }/>

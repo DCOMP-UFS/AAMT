@@ -19,7 +19,7 @@ import { ContainerArrow } from '../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../styles/global';
 import SelectInput from '@material-ui/core/Select/SelectInput';
 
-function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, cnpjId, ...props } ) {
+function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, id, ...props } ) {
   const [ cnpj, setCnpj ]                         = useState( null );
   const [ isValidCnpj, setIsValidCnpj ]           = useState( true );
   const [ nome, setNome ]                         = useState( "" );
@@ -106,7 +106,7 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, cnpj
     }
 
     props.updateLaboratoryRequest( new Laboratorio( {
-      cnpjId,
+      id,
       cnpj,
       nome,
       endereco,

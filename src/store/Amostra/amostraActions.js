@@ -1,11 +1,25 @@
 export const ActionTypes = {
   GET_AMOSTRAS_REQUEST: "GET_AMOSTRAS_REQUEST",
+  GET_AMOSTRAS_BY_LAB: "GET_AMOSTRAS_BY_LAB",
   SET_AMOSTRAS: "SET_AMOSTRAS",
   ENVIAR_AMOSTRAS_REQUEST: "ENVIAR_AMOSTRAS_REQUEST",
   REGISTRAR_EXAME_REQUEST: "REGISTRAR_EXAME_REQUEST",
   SET_AMOSTRA: "SET_AMOSTRA"
 }
 
+/**
+ * 
+ * @param {*} laboratorio_cnpj
+ * @returns 
+ */
+export const getAmostrasByLab = laboratorio_cnpj => {
+  return{
+    type: ActionTypes.GET_AMOSTRAS_BY_LAB,
+    payload: {
+      laboratorio_cnpj
+    }
+  }
+}
 /**
  *
  * @param {*} supervisor_id

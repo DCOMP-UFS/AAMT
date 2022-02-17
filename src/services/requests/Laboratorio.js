@@ -13,8 +13,9 @@ export const getLaboratoriosRequest = data => {
  * @returns {Promise}
  */
 export const createLaboratoryRequest = data => {
-  const { cnpj, nome, endereco, tipoLaboratorio, municipio_id } = data.laboratorio;
+  const { id, cnpj, nome, endereco, tipoLaboratorio, municipio_id } = data.laboratorio;
   return api.post( '/laboratorios/', {
+    id,
     cnpj,
     endereco,
     nome,
@@ -32,9 +33,9 @@ export const createLaboratoryRequest = data => {
  * @returns {Promise}
  */
 export const setLaboratoryRequest = data =>{
-  const { cnpjId, cnpj, nome, endereco, tipoLaboratorio, ativo, municipio_id } = data.laboratorio;
+  const { id, cnpj, nome, endereco, tipoLaboratorio, ativo, municipio_id } = data.laboratorio;
   return api.put( '/laboratorios/', {
-    cnpjId,
+    id,
     cnpj,
     endereco,
     nome,

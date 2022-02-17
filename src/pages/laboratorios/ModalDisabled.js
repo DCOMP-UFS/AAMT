@@ -21,13 +21,13 @@ function ModalDisabled( { show, handleClose, municipio, ...props } ) {
     props.tableSelected.forEach( row => {
       const lab = props.laboratorios[ row.dataIndex ];
       props.updateLaboratoryRequest( new Laboratorio( {
-        cnpjId: lab.cnpj,
-        cnpj: lab.cnpj,
-        nome: lab.nome,
-        endereco: lab.endereco,
-        tipoLaboratorio: lab.tipoLaboratorio,
-        ativo: false,
-        municipio_id: municipio.id
+        id              : lab.id,
+        cnpj            : lab.cnpj,
+        nome            : lab.nome,
+        endereco        : lab.endereco,
+        tipoLaboratorio : lab.tipoLaboratorio,
+        ativo           : false,
+        municipio_id    : municipio.id
       }));
     handleClose();
     })}

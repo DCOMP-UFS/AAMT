@@ -267,7 +267,14 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
    * Abrir o modal de cadastro/edição de um lado
    * @param {Model} lado
    */
-  const showModalLado = ( acao, lado = {} ) => {
+  const showModalLado = (acao, lado = {}) => {
+    if (ativo.value === 0) {
+      props.showNotifyToast(
+        "Não é possível adicionar lados a um quarteirão inativo.",
+        "warning"
+      );
+      return;
+    }
     setAcao( acao );
     setShowLado( true );
   }

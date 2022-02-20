@@ -17,7 +17,11 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../store/Sidebar/sidebarActions';
-import { createCycleRequest, changeFlAddActive } from '../../store/Ciclo/cicloActions';
+import {
+  createCycleRequest,
+  changeFlAddActive,
+  getCyclesRequest,
+} from "../../store/Ciclo/cicloActions";
 
 // STYLES
 import { FormGroup, selectDefault } from '../../styles/global';
@@ -34,13 +38,13 @@ import {
   PageHeader
 } from '../../styles/util';
 
-function CadastrarCiclo({ ...props }) {
+function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
   const [ reload, setReload ] = useState(false);
   const [ indexAtv, setIndexAtv ] = useState( null );
   const [ ano, setAno ] = useState({});
   const [ sequencia, setSequencia ] = useState({});
   const [ dataInicio, setDataInicio ] = useState("");
-  const [ dataFim, setDataFim ] = useState("");
+  const [dataFim, setDataFim] = useState("");
   const [ atividades, setAtividades ] = useState([]);
   const [ optionSequencia ] = useState([
     { value: 1, label: "1" },
@@ -53,21 +57,53 @@ function CadastrarCiclo({ ...props }) {
   const [ optionAno, setOptionAno ] = useState([]);
   const [ flBtnLoading, setFlBtnLoading ] = useState( false );
   const [ minDate, setMinDate ] = useState( "" );
+  const [ maxDate, setMaxDate ] = useState( "" );
 
   useEffect(() => {
     props.changeSidebar( "ciclo", "ci_cadastrar" );
+    props.getCyclesRequest( regionalSaude_id );
+  }, []);
+
+  useEffect(() => {
+    let today = new Date();
+    today.setDate(today.getDate() - 1);
+
+    if (ciclos.length === 0) {
+      setSequencia({ value: 1, label: "1" });
+      setMinDate(today.toISOString().split("T")[0]);
+    } else {
+      let lastCycle = ciclos.at(-1);
+      let tomorrow = new Date(lastCycle.dataFim);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      setSequencia({ value: lastCycle.sequencia + 1, label: (lastCycle.sequencia + 1).toString() });
+      setMinDate(tomorrow.toISOString().split("T")[0]);
+    }
+
     const current_year = new Date().getFullYear();
     let optionYear = [];
 
-    for (let index = 0; index < 6; index++) {
-      optionYear.push({ value: current_year + index, label: current_year + index });
-    }
+    // Cria a lista de opções de anos
+    // for (let index = 0; index < 6; index++) {
+    //   optionYear.push({ value: current_year + index, label: current_year + index });
+    // }
 
-    let today = new Date();
-    today.setDate( today.getDate() - 1 );
-    setMinDate( today.toISOString().split("T")[0] );
-    setOptionAno( optionYear );
-  }, []);
+    // Define o ano atual e seta o ano no input
+    optionYear.push({ value: current_year, label: current_year });
+    setAno(optionYear[0]);
+    setMaxDate(`${today.getFullYear()}-12-31`);
+    setOptionAno(optionYear);
+  }, [ciclos])
+
+  // Evita que a dataFim seja anterior a dataInicio
+  useEffect(() => {
+    if (dataInicio) {
+      let endDate = new Date(dataInicio);
+      endDate.setDate(endDate.getDate() + 1);
+      let endDateStringFormat = endDate.toISOString().split("T")[0];
+      document.getElementById("dataFim").min = endDateStringFormat;
+      setDataFim(dataFim < dataInicio ? endDateStringFormat : dataFim);
+    }
+  }, [dataInicio])
 
   function addAtividade( atividade ) {
     setAtividades( [...atividades, atividade] );
@@ -122,7 +158,7 @@ function CadastrarCiclo({ ...props }) {
             <div className="card">
               <h4 className="title">Ciclo</h4>
               <p className="text-description">
-                Atenção os campos com <code>*</code> são obrigatórios
+                Atenção! Os campos com <code>*</code> são obrigatórios
               </p>
               <Row>
                 <Col sm='6'>
@@ -146,12 +182,13 @@ function CadastrarCiclo({ ...props }) {
                           <label htmlFor="ano">Ano <code>*</code></label>
                           <Select
                             id="ano"
-                            value={ ano }
-                            options={ optionAno }
-                            onChange={ e => setAno( e ) }
-                            styles={ selectDefault }
-                            isRequired={ true }
+                            value={ano}
+                            options={optionAno}
+                            onChange={e => setAno(e)}
+                            styles={selectDefault}
+                            isRequired={true}
                             required
+                            isDisabled
                           />
                         </FormGroup>
                       </Col>
@@ -165,6 +202,7 @@ function CadastrarCiclo({ ...props }) {
                             onChange={ e => setSequencia( e ) }
                             styles={ selectDefault }
                             required
+                            isDisabled
                           />
                         </FormGroup>
                       </Col>
@@ -177,7 +215,8 @@ function CadastrarCiclo({ ...props }) {
                             type="date"
                             className="form-control"
                             value={ dataInicio }
-                            min={ minDate }
+                            min={minDate}
+                            max={maxDate}
                             onChange={ e => setDataInicio( e.target.value ) }
                             required
                           />
@@ -187,10 +226,12 @@ function CadastrarCiclo({ ...props }) {
                         <FormGroup>
                           <label htmlFor="sequencia">Data fim <code>*</code></label>
                           <input
+                            id="dataFim"
                             type="date"
                             className="form-control"
                             value={ dataFim }
-                            min={ minDate }
+                            min={minDate}
+                            max={maxDate}
                             onChange={ e => setDataFim( e.target.value ) }
                             required
                           />
@@ -276,16 +317,21 @@ function ListActive({ atividades, deleteAction, setIndexAtv }) {
   );
 }
 
-const mapStateToProps = state => ({
-  regionalSaude_id: state.appConfig.usuario.regionalSaude.id
+const mapStateToProps = (state) => ({
+  regionalSaude_id: state.appConfig.usuario.regionalSaude.id,
+  ciclos: state.ciclo.ciclos
 });
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators({
-    changeSidebar,
-    createCycleRequest,
-    changeFlAddActive
-  }, dispatch);
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      changeSidebar,
+      createCycleRequest,
+      changeFlAddActive,
+      getCyclesRequest,
+    },
+    dispatch
+  );
 
 export default connect(
   mapStateToProps,

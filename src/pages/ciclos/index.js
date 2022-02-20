@@ -29,37 +29,45 @@ const columns = [
     name: "index",
     label: "#",
     options: {
+      viewColumns: false,
       filter: false,
-      display: 'false',
+      display: "false",
       customBodyRender: (value, tableMeta, updateValue) => (
-        <Typography data-id={ value.id }>{ value.index }</Typography>
-      )
-    }
+        <Typography data-id={value.id}>{value.index}</Typography>
+      ),
+    },
   },
   {
     name: "ciclo",
     label: "Ciclo",
     options: {
       filter: false,
-      sortDirection: 'asc'
-    }
+      sortDirection: "asc",
+    },
   },
   {
     name: "dataInicio",
     label: "Data de Início",
     options: {
       filter: false,
-    }
+    },
   },
   {
     name: "dataFim",
-    label: "Data Fim",
+    label: "Data de Fim",
     options: {
       filter: false,
-    }
+    },
   },
   "Situação",
-  "Ações"
+  {
+    name: "acoes",
+    label: "Ações",
+    options: {
+      filter: false,
+      sort: false,
+    }
+  }
 ];
 
 function Ciclos({ ciclos, regionalSaude_id, ...props }) {

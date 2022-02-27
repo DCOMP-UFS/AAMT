@@ -95,10 +95,10 @@ function ModalUpdateCycle({ ciclos, index, ...props }) {
     if (index >= 0) {
       const ciclo = ciclos[index];
       const ultimoCicloCadastrado = ciclos.length - 1 === index ? true : false;
-      if (ciclo.situacao === "Em aberto" && ultimoCicloCadastrado) {
-        setDataInicioDesativado(true);
-        setDataFimDesativado(false);
-      } else if (ciclo.situacao === "Planejado" && ultimoCicloCadastrado) {
+      if (
+        (ciclo.situacao === "Planejado" ||
+        ciclo.situacao === "Em aberto") && ultimoCicloCadastrado
+      ) {
         setDataInicioDesativado(false);
         setDataFimDesativado(false);
       } else {

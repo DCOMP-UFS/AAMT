@@ -60,9 +60,9 @@ function ModalUpdateCycle({ ciclos, index, ...props }) {
       if (index === 0) {
         setMinDate(today.toISOString().split("T")[0]);
       } else {
-        let lastCycle = ciclos.at(-1);
+        let lastCycle = ciclos.at(-2);
         let tomorrow = new Date(lastCycle.dataFim);
-        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setDate((tomorrow.getDate()) + 1);
         setMinDate(tomorrow.toISOString().split("T")[0]);
       }
 
@@ -78,8 +78,11 @@ function ModalUpdateCycle({ ciclos, index, ...props }) {
   useEffect(() => {
     if (dataInicio) {
       let endDate = new Date(dataInicio);
-      endDate.setDate(endDate.getDate() + 1);
-      let endDateStringFormat = endDate.toISOString().split("T")[0];
+      let today = new Date();
+      let endDateStringFormat =
+        endDate > today
+          ? endDate.toISOString().split("T")[0]
+          : today.toISOString().split("T")[0];
       document.getElementById("dataFim").min = endDateStringFormat;
       setDataFim(
         dataFim < dataInicio && dataFim ? endDateStringFormat : dataFim
@@ -118,8 +121,12 @@ function ModalUpdateCycle({ ciclos, index, ...props }) {
   }, [props.updated]);
 
   function clearInput() {
-    setDataInicio("");
-    setDataFim("");
+    if (!dataInicioDesativado) {
+      setDataInicio("");
+    }
+    if (!dataFimDesativado) {
+      setDataFim("");
+    }
   }
 
   function handleSubmit(e) {
@@ -183,7 +190,6 @@ function ModalUpdateCycle({ ciclos, index, ...props }) {
                   type="date"
                   className="form-control"
                   value={dataInicio}
-                  // min={new Date().toISOString().split("T")[0]}
                   min={minDate}
                   max={maxDate}
                   onChange={(e) => setDataInicio(e.target.value)}
@@ -215,9 +221,9 @@ function ModalUpdateCycle({ ciclos, index, ...props }) {
         <ModalFooter>
           <ContainerArrow>
             <div>
-              {/* <Button type="button" className="warning" onClick={clearInput}>
+              <Button type="button" className="warning" onClick={clearInput}>
                 Limpar
-              </Button> */}
+              </Button>
             </div>
             <div>
               <Button type="button" className="secondary" data-dismiss="modal">

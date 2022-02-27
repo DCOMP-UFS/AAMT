@@ -18,11 +18,11 @@ import { ContainerArrow } from '../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../styles/global';
 
 function ModalUpdateCycle({ ciclos, index, ...props }) {
-  const [ ano, setAno ] = useState({});
-  const [ sequencia, setSequencia ] = useState({});
-  const [ dataInicio, setDataInicio ] = useState("");
-  const [ dataFim, setDataFim ] = useState("");
-  const [ optionSequencia ] = useState([
+  const [ano, setAno] = useState({});
+  const [sequencia, setSequencia] = useState({});
+  const [dataInicio, setDataInicio] = useState("");
+  const [dataFim, setDataFim] = useState("");
+  const [optionSequencia] = useState([
     { value: 1, label: "1" },
     { value: 2, label: "2" },
     { value: 3, label: "3" },
@@ -30,147 +30,213 @@ function ModalUpdateCycle({ ciclos, index, ...props }) {
     { value: 5, label: "5" },
     { value: 6, label: "6" },
   ]);
-  const [ optionAno, setOptionAno ] = useState([]);
-  const [ flLoading, setFlLoading ] = useState( false );
+  const [optionAno, setOptionAno] = useState([]);
+  const [flLoading, setFlLoading] = useState(false);
+  const [dataInicioDesativado, setDataInicioDesativado] = useState(false);
+  const [dataFimDesativado, setDataFimDesativado] = useState(false);
+  const [minDate, setMinDate] = useState("");
+  const [maxDate, setMaxDate] = useState("");
 
   useEffect(() => {
     const current_year = new Date().getFullYear();
     let optionYear = [];
 
     for (let index = 0; index < 6; index++) {
-      optionYear.push({ value: current_year + index, label: current_year + index });
+      optionYear.push({
+        value: current_year + index,
+        label: current_year + index,
+      });
     }
 
-    setOptionAno( optionYear );
+    setOptionAno(optionYear);
   }, []);
 
   useEffect(() => {
-    if( index >= 0 ){
-      const ciclo = ciclos[ index ];
+    if (index >= 0) {
+      const ciclo = ciclos[index];
+      let today = new Date();
+      today.setDate(today.getDate() - 1);
+
+      if (index === 0) {
+        setMinDate(today.toISOString().split("T")[0]);
+      } else {
+        let lastCycle = ciclos.at(-1);
+        let tomorrow = new Date(lastCycle.dataFim);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        setMinDate(tomorrow.toISOString().split("T")[0]);
+      }
 
       setAno({ value: ciclo.ano, label: ciclo.ano });
       setSequencia({ value: ciclo.sequencia, label: ciclo.sequencia });
-      setDataInicio( ciclo.dataInicio.split('T')[0] );
-      setDataFim( ciclo.dataFim.split('T')[0] );
+      setDataInicio(ciclo.dataInicio.split("T")[0]);
+      setDataFim(ciclo.dataFim.split("T")[0]);
+      setMaxDate(`${today.getFullYear()}-12-31`);
     }
-  }, [ index ]);
+  }, [index]);
+
+  // Evita que a dataFim seja anterior a dataInicio
+  useEffect(() => {
+    if (dataInicio) {
+      let endDate = new Date(dataInicio);
+      endDate.setDate(endDate.getDate() + 1);
+      let endDateStringFormat = endDate.toISOString().split("T")[0];
+      document.getElementById("dataFim").min = endDateStringFormat;
+      setDataFim(
+        dataFim < dataInicio && dataFim ? endDateStringFormat : dataFim
+      );
+    }
+  }, [dataInicio]);
+
+  // Controla a ativação dos inputs de datas
+  useEffect(() => {
+    if (index >= 0) {
+      const ciclo = ciclos[index];
+      const ultimoCicloCadastrado = ciclos.length - 1 === index ? true : false;
+      if (ciclo.situacao === "Em aberto" && ultimoCicloCadastrado) {
+        setDataInicioDesativado(true);
+        setDataFimDesativado(false);
+      } else if (ciclo.situacao === "Planejado" && ultimoCicloCadastrado) {
+        setDataInicioDesativado(false);
+        setDataFimDesativado(false);
+      } else {
+        setDataFimDesativado(true);
+        setDataInicioDesativado(true);
+      }
+    }
+  }, [index]);
 
   useEffect(() => {
-    if( props.updated ) {
-      setFlLoading( false );
-      props.changeFlUpdate( null );
-      $('#modal-editar-ciclo').modal('hide');
-    }else if( props.updated === false ) {
+    if (props.updated) {
+      setFlLoading(false);
+      props.changeFlUpdate(null);
+      $("#modal-editar-ciclo").modal("hide");
+    } else if (props.updated === false) {
       // Essa condição é necessária pois updated pode conter o valor NULL e que não deve entrar nessa condicional
-      setFlLoading( false );
-      props.changeFlUpdate( null );
+      setFlLoading(false);
+      props.changeFlUpdate(null);
     }
-  }, [ props.updated ]);
+  }, [props.updated]);
 
   function clearInput() {
-    setAno({});
-    setSequencia({});
     setDataInicio("");
     setDataFim("");
   }
 
-  function handleSubmit( e ) {
+  function handleSubmit(e) {
     e.preventDefault();
-    setFlLoading( true );
+    setFlLoading(true);
 
-    props.updateCycleRequest( ciclos[ index ].id, {
+    props.updateCycleRequest(ciclos[index].id, {
       ano: ano.value,
       sequencia: sequencia.value,
       dataInicio: dataInicio,
-      dataFim: dataFim
+      dataFim: dataFim,
     });
   }
 
-  return(
+  return (
     <Modal id="modal-editar-ciclo" title="Editar Ciclo" size="lg">
-      <form onSubmit={ handleSubmit }>
+      <form onSubmit={handleSubmit}>
         <ModalBody>
           <Row>
-          <Col sm="6">
-            <FormGroup>
-              <label htmlFor="ano">Ano <code>*</code></label>
-              <Select
-                id="ano"
-                value={ ano }
-                options={ optionAno }
-                onChange={ e => setAno( e ) }
-                styles={ selectDefault }
-                isRequired={ true }
-                required
-              />
-            </FormGroup>
-          </Col>
-          <Col sm="6">
-            <FormGroup>
-              <label htmlFor="sequencia">Sequência <code>*</code></label>
-              <Select
-                id="sequencia"
-                value={ sequencia }
-                options={ optionSequencia }
-                onChange={ e => setSequencia( e ) }
-                styles={ selectDefault }
-                required
-              />
-            </FormGroup>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm="6">
-            <FormGroup>
-              <label htmlFor="ano">Data de início <code>*</code></label>
-              <input
-                type="date"
-                className="form-control"
-                value={ dataInicio }
-                min={ new Date().toISOString().split("T")[0] }
-                onChange={ e => setDataInicio( e.target.value ) }
-                required
-              />
-            </FormGroup>
-          </Col>
-          <Col sm="6">
-            <FormGroup>
-              <label htmlFor="sequencia">Data fim <code>*</code></label>
-              <input
-                type="date"
-                className="form-control"
-                value={ dataFim }
-                min={ new Date().toISOString().split("T")[0] }
-                onChange={ e => setDataFim( e.target.value ) }
-                required
-              />
-            </FormGroup>
-          </Col>
-        </Row>
+            <Col sm="6">
+              <FormGroup>
+                <label htmlFor="ano">
+                  Ano <code>*</code>
+                </label>
+                <Select
+                  id="ano"
+                  value={ano}
+                  options={optionAno}
+                  onChange={(e) => setAno(e)}
+                  styles={selectDefault}
+                  isRequired={true}
+                  required
+                  isDisabled
+                />
+              </FormGroup>
+            </Col>
+            <Col sm="6">
+              <FormGroup>
+                <label htmlFor="sequencia">
+                  Sequência <code>*</code>
+                </label>
+                <Select
+                  id="sequencia"
+                  value={sequencia}
+                  options={optionSequencia}
+                  onChange={(e) => setSequencia(e)}
+                  styles={selectDefault}
+                  required
+                  isDisabled
+                />
+              </FormGroup>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm="6">
+              <FormGroup>
+                <label htmlFor="ano">
+                  Data de início <code>*</code>
+                </label>
+                <input
+                  type="date"
+                  className="form-control"
+                  value={dataInicio}
+                  // min={new Date().toISOString().split("T")[0]}
+                  min={minDate}
+                  max={maxDate}
+                  onChange={(e) => setDataInicio(e.target.value)}
+                  required
+                  disabled={dataInicioDesativado}
+                />
+              </FormGroup>
+            </Col>
+            <Col sm="6">
+              <FormGroup>
+                <label htmlFor="sequencia">
+                  Data de fim <code>*</code>
+                </label>
+                <input
+                  type="date"
+                  id="dataFim"
+                  className="form-control"
+                  value={dataFim}
+                  min={minDate}
+                  max={maxDate}
+                  onChange={(e) => setDataFim(e.target.value)}
+                  required
+                  disabled={dataFimDesativado}
+                />
+              </FormGroup>
+            </Col>
+          </Row>
         </ModalBody>
         <ModalFooter>
           <ContainerArrow>
             <div>
-              <Button type="button" className="warning" onClick={ clearInput }>Limpar</Button>
+              {/* <Button type="button" className="warning" onClick={clearInput}>
+                Limpar
+              </Button> */}
             </div>
             <div>
-              <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
-              <Button type="submit" disabled={ flLoading } >
-                {
-                  flLoading ?
-                    (
-                      <>
-                        <img
-                          src={ LoadginGif }
-                          width="25"
-                          style={{ marginRight: 10 }}
-                          alt="Carregando"
-                        />
-                        Salvando...
-                      </>
-                    ) :
-                    "Salvar"
-                }
+              <Button type="button" className="secondary" data-dismiss="modal">
+                Cancelar
+              </Button>
+              <Button type="submit" disabled={flLoading}>
+                {flLoading ? (
+                  <>
+                    <img
+                      src={LoadginGif}
+                      width="25"
+                      style={{ marginRight: 10 }}
+                      alt="Carregando"
+                    />
+                    Salvando...
+                  </>
+                ) : (
+                  "Salvar"
+                )}
               </Button>
             </div>
           </ContainerArrow>

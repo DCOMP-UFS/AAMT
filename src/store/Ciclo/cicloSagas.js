@@ -130,10 +130,10 @@ export function* updateCycle( action ) {
 
 export function* destroyCycle( action ) {
   try {
-    const { status } = yield call( service.destroyCycleRequest, action.payload );
+    const { status, data } = yield call(service.destroyCycleRequest, action.payload);
 
     if( status === 200 ) {
-      yield put( CicloActions.destroyCycle( action.payload.id ) );
+      yield put( CicloActions.destroyCycle( data.ids ) );
       yield put( AppConfigActions.showNotifyToast( "Ciclo excluido com sucesso", "success" ) );
     }
     else {

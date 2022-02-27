@@ -88,8 +88,8 @@ function Ciclos({ ciclos, regionalSaude_id, ...props }) {
       return (
         <ButtonDesabled
           title="Excluir ciclo"
-          toggle="modal"
-          target="#modal-excluir-ciclo"
+          data-toggle="modal"
+          data-target="#modal-excluir-ciclo"
           data={ data } />
       );
     },

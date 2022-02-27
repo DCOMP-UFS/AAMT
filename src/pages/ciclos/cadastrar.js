@@ -44,7 +44,7 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
   const [ ano, setAno ] = useState({});
   const [ sequencia, setSequencia ] = useState({});
   const [ dataInicio, setDataInicio ] = useState("");
-  const [dataFim, setDataFim] = useState("");
+  const [ dataFim, setDataFim ] = useState("");
   const [ atividades, setAtividades ] = useState([]);
   const [ optionSequencia ] = useState([
     { value: 1, label: "1" },
@@ -90,6 +90,7 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
     // Define o ano atual e seta o ano no input
     optionYear.push({ value: current_year, label: current_year });
     setAno(optionYear[0]);
+
     setMaxDate(`${today.getFullYear()}-12-31`);
     setOptionAno(optionYear);
   }, [ciclos])
@@ -101,7 +102,7 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
       endDate.setDate(endDate.getDate() + 1);
       let endDateStringFormat = endDate.toISOString().split("T")[0];
       document.getElementById("dataFim").min = endDateStringFormat;
-      setDataFim(dataFim < dataInicio ? endDateStringFormat : dataFim);
+      setDataFim((dataFim < dataInicio && dataFim) ? endDateStringFormat : dataFim);
     }
   }, [dataInicio])
 
@@ -137,7 +138,7 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
       sequencia.value,
       dataInicio,
       dataFim,
-      props.regionalSaude_id,
+      regionalSaude_id,
       atividades
     );
   }

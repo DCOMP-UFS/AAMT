@@ -258,8 +258,6 @@ destroy = async ( req, res ) => {
 destroyMultiple = async ( req, res ) => {
   const { id } = req.params;
 
-  console.log('-> ' + id);
-
   const allow = await allowFunction(req.userId, 'definir_ciclo');
   if (!allow) return res.status(403).json({ error: 'Acesso negado' });
 

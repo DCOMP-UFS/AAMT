@@ -23,8 +23,8 @@ export const getActivitiesByCityRequest = data => {
 }
 
 export const getLocationsRequest = data => {
-  const { abrangencia, municipio_id } = data;
-  return api.get(`/atividades/locais/${ abrangencia }/abrangencia/${ municipio_id }/municipios`, {
+  const { abrangencia, municipio_id, ativo } = data;
+  return api.get(`/atividades/locais/${ abrangencia }/abrangencia/${ municipio_id }/municipios?ativo=${ ativo }`, {
     ...headerAuthorization()
   });
 }

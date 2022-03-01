@@ -75,9 +75,9 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
       );
       setFlTodosImoveis( atividade.flTodosImoveis );
       setMetodologia( atividade.metodologia );
-      setObjetivo( atividade.objetivo );
+      setObjetivo(atividade.objetivo);
 
-      props.getLocationsRequest( atividade.abrangencia, props.municipio_id );
+      props.getLocationsRequest( atividade.abrangencia, props.municipio_id, 'sim' );
     }
   }, [ atividade ] );
 

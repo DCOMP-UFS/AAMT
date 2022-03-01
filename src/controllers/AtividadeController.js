@@ -310,6 +310,7 @@ getUserActivities = async ( req, res ) => {
 
 getLocations = async ( req, res ) => {
   const { abrangencia_id, municipio_id } = req.params;
+  const { ativo } = req.query;
   let locais = [];
 
   switch ( abrangencia_id ) {
@@ -334,10 +335,15 @@ getLocations = async ( req, res ) => {
   
     default://Quarteirão
       locais = await Quarteirao.findAll({
+        where: {
+          ...(ativo ? {
+            ativo: ativo === 'sim' ? 1 : 0
+          } : {})
+        },
         include: {
           association: "localidade",
           where: {
-            municipio_id
+            municipio_id,
           }
         }
       }).then( quarteiroes => {

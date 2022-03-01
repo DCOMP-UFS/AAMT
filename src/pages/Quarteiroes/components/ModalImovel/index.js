@@ -6,6 +6,7 @@ import { tipoImovelEnum } from '../../../../config/enumerate';
 import { FaChevronDown, FaChevronUp, FaMapMarkerAlt } from 'react-icons/fa';
 import { Collapse } from 'react-bootstrap';
 import ReactMapGL, { Marker } from 'react-map-gl';
+import { removeMultipleSpaces } from '../../../../config/function';
 
 // Models
 import { Imovel } from '../../../../config/models';
@@ -30,7 +31,7 @@ import { Button, FormGroup, selectDefault } from '../../../../styles/global';
  * @param {Function} handleClose função para fechar modal
  * @param {Array} lados lista de lados do quarteirão
  * @param {Object} props demais propriedades para funcionamento do componente
- * @returns 
+ * @returns
  */
 const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => {
   const [ numero, setNumero ]                     = useState( null );
@@ -144,9 +145,9 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
 
   /**
    * Valida se a localização inserida é válida
-   * 
-   * @param {*} valor 
-   * @param {*} campo 
+   *
+   * @param {*} valor
+   * @param {*} campo
    */
   const checkLocValida = ( valor, campo ) => {
     if( lng === "" || lat === "" )
@@ -162,7 +163,7 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
 
   /**
    * Valida se o valor da localização
-   * @param {*} valor 
+   * @param {*} valor
    */
   const checkLocalizacao = valor => {
     if( valor[ 0 ] === '{' && valor[ valor.length - 1 ] === '}' ) {
@@ -192,7 +193,7 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
 
   /**
    * Mudar posição do marcador ao clicar e arrastar no marcador
-   * @param {*} params 
+   * @param {*} params
    */
   const onMarkerDrag = params => {
     setMarcador( {
@@ -206,59 +207,61 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
 
   /**
    * Esta função chama a action para adicionar um imóvel ao quarteirão.
-   * 
+   *
    * @param {object} e Elemento que acionou esaa função
    */
   function handleSubmit( e ) {
     e.preventDefault();
-    const im = new Imovel( {
-      id          : imovel.id,
-      lado_id     : lado.value,
-      numero      : numero,
-      logradouro  : "",
-      sequencia   : sequencia,
-      responsavel : responsavel,
-      complemento : complemento,
-      tipoImovel  : tipoImovel.value,
-      lat         : lat,
-      lng         : lng,
-    } );
+    const im = new Imovel({
+      id: imovel.id,
+      lado_id: lado.value,
+      numero: numero,
+      logradouro: "",
+      sequencia: sequencia,
+      responsavel: removeMultipleSpaces(responsavel),
+      complemento: removeMultipleSpaces(complemento),
+      tipoImovel: tipoImovel.value,
+      lat: lat,
+      lng: lng,
+    });
 
-    if( acao == 'cadastrar' ) {
-      props.addImovelRequest( {
+    if( acao === 'cadastrar' ) {
+      props.addImovelRequest({
         numero,
         sequencia,
-        responsavel,
-        complemento,
+        responsavel: removeMultipleSpaces(responsavel),
+        complemento: removeMultipleSpaces(complemento),
         tipoImovel: tipoImovel.value,
         lado_id: lado.value,
         lng,
-        lat
-      } );
+        lat,
+      });
     } else {
       props.editarImovelRequest( im );
     }
   }
 
-  return(
-    <Modal show={ show } onHide={ handleClose }>
+  return (
+    <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>
-          { acao == 'cadastrar' ? 'Cadastrar' : 'Editar' } Imóvel
+          {acao == "cadastrar" ? "Cadastrar" : "Editar"} Imóvel
         </Modal.Title>
       </Modal.Header>
-      <form onSubmit={ handleSubmit }>
+      <form onSubmit={handleSubmit}>
         <Modal.Body>
           <Row>
             <Col>
               <FormGroup>
-                <label htmlFor="lado">Lado <code>*</code></label>
+                <label htmlFor="lado">
+                  Lado <code>*</code>
+                </label>
                 <Select
                   id="lado"
-                  value={ lado }
-                  styles={ selectDefault }
-                  options={ optionLado }
-                  onChange={ e => setLado( e ) }
+                  value={lado}
+                  styles={selectDefault}
+                  options={optionLado}
+                  onChange={(e) => setLado(e)}
                 />
               </FormGroup>
             </Col>
@@ -266,13 +269,19 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
           <Row>
             <Col sm="6">
               <FormGroup>
-                <label htmlFor="numero">Nº Imóvel <code>*</code></label>
+                <label htmlFor="numero">
+                  Nº Imóvel <code>*</code>
+                </label>
                 <input
                   id="numero"
-                  value={ numero ? numero : "" }
+                  value={numero ? numero : ""}
                   type="number"
                   className="form-control"
-                  onChange={ e => setNumero( e.target.value ) }
+                  onKeyDown={(e) =>
+                    ["e", "E", "+", "-", "."].includes(e.key) &&
+                    e.preventDefault()
+                  }
+                  onChange={(e) => setNumero(e.target.value)}
                   min="1"
                 />
               </FormGroup>
@@ -282,10 +291,14 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
                 <label htmlFor="sequencia">Sequência</label>
                 <input
                   id="sequencia"
-                  value={ sequencia ? sequencia : "" }
+                  value={sequencia ? sequencia : ""}
                   type="number"
                   className="form-control"
-                  onChange={ e => setSequencia( e.target.value ) }
+                  onKeyDown={(e) =>
+                    ["e", "E", "+", "-", "."].includes(e.key) &&
+                    e.preventDefault()
+                  }
+                  onChange={(e) => setSequencia(e.target.value)}
                   min="1"
                 />
               </FormGroup>
@@ -297,9 +310,9 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
                 <label htmlFor="responsavel">Responsável do imóvel</label>
                 <input
                   id="responsavel"
-                  value={ responsavel }
+                  value={responsavel}
                   className="form-control"
-                  onChange={ e => setResponsavel( e.target.value ) }
+                  onChange={(e) => setResponsavel(e.target.value)}
                 />
               </FormGroup>
             </Col>
@@ -308,9 +321,9 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
                 <label htmlFor="complemento">Complemento</label>
                 <input
                   id="complemento"
-                  value={ complemento }
+                  value={complemento}
                   className="form-control"
-                  onChange={ e => setComplemento( e.target.value ) }
+                  onChange={(e) => setComplemento(e.target.value)}
                 />
               </FormGroup>
             </Col>
@@ -318,69 +331,84 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
           <Row>
             <Col>
               <FormGroup>
-                <label>Tipo do imóvel <code>*</code></label>
+                <label>
+                  Tipo do imóvel <code>*</code>
+                </label>
                 <Select
-                    id="tipoImovel"
-                    value={ tipoImovel }
-                    styles={ selectDefault }
-                    options={ optionTipoImovel }
-                    onChange={ e => setTipoImovel( e ) }
-                  />
+                  id="tipoImovel"
+                  value={tipoImovel}
+                  styles={selectDefault}
+                  options={optionTipoImovel}
+                  onChange={(e) => setTipoImovel(e)}
+                />
               </FormGroup>
             </Col>
           </Row>
           <Row>
             <Col>
               <FormGroup>
-                <label htmlFor="localizacao">Localização<code>*</code></label>
+                <label htmlFor="localizacao">
+                  Localização<code>*</code>
+                </label>
                 <div className="form-collapse">
-                  <div className={ `collapse-input ${ flLocValido ? '' : 'loc-invalida' }` }>
+                  <div
+                    className={`collapse-input ${
+                      flLocValido ? "" : "loc-invalida"
+                    }`}
+                  >
                     <div className="control">
                       <input
                         id="localizacao"
                         className="form-control"
-                        value={ localizacao }
-                        onChange={ e => checkLocalizacao( e.target.value ) }
+                        value={localizacao}
+                        onChange={(e) => checkLocalizacao(e.target.value)}
                       />
                     </div>
                     <div className="toggle-control">
                       <span className="separator"></span>
-                      <div className="toggle" onClick={ () => setFlOpen( !flOpen ) }>
-                        {
-                          flOpen ?
-                            <FaChevronUp className="icon sm" /> :
-                            <FaChevronDown className="icon sm" />
-                        }
+                      <div
+                        className="toggle"
+                        onClick={() => setFlOpen(!flOpen)}
+                      >
+                        {flOpen ? (
+                          <FaChevronUp className="icon sm" />
+                        ) : (
+                          <FaChevronDown className="icon sm" />
+                        )}
                       </div>
                     </div>
                   </div>
 
-                  <Collapse in={ flOpen }>
+                  <Collapse in={flOpen}>
                     <div className="collapse-body">
                       <FormGroup>
-                        <label htmlFor="lng">Longitude<code>*</code></label>
+                        <label htmlFor="lng">
+                          Longitude<code>*</code>
+                        </label>
                         <input
                           id="lng"
-                          value={ lng }
+                          value={lng}
                           type="number"
                           className="form-control"
-                          onChange={ e => { 
-                            setLng( e.target.value ); 
-                            checkLocValida( e.target.value, "lng" ); 
-                          } }
+                          onChange={(e) => {
+                            setLng(e.target.value);
+                            checkLocValida(e.target.value, "lng");
+                          }}
                         />
                       </FormGroup>
                       <FormGroup className="mb-0">
-                        <label htmlFor="lat">Latitude<code>*</code></label>
+                        <label htmlFor="lat">
+                          Latitude<code>*</code>
+                        </label>
                         <input
                           id="lat"
-                          value={ lat }
+                          value={lat}
                           type="number"
                           className="form-control"
-                          onChange={ e => { 
-                            setLat( e.target.value ); 
-                            checkLocValida( e.target.value, "lat" ); 
-                          } }
+                          onChange={(e) => {
+                            setLat(e.target.value);
+                            checkLocValida(e.target.value, "lat");
+                          }}
                         />
                       </FormGroup>
                     </div>
@@ -388,27 +416,25 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
                 </div>
               </FormGroup>
               <ReactMapGL
-                { ...viewport }
-                onViewportChange={ nextViewport => setViewport( nextViewport ) }
-                mapboxApiAccessToken={ process.env.REACT_APP_MAP_TOKEN }
-                onClick={ onMarkerDrag }
+                {...viewport}
+                onViewportChange={(nextViewport) => setViewport(nextViewport)}
+                mapboxApiAccessToken={process.env.REACT_APP_MAP_TOKEN}
+                onClick={onMarkerDrag}
               >
-                {
-                  Object.entries( marcador ).length > 0 ?
-                  (
-                    <Marker
-                      latitude={ marcador.lat }
-                      longitude={ marcador.lng }
-                      offsetLeft={ -20 }
-                      offsetTop={ -10 }
-                      draggable
-                      onDrag={ onMarkerDrag }
-                    >
-                      <FaMapMarkerAlt className="icon icon-md text-info" />
-                    </Marker>
-                  ) :
+                {Object.entries(marcador).length > 0 ? (
+                  <Marker
+                    latitude={marcador.lat}
+                    longitude={marcador.lng}
+                    offsetLeft={-20}
+                    offsetTop={-10}
+                    draggable
+                    onDrag={onMarkerDrag}
+                  >
+                    <FaMapMarkerAlt className="icon icon-md text-info" />
+                  </Marker>
+                ) : (
                   <div />
-                }
+                )}
               </ReactMapGL>
             </Col>
           </Row>
@@ -416,7 +442,9 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
         <Modal.Footer>
           <ContainerArrow className="justify-content-end">
             <div>
-              <Button type="button" className="secondary" onClick={ handleClose }>Cancelar</Button>
+              <Button type="button" className="secondary" onClick={handleClose}>
+                Cancelar
+              </Button>
               <Button type="submit">Salvar</Button>
             </div>
           </ContainerArrow>
@@ -429,7 +457,7 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
 /**
  * Mapeia o estado global da aplicação a propriedade do componente
  * @param {Object} state estado global
- * @returns 
+ * @returns
  */
 const mapStateToProps = state => ( {
   created: state.imovel.created
@@ -437,8 +465,8 @@ const mapStateToProps = state => ( {
 
 /**
  * Mapeia ações a propriedade do componente
- * @param {*} dispatch 
- * @returns 
+ * @param {*} dispatch
+ * @returns
  */
 const mapDispatchToProps = dispatch =>
   bindActionCreators( {

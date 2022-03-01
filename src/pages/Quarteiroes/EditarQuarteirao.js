@@ -35,6 +35,7 @@ import {
   setQuarteiraoRequest,
   excluirImovelRequest
 } from '../../store/Quarteirao/quarteiraoActions';
+import { showNotifyToast } from "../../store/AppConfig/appConfigActions";
 
 // STYLES
 import {
@@ -56,11 +57,16 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
   const [ optionLocalidade, setOptionLocalidade ]             = useState( [] );
   const [ zona, setZona ]                                     = useState( {} );
   const [ optionZona, setOptionZona ]                         = useState( [] );
+  const [ ativo, setAtivo ]                                   = useState({});
+  const [optionAtivo, setOptionAtivo]                         = useState([
+    { value: 1, label: "Sim" },
+    { value: 0, label: "Não" },
+  ]);
   const [ showImovel, setShowImovel ]                         = useState( false );
   const [ showModalExcluirImovel, setShowModalExcluirImovel ] = useState( false );
   const [ showLado, setShowLado ]                             = useState( false );
   const [ acao, setAcao ]                                     = useState( 'cadastrar' );
-  const [ imovelExcluir, setImovelExcluir ]                   = useState( new Imovel );
+  const [ imovelExcluir, setImovelExcluir ]                   = useState( new Imovel() );
   const [ showExcluirLado, setShowExcluirLado ]               = useState( false );
   const [ ladoIndex, setLadoIndex ]                           = useState( -1 );
 
@@ -116,12 +122,12 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
    */
   const addLado = lado => {
     let max = 0;
-    
+
     lados.forEach( l => {
       if( l.numero > max )
         max = l.numero;
     } );
-    
+
     lado.numero         = max + 1;
     lado.localidade_id  = localidade.value;
     setLados( [ ...lados, lado ] );
@@ -130,12 +136,29 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
 
   /**
    * Abrir modal de excluir lado
-   * 
+   *
    * @param {int} index indice no array lados
    */
   const showModalExcluirLado = index => {
-    setLadoIndex( index );
-    setShowExcluirLado( true );
+    if (ativo.value === 0) {
+      props.showNotifyToast(
+        "Não é possível modificar os lados de um quarteirão inativo.",
+        "warning"
+      );
+      return;
+    }
+    if (lados.length === 1) {
+      props.showNotifyToast(
+        "Não é possível excluir este lado, pois deve existir pelo menos um lado associado ao quarteirão.",
+        "warning"
+      );
+      return;
+    }
+    if (lados.length > 1) {
+      setLadoIndex(index);
+      setShowExcluirLado(true);
+      return;
+    }
   }
 
   /**
@@ -148,7 +171,11 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
 
   const loadInfo = () => {
     if( Object.entries( quarteirao ).length > 0 ) {
-      setNumero( quarteirao.numero );
+      setNumero(quarteirao.numero);
+      setAtivo( {
+        value: quarteirao.ativo,
+        label: quarteirao.ativo ? "Sim" : "Não",
+      } );
       setLocalidade( {
         value: quarteirao.localidade.id,
         label: quarteirao.localidade.nome
@@ -175,6 +202,13 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
    * @return void
    */
   const openModalDeleteHouse = imovel => {
+     if (ativo.value === 0) {
+       props.showNotifyToast(
+         "Não é possível excluir imóveis de um quarteirão inativo.",
+         "warning"
+       );
+       return;
+     }
     setImovelExcluir( imovel );
     setShowModalExcluirImovel( true );
   }
@@ -183,7 +217,7 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
    * Quando esta função é acionada significa que o modal de excluir imóvel foi
    * confirmado ou cancelado pelo usuário, em caso de confirmacao = true é acionado
    * a requisição de exclusão via API.
-   * 
+   *
    * @param {boolean} confirmacao resposta do modal excluir imovel
    * @return void
    */
@@ -192,7 +226,7 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
       props.excluirImovelRequest( imovelExcluir.id, imovelExcluir.lado_id );
 
       setShowModalExcluirImovel( false );
-      setImovelExcluir( new Imovel );
+      setImovelExcluir( new Imovel() );
     }
   }
 
@@ -201,6 +235,13 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
    * @param {Model} imovel
    */
   const showCadastrarImovel = () => {
+    if (ativo.value === 0) {
+      props.showNotifyToast(
+        "Não é possível adicionar imóveis aos lados de um quarteirão inativo.",
+        "warning"
+      );
+      return;
+    }
     setAcao( 'cadastrar' );
     setShowImovel( true );
   }
@@ -210,16 +251,30 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
    * @param {Model} imovel
    */
   const showEditarImovel = imovel => {
+    if (ativo.value === 0) {
+      props.showNotifyToast(
+        "Não é possível editar imóveis de um quarteirão inativo.",
+        "warning"
+      );
+      return;
+    }
     setAcao( 'editar' );
     props.setImovelEditar( imovel );
     setShowImovel( true );
   }
-  
+
   /**
    * Abrir o modal de cadastro/edição de um lado
    * @param {Model} lado
    */
-  const showModalLado = ( acao, lado = {} ) => {
+  const showModalLado = (acao, lado = {}) => {
+    if (ativo.value === 0) {
+      props.showNotifyToast(
+        "Não é possível adicionar lados a um quarteirão inativo.",
+        "warning"
+      );
+      return;
+    }
     setAcao( acao );
     setShowLado( true );
   }
@@ -248,12 +303,12 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
     const quarteirao = new Quarteirao( {
       id            : parseInt( id ),
       numero,
-      localidade_id : localidade.value, 
+      localidade_id : localidade.value,
       zona_id       : zona.value,
-      ativo         : true,
+      ativo         : ativo.value,
       quarteirao_id : null,
       lados
-    } );
+    });
 
     props.setQuarteiraoRequest( quarteirao );
   }
@@ -262,60 +317,98 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
     <>
       <PageHeader>
         <h3 className="page-title">
-          <PageIcon><BorderAllIcon /></PageIcon>
+          <PageIcon>
+            <BorderAllIcon />
+          </PageIcon>
           Editar Quarteirão
         </h3>
       </PageHeader>
       <section className="card-list">
         <div className="row">
-
           {/* Formulário básico */}
           <article className="col-md-12 stretch-card">
             <div className="card">
-              <h4 className="title">Quarteirão: <mark className="bg-info text-white" >{ quarteirao.numero }</mark></h4>
+              <h4 className="title">
+                Quarteirão:{" "}
+                <mark className="bg-info text-white">{quarteirao.numero}</mark>
+              </h4>
               <p className="text-description">
                 Atenção os campos com <code>*</code> são obrigatórios
               </p>
               <Row>
-                <Col sm='6'>
-                  <form onSubmit={ handleSubmit } >
+                <Col sm="6">
+                  <form onSubmit={handleSubmit}>
                     <h4 className="title">Informações Do Quarteirão</h4>
                     <Row>
-                      <Col sm='6'>
+                      <Col sm="6">
                         <FormGroup>
-                          <label htmlFor="localidade">Localidade <code>*</code></label>
+                          <label htmlFor="localidade">
+                            Localidade <code>*</code>
+                          </label>
                           <Select
                             id="localidade"
-                            value={ localidade }
-                            styles={ selectDefault }
-                            options={ optionLocalidade }
-                            onChange={ e => { setLocalidade(e); }}
-                            required />
+                            value={localidade}
+                            styles={selectDefault}
+                            options={optionLocalidade}
+                            onChange={(e) => {
+                              setLocalidade(e);
+                            }}
+                            required
+                            isDisabled={ativo.value === 1 ? false : true}
+                          />
                         </FormGroup>
                       </Col>
-                      <Col sm='6'>
+                      <Col sm="6">
                         <FormGroup>
                           <label htmlFor="zona">Zona</label>
                           <Select
                             id="zona"
-                            value={ zona }
-                            styles={ selectDefault }
-                            options={ optionZona }
-                            onChange={ e => { setZona(e); } }
-                            required />
+                            value={zona}
+                            styles={selectDefault}
+                            options={optionZona}
+                            onChange={(e) => {
+                              setZona(e);
+                            }}
+                            required
+                            isDisabled={ativo.value === 1 ? false : true}
+                          />
                         </FormGroup>
                       </Col>
                     </Row>
                     <Row>
-                      <Col>
+                      <Col sm="6">
                         <FormGroup>
-                          <label htmlFor="numero">Número <code>*</code></label>
+                          <label htmlFor="numero">
+                            Número <code>*</code>
+                          </label>
                           <input
                             id="numero"
-                            value={ numero ? numero : "" }
+                            value={numero ? numero : ""}
                             type="number"
                             className="form-control"
-                            onChange={ e => setNumero( e.target.value ) }
+                            onKeyDown={(e) =>
+                              ["e", "E", "+", "-", "."].includes(e.key) &&
+                              e.preventDefault()
+                            }
+                            onChange={(e) => setNumero(e.target.value)}
+                            required
+                            disabled={ativo.value === 1 ? false : true}
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col sm="6">
+                        <FormGroup>
+                          <label htmlFor="ativo">
+                            Ativo<code>*</code>
+                          </label>
+                          <Select
+                            id="ativo"
+                            value={ativo}
+                            styles={selectDefault}
+                            options={optionAtivo}
+                            onChange={(e) => {
+                              setAtivo(e);
+                            }}
                             required
                           />
                         </FormGroup>
@@ -326,22 +419,27 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
                         <FormGroup>
                           <label>Lados</label>
                           <Lista>
-                            {
-                              lados.map( ( l, index ) => (
-                                <ListaItem key={ `lado-${ l.id }` } className="pt-0 pb-0 justify-content-between">
-                                  <div>
-                                    <ListaIcon className="mr-2"><FaBorderAll /></ListaIcon>
-                                    <span className="mr-2">Lado nº { l.numero } - Rua: { l.logradouro }</span>
-                                  </div>
+                            {lados.map((l, index) => (
+                              <ListaItem
+                                key={`lado-${l.id}`}
+                                className="pt-0 pb-0 justify-content-between"
+                              >
+                                <div>
+                                  <ListaIcon className="mr-2">
+                                    <FaBorderAll />
+                                  </ListaIcon>
+                                  <span className="mr-2">
+                                    Lado nº {l.numero} - Rua: {l.logradouro}
+                                  </span>
+                                </div>
 
-                                  <ButtonClose
-                                    title="Excluir lado"
-                                    onClick={ () => showModalExcluirLado( index ) }
-                                    className="ml-2 text-danger"
-                                  />
-                                </ListaItem>
-                              ) )
-                            }
+                                <ButtonClose
+                                  title="Excluir lado"
+                                  onClick={() => showModalExcluirLado(index)}
+                                  className="ml-2 text-danger"
+                                />
+                              </ListaItem>
+                            ))}
                           </Lista>
                           <Row>
                             <Col className="text-right">
@@ -349,7 +447,7 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
                                 className="bg-success text-white"
                                 size="medium"
                                 aria-label="Cadastrar um novo lado"
-                                onClick={ () => showModalLado( 'cadastrar' ) }
+                                onClick={() => showModalLado("cadastrar")}
                               >
                                 <AddBox />
                               </Fab>
@@ -363,45 +461,53 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
                       <ButtonSave
                         title="Salvar"
                         className="bg-info text-white"
-                        type="submit" 
+                        type="submit"
                       />
                     </ContainerFixed>
                   </form>
                 </Col>
 
-                <Col sm='6'>
+                <Col sm="6">
                   <h4 className="title">
                     Imóveis
-                    <ButtonNewObject title="Cadastrar Imóvel" onClick={ showCadastrarImovel } />
+                    <ButtonNewObject
+                      title="Cadastrar Imóvel"
+                      onClick={showCadastrarImovel}
+                    />
                   </h4>
 
                   {/* Listando os imóveis do quarteirão */}
-                  {
-                    lados.map( (l, index) => {
-                      const [bg, text] = l.id ? ["", "text-muted"] : ["bg-success", "text-white"];
-                      return (
-                        <Accordion key={ index } className={"expansion " + bg}>
-                          <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls={"panel-side-content" + l.id}
-                            id={"panel-side-" + l.id}
-                          >
-                            <PanelTitle>
-                              <p>Lado nº <mark className="bg-info text-white">{ l.numero }</mark></p>
-                              <small className={ text }>{ l.logradouro }</small>
-                            </PanelTitle>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                            <ListaImoveis
-                              lado={ l }
-                              editar={ showEditarImovel }
-                              deletar={ openModalDeleteHouse }
-                            />
-                          </AccordionDetails>
-                        </Accordion>
-                      )
-                    })
-                  }
+                  {lados.map((l, index) => {
+                    const [bg, text] = l.id
+                      ? ["", "text-muted"]
+                      : ["bg-success", "text-white"];
+                    return (
+                      <Accordion key={index} className={"expansion " + bg}>
+                        <AccordionSummary
+                          expandIcon={<ExpandMoreIcon />}
+                          aria-controls={"panel-side-content" + l.id}
+                          id={"panel-side-" + l.id}
+                        >
+                          <PanelTitle>
+                            <p>
+                              Lado nº{" "}
+                              <mark className="bg-info text-white">
+                                {l.numero}
+                              </mark>
+                            </p>
+                            <small className={text}>{l.logradouro}</small>
+                          </PanelTitle>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <ListaImoveis
+                            lado={l}
+                            editar={showEditarImovel}
+                            deletar={openModalDeleteHouse}
+                          />
+                        </AccordionDetails>
+                      </Accordion>
+                    );
+                  })}
                 </Col>
               </Row>
             </div>
@@ -409,35 +515,35 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
         </div>
 
         {/* Modais de ação */}
-        <ModalLado 
-          lado        ={ {} } 
-          ruas        ={ ruas }
-          show        ={ showLado }
-          handleClose ={ fecharModalLado } 
-          acao        ={ 'cadastrar' } // cadastrar ou editar
-          addLado     ={ addLado }
+        <ModalLado
+          lado={{}}
+          ruas={ruas}
+          show={showLado}
+          handleClose={fecharModalLado}
+          acao={"cadastrar"} // cadastrar ou editar
+          addLado={addLado}
         />
         <ModalExcluirLado
-          lados       ={ lados }
-          ladoIndex   ={ ladoIndex }
-          show        ={ showExcluirLado }
-          handleClose ={ hideModalExcluirLado }
+          lados={lados}
+          ladoIndex={ladoIndex}
+          show={showExcluirLado}
+          handleClose={hideModalExcluirLado}
         />
-        <ModalImovel 
-          show        ={ showImovel }
-          handleClose ={ fecharModalImovel } 
-          lados       ={ lados } 
-          imovel      ={ imovel }
-          acao        ={ acao } // cadastrar ou editar
+        <ModalImovel
+          show={showImovel}
+          handleClose={fecharModalImovel}
+          lados={lados}
+          imovel={imovel}
+          acao={acao} // cadastrar ou editar
         />
         {/* Modal de confirmação de exclusão de imóvel */}
         <ModalConfirmacao
           title="Excluir imóvel"
-          show={ showModalExcluirImovel }
-          handleClose={ () => setShowModalExcluirImovel( false ) }
-          confimed={ excluirImovel }
+          show={showModalExcluirImovel}
+          handleClose={() => setShowModalExcluirImovel(false)}
+          confimed={excluirImovel}
         >
-          <p>Deseja excluir o imóvel nº { imovelExcluir.numero }?</p>
+          <p>Deseja excluir o imóvel nº {imovelExcluir.numero}?</p>
         </ModalConfirmacao>
       </section>
     </>
@@ -449,7 +555,7 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
  * @param {*} lado lado do quarteirão ao qual a lista está sendo inserida
  * @param {*} editar ação a ser chamada para editar o imóvel
  * @param {*} deletar ação a ser chamada para apagar o imóvel
- * @returns 
+ * @returns
  */
 function ListaImoveis({ lado, editar: editarAction, deletar: deletarAction }) {
   let imoveis = [];
@@ -516,7 +622,7 @@ function ListaImoveis({ lado, editar: editarAction, deletar: deletarAction }) {
 /**
  * Mapeia o estado global da aplicação a propriedade do componente
  * @param {Object} state estado global
- * @returns 
+ * @returns
  */
 const mapStateToProps = state => ( {
   usuario     : state.appConfig.usuario,
@@ -532,21 +638,25 @@ const mapStateToProps = state => ( {
 
 /**
  * Mapeia ações a propriedade do componente
- * @param {*} dispatch 
- * @returns 
+ * @param {*} dispatch
+ * @returns
  */
-const mapDispatchToProps = dispatch =>
-  bindActionCreators({
-    changeSidebar,
-    getQuarteiraoPorIdRequest,
-    getLocationByCityRequest,
-    getZoneByLocalityRequest,
-    getZoneByCityRequest,
-    getStreetByLocalityRequest,
-    setImovelEditar,
-    excluirImovelRequest,
-    setQuarteiraoRequest
-  }, dispatch);
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      changeSidebar,
+      getQuarteiraoPorIdRequest,
+      getLocationByCityRequest,
+      getZoneByLocalityRequest,
+      getZoneByCityRequest,
+      getStreetByLocalityRequest,
+      setImovelEditar,
+      excluirImovelRequest,
+      setQuarteiraoRequest,
+      showNotifyToast,
+    },
+    dispatch
+  );
 
 export default connect(
   mapStateToProps,

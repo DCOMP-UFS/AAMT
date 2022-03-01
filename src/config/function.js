@@ -71,7 +71,7 @@ export const validInputIsNull = ( idElement, value ) => {
 export const getDateBr = ( date, tipo = 'datetime' ) => {
   const data  = new Date( date );
   let dia     = data.getDate().toString(),
-      mes     = ( data.getMonth() + 1 ).toString(), //+1 pois no getMonth Janeiro começa com zero.
+      mes     = data.getMonth().toString(),
       ano     = data.getFullYear(),
       hh      = data.getHours(),
       mm      = data.getMinutes();
@@ -84,10 +84,10 @@ export const getDateBr = ( date, tipo = 'datetime' ) => {
 
   switch( tipo ) {
     case 'date':
-      return `${ dia }/${ mes }/${ ano }`;
+      return new Date(ano, mes, dia, hh, mm, 0).toLocaleDateString();
 
     default:
-      return `${ hh }:${ mm } - ${ dia }/${ mes }/${ ano }`;
+      return new Date(ano, mes, dia, hh, mm, 0).toLocaleString();
   }
 }
 
@@ -119,4 +119,14 @@ export const msgInputInvalid = ( msg = 'Campo obrigatório' ) => {
   return (
     `<span class="form-label-invalid">${ msg }</span>`
   );
+}
+
+/**
+ * Remove espaços em excesso de uma string
+ * @param {*} string
+ * @returns
+ */
+
+export const removeMultipleSpaces = string => {
+  return string.trim().replace(/  +/g, ' ');
 }

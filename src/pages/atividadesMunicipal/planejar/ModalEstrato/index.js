@@ -107,7 +107,7 @@ const ModalEstrato = ( { atividade, estratos, ...props } ) => {
         est.push(local)
       }
     }
-    const nw_locais = props.locais.filter(local => !est.find(e => local.nome === e.nome));
+    const nw_locais = locais.filter(local => !est.find(e => local.nome === e.nome));
     setLocais( nw_locais.map((l) => ({ ...l, checked: false })) );
     setLocaisSelecionados( [] );
   }

@@ -47,7 +47,7 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
   const [ marcador, setMarcador ]                 = useState( {} );
 
   useEffect(() => {
-    props.getQuarteiroesMunicipioRequest( usuario.municipio.id );
+    props.getQuarteiroesMunicipioRequest( usuario.municipio.id, true );
   }, []);
 
   useEffect(() => {

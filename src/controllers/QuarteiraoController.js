@@ -53,7 +53,10 @@ index = async ( req, res ) => {
 }
 
 getBlockByCity = async (req, res) => {
-  const { municipio_id } = req.params;
+  const { municipio_id }  = req.params;
+  const whereAtivo        = req.query.ativo == '1' || req.query.ativo == '0' ? 
+    { ativo: parseInt( req.query.ativo ) } : 
+    {};
 
   const municipio = await Municipio.findOne({
     where: {
@@ -63,6 +66,7 @@ getBlockByCity = async (req, res) => {
       association: 'localidades',
       attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
       include: {
+        where: whereAtivo,
         association: 'quarteiroes',
         include: [
           {

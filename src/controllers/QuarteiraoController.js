@@ -142,12 +142,13 @@ store = async ( req, res ) => {
   const quarteiraoExiste = await Quarteirao.findOne({
     where: {
       numero,
+      localidade_id
     }
   });
 
   if( quarteiraoExiste ) {
     return res.status(400).json({
-      error: `Não foi possível cadastrar este quarteirão pois já existe um com o número ${numero} registrado`
+      error: `Já existe um quarteirão com o número ${numero} registrado para esta localidade`
     });
   }
 

@@ -21,6 +21,20 @@ export default function Amostra(state = INITIAL_STATE, action) {
         amostra: action.payload.amostra
       };
 
+    case ActionTypes.SET_AMOSTRAS_ENVIADAS:
+      var index;
+      let amostras = action.payload.amostras.data
+      amostras.forEach( ( amostra, i ) => {
+        index = state.amostras.findIndex( a => a.id === amostra.id );
+        state.amostras[ index ] = amostra;
+      });
+      state.amostras          = [ ...state.amostras ]
+      return{
+        ...state,
+        amostras: state.amostras,
+        reload: true,
+      }
+
     default:
       return {...state};
   }

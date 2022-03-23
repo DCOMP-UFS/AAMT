@@ -7,6 +7,13 @@ export const getLaboratoriosRequest = data => {
   });
 }
 
+export const getLaboratoryRequest = data => {
+  return api.get(`/laboratorios/`, {
+    ...headerAuthorization()
+  });
+}
+
+
 /**
  * Solicita a API a inclusão de um novo laboratório
  * @param {Object} data 

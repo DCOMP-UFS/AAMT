@@ -13,7 +13,7 @@ import $ from 'jquery';
 // ACTIONS
 import { changeSidebar } from '../../store/Sidebar/sidebarActions';
 import { getAmostrasByLab, getAmostrasRequest, enviarAmostrasRequest, setAmostra } from '../../store/Amostra/amostraActions';
-import { getLaboratoriosRequest } from '../../store/Laboratorio/laboratorioActions';
+import { getLaboratoriosRequest, getLaboratoryRequest } from '../../store/Laboratorio/laboratorioActions';
 
 // STYLES
 import { Button, FormGroup, selectDefault } from '../../styles/global';
@@ -63,9 +63,20 @@ const columns = [
 export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
   const [ rows, setRows ] = useState( [] );
   const [ rowsSelected, setRowsSelected ] = useState( [] );
+  const [ tableName, settableName ] = useState( " " );
   const [ laboratoriosOptions, setLaboratoriosOptions ] = useState( [] );
   const [ laboratorioSelect, setLaboratorioSelect ] = useState( { value: null, label: '' } );
+
+  //Se o usuario for laboratorista, ele não poderá selecionar as linhas da tabela
+  let selectable;
+  if(usuario.atuacoes[0].tipoPerfil === 5){
+    selectable = 'none'
+  }else{
+    selectable = 'multiple'
+  }
+
   const options = {
+    selectableRows: selectable,
     customToolbarSelect: () => {
       return (
         <Button
@@ -83,18 +94,29 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
 
   useEffect( () => {
     props.changeSidebar( "amostra" );
+    // Se o usuario for coordenador retorna todos os labs, se for laboratorista retorna o lab do laboratorista
+    if( selectable === "multiple" ){
+      settableName("Amostras");
+      props.laboratorio = null;
+      props.getLaboratoriosRequest( usuario.municipio.id );
+    }else if ( selectable === "none" ){
+      laboratorios = null;
+      props.getLaboratoryRequest();
+    }
     props.getAmostrasRequest( usuario.id );
-    props.getLaboratoriosRequest( usuario.municipio.id );
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [] );
 
   useEffect(() => {
-    if( laboratorios.length > 0 ) {
+    if( laboratorios != null && laboratorios.length > 0 ) {
       setLaboratoriosOptions( laboratorios.map( lab => ( {
-        value: lab.cnpj, label: lab.nome
+        value: lab.id, label: lab.nome
       } ) ) );
     }
-  }, [ laboratorios ]);
+    if ( props.laboratorio ){
+      settableName("Amostras do " + props.laboratorio.nome);
+    }
+  }, [ laboratorios, props.laboratorio ]);
 
   useEffect( () => {
     let r = rows;
@@ -102,8 +124,11 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
     r = amostras.map( ( amostra, index ) => {
       const trabalhoDiario  = amostra.trabalhoDiario;
       const ciclo           = amostra.ciclo;
+      //console.log(amostra);
       const metodologia     = amostra.atividade.metodologia;
       const objetivo        = amostra.atividade.objetivo;
+      //const metodologia = null;
+      //const objetivo = null;
       const data            = trabalhoDiario.data.split( '-' );
 
       let situacaoAmostra = '';
@@ -117,10 +142,13 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
         situacaoAmostra = 'Negativa';
 
       return [
-        amostra.codigo,
+        //amostra.codigo,
+        amostra.id,
         `${ data[ 2 ] }/${ data[ 1 ] }/${ data[ 0 ] }`,
         metodologia.sigla,
         objetivo.sigla,
+        //null,
+        //null,
         `${ ciclo.ano }.${ ciclo.sequencia }`,
         situacaoAmostra,
         <Tooltip
@@ -149,9 +177,9 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
     e.preventDefault();
 
     if( laboratorioSelect.value ) {
-      const amostras_ids = rowsSelected.map( r => amostras[ r ].id );
+      const amostras_ = rowsSelected.map( r => amostras[ r ] );
 
-      props.enviarAmostrasRequest( laboratorioSelect.value, amostras_ids );
+      props.enviarAmostrasRequest( laboratorioSelect.value, amostras_ );
     }
   }
 
@@ -167,7 +195,7 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
         <Row>
           <article className="col-md-12 stretch-card">
             <Table
-              title={ `Amostras` }
+              title={ tableName }
               columns={ columns }
               data={ rows }
               options={ options }
@@ -205,7 +233,8 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
 const mapStateToProps = state => ( {
   usuario     : state.appConfig.usuario,
   amostras    : state.amostra.amostras,
-  laboratorios: state.nw_laboratorio.laboratorios
+  laboratorios: state.nw_laboratorio.laboratorios,
+  laboratorio : state.nw_laboratorio.laboratorio
 } );
 
 const mapDispatchToProps = {
@@ -213,6 +242,7 @@ const mapDispatchToProps = {
   getAmostrasRequest,
   getAmostrasByLab,
   getLaboratoriosRequest,
+  getLaboratoryRequest,
   enviarAmostrasRequest,
   setAmostra
 }

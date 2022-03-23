@@ -2,6 +2,7 @@ export const ActionTypes = {
   GET_AMOSTRAS_REQUEST: "GET_AMOSTRAS_REQUEST",
   GET_AMOSTRAS_BY_LAB: "GET_AMOSTRAS_BY_LAB",
   SET_AMOSTRAS: "SET_AMOSTRAS",
+  SET_AMOSTRAS_ENVIADAS: "SET_AMOSTRAS_ENVIADAS",
   ENVIAR_AMOSTRAS_REQUEST: "ENVIAR_AMOSTRAS_REQUEST",
   REGISTRAR_EXAME_REQUEST: "REGISTRAR_EXAME_REQUEST",
   SET_AMOSTRA: "SET_AMOSTRA"
@@ -56,6 +57,20 @@ export const getAmostrasRequest = supervisor_id => {
 export const setAmostras = amostras => {
   return {
     type: ActionTypes.SET_AMOSTRAS,
+    payload: {
+      amostras
+    }
+  }
+}
+
+/**
+ * 
+ * @param {*} amostras
+ * @returns 
+ */
+export const setAmostrasEnviadas = amostras =>{
+  return {
+    type: ActionTypes.SET_AMOSTRAS_ENVIADAS,
     payload: {
       amostras
     }

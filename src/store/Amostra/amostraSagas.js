@@ -1,4 +1,4 @@
-import { takeLatest, call, put, all } from 'redux-saga/effects';
+import { takeEvery, takeLatest, call, put, all } from 'redux-saga/effects';
 import * as servico from '../../services/requests/Amostra';
 import * as AmostraActions from './amostraActions';
 import * as AppConfigActions from '../AppConfig/appConfigActions';
@@ -35,10 +35,11 @@ export function* getAmostras( action ) {
 
 export function* enviarAmostras( action ) {
   try {
-    const { status } = yield call( servico.enviarAmostrasRequest, action.payload );
+    const { data, status } = yield call( servico.enviarAmostrasRequest, action.payload );
 
     if( status === 200 ) {
-      document.location.reload();
+      yield put( AmostraActions.setAmostrasEnviadas( data ));
+      yield put( AppConfigActions.showNotifyToast( "Amostras enviadas com sucesso!", "success" ) );
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao enviar amostras para o laboratório: " + status, "error" ) );
     }
@@ -72,7 +73,7 @@ function* watchGetAmostrasByLab() {
 }
 
 function* watchEnviarAmostras() {
-  yield takeLatest( AmostraActions.ActionTypes.ENVIAR_AMOSTRAS_REQUEST, enviarAmostras );
+  yield takeEvery( AmostraActions.ActionTypes.ENVIAR_AMOSTRAS_REQUEST, enviarAmostras );
 }
 
 function* watchRegistrarExame() {

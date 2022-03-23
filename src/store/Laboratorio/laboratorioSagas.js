@@ -18,6 +18,21 @@ export function* getLaboratorios( action ) {
   }
 }
 
+export function* getLaboratory( action ) {
+  try {
+    const { data, status } = yield call( servico.getLaboratoryRequest, action.payload );
+
+    if( status === 200 ) {
+      yield put( LaboratorioActions.setLaboratory( data ) );
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Falha ao consultar laboratórios: " + status, "error" ) );
+    }
+
+  } catch (error) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar laboratórios, favor verifique a conexão", "error" ) );
+  }
+}
+  
 export function* createLaboratory( action ) {
   try {
     const { data, status } = yield call( servico.createLaboratoryRequest, action.payload );
@@ -53,6 +68,10 @@ function* watchGetLaboratorios() {
   yield takeLatest( LaboratorioActions.ActionTypes.GET_LABORATORIOS_REQUEST, getLaboratorios );
 }
 
+function* watchGetLaboratory() {
+  yield takeLatest( LaboratorioActions.ActionTypes.GET_LABORATORY_REQUEST, getLaboratory );
+}
+
 function* watchCreateLaboratory() {
   yield takeLatest( LaboratorioActions.ActionTypes.CREATE_LABORATORY_REQUEST, createLaboratory );
 }
@@ -64,6 +83,7 @@ function* watchUpdateLaboratorio() {
 export function* laboratorioSaga() {
   yield all( [
     watchGetLaboratorios(),
+    watchGetLaboratory(),
     watchCreateLaboratory(),
     watchUpdateLaboratorio(),
   ] );

@@ -1,6 +1,7 @@
 import { ActionTypes } from './laboratorioActions';
 
 const INITIAL_STATE = {
+  laboratorio         : null,
   laboratorios: [],
   reload      : false,
   created     : false,
@@ -9,6 +10,14 @@ const INITIAL_STATE = {
 
 export default function Laboratorio( state = INITIAL_STATE, action ) {
   switch( action.type ) {    
+    case ActionTypes.SET_LABORATORY: {
+      return{
+        ...state,
+        laboratorio: action.payload.laboratorio,
+        reload     : !state.reload
+      };
+    }
+
     case ActionTypes.SET_LABORATORIOS: {
       return {
         ...state,

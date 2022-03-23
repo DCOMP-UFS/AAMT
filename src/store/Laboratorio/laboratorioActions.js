@@ -1,6 +1,8 @@
 export const ActionTypes = {
   GET_LABORATORIOS_REQUEST  : "GET_LABORATORIOS_REQUEST",
+  GET_LABORATORY_REQUEST    : "GET_LABORATORY_REQUEST",
   SET_LABORATORIOS          : "SET_LABORATORIOS",
+  SET_LABORATORY            : "SET_LABORATORY",
   CREATE_LABORATORY_REQUEST : "CREATE_LABORATORY_REQUEST",
   CREATE_LABORATORY_SUCCESS : "CREATE_LABORATORY_SUCCESS",
   UPDATE_LABORATORY_REQUEST : "UPDATE_LABORATORY_REQUEST",
@@ -24,6 +26,18 @@ export const getLaboratoriosRequest = municipio_id => {
 }
 
 /**
+ * Retorna o laboratório do laboratorista
+ * @param {*} userId
+ * @returns lab
+ */
+export const getLaboratoryRequest = () => {
+  return{
+    type: ActionTypes.GET_LABORATORY_REQUEST,
+    payload:{ }
+  }
+}
+
+/**
  * Recebe um array de laboratórios e salva no reduce nw_laboratorio.laboratorios
  *
  * @param {*} laboratorios
@@ -34,6 +48,21 @@ export const setLaboratorios = laboratorios => {
     type: ActionTypes.SET_LABORATORIOS,
     payload: {
       laboratorios
+    }
+  }
+}
+
+/**
+ * Recebe um laboratório e salva no reduce nw_laboratorio.laboratorio
+ *
+ * @param {*} laboratorio
+ * @returns
+ */
+ export const setLaboratory = laboratorio => {
+  return {
+    type: ActionTypes.SET_LABORATORY,
+    payload: {
+      laboratorio
     }
   }
 }

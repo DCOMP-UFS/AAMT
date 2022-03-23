@@ -1,6 +1,7 @@
 const authMiddleware        = require( '../middlewares/auth' );
 const express               = require( 'express' );
 const Sequelize = require('sequelize');
+const Usuario               = require( '../models/Usuario');
 const Laboratorio           = require( '../models/Laboratorio' );
 const Municipio             = require( '../models/Municipio' );
 const LaboratorioMunicipio  = require( '../models/LaboratorioMunicipio' );
@@ -15,11 +16,23 @@ router.use( authMiddleware );
  * Retorna a lista de laboratórios de um município
  * @returns {array}
  */
-getLaboratorio = async ( req, res ) => {
+getLaboratorios = async ( req, res ) => {
   const { municipio_id } = req.params;
 
+  const userRequest = await Usuario.findByPk( req.userId, {
+    include: {
+      association: 'atuacoes'
+    }
+  } );
+
+  // Se o usuario for supervisor, retorna somente os laboratorios ativos para encaminhar amostras
+  let whereObject =  { municipio_id: municipio_id } ;
+  if( userRequest.atuacoes[0].tipoPerfil === 3 ){
+    whereObject.ativo = true;
+  }
+
   const laboratorios = await LaboratorioMunicipio.findAll({
-    where: { municipio_id : municipio_id },
+    where: whereObject,
     attributes:{
         include: [
           [Sequelize.col('laboratorios.cnpj'), 'cnpj'],
@@ -130,7 +143,25 @@ updateLaboratorio = async( req, res ) =>{
   return res.json( resp );
 }
 
-router.get( '/:municipio_id', getLaboratorio );
+/**
+ * Retorna um laboratório pelo seu ID
+ * @returns {Object} laboratorio
+ */
+
+getLabById = async( req, res ) => {
+  // Pegando o id do laboratório do laboratorista
+  const userRequest = await Usuario.findByPk( req.userId, {
+    include: {
+      association: 'atuacoes'
+    }
+  } );
+  const laboratorio = await Laboratorio.findByPk( userRequest.atuacoes[0].local_id );
+
+  res.json(laboratorio);
+}
+
+router.get( '/:municipio_id', getLaboratorios );
+router.get( '/', getLabById );
 router.post( '/', createLaboratorio );
 router.put( '/', updateLaboratorio );
 

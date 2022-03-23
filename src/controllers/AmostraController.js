@@ -7,6 +7,8 @@ const Ciclo           = require('../models/Ciclo');
 const Atividade       = require('../models/Atividade');
 const Amostra         = require('../models/Amostra');
 const Exemplar        = require('../models/Exemplar');
+const Atuacao         = require('../models/Atuacao');
+const LaboratorioMunicipio = require('../models/LaboratorioMunicipio');
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
@@ -22,7 +24,7 @@ router.use(authMiddleware);
 getSampleBySurpervision = async ( req, res ) => {
   const { id } = req.params;
 
-  const allow = await allowFunction( req.userId, 'definir_trabalho_diario' );
+  const allow = await allowFunction( req.userId, 'visualizar_amostra');
   if( !allow )
     return res.status( 403 ).json( { error: 'Acesso negado' } );
 
@@ -31,27 +33,31 @@ getSampleBySurpervision = async ( req, res ) => {
       association: 'atuacoes'
     }
   } );
-
+  
   if( userRequest.id !== parseInt( id ) )
     return res.status( 403 ).json( { error: 'Acesso negado' } );
+  
 
   /**
-   * Checando se o usuário que está requisitando é um supervisor,
+   * Checando se o usuário que está requisitando é um supervisor ou laboratorista,
    * se sim, verificando se o ID da URL é diferente do usuário requisitado.
    */
-  if( userRequest.atuacoes[ 0 ].tipoPerfil === 3 ) {
+  
+  if( userRequest.atuacoes[ 0 ].tipoPerfil === 3 || userRequest.atuacoes[0].tipoPerfil === 5 ) {
     if( parseInt( id ) !== req.userId )
       return res.status( 403 ).json( { error: 'Acesso negado' } );
   }
 
   // Consultando Regional ID
   let regional_id;
+  let id_municipio;
   switch( userRequest.atuacoes[ 0 ].escopo ) {
     case 1: // Regional
       regional_id = userRequest.atuacoes[ 0 ].local_id;
       break;
 
     case 2: // Municipio
+      id_municipio = userRequest.atuacoes[ 0 ].local_id;
       regional_id = await Municipio.findByPk( userRequest.atuacoes[ 0 ].local_id, {
         include: {
           association: 'regional'
@@ -62,8 +68,20 @@ getSampleBySurpervision = async ( req, res ) => {
       break;
   
     default: // Laboratório
-      
+      const lab = await LaboratorioMunicipio.findOne({
+        where: { laboratorio_id : userRequest.atuacoes[ 0 ].local_id },
+      });
+      id_municipio = lab.municipio_id;
+
+      regional_id = await Municipio.findByPk( id_municipio, {
+        include: {
+          association: 'regional'
+        }
+      }).then( municipio => {
+        return municipio.regional.id;
+      });
       break;
+    
   }
 
   // Consultando o ciclo em aberto da regional de saúde
@@ -72,7 +90,9 @@ getSampleBySurpervision = async ( req, res ) => {
 
   const ciclo = await Ciclo.findOne( {
     where: Sequelize.and(
-      { regional_saude_id: regional_id } ,
+      { 
+        regional_saude_id: regional_id 
+      } ,
       Sequelize.where(
         Sequelize.fn( 'date', Sequelize.col( 'data_inicio' ) ),
         '<=', current_date
@@ -83,12 +103,13 @@ getSampleBySurpervision = async ( req, res ) => {
       )
     )
   } );
+  console.log(ciclo)
 
   // Pegando as equipes que o usuário é supervisor
   const atividades = await Atividade.findAll( {
     where: {
-      ciclo_id: ciclo.id,
-      municipio_id: userRequest.atuacoes[ 0 ].local_id
+      //ciclo_id: ciclo.id,
+      municipio_id: id_municipio,
     },
     include: [
       {
@@ -116,8 +137,15 @@ getSampleBySurpervision = async ( req, res ) => {
     } );
   } );
 
+  //Verificando se o usuario é laboratorista ou supervisor para definir o escopo das amostras
+  let whereObject;
+  if(userRequest.atuacoes[0].tipoPerfil === 5){
+    whereObject = { laboratorio_id : userRequest.atuacoes[0].local_id}
+  }else{
+    whereObject = {}
+  }
+
   let amostras = await Amostra.findAll( {
-    attributes: {exclude: ['cnpj']},
     include: [
       {
         association: 'deposito',
@@ -134,23 +162,30 @@ getSampleBySurpervision = async ( req, res ) => {
       {
         association: 'exemplares'
       }
-    ]
+    ],
+    where: whereObject
   } );
 
   // Tratando resultados
-  amostras.forEach(async ( amostra, index ) => {
-    let a = amostra.dataValues;
+  amostras.forEach( ( amostra, index ) => {
+      let a = amostra.dataValues;
 
-    amostras[ index ].dataValues.trabalhoDiario = a.deposito.dataValues.vistoria.dataValues.trabalhoDiario.dataValues;
-    a.deposito.dataValues.vistoria.dataValues.trabalhoDiario = undefined;
-    amostras[ index ].dataValues.vistoria = a.deposito.dataValues.vistoria.dataValues;
-    a.deposito.dataValues.vistoria = undefined;
-    amostras[ index ].dataValues.deposito = a.deposito.dataValues;
-    amostras[ index ].dataValues.ciclo = ciclo;
-
-    amostras[ index ].dataValues.atividade = atividades.find( atividade => atividade.id === amostras[ index ].dataValues.trabalhoDiario.equipe.dataValues.atividade_id );
+      amostras[ index ].dataValues.trabalhoDiario = a.deposito.dataValues.vistoria.dataValues.trabalhoDiario.dataValues;
+      a.deposito.dataValues.vistoria.dataValues.trabalhoDiario = undefined;
+      amostras[ index ].dataValues.vistoria = a.deposito.dataValues.vistoria.dataValues;
+      a.deposito.dataValues.vistoria = undefined;
+      amostras[ index ].dataValues.deposito = a.deposito.dataValues;
+      amostras[ index ].dataValues.ciclo = ciclo;
+      amostras[ index ].dataValues.atividade = atividades.find( atividade => atividade.id === amostras[ index ].dataValues.trabalhoDiario.equipe.dataValues.atividade_id );
+      /**if para corrigir o bug das seeds TeamData, que está com o campo 'atividade_id' apontando para atividades
+       * que nao existem no municipio do usuário
+      */
+      if( amostras[ index ].dataValues.trabalhoDiario.equipe.dataValues.atividade_id > 2){
+        amostras[index].dataValues.atividade = atividades.find( atividade => atividade.id === 2);
+      }
   });
-
+  //console.log(amostras);
+  console.log(atividades);
   return res.json( amostras );
 }
 
@@ -166,24 +201,17 @@ sendSample = async ( req, res ) => {
   if( !allow )
     return res.status(403).json({ error: 'Acesso negado' });
 
-  const updated = await Amostra.update(
-    { 
-      laboratorio_id: parseInt( laboratorio_id ),
-      situacaoAmostra: 2 
-    }, 
-    {
-      where: {
-        id: amostras
-      }
-    }
-  );
+  for(var i=0; i<amostras.length; i++){
+    let amostra =  await Amostra.findByPk( amostras[i].id )
+    amostra.set({
+      laboratorio_id : parseInt( laboratorio_id ),
+      situacaoAmostra: 2
+    })
+    amostras[i].situacaoAmostra = 2;
+    await amostra.save();
+  };
 
-  res.json({
-    mensage: "Amostras Atualizadas com sucesso",
-    data: {
-      status: 200
-    }
-  });
+  res.json( {data: amostras, status: 200} );
 }
 
 insertExamination = async ( req, res ) => {
@@ -226,7 +254,6 @@ getSamplesByLab = async (req, res) => {
     attributes: {exclude: ['cnpj']},
   });
   
-  console.log(amostras)
   res.json( amostras );
 }
 

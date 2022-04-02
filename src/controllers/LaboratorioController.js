@@ -1,5 +1,6 @@
 const authMiddleware        = require( '../middlewares/auth' );
 const express               = require( 'express' );
+const Sequelize             = require( 'sequelize' );
 const Laboratorio           = require( '../models/Laboratorio' );
 const Municipio             = require( '../models/Municipio' );
 const LaboratorioMunicipio  = require( '../models/LaboratorioMunicipio' );
@@ -17,18 +18,24 @@ router.use( authMiddleware );
 getLaboratorio = async ( req, res ) => {
   const { municipio_id } = req.params;
 
-  const municipio = await Municipio.findByPk( municipio_id );
-  if( !municipio )
-    res.status( 404 ).json( { error: 'Município não existe' } );
-
-  const laboratorios = await Laboratorio.findAll( {
-    include: {
-      association: 'municipios',
-      where: {
-        id: municipio_id
+  const laboratorios = await LaboratorioMunicipio.findAll( {
+    where: { municipio_id : municipio_id },
+    attributes:{
+      include: [
+        [ Sequelize.col( 'laboratorios.cnpj' ), 'cnpj' ],
+        [ Sequelize.col( 'laboratorios.nome' ), 'nome' ],
+        [ Sequelize.col( 'laboratorios.endereco' ), 'endereco' ],
+        [ Sequelize.col( 'laboratorios.tipo_laboratorio' ), 'tipoLaboratorio' ]
+      ]
+    },
+    include: [
+      {
+        model: Laboratorio,
+        as: 'laboratorios',
+        attributes: []
       }
-    }
-  } );
+    ]
+  });
 
   res.json( laboratorios );
 }
@@ -40,21 +47,26 @@ getLaboratorio = async ( req, res ) => {
 createLaboratorio = async( req, res ) => {
   const { cnpj, nome, endereco, tipoLaboratorio, municipio_id } = req.body;
 
-  let laboratorio = await Laboratorio.findByPk( cnpj );
-  if( laboratorio )
-    res.status( 400 ).json( {  error: "CNPJ já existe" } );
+  const userId = req.userId;
 
-  laboratorio = await Laboratorio.create( {
+  const allow = await allowFunction( userId, 'manter_laboratorio' );
+  if( !allow ) {
+    return res.status( 403 ).json( { error: 'Acesso negado' } );
+  }
+
+  let laboratorio = await Laboratorio.create( {
     cnpj,
     nome,
     endereco,
     tipoLaboratorio
   } );
-  
+
   await LaboratorioMunicipio.create( {
-    cnpj,
+    laboratorio_id: laboratorio.id,
     municipio_id
   } );
+
+  laboratorio.dataValues.ativo = true;
 
   return res.status( 201 ).json( laboratorio );
 }
@@ -64,23 +76,19 @@ createLaboratorio = async( req, res ) => {
  * @returns {Object} Laboratorio
  */
 updateLaboratorio = async( req, res ) =>{
-  const { cnpjId, cnpj, nome, endereco, tipoLaboratorio, ativo } = req.body;
+  const { id, cnpj, nome, endereco, tipoLaboratorio, ativo, municipio_id } = req.body;
 
-  const cnpjExists = await Laboratorio.findByPk( cnpj );
-
-  if ( !cnpjExists ){
-    const query = `UPDATE laboratorios SET cnpj = '${cnpj}' WHERE cnpj = '${cnpjId}';`;
-    await Laboratorio.sequelize.query(query);
-  }else{
-    if ( cnpj != cnpjId){
-      res.status( 404 ).json( { error: "CNPJ já existe" } );
-    }
-  }
+  const userId = req.userId;
   
-  const laboratorio = await Laboratorio.findByPk( cnpj );
+  const allow = await allowFunction( userId, 'manter_laboratorio' );
+  if( !allow ) {
+    return res.status( 403 ).json( { error: 'Acesso negado' } );
+  }
 
-  if( !laboratorio ){
-    res.status( 404 ).json( { error: "CNPJ não existe" } );
+  const laboratorio = await Laboratorio.findByPk( id );
+
+  if( !laboratorio ) {
+    res.status( 404 ).json( { error: "Laboratório não existe" } );
   }
 
   laboratorio.set( {
@@ -88,22 +96,37 @@ updateLaboratorio = async( req, res ) =>{
     nome,
     endereco,
     tipoLaboratorio,
+  } );
+
+  laboratorio.changed( 'updatedAt', true ); // atualiza updatedAt mesmo sem set de atributos
+
+  const laboratorio_municipio = await LaboratorioMunicipio.findOne( {
+      where: {
+        laboratorio_id : id,
+        municipio_id   : municipio_id
+      }
+  } );
+
+  laboratorio_municipio.set( {
     ativo,
-  });
+  } );
+
+  laboratorio_municipio.changed( 'updatedAt', true ); // atualiza updatedAt mesmo sem set de atributos
 
   await laboratorio.save();
+  await laboratorio_municipio.save();
+
   const resp = {
-    cnpjId:          cnpjId,
+    id:              laboratorio.id,
     cnpj:            laboratorio.cnpj,
     nome:            laboratorio.nome,
     endereco:        laboratorio.endereco,
     tipoLaboratorio: laboratorio.tipoLaboratorio,
-    ativo:           laboratorio.ativo,
+    ativo:           laboratorio_municipio.ativo,
     createdAt:       laboratorio.createdAt,
     updatedAt:       laboratorio.updatedAt
   }
 
-  console.log(resp);
   return res.json( resp );
 }
 

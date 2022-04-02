@@ -3,8 +3,9 @@ const { Model, DataTypes } = require('sequelize');
 class LaboratorioMunicipio extends Model {
   static init(sequelize) {
     super.init({
-      cnpj: DataTypes.BIGINT,
+      laboratorio_id: DataTypes.INTEGER,
       municipio_id: DataTypes.INTEGER,
+      ativo           : DataTypes.BOOLEAN,
     }, {
       sequelize,
       tableName: 'laboratorios_municipios'
@@ -12,7 +13,7 @@ class LaboratorioMunicipio extends Model {
   }
 
   static associate( models ) {
-    this.belongsTo( models.Laboratorio, { foreignKey: 'cnpj', as: 'laboratorios'} );
+    this.belongsTo( models.Laboratorio, { foreignKey: 'id', as: 'laboratorios'} );
     this.belongsTo( models.Municipio, { foreignKey: 'municipio_id', as: 'municipios'});
   }
 }

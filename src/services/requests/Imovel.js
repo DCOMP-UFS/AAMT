@@ -12,6 +12,17 @@ export const getImoveisRequest = data => {
   });
 }
 
+/**
+ * Deleta um imóvel
+ * @param {Integer} imovel_id 
+ * @returns 
+ */
+export const deletarImovelRequest = imovel_id => {
+  return api.delete(`imoveis/${ imovel_id }`, {
+    ...headerAuthorization()
+  });
+}
+
 export const createHouseRequest = data => {
   const { numero, sequencia, responsavel, complemento, tipoImovel, lado_id, lng, lat } = data;
 

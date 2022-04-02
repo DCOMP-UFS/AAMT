@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { IoIosHome } from 'react-icons/io';
 import { FaPenSquare } from 'react-icons/fa';
-import Table, { ButtonAdd, ButtonDesabled } from '../../components/Table';
+import Table, { ButtonAdd, ButtonDelete } from '../../components/Table';
 import { Row } from 'react-bootstrap';
 import { tipoImovelEnum } from '../../config/enumerate';
 import ModalImovel from './components/ModalImovel';
@@ -12,7 +12,7 @@ import { ModalConfirm } from '../../components/Modal';
 
 // ACTIONS
 import { changeSidebar } from '../../store/Sidebar/sidebarActions';
-import { getImoveisMunicipioRequest, setImovel } from '../../store/Imovel/imovelActions';
+import { getImoveisMunicipioRequest, setImovel, deletarImovelRequest } from '../../store/Imovel/imovelActions';
 
 // Styles
 import { Container } from './styles';
@@ -101,10 +101,10 @@ export const Imoveis = ({ imoveis, usuario, ...props }) => {
     },
     customToolbarSelect: () => {
       return (
-        <ButtonDesabled
+        <ButtonDelete
           title="Desativar Imóveis"
           data-toggle="modal"
-          data-target="#modal-desativar-imovel"
+          data-target="#modal-deletar-imovel"
         />
       );
     },
@@ -144,7 +144,7 @@ export const Imoveis = ({ imoveis, usuario, ...props }) => {
 
       setRows( r );
     }
-  }, [ imoveis ]);
+  }, [ imoveis, props.reload ]);
 
   const handlerImovel = index => {
     props.setImovel( imoveis[ index ] );
@@ -152,7 +152,15 @@ export const Imoveis = ({ imoveis, usuario, ...props }) => {
     $( '#modal-imovel' ).modal( 'show' );
   }
 
+  /**
+   * Aciona o action para remover os imóveis
+   */
   const desativarImoveis = () => {
+    rowsSelected.forEach( index => {
+      props.deletarImovelRequest( imoveis[ index ].id );
+    } );
+
+    setRowsSelected( [] );
   }
 
   return (
@@ -173,8 +181,8 @@ export const Imoveis = ({ imoveis, usuario, ...props }) => {
               options={ options }
             />
             <ModalImovel />
-            <ModalConfirm id="modal-desativar-imovel" title="Desativar Imóvel" confirm={ desativarImoveis }>
-              <p>Deseja realmente desativar o(s) imóvel(is)</p>
+            <ModalConfirm id="modal-deletar-imovel" title="Deletar Imóvel" confirm={ desativarImoveis }>
+              <p>Deseja realmente deletar o(s) imóvel(is)</p>
             </ModalConfirm>
           </article>
         </Row>
@@ -193,7 +201,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   changeSidebar,
   getImoveisMunicipioRequest,
-  setImovel
+  setImovel,
+  deletarImovelRequest
 }
 
 export default connect(

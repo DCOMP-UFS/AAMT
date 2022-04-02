@@ -6,7 +6,6 @@ import ModalDisabled from './ModalDisabled';
 import ModalUpdate from './ModalUpdate';
 import { FaVials, FaPenSquare } from 'react-icons/fa';
 import { Tooltip, IconButton } from '@material-ui/core';
-import $ from 'jquery';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -51,9 +50,12 @@ const columns = [
   },
   {
     label: "Ativo",
+    id: 'ativo',
     options: {
-
-    }
+      filter: true,
+      filterList: [ 'Sim' ],
+      customFilterListOptions: { render: v => `Ativo: ${ v }` },
+    },
   },
   {
     label: "Criado em",
@@ -76,17 +78,13 @@ const columns = [
 ];
 
 const Laboratorios = ( { municipio_id, localidades, laboratorios, municipio, ...props } ) => {
-  const [ rows, setRows ]                       = useState( [] );
-  const [ cnpj_up, setCnpj ]                    = useState( [] );
-  const [ nome_up, setNome ]                    = useState( [] );
-  const [ tipo_up, setTipo ]                    = useState( [] );
-  const [ endereco_up, setEndereco ]            = useState( [] );
-  const [ created_at, setCreated_at ]           = useState( [] );
-  const [ showModalAdd, setShowModalAdd ]       = useState( false );
-  const [ showModalEditar, setShowModalEditar ] = useState( false );
-  const [ laboratorio, setLaboratorio ]         = useState( new Laboratorio );
-  const [ cnpjId , setCnpjId ]                  = useState( null );
-  const options                                 = {
+  const [ rows, setRows ]                           = useState( [] );
+  const [ showModalAdd, setShowModalAdd ]           = useState( false );
+  const [ showModalEditar, setShowModalEditar ]     = useState( false );
+  const [ showModalDisabled, setShowModalDisabled ] = useState( false );
+  const [ laboratorio, setLaboratorio ]             = useState( new Laboratorio );
+  const [ id , setId ]                              = useState( null );
+  const options                                     = {
     customToolbar: () => {
       return (
         <ButtonAdd
@@ -99,7 +97,7 @@ const Laboratorios = ( { municipio_id, localidades, laboratorios, municipio, ...
       props.changeTableSelected( 'tableLocation', data );
       return (
         <ButtonDesabled
-          //onClick = { $('#modal-desativar-laboratorio').modal('show') }
+          onClick = { () => { setShowModalDisabled( true ); } }
           title="Desabilidade Laboratorio"
           data-toggle="modal"
           data-target="#modal-desativar-laboratorio" />
@@ -149,7 +147,7 @@ const Laboratorios = ( { municipio_id, localidades, laboratorios, municipio, ...
         <Tooltip
           className   ="bg-warning text-white"
           title       ="Editar"
-          onClick     ={ () => { setLaboratorio( lab ); setShowModalEditar( true ); setCnpjId( lab.cnpj ); } }
+          onClick     ={ () => { setLaboratorio( lab ); setShowModalEditar( true ); setId( lab.id ); } }
         >
           <IconButton aria-label="Editar">
             <FaPenSquare />
@@ -157,7 +155,7 @@ const Laboratorios = ( { municipio_id, localidades, laboratorios, municipio, ...
         </Tooltip>
       ] );
     } );
-    
+
     setRows( list );
   };
   /**
@@ -226,6 +224,14 @@ const Laboratorios = ( { municipio_id, localidades, laboratorios, municipio, ...
     setShowModalEditar( false );
   }
 
+  /**
+   * Fecha o modal de desativar
+   * @returns void
+   */
+  const handleCloseModalDisabled = () => {
+    setShowModalDisabled( false );
+  }
+
   return (
     <>
       <PageHeader>
@@ -251,10 +257,10 @@ const Laboratorios = ( { municipio_id, localidades, laboratorios, municipio, ...
           show={ showModalEditar }
           handleClose={ handleCloseModalEditar }
           laboratorio={ laboratorio }
-          cnpjId = { cnpjId }
+          id = { id }
         />
         <ModalAdd show={ showModalAdd } handleClose={ handleCloseModalAdd } />
-        <ModalDisabled/>
+        <ModalDisabled show={ showModalDisabled } handleClose = { handleCloseModalDisabled }/>
       </section>
     </>
   );

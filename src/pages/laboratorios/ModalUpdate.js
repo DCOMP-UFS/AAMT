@@ -17,9 +17,8 @@ import { Laboratorio } from '../../config/models';
 // STYLES
 import { ContainerArrow } from '../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../styles/global';
-import SelectInput from '@material-ui/core/Select/SelectInput';
 
-function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, cnpjId, ...props } ) {
+const ModalUpdate = ( { laboratorio, municipio, updated, show, handleClose, id, ...props } ) => {
   const [ cnpj, setCnpj ]                         = useState( null );
   const [ isValidCnpj, setIsValidCnpj ]           = useState( true );
   const [ nome, setNome ]                         = useState( "" );
@@ -32,19 +31,18 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, cnpj
   ] );
   const [ ativo, setAtivo ]                       = useState( { value: null, label: '' });
   const [ optionAtivo ]                           = useState( [
-    {value: true , label: 'Sim'},
-    {value: false, label: "Não"},
+    { value: true , label: 'Sim' },
+    { value: false, label: "Não" },
   ]);
 
   /**
    * Este effect monitora o valor da variável laboratorio e seta os states de acordo
    * com ela.
    */
-
   useEffect( () => {
-    setIsValidCnpj(true);
-    setIsValidCategoria(true);
-    setCnpj( fill0(laboratorio.cnpj) );
+    setIsValidCnpj( true );
+    setIsValidCategoria( true );
+    setCnpj( laboratorio.cnpj );
     setNome( laboratorio.nome );
     setCategoria( 
       laboratorio.tipoLaboratorio === 'sede' ? 
@@ -52,7 +50,7 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, cnpj
         ( {value: 'privado', label: 'Privado' } ) 
     );
     setEndereco( laboratorio.endereco );
-    setAtivo( laboratorio.ativo ? {value: true , label: "Sim"} : {value: false, label: "Não" });
+    setAtivo( laboratorio.ativo ? { value: true , label: "Sim" } : { value: false, label: "Não" } );
   }, [ show, laboratorio ] );
 
   /**
@@ -79,27 +77,11 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, cnpj
     setAtivo( "" );
   }
 
-  /**
-   * Preenche o CNPJ com zeros a esquerda
-   * @param {string} str 
-   * @returns {string}
-   */
-
-   const fill0 = str =>{
-    if (str == null){
-      return
-    };
-    while (str.length < 14){
-      str = '0' + str;
-    };
-    return str; 
-  }
 
   /**
    * Fecha o modal
    * @returns void
    */
-
    const cancel = () => {
     clearInput();
     handleClose();
@@ -113,20 +95,6 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, cnpj
   const submit = ( e ) => {
     e.preventDefault();
 
-    if( cnpj.length !== 14 ) {
-      setIsValidCnpj( false );
-      return;
-    } else {
-      setIsValidCnpj( true );
-    }
-    
-    if( isNum(cnpj) === false ) {
-      setIsValidCnpj( false );
-      return;
-    } else {
-      setIsValidCnpj( true );
-    }
-
     if( !categoria.value ) {
       setIsValidCategoria( false );
       return;
@@ -135,22 +103,14 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, cnpj
     }
 
     props.updateLaboratoryRequest( new Laboratorio( {
-      cnpjId,
+      id,
       cnpj,
       nome,
       endereco,
       tipoLaboratorio: categoria.value,
       ativo: ativo.value,
+      municipio_id: municipio.id
     } ) );
-  }
-
-  /**
-   * Verifica se a string é um número
-   * @param {val} v valor da string
-   * @returns boolean
-   */
-  const isNum = val =>{
-      return !isNaN(val)
   }
 
   return(
@@ -163,25 +123,19 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, cnpj
       <form onSubmit={ submit }>
         <Modal.Body>
           <Row>
-            <Col sm='6'>
+            <Col sm="12" md="6">
               <FormGroup>
-                <label htmlFor="cnpj">CNPJ<code>*</code></label>
-                <input 
-                  id        ="cnpj" 
-                  value     ={ cnpj ? cnpj : "" } 
-                  className ={ `form-control ${ !isValidCnpj ? 'invalid' : '' }` }
-                  onChange  ={ e => setCnpj( e.target.value ) } 
-                  maxlength ="14"
-                  required 
-                />
-                {
-                  !isValidCnpj ?
-                    <span class="form-label-invalid">CNPJ inválido</span> :
-                    ''
-                }
+                <label htmlFor="cnpj_modal">CNPJ <code>*</code></label>
+                <input id="cnpj_modal" value={ cnpj } className="form-control" disabled />
               </FormGroup>
             </Col>
-            <Col sm='6'>
+            <Col sm="12" md="6">
+              <FormGroup>
+                <label htmlFor="nome">Nome <code>*</code></label>
+                <input id="nome" value={nome} className="form-control" onChange={ e => setNome(e.target.value) } required />
+              </FormGroup>
+            </Col>
+            <Col>
               <FormGroup>
                 <label htmlFor="categoria">Tipo<code>*</code></label>
                 <Select
@@ -198,14 +152,6 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, cnpj
                     <span class="form-label-invalid">Campo obrigatório</span> :
                     ''
                 }
-              </FormGroup>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <FormGroup>
-                <label htmlFor="nome">Nome <code>*</code></label>
-                <input id="nome" value={nome} className="form-control" onChange={ e => setNome(e.target.value) } required />
               </FormGroup>
             </Col>
             <Col>

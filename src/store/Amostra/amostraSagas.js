@@ -3,6 +3,21 @@ import * as servico from '../../services/requests/Amostra';
 import * as AmostraActions from './amostraActions';
 import * as AppConfigActions from '../AppConfig/appConfigActions';
 
+export function* getAmostrasByLab( action ) {
+  try {
+    const { data, status } = yield call( servico.getAmostrasByLabRequest, action.payload );
+
+    if( status === 200 ) {
+      yield put( AppConfigActions.showNotifyToast( "Amostras lidas com sucesso!", "success" ));
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Falha ao consultar amostras: " + status, "error" ) );
+    }
+
+  } catch (error) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar amostras, favor verifique a conexão", "error" ) );
+  }
+}
+
 export function* getAmostras( action ) {
   try {
     const { data, status } = yield call( servico.getAmostrasRequest, action.payload );
@@ -52,6 +67,10 @@ function* watchGetAmostras() {
   yield takeLatest( AmostraActions.ActionTypes.GET_AMOSTRAS_REQUEST, getAmostras );
 }
 
+function* watchGetAmostrasByLab() {
+  yield takeLatest( AmostraActions.ActionTypes.GET_AMOSTRAS_BY_LAB, getAmostrasByLab);
+}
+
 function* watchEnviarAmostras() {
   yield takeLatest( AmostraActions.ActionTypes.ENVIAR_AMOSTRAS_REQUEST, enviarAmostras );
 }
@@ -63,6 +82,7 @@ function* watchRegistrarExame() {
 export function* amostraSaga() {
   yield all( [
     watchGetAmostras(),
+    watchGetAmostrasByLab(),
     watchEnviarAmostras(),
     watchRegistrarExame(),
   ] );

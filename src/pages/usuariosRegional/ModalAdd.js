@@ -23,71 +23,70 @@ import { getCityByRegionalHealthRequest } from '../../store/Municipio/municipioA
 import { ContainerArrow } from '../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../styles/global';
 
-function ModalAdd({ createUsuarioRequest, createUser, ...props }) {
-  const [ nome, setNome ] = useState("");
-  const [ cpf, setCpf ] = useState("");
-  const [ rg, setRg ] = useState("");
-  const [ email, setEmail ] = useState("");
-  const [ celular, setCelular ] = useState("");
-  const [ usuario, setUsuario ] = useState("");
-  const [ senha, setSenha ] = useState("");
-  const [ tipoPerfil, setTipoPerfil ] = useState({});
-  const [ pais, setPais ] = useState({ value: 30, label: 'Brasil' });
-  const [ optionPais, setOptionPais ] = useState([]);
-  const [ regiao, setRegiao ] = useState({});
-  const [ optionRegiao, setOptionRegiao ] = useState([]);
-  const [ estado, setEstado ] = useState({});
-  const [ optionEstado, setOptionEstado ] = useState([]);
-  const [ regionalSaude, setRegionalSaude ] = useState({});
-  const [ optionRegionalSaude, setOptionRegionalSaude ] = useState([]);
-  const [ municipio, setMunicipio ] = useState({});
-  const [ optionMunicipio, setOptionMunicipio ] = useState([]);
-  const [ flMunicipio, setFlMunicipio] = useState( true );
-  const [ flLoading, setFlLoading ] = useState( false );
-
-  const optionPerfil = Object.entries(perfil).map(([key, value]) => {
+const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
+  const [ nome, setNome ]                               = useState( "" );
+  const [ cpf, setCpf ]                                 = useState( "" );
+  const [ rg, setRg ]                                   = useState( "" );
+  const [ email, setEmail ]                             = useState( "" );
+  const [ celular, setCelular ]                         = useState( "" );
+  const [ usuario, setUsuario ]                         = useState( "" );
+  const [ senha, setSenha ]                             = useState( "" );
+  const [ tipoPerfil, setTipoPerfil ]                   = useState( {} );
+  const [ pais, setPais ]                               = useState( { value: 30, label: 'Brasil' } );
+  const [ optionPais, setOptionPais ]                   = useState( [] );
+  const [ regiao, setRegiao ]                           = useState( {} );
+  const [ optionRegiao, setOptionRegiao ]               = useState( [] );
+  const [ estado, setEstado ]                           = useState( {} );
+  const [ optionEstado, setOptionEstado ]               = useState( [] );
+  const [ regionalSaude, setRegionalSaude ]             = useState( {} );
+  const [ optionRegionalSaude, setOptionRegionalSaude ] = useState( [] );
+  const [ municipio, setMunicipio ]                     = useState( {} );
+  const [ optionMunicipio, setOptionMunicipio ]         = useState( [] );
+  const [ flMunicipio, setFlMunicipio]                  = useState( true );
+  const [ flLoading, setFlLoading ]                     = useState( false );
+  const optionPerfil = Object.entries( perfil ).map( ( [ key, value ] ) => {
     return { value: value.id, label: value.label };
-  });
+  } );
 
-  useEffect(() => {
+  useEffect( () => {
     props.getNationsRequest();
-  }, []);
+  }, [] );
 
-  useEffect(() => {
-    const options = props.paises.map(( p ) => ({ value: p.id, label: p.nome }));
+  useEffect( () => {
+    const options = props.paises.map( p => ( { value: p.id, label: p.nome } ) );
 
     setOptionPais( options );
-  }, [ props.paises ]);
+  }, [ props.paises ] );
 
-  useEffect(() => {
-    if( Object.entries(pais).length > 0 ) {
+  useEffect( () => {
+    if( Object.entries( pais ).length > 0 ) {
       props.GetRegionsByNationRequest( pais.value );
-      setRegiao({});
-      setEstado({});
-      setOptionEstado([]);
-      setRegionalSaude({});
-      setOptionRegionalSaude([]);
-      setMunicipio({});
-      setOptionMunicipio([]);
+      setRegiao( {} );
+      setEstado( {} );
+      setOptionEstado( [] );
+      setRegionalSaude( {} );
+      setOptionRegionalSaude( [] );
+      setMunicipio( {} );
+      setOptionMunicipio( [] );
     }
-  }, [ pais ]);
+  }, [ pais ] );
 
-  useEffect(() => {
-    const options = props.regioes.map(( r ) => ({ value: r.id, label: r.nome }));
+  useEffect( () => {
+    const options = props.regioes.map( r => ( { value: r.id, label: r.nome } ) );
 
     setOptionRegiao( options );
-  }, [ props.regioes ]);
+  }, [ props.regioes ] );
 
   useEffect(() => {
-    if( Object.entries(regiao).length > 0 ) {
+    if( Object.entries( regiao ).length > 0 ) {
       props.GetStatesByRegionRequest( regiao.value );
-      setEstado({});
-      setRegionalSaude({});
-      setOptionRegionalSaude([]);
-      setMunicipio({});
-      setOptionMunicipio([]);
+      setEstado( {} );
+      setRegionalSaude( {} );
+      setOptionRegionalSaude( [] );
+      setMunicipio( {} );
+      setOptionMunicipio( [] );
     }
-  }, [ regiao ]);
+  }, [ regiao ] );
 
   useEffect(() => {
     const options = props.estados.map(( e ) => ({ value: e.id, label: e.nome }));
@@ -130,17 +129,17 @@ function ModalAdd({ createUsuarioRequest, createUser, ...props }) {
       props.clearCreateUser();
       clearInput();
     }
-  }, [ createUser ]);
+  }, [ createUser ] );
 
   function clearInput() {
-    setNome("");
-    setCpf("");
-    setRg("");
-    setEmail("");
-    setCelular("");
-    setUsuario("");
-    setSenha("");
-    setTipoPerfil({});
+    setNome( "" );
+    setCpf( "" );
+    setRg( "" );
+    setEmail( "" );
+    setCelular( "" );
+    setUsuario( "" );
+    setSenha( "" );
+    setTipoPerfil( {} );
   }
 
   function handleCadastrar( e ) {

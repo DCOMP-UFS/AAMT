@@ -12,7 +12,7 @@ import $ from 'jquery';
 
 // ACTIONS
 import { changeSidebar } from '../../store/Sidebar/sidebarActions';
-import { getAmostrasRequest, enviarAmostrasRequest, setAmostra } from '../../store/Amostra/amostraActions';
+import { getAmostrasByLab, getAmostrasRequest, enviarAmostrasRequest, setAmostra } from '../../store/Amostra/amostraActions';
 import { getLaboratoriosRequest } from '../../store/Laboratorio/laboratorioActions';
 
 // STYLES
@@ -91,7 +91,7 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
   useEffect(() => {
     if( laboratorios.length > 0 ) {
       setLaboratoriosOptions( laboratorios.map( lab => ( {
-        value: lab.cnpj, label: lab.nome
+        value: lab.id, label: lab.nome
       } ) ) );
     }
   }, [ laboratorios ]);
@@ -211,6 +211,7 @@ const mapStateToProps = state => ( {
 const mapDispatchToProps = {
   changeSidebar,
   getAmostrasRequest,
+  getAmostrasByLab,
   getLaboratoriosRequest,
   enviarAmostrasRequest,
   setAmostra

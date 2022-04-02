@@ -17,9 +17,8 @@ import { Laboratorio } from '../../config/models';
 // STYLES
 import { ContainerArrow } from '../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../styles/global';
-import SelectInput from '@material-ui/core/Select/SelectInput';
 
-function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, id, ...props } ) {
+const ModalUpdate = ( { laboratorio, municipio, updated, show, handleClose, id, ...props } ) => {
   const [ cnpj, setCnpj ]                         = useState( null );
   const [ isValidCnpj, setIsValidCnpj ]           = useState( true );
   const [ nome, setNome ]                         = useState( "" );
@@ -32,18 +31,17 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, id, 
   ] );
   const [ ativo, setAtivo ]                       = useState( { value: null, label: '' });
   const [ optionAtivo ]                           = useState( [
-    {value: true , label: 'Sim'},
-    {value: false, label: "Não"},
+    { value: true , label: 'Sim' },
+    { value: false, label: "Não" },
   ]);
 
   /**
    * Este effect monitora o valor da variável laboratorio e seta os states de acordo
    * com ela.
    */
-
   useEffect( () => {
-    setIsValidCnpj(true);
-    setIsValidCategoria(true);
+    setIsValidCnpj( true );
+    setIsValidCategoria( true );
     setCnpj( laboratorio.cnpj );
     setNome( laboratorio.nome );
     setCategoria( 
@@ -52,7 +50,7 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, id, 
         ( {value: 'privado', label: 'Privado' } ) 
     );
     setEndereco( laboratorio.endereco );
-    setAtivo( laboratorio.ativo ? {value: true , label: "Sim"} : {value: false, label: "Não" });
+    setAtivo( laboratorio.ativo ? { value: true , label: "Sim" } : { value: false, label: "Não" } );
   }, [ show, laboratorio ] );
 
   /**
@@ -84,7 +82,6 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, id, 
    * Fecha o modal
    * @returns void
    */
-
    const cancel = () => {
     clearInput();
     handleClose();
@@ -126,7 +123,13 @@ function ModalUpdate( { laboratorio, municipio, updated, show, handleClose, id, 
       <form onSubmit={ submit }>
         <Modal.Body>
           <Row>
-            <Col sm='6' >
+            <Col sm="12" md="6">
+              <FormGroup>
+                <label htmlFor="cnpj_modal">CNPJ <code>*</code></label>
+                <input id="cnpj_modal" value={ cnpj } className="form-control" disabled />
+              </FormGroup>
+            </Col>
+            <Col sm="12" md="6">
               <FormGroup>
                 <label htmlFor="nome">Nome <code>*</code></label>
                 <input id="nome" value={nome} className="form-control" onChange={ e => setNome(e.target.value) } required />

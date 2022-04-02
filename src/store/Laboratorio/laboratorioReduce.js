@@ -69,6 +69,13 @@ export default function Laboratorio( state = INITIAL_STATE, action ) {
       }
     }
 
+    case ActionTypes.SET_CREATED: {
+      return{
+        ...state,
+        created: action.payload.data,
+      }
+    }
+
     default:
       return {...state};
   }

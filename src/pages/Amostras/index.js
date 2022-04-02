@@ -91,7 +91,7 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
   useEffect(() => {
     if( laboratorios.length > 0 ) {
       setLaboratoriosOptions( laboratorios.map( lab => ( {
-        value: lab.cnpj, label: lab.nome
+        value: lab.id, label: lab.nome
       } ) ) );
     }
   }, [ laboratorios ]);

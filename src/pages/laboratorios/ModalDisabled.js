@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Modal } from 'react-bootstrap';
 
 // REDUX
@@ -16,10 +16,11 @@ import { Laboratorio } from '../../config/models';
 // STYLES
 import { Button } from '../../styles/global';
 
-function ModalDisabled( { show, handleClose, municipio, ...props } ) {
-  function handleClick() {
+const ModalDisabled = ( { show, handleClose, municipio, ...props } ) => {
+  const handleClick = () => {
     props.tableSelected.forEach( row => {
       const lab = props.laboratorios[ row.dataIndex ];
+
       props.updateLaboratoryRequest( new Laboratorio( {
         id              : lab.id,
         cnpj            : lab.cnpj,
@@ -28,9 +29,11 @@ function ModalDisabled( { show, handleClose, municipio, ...props } ) {
         tipoLaboratorio : lab.tipoLaboratorio,
         ativo           : false,
         municipio_id    : municipio.id
-      }));
-    handleClose();
-    })}
+      } ) );
+
+      handleClose();
+    } );
+  }
 
 
   return(
@@ -47,18 +50,21 @@ function ModalDisabled( { show, handleClose, municipio, ...props } ) {
   );
 }
 
-const mapStateToProps = state => ({
-  tableSelected: state.supportInfo.tableSelection.tableLocation,
-  laboratorios: state.nw_laboratorio.laboratorios,
-  municipio : state.appConfig.usuario.municipio,
-  updated: state.nw_laboratorio.updated
-});
+const mapStateToProps = state => ( {
+  tableSelected:  state.supportInfo.tableSelection.tableLocation,
+  laboratorios:   state.nw_laboratorio.laboratorios,
+  municipio:      state.appConfig.usuario.municipio,
+  updated:        state.nw_laboratorio.updated
+} );
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({clearUpdate, getLaboratoriosRequest, updateLaboratoryRequest }, dispatch);
-
+  bindActionCreators( {
+    clearUpdate, 
+    getLaboratoriosRequest, 
+    updateLaboratoryRequest 
+  }, dispatch );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ModalDisabled);
+)( ModalDisabled );

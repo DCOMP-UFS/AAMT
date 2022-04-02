@@ -53,8 +53,8 @@ const columns = [
     id: 'ativo',
     options: {
       filter: true,
-      filterList: ['Sim'],
-      customFilterListOptions: { render: v => `Ativo: ${v}` },
+      filterList: [ 'Sim' ],
+      customFilterListOptions: { render: v => `Ativo: ${ v }` },
     },
   },
   {
@@ -83,7 +83,7 @@ const Laboratorios = ( { municipio_id, localidades, laboratorios, municipio, ...
   const [ showModalEditar, setShowModalEditar ]     = useState( false );
   const [ showModalDisabled, setShowModalDisabled ] = useState( false );
   const [ laboratorio, setLaboratorio ]             = useState( new Laboratorio );
-  const [ id , setId ]                      = useState( null );
+  const [ id , setId ]                              = useState( null );
   const options                                     = {
     customToolbar: () => {
       return (

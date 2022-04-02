@@ -13,20 +13,20 @@ import { getAmostrasRequest, getAmostrasByLab } from '../../../store/Amostra/amo
 import { PageIcon, PageHeader } from '../../../styles/util';
 import { selectDefault } from '../../../styles/global';
 
-export const HomeSupervisor = ({ ...props }) => {
-  const [ viewport, setViewport ] = useState({
+export const HomeSupervisor = ( { ...props } ) => {
+  const [ viewport, setViewport ] = useState( {
     width: '100%',
     height: '423px',
     latitude: -15.7801,
     longitude: -47.9292,
     zoom: 2
-  });
+  } );
 
-  useEffect(() => {
+  useEffect( () => {
     //props.getAmostrasRequest(1);
-    props.getAmostrasByLab(null);
+    props.getAmostrasByLab( null );
     //props.changeSidebar( "dashboard_municipío" );
-  });
+  } );
 
   return (
     <>
@@ -69,11 +69,11 @@ export const HomeSupervisor = ({ ...props }) => {
   )
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = state => ( {
   usuario     : state.appConfig.usuario,
   amostras    : state.amostra.amostras,
   laboratorios: state.nw_laboratorio.laboratorios
-});
+} );
 
 const mapDispatchToProps = {
   changeSidebar,
@@ -84,4 +84,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)( HomeSupervisor )
+)( HomeSupervisor );

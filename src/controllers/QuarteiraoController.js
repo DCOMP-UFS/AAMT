@@ -53,7 +53,10 @@ index = async ( req, res ) => {
 }
 
 getBlockByCity = async (req, res) => {
-  const { municipio_id } = req.params;
+  const { municipio_id }  = req.params;
+  const whereAtivo        = req.query.ativo == '1' || req.query.ativo == '0' ? 
+    { ativo: parseInt( req.query.ativo ) } : 
+    {};
 
   const municipio = await Municipio.findOne({
     where: {
@@ -63,6 +66,7 @@ getBlockByCity = async (req, res) => {
       association: 'localidades',
       attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
       include: {
+        where: whereAtivo,
         association: 'quarteiroes',
         include: [
           {
@@ -137,6 +141,18 @@ store = async ( req, res ) => {
   const allow = await allowFunction( userId, 'manter_quarteirao' );
   if( !allow ) {
     return res.status(403).json({ error: 'Acesso negado' });
+  }
+
+  const quarteiraoExiste = await Quarteirao.findOne({
+    where: {
+      numero,
+    }
+  });
+
+  if( quarteiraoExiste ) {
+    return res.status(400).json({
+      error: `Não foi possível cadastrar este quarteirão pois já existe um com o número ${numero} registrado`
+    });
   }
 
   if( quarteirao_id ) {
@@ -239,20 +255,34 @@ update = async ( req, res ) => {
     return res.status(400).json({ error: 'Não foi possível atualizar o quarteirão' });
   }
 
-  lados.forEach( async l => {
-    if( l.id ) {
-      if( l.rua_id ) {
-        await updateSide( id, numero, quarteirao_id, rua_id );
-      }else {
-        const rua = await findOrCreateStreet( l.logradouro, l.localidade_id, l.cep );
-        await updateSide( l.id, l.numero, id, rua.id );
+  lados.forEach(async l => {
+    // Lado já existente
+    if (l.id) {
+      // Lado com rua já cadastrada
+      if (l.rua_id) {
+        await updateSide( l.id, l.numero, id, l.rua_id );
+      } else {
+        // Lado sem rua cadastrada
+        const rua = await findOrCreateStreet(
+          l.logradouro,
+          l.localidade_id,
+          l.cep
+        );
+        await updateSide(l.id, l.numero, id, rua.id);
       }
-    }else {
+    // Lado a ser cadastrado
+    } else {
+      // Lado com rua já cadastrada
       if( l.rua_id ) {
         await createSide( l.numero, id, l.rua_id );
-      }else {
-        const rua = await findOrCreateStreet( l.logradouro, l.localidade_id, l.cep );
-        await createSide( l.numero, id, rua.id );
+      } else {
+        // Lado sem rua cadastrada
+        const rua = await findOrCreateStreet(
+          l.logradouro,
+          l.localidade_id,
+          l.cep
+        );
+        await createSide(l.numero, id, rua.id);
       }
     }
   });

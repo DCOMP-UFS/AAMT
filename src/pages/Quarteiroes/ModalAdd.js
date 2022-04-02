@@ -10,6 +10,7 @@ import { Lista, ListaItem, ListaIcon } from '../../components/Listas';
 import { FaBorderAll } from 'react-icons/fa';
 import ButtonClose from '../../components/ButtonClose';
 import ModalLado from './components/ModalLado';
+import { msgInputInvalid } from '../../config/function';
 
 // MODELS
 import { Quarteirao } from '../../config/models';
@@ -37,6 +38,7 @@ function ModalAdd({ municipio_id, created, ...props }) {
   const [ zona, setZona ]                         = useState( {} );
   const [ optionZona, setOptionZona ]             = useState( [] );
   const [ showModalLado, setShowModalLado ]       = useState( false );
+  const [ botaoSalvar, setBotaoSalvar ]           = useState( false );
 
   /**
    * Effect acionado assim que o componente é contruido,
@@ -131,7 +133,7 @@ function ModalAdd({ municipio_id, created, ...props }) {
 
       return l;
     } );
-    
+
     lado.numero         = ls.length + 1;
     lado.localidade_id  = localidade.value;
     setLados( [ ...ls, lado ] );
@@ -140,7 +142,7 @@ function ModalAdd({ municipio_id, created, ...props }) {
 
   /**
    * Excluir um item do array lados
-   * @param {integer} index 
+   * @param {integer} index
    */
   const excluirLado = index => {
     let ls = lados;
@@ -157,49 +159,88 @@ function ModalAdd({ municipio_id, created, ...props }) {
   }
 
   /**
+   * Realiza a validação do formulário
+   */
+  const validaFormulario = () => {
+    var valida_adicionar_quarteirao = true;
+
+    var input_campo_lados = $(
+      "#modal-novo-quarteirao > div > div > form > div.modal-body > div:nth-child(3) > div > div.sc-jTzLTM.klljVA"
+    );
+    var input_campo_localidade = $(
+      "#modal-novo-quarteirao > div > div > form > div.modal-body > div:nth-child(1) > div:nth-child(1) > div"
+    );
+
+    input_campo_lados.find("span.form-label-invalid").remove();
+    input_campo_localidade.find("span.form-label-invalid").remove();
+
+    if (!localidade.value) {
+      valida_adicionar_quarteirao = false;
+      input_campo_localidade.addClass("invalid");
+      input_campo_localidade.append(
+        msgInputInvalid(`É necessário selecionar uma localidade`)
+      );
+    }
+
+    if (lados.length === 0) {
+      valida_adicionar_quarteirao = false;
+      input_campo_lados.addClass("invalid");
+      input_campo_lados.append(msgInputInvalid(`É necessário associar ao menos um lado`));
+    }
+
+    return valida_adicionar_quarteirao;
+  }
+
+  /**
    * Solicita ao action que adicione um novo quarteirão
    * @param {element} e elemento que acionou a função
    */
   const handleSubmit = e => {
     e.preventDefault();
 
-    const quarteirao = new Quarteirao( {
-      numero,
-      localidade_id : localidade.value,
-      zona_id       : zona.value,
-      lados
-    } );
+    var valida_adicionar_quarteirao = validaFormulario();
 
-    props.addQuarteiraoRequest( quarteirao );
+    if (valida_adicionar_quarteirao) {
+      const quarteirao = new Quarteirao({
+        numero,
+        localidade_id: localidade.value,
+        zona_id: zona.value,
+        lados,
+      });
+
+      props.addQuarteiraoRequest(quarteirao);
+    }
   }
 
-  return(
+  return (
     <Modal id="modal-novo-quarteirao" title="Cadastrar Quarteirão" size="lg">
-      <form onSubmit={ handleSubmit }>
+      <form onSubmit={handleSubmit}>
         <ModalBody>
           <Row>
-            <Col sm='6'>
+            <Col sm="6">
               <FormGroup>
-                <label htmlFor="localidade">Localidade <code>*</code></label>
+                <label htmlFor="localidade">
+                  Localidade <code>*</code>
+                </label>
                 <Select
-                  id      ="localidade"
-                  value   ={ localidade }
-                  styles  ={ selectDefault }
-                  options ={ optionLocalidade }
-                  onChange={ e => setLocalidade( e ) }
+                  id="localidade"
+                  value={localidade}
+                  styles={selectDefault}
+                  options={optionLocalidade}
+                  onChange={(e) => setLocalidade(e)}
                   required
                 />
               </FormGroup>
             </Col>
-            <Col sm='6'>
+            <Col sm="6">
               <FormGroup>
                 <label htmlFor="zona">Zona</label>
                 <Select
-                  id      ="zona"
-                  value   ={ zona }
-                  styles  ={ selectDefault }
-                  options ={ optionZona }
-                  onChange={ e => setZona( e ) }
+                  id="zona"
+                  value={zona}
+                  styles={selectDefault}
+                  options={optionZona}
+                  onChange={(e) => setZona(e)}
                   required
                 />
               </FormGroup>
@@ -208,13 +249,20 @@ function ModalAdd({ municipio_id, created, ...props }) {
           <Row>
             <Col>
               <FormGroup>
-                <label htmlFor="numero">Número <code>*</code></label>
+                <label htmlFor="numero">
+                  Número <code>*</code>
+                </label>
                 <input
-                  id        ="numero"
-                  value     ={ numero ? numero : "" }
-                  type      ="number"
-                  className ="form-control"
-                  onChange  ={ e => setNumero( e.target.value ) }
+                  id="numero"
+                  value={numero ? numero : ""}
+                  type="number"
+                  min="0"
+                  max="214748364"
+                  onKeyDown={(e) =>
+                    ["e", "E", "+", "-", "."].includes(e.key) && e.preventDefault()
+                  }
+                  className="form-control"
+                  onChange={(e) => setNumero(e.target.value)}
                   required
                 />
               </FormGroup>
@@ -223,24 +271,31 @@ function ModalAdd({ municipio_id, created, ...props }) {
           <Row>
             <Col>
               <FormGroup>
-                <label>Lados<code>*</code></label>
+                <label>
+                  Lados<code>*</code>
+                </label>
                 <Lista>
-                  {
-                    lados.map( ( l, index ) => (
-                      <ListaItem key={ `lado-${ index }` } className="pt-0 pb-0 justify-content-between">
-                        <div>
-                          <ListaIcon className="mr-2"><FaBorderAll /></ListaIcon>
-                          <span className="mr-2">Lado nº { l.numero } - Rua: { l.logradouro }</span>
-                        </div>
+                  {lados.map((l, index) => (
+                    <ListaItem
+                      key={`lado-${index}`}
+                      className="pt-0 pb-0 justify-content-between"
+                    >
+                      <div>
+                        <ListaIcon className="mr-2">
+                          <FaBorderAll />
+                        </ListaIcon>
+                        <span className="mr-2">
+                          Lado nº {l.numero} - Rua: {l.logradouro}
+                        </span>
+                      </div>
 
-                        <ButtonClose
-                          title="Excluir lado"
-                          onClick={ () => excluirLado( index ) }
-                          className="ml-2 text-danger"
-                        />
-                      </ListaItem>
-                    ) )
-                  }
+                      <ButtonClose
+                        title="Excluir lado"
+                        onClick={() => excluirLado(index)}
+                        className="ml-2 text-danger"
+                      />
+                    </ListaItem>
+                  ))}
                 </Lista>
               </FormGroup>
               <Row>
@@ -249,7 +304,7 @@ function ModalAdd({ municipio_id, created, ...props }) {
                     className="bg-success text-white"
                     size="medium"
                     aria-label="Cadastrar um novo lado"
-                    onClick={ () => abrirModalLado() }
+                    onClick={() => abrirModalLado()}
                   >
                     <AddBox />
                   </Fab>
@@ -261,23 +316,27 @@ function ModalAdd({ municipio_id, created, ...props }) {
         <ModalFooter>
           <ContainerArrow>
             <div>
-              <Button type="button" className="warning" onClick={ clearInput }>Limpar</Button>
+              <Button type="button" className="warning" onClick={clearInput}>
+                Limpar
+              </Button>
             </div>
             <div>
-              <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
+              <Button type="button" className="secondary" data-dismiss="modal">
+                Cancelar
+              </Button>
               <Button type="submit">Salvar</Button>
             </div>
           </ContainerArrow>
         </ModalFooter>
       </form>
       {/* Modais de ação */}
-      <ModalLado 
-        lado        ={ {} }
-        ruas        ={ props.ruas }
-        show        ={ showModalLado }
-        handleClose ={ () => setShowModalLado( false ) }
-        acao        ={ 'cadastrar' } // cadastrar ou editar
-        addLado     ={ addLado }
+      <ModalLado
+        lado={{}}
+        ruas={props.ruas}
+        show={showModalLado}
+        handleClose={() => setShowModalLado(false)}
+        acao={"cadastrar"} // cadastrar ou editar
+        addLado={addLado}
       />
     </Modal>
   );

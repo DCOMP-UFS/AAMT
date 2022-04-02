@@ -24,38 +24,47 @@ const columns = [
     name: "index",
     label: "#",
     options: {
+      viewColumns: false,
       filter: false,
-      display: 'false',
+      display: "false",
       customBodyRender: (value, tableMeta, updateValue) => (
-        <Typography data-id={ value.id }>{ value.index }</Typography>
-      )
-    }
+        <Typography data-id={value.id}>{value.index}</Typography>
+      ),
+    },
   },
   {
     name: "numero",
     label: "Quarteirão",
     options: {
       filter: false,
-    }
+    },
   },
   "Cód. Localidade",
   "Localidade",
   "Zona",
-  "Ativo",
+  {
+    name: "ativo",
+    label: "Ativo",
+    options: {
+      filter: true,
+      filterList: ["Sim"],
+      customFilterListOptions: { render: (v) => `Ativo: ${v}` },
+    },
+  },
   {
     name: "createdAt",
     label: "Criado em",
     options: {
       filter: false,
-    }
+    },
   },
   {
     name: "updatedAt",
     label: "Atualizado em",
     options: {
       filter: false,
-    }
-  }
+    },
+  },
 ];
 
 const Quarteiroes = ({ quarteiroes, tableSelection, ...props }) => {
@@ -164,7 +173,7 @@ const mapStateToProps = state => ( {
 } );
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators( { 
+  bindActionCreators( {
     changeSidebar,
     getQuarteiroesMunicipioRequest
   }, dispatch );

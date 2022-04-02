@@ -35,7 +35,7 @@ import { showNotifyToast } from '../../store/AppConfig/appConfigActions';
 import { ContainerArrow } from '../../styles/util';
 import { Button, FormGroup, selectDefault, InputGroup } from '../../styles/global';
 
-function ModalAdd( { createUsuarioRequest, createUser, ...props } ) {
+const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
   const [ nome, setNome ]                               = useState( "" );
   const [ cpf, setCpf ]                                 = useState( "" );
   const [ rg, setRg ]                                   = useState( "" );
@@ -103,7 +103,7 @@ function ModalAdd( { createUsuarioRequest, createUser, ...props } ) {
       setMunicipio( {} );
       setOptionMunicipio( [] );
     }
-  }, [ regiao ]);
+  }, [ regiao ] );
 
   useEffect(() => {
     const options = props.estados.map(( e ) => ({ value: e.id, label: e.nome }));
@@ -146,7 +146,7 @@ function ModalAdd( { createUsuarioRequest, createUser, ...props } ) {
       props.clearCreateUser();
       clearInput();
     }
-  }, [ createUser ]);
+  }, [ createUser ] );
 
   useEffect( () => {
     if( props.cpfValido || props.cpfValido === false )

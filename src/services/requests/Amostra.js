@@ -7,6 +7,13 @@ export const getAmostrasRequest = data => {
   });
 }
 
+export const getAmostrasByLabRequest = data => {
+  const { laboratorio_cnpj } = data;
+  return api.get(`/amostras/laboratorio/${laboratorio_cnpj}`, {
+    ...headerAuthorization()
+  });
+}
+
 export const enviarAmostrasRequest = data => {
   const { laboratorio_id, amostras } = data;
   return api.post(`/amostras/enviar`, {

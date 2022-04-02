@@ -20,6 +20,7 @@ export default function Laboratorio( state = INITIAL_STATE, action ) {
     case ActionTypes.CREATE_LABORATORY_SUCCESS: {
       let laboratorios  = state.laboratorios
       const laboratorio = {
+        id              : action.payload.data.id,
         cnpj            : action.payload.data.cnpj, 
         nome            : action.payload.data.nome, 
         endereco        : action.payload.data.endereco, 
@@ -28,7 +29,6 @@ export default function Laboratorio( state = INITIAL_STATE, action ) {
         createdAt       : action.payload.data.createdAt,
         updatedAt       : action.payload.data.updatedAt
       }
-
       laboratorios = [ laboratorio, ...laboratorios ];
       return{
         ...state,
@@ -39,9 +39,10 @@ export default function Laboratorio( state = INITIAL_STATE, action ) {
     
     case ActionTypes.UPDATE_LABORATORY_SUCCESS: {
       let laboratorios  = state.laboratorios;
-      const cnpj        = action.payload.data.cnpjId;
-      var index         = laboratorios.findIndex( l => l.cnpj === cnpj );
+      const id        = action.payload.data.id;
+      var index         = laboratorios.findIndex( l => l.id === id );
       const laboratorio = {
+        id              : action.payload.data.id,
         cnpj            : action.payload.data.cnpj,
         nome            : action.payload.data.nome,
         endereco        : action.payload.data.endereco,
@@ -65,6 +66,13 @@ export default function Laboratorio( state = INITIAL_STATE, action ) {
       return{
         ...state,
         updated: action.payload.data,
+      }
+    }
+
+    case ActionTypes.SET_CREATED: {
+      return{
+        ...state,
+        created: action.payload.data,
       }
     }
 

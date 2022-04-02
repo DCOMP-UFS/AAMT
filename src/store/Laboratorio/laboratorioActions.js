@@ -5,7 +5,8 @@ export const ActionTypes = {
   CREATE_LABORATORY_SUCCESS : "CREATE_LABORATORY_SUCCESS",
   UPDATE_LABORATORY_REQUEST : "UPDATE_LABORATORY_REQUEST",
   UPDATE_LABORATORY_SUCCESS : "UPDATE_LABORATORY_SUCCESS",
-  SET_UPDATED               : "SET_UPDATED"
+  SET_UPDATED               : "SET_UPDATED",
+  SET_CREATED               : "SET_CREATED",
 }
 
 /**
@@ -85,13 +86,27 @@ export const updateLaboratory = data =>{
 }
 
 /**
- * Solicita ao reducer a alteração da vairável updated
+ * Solicita ao reducer a alteração da variável updated
  * @param {boolean} data 
  * @returns {Object}
  */
 export const setUpdated = data =>{
   return {
     type    : ActionTypes.SET_UPDATED,
+    payload : {
+      data
+    }
+  }
+}
+
+/**
+ * Solicita ao reducer a alteração da variável created
+ * @param {boolean} data 
+ * @returns {Object}
+ */
+export const setCreated = data =>{
+  return {
+    type    : ActionTypes.SET_CREATED,
     payload : {
       data
     }

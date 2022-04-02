@@ -80,11 +80,12 @@ export const addQuarteiraoSuccess = quarteirao => {
  * @param integer municipio_id
  * @returns
  */
-export const getQuarteiroesMunicipioRequest = municipio_id => {
+export const getQuarteiroesMunicipioRequest = ( municipio_id, ativo = undefined ) => {
   return {
     type: ActionTypes.GET_QUARTEIROES_MUNICIPIO_REQUEST,
     payload: {
-      municipio_id
+      municipio_id,
+      ativo
     }
   }
 }

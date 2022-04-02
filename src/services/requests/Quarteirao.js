@@ -6,8 +6,9 @@ import api, { headerAuthorization } from '../../services/api';
  * @returns {Promisse}
  */
 export const getQuarteiroesPorMunicipioRequest = data => {
-  const { municipio_id } = data;
-  return api.get( `/quarteiroes/${ municipio_id }/municipios`, {
+  const { municipio_id, ativo } = data;
+  const where = ativo === true ? '?ativo=1' : ativo === false ? '?ativo=0' : '';
+  return api.get( `/quarteiroes/${ municipio_id }/municipios${ where }`, {
     ...headerAuthorization()
   } );
 }

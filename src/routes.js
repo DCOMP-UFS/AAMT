@@ -27,6 +27,7 @@ import Imoveis from './pages/Imoveis';
 // Dashboard
 import DashMunicipio from './pages/Dashboard/Municipal';
 import DashRegional from './pages/Dashboard/Regional';
+import DashLaboratorio from './pages/Dashboard/Laboratorio'
 
 // Relatórios
 import RelatorioDiario from './pages/Relatorio/Diario';
@@ -88,7 +89,7 @@ import ListaVistoria from './pages/trabalho_diario/ListaVistoria';
 import FormVistoria from './pages/trabalho_diario/Form';
 
 // Páginas de laboratorialista
-import HomeLaboratorio from './pages/laboratorio/HomeLaboratorio';
+//import HomeLaboratorio from './pages/laboratorio/HomeLaboratorio';
 
 const PrivateRoute = ({ component: Component, tipoPerfil: perfilUser, ...rest }) => (
   <Route { ...rest } render={ props => (
@@ -119,7 +120,7 @@ const Routes = props => {
         <Route exact path="/" component={ LoginScreen } />
 
         {/* Rotas de laboratorialista */}
-        <PrivateRoute path="/lab/home" component={ HomeLaboratorio } tipoPerfil={ perfil } />
+        
 
         {/* Amostras */}
         <PrivateRoute path="/amostras" component={ Amostras } tipoPerfil={ perfil } />
@@ -140,6 +141,7 @@ const Routes = props => {
         {/* Dashboard */}
         <PrivateRoute exact path="/dash/municipio" component={ DashMunicipio } tipoPerfil={ perfil } />
         <PrivateRoute exact path="/dash/regional" component={ DashRegional } tipoPerfil={ perfil } />
+        <PrivateRoute exact path="/dash/laboratorio" component={ DashLaboratorio } tipoPerfil={ perfil } />
 
         {/* Imóveis */}
         <PrivateRoute path="/imoveis" component={ Imoveis } tipoPerfil={ perfil } />

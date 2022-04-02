@@ -1,6 +1,6 @@
 const authMiddleware        = require( '../middlewares/auth' );
 const express               = require( 'express' );
-const Sequelize = require('sequelize');
+const Sequelize             = require( 'sequelize' );
 const Laboratorio           = require( '../models/Laboratorio' );
 const Municipio             = require( '../models/Municipio' );
 const LaboratorioMunicipio  = require( '../models/LaboratorioMunicipio' );
@@ -18,22 +18,22 @@ router.use( authMiddleware );
 getLaboratorio = async ( req, res ) => {
   const { municipio_id } = req.params;
 
-  const laboratorios = await LaboratorioMunicipio.findAll({
+  const laboratorios = await LaboratorioMunicipio.findAll( {
     where: { municipio_id : municipio_id },
     attributes:{
-        include: [
-          [Sequelize.col('laboratorios.cnpj'), 'cnpj'],
-          [Sequelize.col('laboratorios.nome'), 'nome'],
-          [Sequelize.col('laboratorios.endereco'), 'endereco'],
-          [Sequelize.col('laboratorios.tipo_laboratorio'), 'tipoLaboratorio']
-        ]
+      include: [
+        [ Sequelize.col( 'laboratorios.cnpj' ), 'cnpj' ],
+        [ Sequelize.col( 'laboratorios.nome' ), 'nome' ],
+        [ Sequelize.col( 'laboratorios.endereco' ), 'endereco' ],
+        [ Sequelize.col( 'laboratorios.tipo_laboratorio' ), 'tipoLaboratorio' ]
+      ]
     },
     include: [
-        {
-            model: Laboratorio,
-            as: 'laboratorios',
-            attributes: []
-        }
+      {
+        model: Laboratorio,
+        as: 'laboratorios',
+        attributes: []
+      }
     ]
   });
 
@@ -51,10 +51,10 @@ createLaboratorio = async( req, res ) => {
 
   const allow = await allowFunction( userId, 'manter_laboratorio' );
   if( !allow ) {
-    return res.status(403).json({ error: 'Acesso negado' });
+    return res.status( 403 ).json( { error: 'Acesso negado' } );
   }
 
-  laboratorio = await Laboratorio.create( {
+  let laboratorio = await Laboratorio.create( {
     cnpj,
     nome,
     endereco,
@@ -82,12 +82,12 @@ updateLaboratorio = async( req, res ) =>{
   
   const allow = await allowFunction( userId, 'manter_laboratorio' );
   if( !allow ) {
-    return res.status(403).json({ error: 'Acesso negado' });
+    return res.status( 403 ).json( { error: 'Acesso negado' } );
   }
 
   const laboratorio = await Laboratorio.findByPk( id );
 
-  if( !laboratorio ){
+  if( !laboratorio ) {
     res.status( 404 ).json( { error: "Laboratório não existe" } );
   }
 
@@ -96,9 +96,9 @@ updateLaboratorio = async( req, res ) =>{
     nome,
     endereco,
     tipoLaboratorio,
-  });
+  } );
 
-  laboratorio.changed('updatedAt', true) // atualiza updatedAt mesmo sem set de atributos
+  laboratorio.changed( 'updatedAt', true ); // atualiza updatedAt mesmo sem set de atributos
 
   const laboratorio_municipio = await LaboratorioMunicipio.findOne( {
       where: {
@@ -107,11 +107,11 @@ updateLaboratorio = async( req, res ) =>{
       }
   } );
 
-  laboratorio_municipio.set({
+  laboratorio_municipio.set( {
     ativo,
-  });
+  } );
 
-  laboratorio_municipio.changed('updatedAt', true); // atualiza updatedAt mesmo sem set de atributos
+  laboratorio_municipio.changed( 'updatedAt', true ); // atualiza updatedAt mesmo sem set de atributos
 
   await laboratorio.save();
   await laboratorio_municipio.save();

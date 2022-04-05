@@ -85,7 +85,7 @@ function ModalUpdateCycle({ ciclos, index, ...props }) {
           : today.toISOString().split("T")[0];
       document.getElementById("dataFim").min = endDateStringFormat;
       setDataFim(
-        dataFim < dataInicio && dataFim ? endDateStringFormat : dataFim
+        dataFim <= dataInicio && dataFim ? endDateStringFormat : dataFim
       );
     }
   }, [dataInicio]);
@@ -95,10 +95,7 @@ function ModalUpdateCycle({ ciclos, index, ...props }) {
     if (index >= 0) {
       const ciclo = ciclos[index];
       const ultimoCicloCadastrado = ciclos.length - 1 === index ? true : false;
-      if (
-        (ciclo.situacao === "Planejado" ||
-        ciclo.situacao === "Em aberto") && ultimoCicloCadastrado
-      ) {
+      if (ciclo.situacao === "Planejado" && ultimoCicloCadastrado) {
         setDataInicioDesativado(false);
         setDataFimDesativado(false);
       } else {

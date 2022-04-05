@@ -102,7 +102,7 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
       endDate.setDate(endDate.getDate() + 1);
       let endDateStringFormat = endDate.toISOString().split("T")[0];
       document.getElementById("dataFim").min = endDateStringFormat;
-      setDataFim((dataFim < dataInicio && dataFim) ? endDateStringFormat : dataFim);
+      setDataFim((dataFim <= dataInicio && dataFim) ? endDateStringFormat : dataFim);
     }
   }, [dataInicio])
 

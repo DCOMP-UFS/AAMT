@@ -255,6 +255,60 @@ destroy = async ( req, res ) => {
   return res.status(200).json({ message: "Não é permitido excluír ciclo aberto!" });
 }
 
+destroyMultiple = async ( req, res ) => {
+  const { id } = req.params;
+
+  const allow = await allowFunction(req.userId, 'definir_ciclo');
+  if (!allow) return res.status(403).json({ error: 'Acesso negado' });
+
+  const ciclo = await Ciclo.findByPk(id);
+
+  if (!ciclo) {
+    return res.status(400).json({ error: 'Ciclo não existe' });
+  }
+
+  const { sequencia, ano, regional_saude_id } = ciclo;
+
+  const ciclosDaqueleAno = await Ciclo.findAll({
+    where: {
+      regional_saude_id,
+      ano,
+      sequencia: {
+        [Sequelize.Op.gte]: sequencia
+      },
+    }
+  });
+
+  for (const cl of ciclosDaqueleAno) {
+    const today = new Date();
+    const dataInicio = new Date(cl.dataInicio);
+    const dataFim = new Date(cl.dataFim);
+    if (today >= dataInicio) {
+      return res
+        .status(400)
+        .json({
+          error: `O ciclo de sequencia ${cl.sequencia} não pode ser excluído pois já foi encerrado`,
+        });
+    }
+    if (today >= dataInicio) {
+      return res.status(400).json({ error: `O ciclo de sequencia ${cl.sequencia} não pode ser excluído pois está em andamento` })
+    }
+  }
+
+  const ciclosASeremExcluidos = ciclosDaqueleAno.map(ciclo => ciclo.id);
+
+  const ciclosExcluidos = await Ciclo.destroy({
+    where: {
+      id: {
+        [Sequelize.Op.in]: ciclosASeremExcluidos
+      }
+    }
+  });
+
+  if (ciclosExcluidos)
+    return res.json({ ids: ciclosASeremExcluidos });
+}
+
 const router = express.Router();
 router.use( authMiddleware );
 
@@ -265,6 +319,7 @@ router.get( '/:ano/:regionalSaude_id/regionaisSaude', getCiclosPorAno );
 router.get( '/:id', getCiclo );
 router.put( '/:id', update );
 router.post( '/', store );
-router.delete( '/:id', destroy );
+// router.delete( '/:id', destroy );
+router.delete('/:id', destroyMultiple);
 
 module.exports = app => app.use('/ciclos', router);

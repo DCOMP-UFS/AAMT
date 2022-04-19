@@ -30,21 +30,34 @@ function ModalDestroy( props ) {
   }, [ props.destroyed ]);
 
   function handleClick() {
-    setFlLoading( true );
-    props.tableSelected.forEach( row => {
-      const { id, situacao } = props.ciclos[ row.dataIndex ];
+    setFlLoading(true);
 
-      if( situacao === "Em aberto" || situacao === "Finalizado" )
-        props.showNotifyToast( "Não é permitido excluir ciclo em aberto ou finalizado", "warning" );
-      else
-        props.destroyCycleRequest( id );
+    const noOpenOrFinishCycle = props.tableSelected.every(function (row) {
+      const { situacao, ano, sequencia } = props.ciclos[row.dataIndex];
+
+      if (situacao === "Em aberto" || situacao === "Finalizado") {
+        props.showNotifyToast(
+          `O ciclo ${ano}.${sequencia} não pode ser excluído pois está em aberto ou finalizado`,
+          "warning"
+        );
+        setFlLoading(false);
+        return false;
+      } else {
+        return true;
+      }
     });
+
+    const { id } = props.ciclos[props.tableSelected[0].dataIndex];
+
+    if (noOpenOrFinishCycle) {
+      props.destroyCycleRequest(id);
+    }
   }
 
   return(
     <Modal id="modal-excluir-ciclo" title="Excluir Ciclo(s)" centered={ true }>
       <ModalBody>
-        <p>Atenção se excluir este(s) ciclo(s) todas as informações serão perididas. Deseja, mesmo assim, excluir o(s) ciclo(s)?</p>
+        <p>Atenção! Se excluir este(s) ciclo(s), todas as informações serão perdidas, incluindo as atividades planejadas. Deseja, mesmo assim, excluir o(s) ciclo(s)?</p>
       </ModalBody>
       <ModalFooter>
         <Button className="secondary" data-dismiss="modal">Cancelar</Button>

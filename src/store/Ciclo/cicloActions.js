@@ -193,11 +193,11 @@ export const destroyCycleRequest = id => {
   }
 }
 
-export const destroyCycle = id => {
+export const destroyCycle = ids => {
   return {
     type: ActionTypes.DESTROY_CYCLE_SUCCESS,
     payload: {
-      id
+      ids
     }
   }
 }

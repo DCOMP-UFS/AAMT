@@ -74,15 +74,16 @@ export default function Atividade( state = INITIAL_STATE, action ) {
     case ActionTypes.DESTROY_CYCLE_SUCCESS: {
       let ciclos = state.ciclos;
 
-      const index = ciclos.findIndex(( u ) => action.payload.id === u.id );
-      ciclos.splice( index, 1 );
+      const nw_ciclos = ciclos.filter(
+        (elem) =>
+          !action.payload.ids.find((id) => elem.id === id));
 
       return {
         ...state,
-        ciclos,
+        ciclos: nw_ciclos,
         destroyed: true,
-        reload: !state.reload
-      }
+        reload: !state.reload,
+      };
     }
 
     case ActionTypes.SET_INDEX_ARRAY: {

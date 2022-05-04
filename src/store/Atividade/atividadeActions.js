@@ -29,9 +29,9 @@ export const ActionTypes = {
 
 /**
  * Solicita ao sagas a lista de atividades da responsabilidade do usuário
- * @param {Integer} usuario_id 
- * @param {Integer} ciclo_id 
- * @returns 
+ * @param {Integer} usuario_id
+ * @param {Integer} ciclo_id
+ * @returns
  */
 export const getResponsabilityActivitiesRequest = ( usuario_id, ciclo_id ) => {
   return {
@@ -45,8 +45,8 @@ export const getResponsabilityActivitiesRequest = ( usuario_id, ciclo_id ) => {
 
 /**
  * Solicita ao reduce que set as atividades
- * @param {array} activities 
- * @returns 
+ * @param {array} activities
+ * @returns
  */
 export const setActivities = activities => {
   return {
@@ -59,8 +59,8 @@ export const setActivities = activities => {
 
 /**
  * Solicita ao reduce que set as equipes
- * @param {array} equipes 
- * @returns 
+ * @param {array} equipes
+ * @returns
  */
 export const setEquipes = equipes => {
   return {
@@ -73,8 +73,8 @@ export const setEquipes = equipes => {
 
 /**
  * Solicita ao reduce que set a variável indexAtividade
- * @param {Integer} index 
- * @returns 
+ * @param {Integer} index
+ * @returns
  */
 export const setIndexAtividade = index => {
   return {
@@ -87,8 +87,8 @@ export const setIndexAtividade = index => {
 
 /**
  * Solicita ao reduce que set a variável indexEquipe
- * @param {Integer} index 
- * @returns 
+ * @param {Integer} index
+ * @returns
  */
 export const setIndexEquipe = index => {
   return {
@@ -101,8 +101,8 @@ export const setIndexEquipe = index => {
 
 /**
  * Solicita ao reduce que set a variável indexMembro
- * @param {Integer} index 
- * @returns 
+ * @param {Integer} index
+ * @returns
  */
 export const setIndexMembro = index => {
   return {
@@ -116,9 +116,9 @@ export const setIndexMembro = index => {
 /**
  * Solicita ao reduce que set as variáveis indexQuarteirao e indexLado
  * de acordo com a alternancia do usuário
- * @param {Integer} indexQuarteirao 
- * @param {Integer} indexLado 
- * @returns 
+ * @param {Integer} indexQuarteirao
+ * @param {Integer} indexLado
+ * @returns
  */
 export const toggleLado = ( indexQuarteirao, indexLado ) => {
   return {
@@ -132,8 +132,8 @@ export const toggleLado = ( indexQuarteirao, indexLado ) => {
 
 /**
  * Solicita os quarteirões de uma determinada equipe_id
- * @param {Integer} equipe_id 
- * @returns 
+ * @param {Integer} equipe_id
+ * @returns
  */
 export const getRotaEquipeRequest = equipe_id => {
   return {
@@ -147,8 +147,8 @@ export const getRotaEquipeRequest = equipe_id => {
 /**
  * Após requisitar os quarteirões da equipe solicita ao reduce que set
  * os quarteirões na variável quarteiroes
- * @param {array} quarteiroes 
- * @returns 
+ * @param {array} quarteiroes
+ * @returns
  */
 export const setRotaEquipe = quarteiroes => {
   return {
@@ -161,8 +161,8 @@ export const setRotaEquipe = quarteiroes => {
 
 /**
  * Solicita ao reduce que set o valor da variável fl_loading
- * @param {Boolean} fl_loading 
- * @returns 
+ * @param {Boolean} fl_loading
+ * @returns
  */
 export const setFl_loading = fl_loading => {
   return {
@@ -239,12 +239,13 @@ export const getActivitiesByCity = atividades => {
   }
 }
 
-export const getLocationsRequest = (abrangencia, municipio_id) => {
+export const getLocationsRequest = (abrangencia, municipio_id, ativo) => {
   return {
     type: ActionTypes.GET_LOCATIONS_REQUEST,
     payload: {
       municipio_id,
-      abrangencia
+      abrangencia,
+      ativo
     }
   }
 }

@@ -17,7 +17,7 @@ import { UlLocal, LiLocal, ContainerCheck, DivDescription, LiEmpty, Arrows } fro
 import { ContainerArrow } from '../../../../styles/util';
 import { Button, FormGroup } from '../../../../styles/global';
 
-const ModalEstrato = ( { atividade, ...props } ) => {
+const ModalEstrato = ( { atividade, estratos, ...props } ) => {
   const [ abrangencia, setAbrangencia ]               = useState( "" );
   const [ locais, setLocais ]                         = useState( [] );
   const [ locaisSelecionados, setLocaisSelecionados ] = useState( [] );
@@ -101,7 +101,14 @@ const ModalEstrato = ( { atividade, ...props } ) => {
   }
 
   function clearInput() {
-    setLocais( props.locais.map( l => ( { ...l, checked: false } ) ) );
+    const est = [];
+    for (const estrato of estratos) {
+      for (const local of estrato.locais) {
+        est.push(local)
+      }
+    }
+    const nw_locais = locais.filter(local => !est.find(e => local.nome === e.nome));
+    setLocais( nw_locais.map((l) => ({ ...l, checked: false })) );
     setLocaisSelecionados( [] );
   }
 
@@ -221,11 +228,12 @@ function ListLocaly( props ) {
   );
 }
 
-const mapStateToProps = state => ( {
-  atividade     : state.atividade.atividade,
-  locais        : state.atividade.locais,
-  externalReload: state.atividade.reload
-} );
+const mapStateToProps = (state) => ({
+  atividade: state.atividade.atividade,
+  locais: state.atividade.locais,
+  estratos: state.atividade.estratos,
+  externalReload: state.atividade.reload,
+});
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators( { addEstrato }, dispatch );

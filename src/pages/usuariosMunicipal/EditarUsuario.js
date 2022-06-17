@@ -59,6 +59,7 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
   const [ flBtnLoading, setFlBtnLoading ]               = useState( false );
   const [ loadingCpf, setLoadingCpf ]                   = useState( false );
   const [ loadingEmail, setLoadingEmail ]               = useState( false );
+  const [ nomeValido, setNomeValido ]                   = useState( true );
 
   const optionPerfil = Object.entries( perfil )
     .filter( ( [ key, value ] ) => {
@@ -195,7 +196,7 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
       setNome( usuarioUpdate.nome );
       setCpf( cpfCnpjMask( usuarioUpdate.cpf ) );
       setEmail( usuarioUpdate.email );
-      setCelular( usuarioUpdate.celular === undefined ? "" : celularMask( usuarioUpdate.celular ) );
+      setCelular( usuarioUpdate.celular ? celularMask( usuarioUpdate.celular ) : "" );
       setUsuario( usuarioUpdate.usuario );
       setPais({ value: nation.id, label: nation.nome });
       setAtivo( { value: usuarioUpdate.ativo, label: usuarioUpdate.ativo ? 'Sim' : 'Não' } );
@@ -283,6 +284,13 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
       return;
     }
 
+    if ( /^[A-Za-z\s]*$/.test( nome ) == false ){
+      setNomeValido( false );
+      props.showNotifyToast( "Existem campos inválidos", "warning" );
+
+      return;
+    }
+
     setFlBtnLoading( true );
 
     let at = {
@@ -347,9 +355,9 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
                           <input 
                             id="nome" 
                             value={ nome } 
-                            className="form-control" 
+                            className={`form-control  ${ nomeValido === false ? 'invalid' : '' }` }
                             onChange={ e => setNome( e.target.value ) } 
-                            onBlur={ e => setNome( somenteTextoMask( formatarString( e.target.value ) ) ) }
+                            //onBlur={ e => setNome( somenteTextoMask( formatarString( e.target.value ) ) ) }
                             required
                           />
                         </FormGroup>

@@ -41,6 +41,7 @@ function ModalAdd({ createUsuarioRequest, municipio, createUser, ...props }) {
   const [ loadingEmail, setLoadingEmail ]         = useState( false );
   const [ loadingUsuario, setLoadingUsuario ]     = useState( false );
   const [ tipoPerfilValido, setTipoPerfilValido ] = useState( true );
+  const [ nomeValido, setNomeValido ]             = useState( true );
   const optionPerfil                              = Object.entries( perfil )
     .filter( ( [ key, value ] ) => {
       if( value.id > 1 )
@@ -93,6 +94,7 @@ function ModalAdd({ createUsuarioRequest, municipio, createUser, ...props }) {
     setLoadingEmail( false );
     setLoadingUsuario( false );
     setTipoPerfilValido( true );
+    setNomeValido(true);
     props.setCpfValido( null );
     props.setEmailValido( null );
     props.setUsuarioValido( null );
@@ -138,7 +140,7 @@ function ModalAdd({ createUsuarioRequest, municipio, createUser, ...props }) {
   const validarUsuario = () => {
     setUsuario( formatarString( usuario ) );
 
-    if( usuario != '' ) {
+    if( usuario != '') {
       setLoadingUsuario( true );
   
       props.setUsuarioValido( null );
@@ -181,7 +183,10 @@ function ModalAdd({ createUsuarioRequest, municipio, createUser, ...props }) {
       valido = false;
     }
 
-    if( nome === '' ) valido = false;
+    if( nome === '' || /^[A-Za-z\s]*$/.test( nome ) == false ) { 
+      setNomeValido( false ) 
+      valido = false 
+    }
     if( senha === '' ) valido = false;
     if( !tipoPerfil.value ) {
       valido = false;
@@ -222,9 +227,9 @@ function ModalAdd({ createUsuarioRequest, municipio, createUser, ...props }) {
                 <input 
                   id="nome" 
                   value={ nome } 
-                  className="form-control" 
+                  className={`form-control  ${ nomeValido === false ? 'invalid' : '' }` }
                   onChange={ e => setNome( e.target.value ) } 
-                  onBlur={ e => setNome( somenteTextoMask( formatarString( e.target.value ) ) ) }
+                  //onBlur={ e => setNome( somenteTextoMask( formatarString( e.target.value ) ) ) }
                   required 
                 />
               </FormGroup>

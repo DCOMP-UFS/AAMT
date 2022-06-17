@@ -5,6 +5,7 @@ export const ActionTypes = {
   ADD_IMOVEL_REQUEST: "ADD_IMOVEL_REQUEST",
   ADD_IMOVEL_REDUCE: "ADD_IMOVEL_REDUCE",
   EDITAR_IMOVEL_REQUEST: "EDITAR_IMOVEL_REQUEST",
+  SET_IMOVEIS_UPDATED: "SET_IMOVEIS_UPDATED",
   CREATE_HOUSE_REQUEST: "CREATE_HOUSE_REQUEST",
   CREATE_HOUSE_SUCCESS: "CREATE_HOUSE_SUCCESS",
   SET_CREATED_TRUE: "SET_CREATED_TRUE",
@@ -122,6 +123,15 @@ export const addImovelRequest = imovel => {
 export const editarImovelRequest = imovel => {
   return {
     type: ActionTypes.EDITAR_IMOVEL_REQUEST,
+    payload: {
+      imovel
+    }
+  }
+}
+
+export const setImoveisUpdated = imovel => {
+  return {
+    type: ActionTypes.SET_IMOVEIS_UPDATED,
     payload: {
       imovel
     }

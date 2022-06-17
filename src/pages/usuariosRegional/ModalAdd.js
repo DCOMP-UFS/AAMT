@@ -6,22 +6,34 @@ import { Row, Col } from 'react-bootstrap';
 import { perfil } from '../../config/enumerate';
 import $ from 'jquery';
 import LoadginGif from '../../assets/loading.gif';
+import { cpfCnpjMask, celularMask, somenteTextoMask } from '../../config/mask';
+import { FaCheck, FaTimes, FaSpinner } from 'react-icons/fa';
 
 // REDUX
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { createUsuarioRequest, clearCreateUser } from '../../store/Usuario/usuarioActions';
+import { 
+  createUsuarioRequest, 
+  clearCreateUser,
+  validarCpfRequest,
+  setCpfValido,
+  validarEmailRequest,
+  setEmailValido,
+  validarUsuarioRequest,
+  setUsuarioValido,
+} from '../../store/Usuario/usuarioActions';
 import { getNationsRequest } from '../../store/Pais/paisActions';
 import { GetRegionsByNationRequest } from '../../store/Regiao/regiaoActions';
 import { GetStatesByRegionRequest } from '../../store/Estado/estadoActions';
 import { getRegionalHealthByStateRequest } from '../../store/RegionalSaude/regionalSaudeActions';
 import { getCityByRegionalHealthRequest } from '../../store/Municipio/municipioActions';
+import { showNotifyToast } from '../../store/AppConfig/appConfigActions';
 
 // STYLES
 import { ContainerArrow } from '../../styles/util';
-import { Button, FormGroup, selectDefault } from '../../styles/global';
+import { Button, FormGroup, selectDefault, InputGroup } from '../../styles/global';
 
 const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
   const [ nome, setNome ]                               = useState( "" );
@@ -44,6 +56,11 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
   const [ optionMunicipio, setOptionMunicipio ]         = useState( [] );
   const [ flMunicipio, setFlMunicipio]                  = useState( true );
   const [ flLoading, setFlLoading ]                     = useState( false );
+  const [ loadingCpf, setLoadingCpf ]                   = useState( false );
+  const [ loadingEmail, setLoadingEmail ]               = useState( false );
+  const [ loadingUsuario, setLoadingUsuario ]           = useState( false );
+  const [ formValido, setFormValido ]                   = useState( true );
+
   const optionPerfil = Object.entries( perfil ).map( ( [ key, value ] ) => {
     return { value: value.id, label: value.label };
   } );
@@ -131,6 +148,21 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
     }
   }, [ createUser ] );
 
+  useEffect( () => {
+    if( props.cpfValido || props.cpfValido === false )
+      setLoadingCpf( false );
+  }, [ props.cpfValido ] );
+
+  useEffect( () => {
+    if( props.emailValido || props.emailValido === false )
+      setLoadingEmail( false );
+  }, [ props.emailValido ] );
+
+  useEffect( () => {
+    if( props.usuarioValido || props.usuarioValido === false )
+      setLoadingUsuario( false );
+  }, [ props.usuarioValido ] );
+
   function clearInput() {
     setNome( "" );
     setCpf( "" );
@@ -140,24 +172,133 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
     setUsuario( "" );
     setSenha( "" );
     setTipoPerfil( {} );
+    setFormValido( true );
+    setRegiao( {} );
+    setEstado( {} );
+    setRegionalSaude( {} );
+    setMunicipio( {} );
+  }
+
+  /**
+   * Essa função aciona o action para validação do CPF
+   */
+   const validarCpf = () => {
+    setLoadingCpf( true );
+
+    props.setCpfValido( null );
+    props.validarCpfRequest( cpf );
+  }
+
+  /**
+   * Essa função aciona o action para validação do e-mail
+   */
+  const validarEmail = () => {
+    setEmail( formatarString( email ) );
+    let valido  = true;
+    const match = email.match(
+      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+
+    if( email === '' ) valido = false;
+    if( !match ) valido = false;
+
+    if( valido ) {
+      setLoadingEmail( true );
+  
+      props.setEmailValido( null );
+      props.validarEmailRequest( email );
+    } else {
+      props.setEmailValido( false );
+      props.showNotifyToast( "E-mail inválido", "warning" );
+    }
+  }
+
+  /**
+   * Essa função aciona o action para validação do e-mail
+   */
+  const validarUsuario = () => {
+    setUsuario( formatarString( usuario ) );
+
+    if( usuario != '' ) {
+      setLoadingUsuario( true );
+  
+      props.setUsuarioValido( null );
+      props.validarUsuarioRequest( usuario );
+    } else {
+      props.setUsuarioValido( false );
+      props.showNotifyToast( "Nome de usuário inválido", "warning" );
+    }
+  }
+
+  /**
+   * Se a str contiver somente espaços em branco essa função irá remove-los
+   * Se a str contiver um texto e ao final diversos espaços em branco essa
+   * função irá remove-los
+   * @param {String} str 
+   * @returns {String} str
+   */
+   const formatarString = str => {
+    return str.replace( /\s+/g, ' ' ).trim();
   }
 
   function handleCadastrar( e ) {
     e.preventDefault();
     setFlLoading( true );
 
-    createUsuarioRequest(
-      nome,
-      cpf,
-      rg,
-      email,
-      celular,
-      usuario,
-      senha,
-      tipoPerfil.value,
-      regionalSaude.value,
-      municipio.value
-    );
+    let valido = true;
+
+    /**
+     * Verificando se e-mai le cpf são válidos
+     * 
+     * Obs.: foi necessário colocar a redundancia == false pois ao carregar a página
+     * a variável emailValido e cpfValido inicia com null, o que significa
+     * que não houve validação ainda dos valores, porém, como estamos na página
+     * de editar os valires das variáveis já foram validados pelo back-end
+     * e necessitará somente de outra validação caso o usuárioe edite.
+     */
+    if( 
+      props.emailValido == false || 
+      props.cpfValido == false ||
+      props.usuarioValido == false
+    ) {
+      valido = false;
+    }
+
+    if( nome === '' ) valido = false;
+    if( senha === '' ) valido = false;
+    if( !tipoPerfil.value ) valido = false;
+    if( !pais.value ) valido = false;
+    if( !regiao.value ) valido = false;
+    if( !estado.value ) valido = false;
+    if( !regionalSaude.value ) valido = false;
+
+    /**
+     * Verificando se o perfil do usuário é diferente de coordenador regional
+     * Se sim - Verifica se o município foi preenchido
+     * Se não - O município não precisa ser setado.
+     */
+    if( tipoPerfil.value && tipoPerfil.value !== 1 )
+      if( !municipio.value ) 
+        valido = false;
+
+    if( valido ) {
+      setFormValido( true );
+      createUsuarioRequest(
+        nome,
+        cpf,
+        email,
+        celular,
+        usuario,
+        senha,
+        tipoPerfil.value,
+        regionalSaude.value,
+        municipio.value
+      );
+    } else {
+      setFormValido( false );
+      setFlLoading( false );
+      props.showNotifyToast( "Existem campos inválidos", "warning" );
+    }
   }
 
   return(
@@ -165,46 +306,110 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
       <form onSubmit={ handleCadastrar }>
         <ModalBody>
           <Row>
-            <Col>
-              <FormGroup>
-                <label htmlFor="nome">Nome <code>*</code></label>
-                <input id="nome" value={nome} className="form-control" onChange={ e => setNome(e.target.value) } required />
-              </FormGroup>
-            </Col>
-          </Row>
-          <Row>
-            <Col sm="6">
+            <Col md="6">
               <FormGroup>
                 <label htmlFor="cpf">CPF <code>*</code></label>
-                <input id="cpf" value={ cpf } className="form-control" onChange={ e => setCpf(e.target.value) }  required />
+                <InputGroup className="right">
+                  <input 
+                    id="cpf" 
+                    value={ cpf } 
+                    className={ `form-control ${ props.cpfValido === false ? 'invalid' : '' }` }
+                    maxLength="14"
+                    onChange={ e => setCpf( cpfCnpjMask( e.target.value ) ) }
+                    onBlur={ validarCpf }
+                    required 
+                  />
+                  <div className="field-icon right">
+                    {
+                      loadingCpf ?
+                        <FaSpinner className="loading" /> :
+                      props.cpfValido ?
+                        <FaCheck className="success" /> :
+                      props.cpfValido === false ?
+                        <FaTimes className="error" /> :
+                        <div />
+                    }
+                  </div>
+                </InputGroup>
               </FormGroup>
             </Col>
-            <Col sm="6">
+            <Col md="6">
               <FormGroup>
-                <label htmlFor="rg">RG <code>*</code></label>
-                <input id="rg" value={ rg } className="form-control" onChange={ e => setRg(e.target.value) }  required />
+                <label htmlFor="nome">Nome <code>*</code></label>
+                <input 
+                  id="nome" 
+                  value={ nome } 
+                  className="form-control" 
+                  onChange={ e => setNome( e.target.value ) } 
+                  onBlur={ e => setNome( somenteTextoMask( formatarString( e.target.value ) ) ) }
+                  required 
+                />
               </FormGroup>
             </Col>
-          </Row>
-          <Row>
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="email">E-mail <code>*</code></label>
-                <input id="email" value={ email } type="email" className="form-control" onChange={ e => setEmail(e.target.value) }  required />
+                <InputGroup className="right">
+                  <input 
+                    id="email" 
+                    value={ email } 
+                    type="email" 
+                    className={ `form-control  ${ props.emailValido === false ? 'invalid' : '' }` }
+                    onChange={ e => setEmail( e.target.value ) } 
+                    onBlur={ validarEmail }
+                    required 
+                  />
+                  <div className="field-icon right">
+                    {
+                      loadingEmail ?
+                        <FaSpinner className="loading" /> :
+                      props.emailValido ?
+                        <FaCheck className="success" /> :
+                      props.emailValido === false ?
+                        <FaTimes className="error" /> :
+                        <div />
+                    }
+                  </div>
+                </InputGroup>
               </FormGroup>
             </Col>
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="celular">Telefone/Ramal</label>
-                <input id="celular" value={ celular } className="form-control" onChange={ e => setCelular(e.target.value) } />
+                <input
+                  id="celular"
+                  value={ celular }
+                  className="form-control"
+                  onChange={ e => setCelular( celularMask( e.target.value ) ) }
+                  onKeyDown ={ e => [ "e", "E", "+", "," ].includes( e.key ) && e.preventDefault() }
+                />
               </FormGroup>
             </Col>
-          </Row>
-          <Row>
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="usuario">Usuário <code>*</code></label>
-                <input id="usuario" value={ usuario } className="form-control" onChange={ e => setUsuario(e.target.value) }  required />
+                <InputGroup className="right">
+                  <input 
+                    id="usuario" 
+                    value={ usuario }
+                    type="text" 
+                    className={ `form-control  ${ props.usuarioValido === false ? 'invalid' : '' }` }
+                    onChange={ e => setUsuario( e.target.value ) } 
+                    onBlur={ validarUsuario }
+                    required 
+                  />
+                  <div className="field-icon right">
+                    {
+                      loadingUsuario ?
+                        <FaSpinner className="loading" /> :
+                      props.usuarioValido ?
+                        <FaCheck className="success" /> :
+                      props.usuarioValido === false ?
+                        <FaTimes className="error" /> :
+                        <div />
+                    }
+                  </div>
+                </InputGroup>
               </FormGroup>
             </Col>
             <Col sm="6">
@@ -213,8 +418,6 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
                 <input id="senha" value={ senha } type="password" className="form-control" onChange={ e => setSenha(e.target.value) }  required />
               </FormGroup>
             </Col>
-          </Row>
-          <Row>
             <Col>
               <FormGroup>
                 <label htmlFor="tipoPerfil">Perfil <code>*</code></label>
@@ -222,20 +425,33 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
                   value={ tipoPerfil }
                   styles={ selectDefault }
                   options={ optionPerfil }
-                  onChange={ e => {
-                    setTipoPerfil(e)
-                    if( e.value === 1 )
-                      setFlMunicipio(false);
-                    else
-                      setFlMunicipio(true);
-
-                  }}
-                  required />
-                {/* <input id="tipoPerfil" className="form-control" onChange={ e => setTipoPerfil(e.target.value) }  /> */}
+                  className={ 
+                    !formValido ? 
+                      tipoPerfil.value ? 
+                        'valid' : 
+                        'invalid' :
+                      'valid'
+                  }
+                  onChange={ 
+                    e => { 
+                      setTipoPerfil( e );
+                      if( e.value === 1 )
+                        setFlMunicipio( false );
+                      else
+                        setFlMunicipio( true );
+                    } 
+                  }
+                  required 
+                />
               </FormGroup>
             </Col>
           </Row>
           <Row>
+            <Col md="12">
+              <p className="text-description">
+                Atenção! Os campos abaixo são informações da localização de trabalho do usuário
+              </p>
+            </Col>
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="pais">País <code>*</code></label>
@@ -244,7 +460,14 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
                   value={ pais }
                   styles={ selectDefault }
                   options={ optionPais }
-                  onChange={ e => setPais(e) }
+                  className={ 
+                    !formValido ? 
+                      pais.value ? 
+                        'valid' : 
+                        'invalid' :
+                      'valid'
+                  }
+                  onChange={ e => setPais( e ) }
                   required
                 />
               </FormGroup>
@@ -257,7 +480,14 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
                   value={ regiao }
                   styles={ selectDefault }
                   options={ optionRegiao }
-                  onChange={ e => setRegiao(e) }
+                  className={ 
+                    !formValido ? 
+                    regiao.value ? 
+                        'valid' : 
+                        'invalid' :
+                      'valid'
+                  }
+                  onChange={ e => setRegiao( e ) }
                   required
                 />
               </FormGroup>
@@ -272,7 +502,14 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
                   value={ estado }
                   styles={ selectDefault }
                   options={ optionEstado }
-                  onChange={ e => setEstado(e) }
+                  className={ 
+                    !formValido ? 
+                      estado.value ? 
+                        'valid' : 
+                        'invalid' :
+                      'valid'
+                  }
+                  onChange={ e => setEstado( e ) }
                   required
                 />
               </FormGroup>
@@ -285,7 +522,14 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
                   value={ regionalSaude }
                   styles={ selectDefault }
                   options={ optionRegionalSaude }
-                  onChange={ e => setRegionalSaude(e) }
+                  className={ 
+                    !formValido ? 
+                      regionalSaude.value ? 
+                        'valid' : 
+                        'invalid' :
+                      'valid'
+                  }
+                  onChange={ e => setRegionalSaude( e ) }
                   required
                 />
               </FormGroup>
@@ -300,6 +544,13 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
                   value={ municipio }
                   styles={ selectDefault }
                   options={ optionMunicipio }
+                  className={ 
+                    !formValido && flMunicipio ? 
+                      municipio.value ? 
+                        'valid' : 
+                        'invalid' :
+                      'valid'
+                  }
                   onChange={ e => setMunicipio(e) }
                   isDisabled={ !flMunicipio }
                   required={ flMunicipio }
@@ -340,14 +591,17 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
   );
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = state => ( {
   createUser: state.usuario.createUser,
   paises: state.pais.paises,
   regioes: state.regiao.regioes,
   estados: state.estado.estados,
   regionaisSaude: state.regionalSaude.regionaisSaude,
-  municipiosList: state.municipio.municipiosList
- });
+  municipiosList: state.municipio.municipiosList,
+  cpfValido: state.usuario.cpfValido,
+  emailValido: state.usuario.emailValido,
+  usuarioValido: state.usuario.usuarioValido,
+ } );
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
@@ -357,10 +611,17 @@ const mapDispatchToProps = dispatch =>
     GetRegionsByNationRequest,
     GetStatesByRegionRequest,
     getRegionalHealthByStateRequest,
-    getCityByRegionalHealthRequest
-  }, dispatch);
+    getCityByRegionalHealthRequest,
+    validarCpfRequest,
+    setCpfValido,
+    validarEmailRequest,
+    setEmailValido,
+    validarUsuarioRequest,
+    setUsuarioValido,
+    showNotifyToast,
+  }, dispatch );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ModalAdd);
+)( ModalAdd );

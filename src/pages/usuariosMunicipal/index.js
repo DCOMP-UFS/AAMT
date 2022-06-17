@@ -31,8 +31,9 @@ const columns = [
     label: "#",
     options: {
       filter: false,
-      display: 'false',
-      customBodyRender: (value, tableMeta, updateValue) => (
+      display: false,
+      viewColumns: false,
+      customBodyRender: ( value, tableMeta, updateValue ) => (
         <Typography data-id={ value.id }>{ value.index }</Typography>
       )
     }
@@ -111,6 +112,9 @@ function Usuarios({ municipio_id, usuarios, ...props }) {
       const id = row[0].props['data-id'];
 
       window.location = `${ window.location.origin.toString() }/usuarios/${ id }`;
+    },
+    isRowSelectable: ( dataIndex ) => {
+      return usuarios[ dataIndex ].ativo;
     }
   };
 

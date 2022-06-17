@@ -32,6 +32,24 @@ export default function Imovel( state = INITIAL_STATE, action ) {
       };
     }
 
+    case ActionTypes.SET_IMOVEIS_UPDATED: {
+      let imoveis = state.imoveis;
+      let imovel = action.payload.imovel;
+
+      const index = imoveis.findIndex( imovel => imovel.id === action.payload.imovel.id );
+
+      imovel.quarteirao = imoveis[index].quarteirao
+      imovel.logradouro = imoveis[index].logradouro
+
+      imoveis[index] = imovel
+
+      return {
+        ...state,
+        imoveis,
+        reload: !state.reload
+      };
+    }
+
     case ActionTypes.SET_IMOVEL:
       return {
         ...state,

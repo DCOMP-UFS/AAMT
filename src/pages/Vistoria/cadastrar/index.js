@@ -27,7 +27,7 @@ function CadastrarVistoria({ trabalhoDiario, rota, ...props }) {
         return <PNCD objetivo="LI+T" />
 
       default: // LIRAa
-      return <LIRAa objetivo="LI" />
+        return <LIRAa objetivo="LI" />
     }
   }
 

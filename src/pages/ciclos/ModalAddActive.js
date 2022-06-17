@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import Select from 'react-select'
 import Modal, { ModalBody, ModalFooter } from '../../components/Modal';
 import { Row, Col } from 'react-bootstrap';
@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 // ACTIONS
 import { getMethodologiesRequest } from '../../store/Metodologia/metodologiaActions';
 import { changeFlAddActive } from '../../store/Ciclo/cicloActions';
+import { showNotifyToast } from '../../store/AppConfig/appConfigActions';
 
 // STYLES
 import { ContainerArrow } from '../../styles/util';
@@ -22,9 +23,12 @@ function ModalAddActive({ addAtividade, metodologias, ...props }) {
   const [ objetivoAtividade, setObjetivoAtividade ] = useState("");
   const [ flTodosImoveis, setFlTodosImoveis ] = useState({ value: false, label: "Não" });
   const [ abrangencia, setAbrangencia ] = useState({});
+  const [ abrangenciaValida, setAbrangenciaValida ] = useState( true );
   const [ metodologia, setMetodologia ] = useState({});
+  const [ metodologiaValida, setMetodologiaValida] = useState( true );
   const [ optionMetodologia, setOptionMetodologia ] = useState([]);
   const [ objetivo, setObjetivo ] = useState({});
+  const [ objetivoValido, setObjetivoValido ] = useState( true );
   const [ optionObjetivo, setoptionObjetivo ] = useState([]);
   const [ optionflTodosImoveis ] = useState([
     { value: true, label: "Sim" },
@@ -77,19 +81,35 @@ function ModalAddActive({ addAtividade, metodologias, ...props }) {
   function handleSubmit( e ) {
     e.preventDefault();
     setFlLoading( true );
+    let valid = true;
+    if ( !abrangencia.value ){
+      setAbrangenciaValida( false );
+      valid = false;
+    }
+    if ( !metodologia.value ){
+      setMetodologiaValida( false );
+      valid = false;
+    }
+    if ( !objetivo.value ){
+      setObjetivoValido( false )
+      valid = false;
+    }
+    if ( valid === false ){
+      props.showNotifyToast( "Existem campos inválidos", "warning" );
+    }else{
+      addAtividade({
+        objetivoAtividade,
+        flTodosImoveis: flTodosImoveis.value,
+        abrangencia: abrangencia.value,
+        metodologia_id: metodologia.value,
+        objetivo_id: objetivo.value,
 
-    addAtividade({
-      objetivoAtividade,
-      flTodosImoveis: flTodosImoveis.value,
-      abrangencia: abrangencia.value,
-      metodologia_id: metodologia.value,
-      objetivo_id: objetivo.value,
-
-      selectFlTodosImoveis: flTodosImoveis,
-      selectAbrangencia: abrangencia,
-      selectMetodologia: metodologia,
-      selectObjetivo: objetivo
-    });
+        selectFlTodosImoveis: flTodosImoveis,
+        selectAbrangencia: abrangencia,
+        selectMetodologia: metodologia,
+        selectObjetivo: objetivo
+      });
+    }
 
     clearInput();
   }
@@ -117,27 +137,49 @@ function ModalAddActive({ addAtividade, metodologias, ...props }) {
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="metodologia">Metodologia <code>*</code></label>
-                <Select
-                  id="metodologia"
-                  value={ metodologia }
-                  options={ optionMetodologia }
-                  onChange={ e => setMetodologia(e) }
-                  styles={ selectDefault }
-                  required
-                />
+                <Fragment>
+                  <Select
+                    id="metodologia"
+                    value={ metodologia ? metodologia : null }
+                    options={ optionMetodologia }
+                    onChange={ e => setMetodologia(e) }
+                    styles={ selectDefault }
+                    required
+                  />
+                  {(
+                  <input
+                    tabIndex={-1}
+                    autoComplete="off"
+                    style={{ opacity: 0, height: 0 }}
+                    value={ Object.keys(metodologia).length === 0 ? null : metodologia }
+                    required
+                  />
+                  )}                  
+                </Fragment>              
               </FormGroup>
             </Col>
             <Col sm="6">
             <FormGroup>
                 <label htmlFor="objetivo">Objetivo <code>*</code></label>
-                <Select
-                  id="objetivo"
-                  value={ objetivo }
-                  options={ optionObjetivo }
-                  onChange={ e => setObjetivo(e) }
-                  styles={ selectDefault }
-                  required
-                />
+                <Fragment>
+                  <Select
+                    id="objetivo"
+                    value={ objetivo }
+                    options={ optionObjetivo }
+                    onChange={ e => setObjetivo(e) }
+                    styles={ selectDefault }
+                    required
+                  />
+                    {!props.disabled && (
+                    <input
+                      tabIndex={-2}
+                      autoComplete="off"
+                      style={{ opacity: 0, height: 0 }}
+                      value={ Object.keys(objetivo).length === 0 ? null : objetivo }
+                      required
+                    />
+                    )}       
+                </Fragment>         
               </FormGroup>
             </Col>
           </Row>
@@ -158,14 +200,25 @@ function ModalAddActive({ addAtividade, metodologias, ...props }) {
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="abrangencia">Abrangência <code>*</code></label>
-                <Select
-                  id="abrangencia"
-                  value={ abrangencia }
-                  options={ optionAbrangencia }
-                  onChange={ e => setAbrangencia(e) }
-                  styles={ selectDefault }
-                  required
-                />
+                <Fragment>
+                  <Select
+                    id="abrangencia"
+                    value={ abrangencia }
+                    options={ optionAbrangencia }
+                    onChange={ e => setAbrangencia(e) }
+                    styles={ selectDefault }
+                    required
+                  />
+                  {!props.disabled && (
+                  <input
+                    tabIndex={-3}
+                    autoComplete="off"
+                    style={{ opacity: 0, height: 0 }}
+                    value={ Object.keys(abrangencia).length === 0 ? null : abrangencia }
+                    required
+                  />
+                  )}
+                </Fragment>
               </FormGroup>
             </Col>
           </Row>
@@ -210,6 +263,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
     getMethodologiesRequest,
+    showNotifyToast,
     changeFlAddActive
   }, dispatch);
 

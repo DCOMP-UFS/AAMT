@@ -22,6 +22,7 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
   const [ numero, setNumero ]                     = useState( null );
   const [ sequencia, setSequencia ]               = useState( null );
   const [ responsavel, setResponsavel ]           = useState( "" );
+  const [ responsavelValido, setResponsavelValido]= useState( true );
   const [ complemento, setComplemento ]           = useState( "" );
   const [ tipoImovel, setTipoImovel ]             = useState( {} );
   const [ optionTipoImovel ]                      = useState( tipoImovelEnum.map( tipo => ( { value: tipo.id, label: tipo.label } ) ) );
@@ -187,6 +188,16 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
     let fl_valido = true,
         c         = clss;
 
+
+    if ( /^[A-Za-z\s]*$/.test( responsavel ) == false ) {
+      setResponsavelValido( false );
+      fl_valido = false;
+      c         = clss;
+
+      c[ 'responsavel' ] = 'invalid';
+      setClss( c );
+    }
+    
     if( !quarteirao.value ) {
       fl_valido = false;
       c         = clss;
@@ -329,7 +340,7 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
                 <input
                   id="responsavel"
                   value={ responsavel }
-                  className="form-control"
+                  className={`form-control  ${ responsavelValido === false ? 'invalid' : '' }` }
                   onChange={ e => setResponsavel( e.target.value ) }
                 />
               </FormGroup>

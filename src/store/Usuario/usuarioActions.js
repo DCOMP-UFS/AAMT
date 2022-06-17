@@ -15,7 +15,100 @@ export const ActionTypes = {
   UPDATE_ALL_USUARIO_REQUEST: "UPDATE_ALL_USUARIO_REQUEST",
   UPDATE_USUARIO_SUCCESS: "UPDATE_USUARIO_SUCCESS",
   CLEAR_UPDATE_USER: "CLEAR_UPDATE_USER",
-  CHANGE_USER_EDIT_INDEX: "CHANGE_USER_EDIT_INDEX"
+  CHANGE_USER_EDIT_INDEX: "CHANGE_USER_EDIT_INDEX",
+  VALIDAR_CPF_REQUEST: "VALIDAR_CPF_REQUEST",
+  VALIDAR_EMAIL_REQUEST: "VALIDAR_EMAIL_REQUEST",
+  VALIDAR_USUARIO_REQUEST: "VALIDAR_USUARIO_REQUEST",
+  SET_CPF_VALIDO: "SET_CPF_VALIDO",
+  SET_EMAIL_VALIDO: "SET_EMAIL_VALIDO",
+  SET_USUARIO_VALIDO: "SET_USUARIO_VALIDO",
+}
+
+/**
+ * Aciona o sagas a validação do CPF
+ * @param {string} cpf 
+ * @returns {Object}
+ */
+export const validarCpfRequest = ( cpf, usuario_id = undefined ) => {
+  return {
+    type: ActionTypes.VALIDAR_CPF_REQUEST,
+    payload: {
+      cpf,
+      usuario_id
+    }
+  }
+}
+
+/**
+ * Aciona o sagas a validação do e-mail
+ * @param {string} email 
+ * @returns {Object}
+ */
+export const validarEmailRequest = ( email, usuario_id = undefined ) => {
+  return {
+    type: ActionTypes.VALIDAR_EMAIL_REQUEST,
+    payload: {
+      email,
+      usuario_id
+    }
+  }
+}
+
+/**
+ * Aciona o sagas para a validação de nome de usuário
+ * @param {string} usuario 
+ * @returns {Object}
+ */
+export const validarUsuarioRequest = ( usuario, usuario_id = undefined ) => {
+  return {
+    type: ActionTypes.VALIDAR_USUARIO_REQUEST,
+    payload: {
+      usuario,
+      usuario_id
+    }
+  }
+}
+
+/**
+ * Aciona o reduce para alterar a variável cpfValido
+ * @param {boolean} valido 
+ * @returns {Object}
+ */
+export const setCpfValido = valido => {
+  return {
+    type: ActionTypes.SET_CPF_VALIDO,
+    payload: {
+      valido,
+    }
+  }
+}
+
+/**
+ * Aciona o reduce para alterar a variável emailValido
+ * @param {boolean} valido 
+ * @returns {Object}
+ */
+export const setEmailValido = valido => {
+  return {
+    type: ActionTypes.SET_EMAIL_VALIDO,
+    payload: {
+      valido,
+    }
+  }
+}
+
+/**
+ * Aciona o reduce para alterar a variável usuarioValido
+ * @param {boolean} valido 
+ * @returns {Object}
+ */
+export const setUsuarioValido = valido => {
+  return {
+    type: ActionTypes.SET_USUARIO_VALIDO,
+    payload: {
+      valido,
+    }
+  }
 }
 
 export const getUsuariosRequest = municipio_id => {
@@ -96,13 +189,12 @@ export const getUsersByCity = usuarios => {
   }
 }
 
-export const createUsuarioRequest = ( nome, cpf, rg, email, celular, usuario, senha, tipoPerfil, regionalSaude_id, municipio_id ) => {
+export const createUsuarioRequest = ( nome, cpf, email, celular, usuario, senha, tipoPerfil, regionalSaude_id, municipio_id ) => {
   return {
     type: ActionTypes.CREATE_USUARIO_REQUEST,
     payload: {
       nome,
       cpf,
-      rg,
       email,
       celular,
       usuario,

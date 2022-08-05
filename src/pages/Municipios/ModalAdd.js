@@ -24,7 +24,7 @@ import { Button, FormGroup, selectDefault } from '../../styles/global';
 function ModalAdd( { createCityRequest, createdCity, ...props } ) {
   const [ codigo, setCodigo ]                           = useState( null );
   const [ nome, setNome ]                               = useState( "" );
-  const [ pais, setPais ]                               = useState( { value: 37, label: 'BRASIL' } );
+  const [ pais, setPais ]                               = useState( {} );
   const [ optionPais, setOptionPais ]                   = useState( [] );
   const [ regiao, setRegiao ]                           = useState( {} );
   const [ optionRegiao, setOptionRegiao ]               = useState( [] );
@@ -41,8 +41,10 @@ function ModalAdd( { createCityRequest, createdCity, ...props } ) {
 
   useEffect( () => {
     const options = props.paises.map( ( p ) => ( { value: p.id, label: p.nome } ) );
-
     setOptionPais( options );
+
+    setPais(findCountryFromOption('Brasil', options))
+
   }, [ props.paises ] );
 
   useEffect( () => {
@@ -109,6 +111,20 @@ function ModalAdd( { createCityRequest, createdCity, ...props } ) {
     setFlLoading( true );
 
     createCityRequest( codigo, nome, regionalSaude.value );
+  }
+
+  function findCountryFromOption(nomePais,arrayPaises){
+    var result = {}
+    var pais = {}
+    for (var i = 0; i < arrayPaises.length; i++) {
+        pais = arrayPaises[i]
+        if(pais.label == nomePais){
+          result = pais
+          break;
+        }
+    }
+    console.log(result);
+    return result
   }
 
   return(

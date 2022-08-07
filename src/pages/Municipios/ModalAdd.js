@@ -21,9 +21,13 @@ import { getRegionalHealthByStateRequest } from '../../store/RegionalSaude/regio
 import { ContainerArrow } from '../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../styles/global';
 
+// VALIDATIONS FUNCTIONS
+import {onlyNumbers,isBlank} from '../../config/function';
+
 function ModalAdd( { createCityRequest, createdCity, ...props } ) {
   const [ codigo, setCodigo ]                           = useState( null );
   const [ nome, setNome ]                               = useState( "" );
+  const [ isValidNome, setIsValidNome ]                 = useState( true );
   const [ pais, setPais ]                               = useState( {} );
   const [ optionPais, setOptionPais ]                   = useState( [] );
   const [ regiao, setRegiao ]                           = useState( {} );
@@ -108,9 +112,12 @@ function ModalAdd( { createCityRequest, createdCity, ...props } ) {
 
   function handleCadastrar( e ) {
     e.preventDefault();
-    setFlLoading( true );
-
-    createCityRequest( codigo, nome, regionalSaude.value );
+    if(isBlank(nome))
+      setIsValidNome(false)
+    else{
+      setFlLoading( true );
+      createCityRequest( codigo, nome, regionalSaude.value );
+    }
   }
 
   function findCountryFromOption(nomePais,arrayPaises){
@@ -191,7 +198,13 @@ function ModalAdd( { createCityRequest, createdCity, ...props } ) {
             <Col>
               <FormGroup>
                 <label htmlFor="codigo">Código <code>*</code></label>
-                <input id="codigo" value={codigo ? codigo : ""} className="form-control" onChange={ e => setCodigo(e.target.value) } required />
+                <input 
+                  id="codigo" 
+                  pattern="[0-9]*" 
+                  value={codigo ? codigo : ""} 
+                  className="form-control" 
+                  onChange={ (e) => (onlyNumbers(e.target.value) ? setCodigo(e.target.value) : () => {} )} 
+                  required />
               </FormGroup>
             </Col>
           </Row>
@@ -199,7 +212,17 @@ function ModalAdd( { createCityRequest, createdCity, ...props } ) {
             <Col>
               <FormGroup>
                 <label htmlFor="nome">Nome <code>*</code></label>
-                <input id="nome" value={nome} className="form-control" onChange={ e => setNome(e.target.value) } required />
+                <input 
+                  id="nome" 
+                  value={nome} 
+                  className ={ `form-control ${ !isValidNome ? 'invalid' : '' }` } 
+                  onChange={ e => setNome(e.target.value) } 
+                  required />
+                  {
+                    !isValidNome ?
+                      <span class="form-label-invalid">Nome inválido</span> :
+                      ''
+                  }
               </FormGroup>
             </Col>
           </Row>

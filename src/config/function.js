@@ -130,3 +130,18 @@ export const msgInputInvalid = ( msg = 'Campo obrigatório' ) => {
 export const removeMultipleSpaces = string => {
   return string.trim().replace(/  +/g, ' ');
 }
+
+export const onlyNumbers = input => {
+  const re = /^[0-9\b]+$/;
+  if(input === '' || re.test(input))
+    return true
+
+  return false
+}
+
+export const isBlank = input => {
+  if(input.trim() === '')
+    return true
+
+  return false
+}

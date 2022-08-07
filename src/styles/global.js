@@ -842,4 +842,22 @@ export const FormGroup = styled.div`
       border: 1px solid ${ Color.border_input };
     }
   }
+  .select-wrapper-container{
+    position: relative;
+    .select-wrapper{
+      position: relative;
+      z-index: 1;
+    }
+    .input-required{
+      position: absolute;
+      border: 0;
+      color: transparent;
+      background-color: transparent;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+  }
 `;

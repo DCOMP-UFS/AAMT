@@ -5,6 +5,7 @@ import Modal, { ModalBody, ModalFooter } from '../../components/Modal';
 import { Row, Col } from 'react-bootstrap';
 import $ from 'jquery';
 import LoadginGif from '../../assets/loading.gif';
+import SelectWrap from '../../components/SelectWrap'
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -152,7 +153,7 @@ function ModalAdd( { createCityRequest, createdCity, show, handleClose, ...props
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="pais">País <code>*</code></label>
-                <Select
+                <SelectWrap
                   id="pais"
                   value={ pais }
                   styles={ selectDefault }
@@ -165,7 +166,7 @@ function ModalAdd( { createCityRequest, createdCity, show, handleClose, ...props
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="regiao">Região <code>*</code></label>
-                <Select
+                <SelectWrap
                   id="regiao"
                   value={ regiao }
                   styles={ selectDefault }
@@ -180,7 +181,7 @@ function ModalAdd( { createCityRequest, createdCity, show, handleClose, ...props
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="estado">Estado <code>*</code></label>
-                <Select
+                <SelectWrap
                   id="estado"
                   value={ estado }
                   styles={ selectDefault }
@@ -193,7 +194,7 @@ function ModalAdd( { createCityRequest, createdCity, show, handleClose, ...props
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="regionalSaude">Regional de saúde <code>*</code></label>
-                <Select
+                <SelectWrap
                   id="regionalSaude"
                   value={ regionalSaude }
                   styles={ selectDefault }

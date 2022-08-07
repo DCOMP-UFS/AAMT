@@ -24,7 +24,7 @@ import { Button, FormGroup, selectDefault } from '../../styles/global';
 // VALIDATIONS FUNCTIONS
 import {onlyNumbers,isBlank} from '../../config/function';
 
-function ModalAdd( { createCityRequest, createdCity, ...props } ) {
+function ModalAdd( { createCityRequest, createdCity, show, handleClose, ...props } ) {
   const [ codigo, setCodigo ]                           = useState( null );
   const [ nome, setNome ]                               = useState( "" );
   const [ isValidNome, setIsValidNome ]                 = useState( true );
@@ -42,6 +42,11 @@ function ModalAdd( { createCityRequest, createdCity, ...props } ) {
     props.clearCreateCity();
     props.getNationsRequest();
   }, [] );
+
+  useEffect( () => {
+    clearInput()
+    setIsValidNome(true);
+  }, [ show ] );
 
   useEffect( () => {
     const options = props.paises.map( ( p ) => ( { value: p.id, label: p.nome } ) );
@@ -98,7 +103,8 @@ function ModalAdd( { createCityRequest, createdCity, ...props } ) {
 
   useEffect( () => {
     if( createdCity ) {
-      $( '#modal-novo-municipio' ).modal( 'hide' );
+      //$( '#modal-novo-municipio' ).modal( 'hide' );
+      handleClose();
       clearInput();
       setFlLoading( false );
       props.clearCreateCity();
@@ -108,6 +114,11 @@ function ModalAdd( { createCityRequest, createdCity, ...props } ) {
   function clearInput() {
     setCodigo( null );
     setNome( "" );
+  }
+
+  const cancel = () => {
+    clearInput();
+    handleClose();
   }
 
   function handleCadastrar( e ) {
@@ -135,7 +146,7 @@ function ModalAdd( { createCityRequest, createdCity, ...props } ) {
   }
 
   return(
-    <Modal id="modal-novo-municipio" title="Cadastrar Município" size='lg'>
+    <Modal id="modal-novo-municipio" onHide={ handleClose() } title="Cadastrar Município" size='lg'>
       <form onSubmit={ handleCadastrar }>
         <ModalBody>
         <Row>
@@ -233,7 +244,7 @@ function ModalAdd( { createCityRequest, createdCity, ...props } ) {
               <Button type="button" className="warning" onClick={ clearInput }>Limpar</Button>
             </div>
             <div>
-              <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
+              <Button type="button" className="secondary" data-dismiss="modal" onClick = { cancel }>Cancelar</Button>
               <Button type="submit" loading={ flLoading.toString() } disabled={ flLoading ? 'disabled' : '' } >
                 {
                   flLoading ?
@@ -258,6 +269,7 @@ function ModalAdd( { createCityRequest, createdCity, ...props } ) {
     </Modal>
   );
 }
+
 
 const mapStateToProps = state => ( {
   createdCity: state.municipio.createdCity,

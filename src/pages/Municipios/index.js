@@ -44,7 +44,14 @@ const columns = [
 ];
 
 const Municipios = ( { municipios, ...props } ) => {
-  const [ rows, setRows ] = useState([]);
+  const [ rows, setRows ]                    =  useState([]);
+  const [ showModalAdd, setShowModalAdd ]    =  useState( false );
+
+
+  const handleCloseModalAdd = () => {
+    setShowModalAdd( false );
+  }
+  
   const options = {
     customToolbar: () => {
       return (
@@ -52,6 +59,7 @@ const Municipios = ( { municipios, ...props } ) => {
           title="Adicionar"
           data-toggle="modal"
           data-target="#modal-novo-municipio" 
+          onClick={ () => { setShowModalAdd( true ); } }
         />
       );
     },
@@ -136,7 +144,7 @@ const Municipios = ( { municipios, ...props } ) => {
             />
           </article>
         </div>
-        <ModalAdd />
+        <ModalAdd show={ showModalAdd } handleClose={ handleCloseModalAdd }/>
         <ModalUpdate />
         <ModalDisabled />
 

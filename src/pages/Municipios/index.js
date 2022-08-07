@@ -24,6 +24,9 @@ import { getMunicipiosRequest, changeCityEditIndex } from '../../store/Municipio
 import { GlobalStyle } from './styles';
 import { PageIcon, PageHeader } from '../../styles/util';
 
+//UTILIES FUNCTIONS
+import { getDateIso } from '../../config/function';
+
 const columns = [
   {
     name: "index",
@@ -84,6 +87,25 @@ const Municipios = ( { municipios, ...props } ) => {
       const id = row[ 0 ].props[ 'data-id' ];
 
       window.location = `${ window.location.origin.toString() }/municipios/${ id }`;
+    },
+    customSort: (data, dataIndex, rowIndex) => {
+      // caso a coluna que se deseja ordenar for "Criado em" ou "Atualizado em"
+      // se mudar a ordem das colunas, a condicional abaixo deve ser alterada de acordo
+      // lembre-se que a primeira coluna da tabela não o "Nome", mas sim que contem os seletores
+      if (dataIndex === 3 || dataIndex === 4) {
+        return data.sort((a, b) => {
+          const dateA = getDateIso(a.data[dataIndex]).getTime();
+          const dateB = getDateIso(b.data[dataIndex]).getTime();
+          return (dateA < dateB ? -1 : 1) * (rowIndex === "desc" ? 1 : -1);
+        });
+      } else {
+        return data.sort((a, b) => {
+          return (
+            (a.data[dataIndex].length < b.data[dataIndex].length ? -1 : 1) *
+            (rowIndex === "desc" ? 1 : -1)
+          );
+        });
+      }
     }
   };
 

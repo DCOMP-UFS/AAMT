@@ -141,7 +141,6 @@ function ModalAdd( { createCityRequest, createdCity, show, handleClose, ...props
           break;
         }
     }
-    console.log(result);
     return result
   }
 

@@ -24,6 +24,7 @@ import { Button, FormGroup, selectDefault } from '../../styles/global';
 
 // VALIDATIONS FUNCTIONS
 import {onlyNumbers,isBlank,onlyLetters} from '../../config/function';
+import { set } from 'date-fns';
 
 function ModalAdd( { createCityRequest, createdCity, show, handleClose, ...props } ) {
   const [ codigo, setCodigo ]                           = useState( null );
@@ -38,6 +39,7 @@ function ModalAdd( { createCityRequest, createdCity, show, handleClose, ...props
   const [ regionalSaude, setRegionalSaude ]             = useState( {} );
   const [ optionRegionalSaude, setOptionRegionalSaude ] = useState( [] );
   const [ flLoading, setFlLoading ]                     = useState( false );
+  const paisPadrao = 'Brasil'
 
   useEffect( () => {
     props.clearCreateCity();
@@ -47,13 +49,14 @@ function ModalAdd( { createCityRequest, createdCity, show, handleClose, ...props
   useEffect( () => {
     clearInput()
     setIsValidNome(true);
+    setPais(findCountryFromOption(paisPadrao, optionPais))
   }, [ show ] );
 
   useEffect( () => {
     const options = props.paises.map( ( p ) => ( { value: p.id, label: p.nome } ) );
     setOptionPais( options );
 
-    setPais(findCountryFromOption('Brasil', options))
+    setPais(findCountryFromOption(paisPadrao, options))
 
   }, [ props.paises ] );
 
@@ -115,6 +118,15 @@ function ModalAdd( { createCityRequest, createdCity, show, handleClose, ...props
   function clearInput() {
     setCodigo( null );
     setNome( "" );
+  }
+
+  function clearInputAll(){
+    clearInput();
+    setPais({});
+    setRegiao({});
+    setEstado({});
+    setRegionalSaude({})
+    setIsValidNome(true);
   }
 
   const cancel = () => {
@@ -241,7 +253,7 @@ function ModalAdd( { createCityRequest, createdCity, show, handleClose, ...props
         <ModalFooter>
           <ContainerArrow>
             <div>
-              <Button type="button" className="warning" onClick={ clearInput }>Limpar</Button>
+              <Button type="button" className="warning" onClick={ clearInputAll }>Limpar</Button>
             </div>
             <div>
               <Button type="button" className="secondary" data-dismiss="modal" onClick = { cancel }>Cancelar</Button>

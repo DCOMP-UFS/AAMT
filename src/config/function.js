@@ -164,3 +164,11 @@ export const isBlank = input => {
 
   return false
 }
+
+export const onlyLetters = input => {
+  const re = /^[a-zA-ZáàâãéèêíïóôõöúçÁÀÂÃÉÈÍÏÓÔÕÖÚÇ]+$/g;
+  if(input === '' || re.test(input))
+    return true
+
+  return false
+}

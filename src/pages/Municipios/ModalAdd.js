@@ -23,7 +23,7 @@ import { ContainerArrow } from '../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../styles/global';
 
 // VALIDATIONS FUNCTIONS
-import {onlyNumbers,isBlank} from '../../config/function';
+import {onlyNumbers,isBlank,onlyLetters} from '../../config/function';
 
 function ModalAdd( { createCityRequest, createdCity, show, handleClose, ...props } ) {
   const [ codigo, setCodigo ]                           = useState( null );
@@ -227,7 +227,7 @@ function ModalAdd( { createCityRequest, createdCity, show, handleClose, ...props
                   id="nome" 
                   value={nome} 
                   className ={ `form-control ${ !isValidNome ? 'invalid' : '' }` } 
-                  onChange={ e => setNome(e.target.value) } 
+                  onChange={ (e) => (onlyLetters(e.target.value) ? setNome(e.target.value) : () => {} )} 
                   required />
                   {
                     !isValidNome ?

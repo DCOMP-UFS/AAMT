@@ -35,7 +35,7 @@ import {
 } from '../../styles/util';
 
 // VALIDATIONS FUNCTIONS
-import {onlyNumbers,isBlank} from '../../config/function';
+import {onlyNumbers,isBlank,onlyLetters} from '../../config/function';
 
 const EditarMunicipio = ( { municipio, localidades, ...props } ) => {
   const [ id ]                                          = useState( props.match.params.id );
@@ -276,7 +276,7 @@ const EditarMunicipio = ( { municipio, localidades, ...props } ) => {
                             id="up_nome" 
                             value={nome} 
                             className="form-control" 
-                            onChange={ e => setNome(e.target.value) } 
+                            onChange={ (e) => (onlyLetters(e.target.value) ? setNome(e.target.value) : () => {} )} 
                             required />
                             {
                               !isValidNome ?

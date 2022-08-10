@@ -5,6 +5,7 @@ import Modal, { ModalBody, ModalFooter } from '../../components/Modal';
 import { Row, Col } from 'react-bootstrap';
 import $ from 'jquery';
 import LoadginGif from '../../assets/loading.gif';
+import SelectWrap from '../../components/SelectWrap'
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -21,10 +22,15 @@ import { getRegionalHealthByStateRequest } from '../../store/RegionalSaude/regio
 import { ContainerArrow } from '../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../styles/global';
 
-function ModalAdd( { createCityRequest, createdCity, ...props } ) {
+// VALIDATIONS FUNCTIONS
+import {onlyNumbers,isBlank,onlyLetters} from '../../config/function';
+import { set } from 'date-fns';
+
+function ModalAdd( { createCityRequest, createdCity, show, handleClose, ...props } ) {
   const [ codigo, setCodigo ]                           = useState( null );
   const [ nome, setNome ]                               = useState( "" );
-  const [ pais, setPais ]                               = useState( { value: 37, label: 'BRASIL' } );
+  const [ isValidNome, setIsValidNome ]                 = useState( true );
+  const [ pais, setPais ]                               = useState( {} );
   const [ optionPais, setOptionPais ]                   = useState( [] );
   const [ regiao, setRegiao ]                           = useState( {} );
   const [ optionRegiao, setOptionRegiao ]               = useState( [] );
@@ -33,6 +39,7 @@ function ModalAdd( { createCityRequest, createdCity, ...props } ) {
   const [ regionalSaude, setRegionalSaude ]             = useState( {} );
   const [ optionRegionalSaude, setOptionRegionalSaude ] = useState( [] );
   const [ flLoading, setFlLoading ]                     = useState( false );
+  const paisPadrao = 'Brasil'
 
   useEffect( () => {
     props.clearCreateCity();
@@ -40,9 +47,17 @@ function ModalAdd( { createCityRequest, createdCity, ...props } ) {
   }, [] );
 
   useEffect( () => {
-    const options = props.paises.map( ( p ) => ( { value: p.id, label: p.nome } ) );
+    clearInput()
+    setIsValidNome(true);
+    setPais(findCountryFromOption(paisPadrao, optionPais))
+  }, [ show ] );
 
+  useEffect( () => {
+    const options = props.paises.map( ( p ) => ( { value: p.id, label: p.nome } ) );
     setOptionPais( options );
+
+    setPais(findCountryFromOption(paisPadrao, options))
+
   }, [ props.paises ] );
 
   useEffect( () => {
@@ -92,7 +107,8 @@ function ModalAdd( { createCityRequest, createdCity, ...props } ) {
 
   useEffect( () => {
     if( createdCity ) {
-      $( '#modal-novo-municipio' ).modal( 'hide' );
+      //$( '#modal-novo-municipio' ).modal( 'hide' );
+      handleClose();
       clearInput();
       setFlLoading( false );
       props.clearCreateCity();
@@ -104,22 +120,52 @@ function ModalAdd( { createCityRequest, createdCity, ...props } ) {
     setNome( "" );
   }
 
+  function clearInputAll(){
+    clearInput();
+    setPais({});
+    setRegiao({});
+    setEstado({});
+    setRegionalSaude({})
+    setIsValidNome(true);
+  }
+
+  const cancel = () => {
+    clearInput();
+    handleClose();
+  }
+
   function handleCadastrar( e ) {
     e.preventDefault();
-    setFlLoading( true );
+    if(isBlank(nome))
+      setIsValidNome(false)
+    else{
+      setFlLoading( true );
+      createCityRequest( codigo, nome, regionalSaude.value );
+    }
+  }
 
-    createCityRequest( codigo, nome, regionalSaude.value );
+  function findCountryFromOption(nomePais,arrayPaises){
+    var result = {}
+    var pais = {}
+    for (var i = 0; i < arrayPaises.length; i++) {
+        pais = arrayPaises[i]
+        if(pais.label == nomePais){
+          result = pais
+          break;
+        }
+    }
+    return result
   }
 
   return(
-    <Modal id="modal-novo-municipio" title="Cadastrar Município" size='lg'>
+    <Modal id="modal-novo-municipio" onHide={ handleClose() } title="Cadastrar Município" size='lg'>
       <form onSubmit={ handleCadastrar }>
         <ModalBody>
         <Row>
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="pais">País <code>*</code></label>
-                <Select
+                <SelectWrap
                   id="pais"
                   value={ pais }
                   styles={ selectDefault }
@@ -132,7 +178,7 @@ function ModalAdd( { createCityRequest, createdCity, ...props } ) {
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="regiao">Região <code>*</code></label>
-                <Select
+                <SelectWrap
                   id="regiao"
                   value={ regiao }
                   styles={ selectDefault }
@@ -147,7 +193,7 @@ function ModalAdd( { createCityRequest, createdCity, ...props } ) {
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="estado">Estado <code>*</code></label>
-                <Select
+                <SelectWrap
                   id="estado"
                   value={ estado }
                   styles={ selectDefault }
@@ -160,7 +206,7 @@ function ModalAdd( { createCityRequest, createdCity, ...props } ) {
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="regionalSaude">Regional de saúde <code>*</code></label>
-                <Select
+                <SelectWrap
                   id="regionalSaude"
                   value={ regionalSaude }
                   styles={ selectDefault }
@@ -175,7 +221,13 @@ function ModalAdd( { createCityRequest, createdCity, ...props } ) {
             <Col>
               <FormGroup>
                 <label htmlFor="codigo">Código <code>*</code></label>
-                <input id="codigo" value={codigo ? codigo : ""} className="form-control" onChange={ e => setCodigo(e.target.value) } required />
+                <input 
+                  id="codigo" 
+                  pattern="[0-9]*" 
+                  value={codigo ? codigo : ""} 
+                  className="form-control" 
+                  onChange={ (e) => (onlyNumbers(e.target.value) ? setCodigo(e.target.value) : () => {} )} 
+                  required />
               </FormGroup>
             </Col>
           </Row>
@@ -183,7 +235,17 @@ function ModalAdd( { createCityRequest, createdCity, ...props } ) {
             <Col>
               <FormGroup>
                 <label htmlFor="nome">Nome <code>*</code></label>
-                <input id="nome" value={nome} className="form-control" onChange={ e => setNome(e.target.value) } required />
+                <input 
+                  id="nome" 
+                  value={nome} 
+                  className ={ `form-control ${ !isValidNome ? 'invalid' : '' }` } 
+                  onChange={ (e) => (onlyLetters(e.target.value) ? setNome(e.target.value) : () => {} )} 
+                  required />
+                  {
+                    !isValidNome ?
+                      <span class="form-label-invalid">Nome inválido</span> :
+                      ''
+                  }
               </FormGroup>
             </Col>
           </Row>
@@ -191,10 +253,10 @@ function ModalAdd( { createCityRequest, createdCity, ...props } ) {
         <ModalFooter>
           <ContainerArrow>
             <div>
-              <Button type="button" className="warning" onClick={ clearInput }>Limpar</Button>
+              <Button type="button" className="warning" onClick={ clearInputAll }>Limpar</Button>
             </div>
             <div>
-              <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
+              <Button type="button" className="secondary" data-dismiss="modal" onClick = { cancel }>Cancelar</Button>
               <Button type="submit" loading={ flLoading.toString() } disabled={ flLoading ? 'disabled' : '' } >
                 {
                   flLoading ?
@@ -219,6 +281,7 @@ function ModalAdd( { createCityRequest, createdCity, ...props } ) {
     </Modal>
   );
 }
+
 
 const mapStateToProps = state => ( {
   createdCity: state.municipio.createdCity,

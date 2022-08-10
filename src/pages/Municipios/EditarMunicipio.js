@@ -5,6 +5,7 @@ import Select from 'react-select';
 import ButtonSave from '../../components/ButtonSave';
 import { FaCity } from 'react-icons/fa';
 import { FaMapSigns } from 'react-icons/fa';
+import SelectWrap from '../../components/SelectWrap'
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -33,10 +34,14 @@ import {
   ContainerUl
 } from '../../styles/util';
 
+// VALIDATIONS FUNCTIONS
+import {onlyNumbers,isBlank,onlyLetters} from '../../config/function';
+
 const EditarMunicipio = ( { municipio, localidades, ...props } ) => {
   const [ id ]                                          = useState( props.match.params.id );
   const [ codigo, setCodigo ]                           = useState( null );
   const [ nome, setNome ]                               = useState( "" );
+  const [ isValidNome, setIsValidNome ]                 = useState( true );
   const [ ativo, setAtivo ]                             = useState( {} );
   const [ pais, setPais ]                               = useState( {} );
   const [ optionPais, setOptionPais ]                   = useState( [] );
@@ -146,14 +151,19 @@ const EditarMunicipio = ( { municipio, localidades, ...props } ) => {
 
   function handleSubmit( e ) {
     e.preventDefault();
-    setFlLoading( true );
+    if(isBlank(nome))
+      setIsValidNome(false)
 
-    props.updateCityRequest( id, {
-      codigo,
-      nome,
-      regionalSaude_id: regionalSaude.value,
-      ativo: ativo.value
-    } );
+    else{
+      setFlLoading( true );
+      props.updateCityRequest( id, {
+        codigo,
+        nome,
+        regionalSaude_id: regionalSaude.value,
+        ativo: ativo.value
+      } );
+    }
+    
   }
 
   return (
@@ -182,24 +192,26 @@ const EditarMunicipio = ( { municipio, localidades, ...props } ) => {
                       <Col sm="6">
                         <FormGroup>
                           <label htmlFor="pais">País <code>*</code></label>
-                          <Select
+                          <SelectWrap
                             id="pais"
                             value={ pais }
                             styles={ selectDefault }
                             options={ optionPais }
                             onChange={ e => setPais(e) }
+                            required
                           />
                         </FormGroup>
                       </Col>
                       <Col sm="6">
                         <FormGroup>
                           <label htmlFor="regiao">Região <code>*</code></label>
-                          <Select
+                          <SelectWrap
                             id="regiao"
                             value={ regiao }
                             styles={ selectDefault }
                             options={ optionRegiao }
                             onChange={ e => setRegiao(e) }
+                            required
                           />
                         </FormGroup>
                       </Col>
@@ -208,24 +220,26 @@ const EditarMunicipio = ( { municipio, localidades, ...props } ) => {
                       <Col sm="6">
                         <FormGroup>
                           <label htmlFor="estado">Estado <code>*</code></label>
-                          <Select
+                          <SelectWrap
                             id="estado"
                             value={ estado }
                             styles={ selectDefault }
                             options={ optionEstado }
                             onChange={ e => setEstado(e) }
+                            required
                           />
                         </FormGroup>
                       </Col>
                       <Col sm="6">
                         <FormGroup>
                           <label htmlFor="regionalSaude">Regional de saúde <code>*</code></label>
-                          <Select
+                          <SelectWrap
                             id="regionalSaude"
                             value={ regionalSaude }
                             styles={ selectDefault }
                             options={ optionRegionalSaude }
                             onChange={ e => setRegionalSaude(e) }
+                            required
                           />
                         </FormGroup>
                       </Col>
@@ -234,13 +248,18 @@ const EditarMunicipio = ( { municipio, localidades, ...props } ) => {
                       <Col sm='6'>
                         <FormGroup>
                           <label htmlFor="up_codigo">Código <code>*</code></label>
-                          <input id="up_codigo" value={codigo ? codigo : ""} className="form-control" onChange={ e => setCodigo(e.target.value) } required />
+                          <input 
+                            id="up_codigo" 
+                            value={codigo ? codigo : ""} 
+                            className="form-control" 
+                            onChange={ (e) => (onlyNumbers(e.target.value) ? setCodigo(e.target.value) : () => {} )} 
+                            required />
                         </FormGroup>
                       </Col>
                       <Col sm='6'>
                         <FormGroup>
                           <label htmlFor="up_ativo">Ativo <code>*</code></label>
-                          <Select
+                          <SelectWrap
                             value={ ativo }
                             styles={ selectDefault }
                             options={ optionAtivo }
@@ -253,7 +272,17 @@ const EditarMunicipio = ( { municipio, localidades, ...props } ) => {
                       <Col>
                         <FormGroup>
                           <label htmlFor="up_nome">Nome <code>*</code></label>
-                          <input id="up_nome" value={nome} className="form-control" onChange={ e => setNome(e.target.value) } required />
+                          <input 
+                            id="up_nome" 
+                            value={nome} 
+                            className="form-control" 
+                            onChange={ (e) => (onlyLetters(e.target.value) ? setNome(e.target.value) : () => {} )} 
+                            required />
+                            {
+                              !isValidNome ?
+                                <span class="form-label-invalid">Nome inválido</span> :
+                                ''
+                            }
                         </FormGroup>
                       </Col>
                     </Row>

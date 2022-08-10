@@ -91,6 +91,25 @@ export const getDateBr = ( date, tipo = 'datetime' ) => {
   }
 }
 
+//Recebe uma string no formato "dd/mm/aaaa hh:mm:ss"
+//e converter para um Date
+export const getDateIso = (dataBR) => {
+  const array1 = dataBR.split(" ")
+  let data = array1[0],
+      tempo = array1[1]
+
+  const array2 = data.split("/")
+  let dia = array2[0],
+      mes = array2[1],
+      ano = array2[2]
+  
+  const array3 = tempo.split(":")
+  let hora = array3[0],
+      minuto= array3[1]
+
+  return new Date(ano, mes, dia, hora, minuto, 0)
+}
+
 export const desc = ( a, b, orderBy ) => {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -129,4 +148,27 @@ export const msgInputInvalid = ( msg = 'Campo obrigatório' ) => {
 
 export const removeMultipleSpaces = string => {
   return string.trim().replace(/  +/g, ' ');
+}
+
+export const onlyNumbers = input => {
+  const re = /^[0-9\b]+$/;
+  if(input === '' || re.test(input))
+    return true
+
+  return false
+}
+
+export const isBlank = input => {
+  if(input.trim() === '')
+    return true
+
+  return false
+}
+
+export const onlyLetters = input => {
+  const re = /^[a-zA-ZáàâãéèêíïóôõöúçÁÀÂÃÉÈÍÏÓÔÕÖÚÇ\s]+$/g;
+  if(input === '' || re.test(input))
+    return true
+
+  return false
 }

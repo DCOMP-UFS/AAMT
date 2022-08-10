@@ -166,7 +166,7 @@ export const isBlank = input => {
 }
 
 export const onlyLetters = input => {
-  const re = /^[a-zA-ZáàâãéèêíïóôõöúçÁÀÂÃÉÈÍÏÓÔÕÖÚÇ]+$/g;
+  const re = /^[a-zA-ZáàâãéèêíïóôõöúçÁÀÂÃÉÈÍÏÓÔÕÖÚÇ\s]+$/g;
   if(input === '' || re.test(input))
     return true
 

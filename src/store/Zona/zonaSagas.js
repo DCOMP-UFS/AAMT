@@ -51,15 +51,21 @@ export function* createZone( action ) {
 export function* updateZone( action ) {
   try {
     const { data, status } = yield call( servico.updateRequest, action.payload );
-
     if( status === 200 ) {
       yield put( ZonaActions.updateZone( data ) );
       yield put( AppConfigActions.showNotifyToast( "Zona atualizada com sucesso", "success" ) );
     } else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao atualizar as informações da zona: " + status, "error" ) );
     }
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar a zona, favor verifique sua conexão com a internet", "error" ) );
+  } catch (err) {
+    const {alreadyExist, error} = err.response.data
+
+    yield put( ZonaActions.updateZoneFail() )
+    
+    if(alreadyExist)
+      yield put( AppConfigActions.showNotifyToast( error, "error" ) );
+    else
+     yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar a zona, favor verifique sua conexão com a internet", "error" ) );
   }
 }
 

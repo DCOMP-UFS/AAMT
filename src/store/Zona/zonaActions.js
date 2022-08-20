@@ -9,6 +9,7 @@ export const ActionTypes = {
   CREATE_ZONE_SUCCESS: "CREATE_ZONE_SUCCESS",
   UPDATE_ZONE_REQUEST: "UPDATE_ZONE_REQUEST",
   UPDATE_ZONE_SUCCESS: "UPDATE_ZONE_SUCCESS",
+  UPDATE_ZONE_FAIL: "UPDATE_ZONE_FAIL",
   CLEAR_CREATE_ZONE: "CLEAR_CREATE_ZONE",
   CLEAR_UPDATE_ZONE: "CLEAR_UPDATE_ZONE"
 }
@@ -98,6 +99,12 @@ export const updateZone = zona => {
     payload: {
       zona
     }
+  }
+}
+
+export const updateZoneFail = () => {
+  return {
+    type: ActionTypes.UPDATE_ZONE_FAIL,
   }
 }
 

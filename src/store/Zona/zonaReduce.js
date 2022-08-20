@@ -53,7 +53,6 @@ export default function Zona(state = INITIAL_STATE, action) {
       }
     }
 
-
     case ActionTypes.UPDATE_ZONE_SUCCESS: {
       let zonas = state.zonas;
       const zona = action.payload.zona;
@@ -67,6 +66,13 @@ export default function Zona(state = INITIAL_STATE, action) {
         zonas,
         updated: true,
         reload: !state.reload
+      }
+    }
+
+    case ActionTypes.UPDATE_ZONE_FAIL: {
+      return {
+        ...state,
+        updated: false
       }
     }
 

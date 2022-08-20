@@ -17,10 +17,16 @@ import { updateZoneRequest, getZoneByIdRequest } from '../../store/Zona/zonaActi
 import { FormGroup, selectDefault } from '../../styles/global';
 import { ContainerFixed, PageHeader, PageIcon } from '../../styles/util';
 
+// VALIDATIONS FUNCTIONS
+import {isBlank,onlyLetters} from '../../config/function';
+
 function EditarZona({ zona, getZoneByIdRequest, municipio_id, ...props }) {
-  const [ id ] = useState(props.match.params.id);
-  const [ ativo, setAtivo ] = useState({});
-  const [ optionAtivo ] = useState([ { value: 1, label: 'Sim' }, { value: 0, label: 'Não' } ]);
+  const [ id ]                            = useState(props.match.params.id);
+  const [ nome, setNome ]                 = useState( "" );
+  const [ isValidNome, setIsValidNome ]   = useState( true );
+  const [ ativo, setAtivo ]               = useState({});
+  const [ optionAtivo ]                   = useState([ { value: 1, label: 'Sim' }, { value: 0, label: 'Não' } ]);
+  const [ flLoading, setFlLoading ]       = useState( false );
 
   useEffect(() => {
     props.changeSidebar(4, 0);
@@ -30,15 +36,30 @@ function EditarZona({ zona, getZoneByIdRequest, municipio_id, ...props }) {
   useEffect(() => {
     if( Object.entries( zona ).length > 0 ) {
       setAtivo( { value: zona.ativo, label: zona.ativo ? 'Sim' : 'Não' } );
+      setNome(zona.nome)
     }
   }, [ zona ]);
 
+  useEffect( () => {
+    setFlLoading( false );
+    if( props.updateZone)
+      getZoneByIdRequest( id ); 
+  }, [ props.updateZone ] );
+
   function handleSubmit( e ) {
     e.preventDefault();
-
-    props.updateZoneRequest( id, {
-      ativo: ativo.value
-    });
+    if(isBlank(nome))
+      setIsValidNome(false)
+    else{
+      setIsValidNome(true)
+      setFlLoading(true);
+      props.updateZoneRequest( id, {
+        ativo: ativo.value,
+        nome: nome
+      });
+      
+      props.updateZone = true;
+    }
   }
 
   return (
@@ -66,6 +87,24 @@ function EditarZona({ zona, getZoneByIdRequest, municipio_id, ...props }) {
                     <Row>
                       <Col>
                         <FormGroup>
+                          <label htmlFor="up_nome">Nome <code>*</code></label>
+                          <input 
+                            id="up_nome" 
+                            value={nome} 
+                            className="form-control" 
+                            onChange={ (e) => (onlyLetters(e.target.value) ? setNome(e.target.value) : () => {} )} 
+                            required />
+                            {
+                              !isValidNome ?
+                                <span class="form-label-invalid">Nome inválido</span> :
+                                ''
+                            }
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        <FormGroup>
                           <label htmlFor="categoria">Ativo</label>
                           <Select
                             id="ativo"
@@ -82,6 +121,8 @@ function EditarZona({ zona, getZoneByIdRequest, municipio_id, ...props }) {
                       <ButtonSave
                         title="Salvar"
                         className="bg-info text-white"
+                        loading={ flLoading }
+                        disabled={ flLoading }
                         type="submit" />
                     </ContainerFixed>
                   </form>
@@ -102,7 +143,8 @@ function EditarZona({ zona, getZoneByIdRequest, municipio_id, ...props }) {
 const mapStateToProps = state => ({
   municipio_id: state.appConfig.usuario.municipio.id,
   zona: state.zona.zona,
-  localidades: state.localidade.localidades
+  localidades: state.localidade.localidades,
+  updateZone: state.zona.updated,
 });
 
 const mapDispatchToProps = dispatch =>

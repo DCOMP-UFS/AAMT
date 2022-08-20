@@ -34,3 +34,4 @@ require('./controllers/VistoriaController')(app);
 require('./controllers/ZonaController')(app);
 
 app.listen( process.env.PORT || 3333 );
+console.log('Servidor iniciado')

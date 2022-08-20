@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../store/Sidebar/sidebarActions';
-import { updateZoneRequest, getZoneByIdRequest } from '../../store/Zona/zonaActions';
+import { updateZoneRequest, getZoneByIdRequest, clearUpdate } from '../../store/Zona/zonaActions';
 
 // STYLES
 import { FormGroup, selectDefault } from '../../styles/global';
@@ -43,7 +43,9 @@ function EditarZona({ zona, getZoneByIdRequest, municipio_id, ...props }) {
   useEffect( () => {
     setFlLoading( false );
     if( props.updateZone)
-      getZoneByIdRequest( id ); 
+      getZoneByIdRequest( id );
+    
+    props.clearUpdate();
   }, [ props.updateZone ] );
 
   function handleSubmit( e ) {
@@ -57,8 +59,6 @@ function EditarZona({ zona, getZoneByIdRequest, municipio_id, ...props }) {
         ativo: ativo.value,
         nome: nome
       });
-      
-      props.updateZone = true;
     }
   }
 
@@ -151,7 +151,8 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators({
     changeSidebar,
     updateZoneRequest,
-    getZoneByIdRequest
+    getZoneByIdRequest,
+    clearUpdate
   }, dispatch);
 
 export default connect(

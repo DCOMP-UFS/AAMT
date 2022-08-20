@@ -50,9 +50,12 @@ getById = async (req, res) => {
 }
 
 store = async (req, res) => {
-  const { municipio_id } = req.body;
+  const { municipio_id, nome } = req.body;
   const userId = req.userId;
-  let nome = 'a';
+
+  console.log("AQUI!!!!!!")
+  console.log(municipio_id)
+  console.log(nome)
 
   const allow = await allowFunction( userId, 'manter_zona' );
   if( !allow ) {
@@ -65,33 +68,17 @@ store = async (req, res) => {
     return res.status(400).json({ error: 'Município não encontrada' });
   }
 
-  const zonas = await Zona.findAll({
-    where: {
-      municipio_id
-    },
-    order: [['createdAt', 'desc']]
-  });
+  const nomeMunicipio = municipio.dataValues.nome
 
-  if( zonas.length > 0 ) {
-    if( zonas[0].nome !== 'única' ) {
-      let lastNome = zonas[0].nome;
-  
-      let lastChar = lastNome[lastNome.length - 1];
-  
-      lastNome = lastNome.substring(0, lastNome.length - 1);
-      
-      if( lastChar.charCodeAt(0) >= 122 ) {
-        // make last char a and append a
-        lastChar = String.fromCharCode(97) + String.fromCharCode(97);
-      } else {
-        // Increase last char
-        lastChar = String.fromCharCode(lastChar.charCodeAt(0) + 1);
-      }
-  
-      nome = lastNome + lastChar;
-    }
-  }else {
-    nome = 'única';
+  if(!nome)
+    return res.status(400).json({ error: 'Por favor informe o nome da zona' });
+
+  //Verifica se ja existe zona com mesmo nome e municipio
+  if( await alreadyExist(null, nome, municipio_id) ){
+    return res.status(400).json({ 
+      error: 'Já existe uma zona de nome "'+nome+'" no municipio "'+nomeMunicipio+'"',
+      alreadyExist: true
+    });
   }
 
   const zona = await Zona.create({ 

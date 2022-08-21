@@ -73,8 +73,15 @@ export function* updateLocation( action ) {
     } else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao atualizar as informações da localidade: " + status, "error" ) );
     }
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar a localidade, favor verifique sua conexão com a internet", "error" ) );
+  } catch (err) {
+    const {alreadyExist, error} = err.response.data
+    
+    yield put(LocalidadeActions.updateLocationFail())
+
+    if(alreadyExist)
+      yield put( AppConfigActions.showNotifyToast( error, "error" ) );
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar a localidade, favor verifique a conexão", "error" ) );
   }
 }
 

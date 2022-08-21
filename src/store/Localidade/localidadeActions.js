@@ -9,6 +9,7 @@ export const ActionTypes = {
   CREATE_LOCATION_SUCCESS: "CREATE_LOCATION_SUCCESS",
   CLEAR_CREATE_LOCATION: "CLEAR_CREATE_LOCATION",
   UPDATE_LOCATION_REQUEST: "UPDATE_LOCATION_REQUEST",
+  UPDATE_LOCATION_FAIL: "UPDATE_LOCATION_FAIL",
   UPDATE_LOCATION_SUCCESS: "UPDATE_LOCATION_SUCCESS",
   CHANGE_LOCATION_EDIT_INDEX: "CHANGE_LOCATION_EDIT_INDEX",
   CLEAR_UPDATE_LOCATION: "CLEAR_UPDATE_LOCATION"
@@ -96,6 +97,12 @@ export const updateLocationRequest = ( id, body ) => {
   return {
     type: ActionTypes.UPDATE_LOCATION_REQUEST,
     payload: { id, body }
+  }
+}
+
+export const updateLocationFail = () => {
+  return {
+    type: ActionTypes.UPDATE_LOCATION_FAIL,
   }
 }
 

@@ -69,6 +69,13 @@ export default function Localidade(state = INITIAL_STATE, action) {
       }
     }
 
+    case ActionTypes.UPDATE_LOCATION_FAIL: {
+      return {
+        ...state,
+        updated: false
+      }
+    }
+
     case ActionTypes.CHANGE_LOCATION_EDIT_INDEX: {
       return {
         ...state,

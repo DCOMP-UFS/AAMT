@@ -178,7 +178,7 @@ const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props 
                   />
 
                   <ModalAddStreet data-localidade-id={ id } />
-                  <ModalUpdateStreet />
+                  <ModalUpdateStreet municipio_id={ id } />
                   <ModalDeleteStreet />
                 </Col>
               </Row>

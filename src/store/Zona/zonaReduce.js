@@ -46,13 +46,19 @@ export default function Zona(state = INITIAL_STATE, action) {
       }
     }
 
+    case ActionTypes.CREATE_ZONE_FAIL: {
+      return {
+        ...state,
+        created: false
+      }
+    }
+
     case ActionTypes.CLEAR_CREATE_ZONE: {
       return {
         ...state,
         created: null
       }
     }
-
 
     case ActionTypes.UPDATE_ZONE_SUCCESS: {
       let zonas = state.zonas;
@@ -67,6 +73,13 @@ export default function Zona(state = INITIAL_STATE, action) {
         zonas,
         updated: true,
         reload: !state.reload
+      }
+    }
+
+    case ActionTypes.UPDATE_ZONE_FAIL: {
+      return {
+        ...state,
+        updated: false
       }
     }
 

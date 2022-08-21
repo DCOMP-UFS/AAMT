@@ -7,8 +7,10 @@ export const ActionTypes = {
   GET_ZONE_BY_LOCALITY_SUCCESS: "GET_ZONE_BY_LOCALITY_SUCCESS",
   CREATE_ZONE_REQUEST: "CREATE_ZONE_REQUEST",
   CREATE_ZONE_SUCCESS: "CREATE_ZONE_SUCCESS",
+  CREATE_ZONE_FAIL: "CREATE_ZONE_FAIL",
   UPDATE_ZONE_REQUEST: "UPDATE_ZONE_REQUEST",
   UPDATE_ZONE_SUCCESS: "UPDATE_ZONE_SUCCESS",
+  UPDATE_ZONE_FAIL: "UPDATE_ZONE_FAIL",
   CLEAR_CREATE_ZONE: "CLEAR_CREATE_ZONE",
   CLEAR_UPDATE_ZONE: "CLEAR_UPDATE_ZONE"
 }
@@ -67,11 +69,12 @@ export const getZoneByLocality = zonas => {
   }
 }
 
-export const createZoneRequest = ( municipio_id ) => {
+export const createZoneRequest = ( municipio_id, nome ) => {
   return {
     type: ActionTypes.CREATE_ZONE_REQUEST,
     payload: {
-      municipio_id
+      municipio_id,
+      nome
     }
   }
 }
@@ -82,6 +85,12 @@ export const createZone = zona => {
     payload: {
       zona
     }
+  }
+}
+
+export const createZoneFail = () => {
+  return {
+    type: ActionTypes.CREATE_ZONE_FAIL,
   }
 }
 
@@ -98,6 +107,12 @@ export const updateZone = zona => {
     payload: {
       zona
     }
+  }
+}
+
+export const updateZoneFail = () => {
+  return {
+    type: ActionTypes.UPDATE_ZONE_FAIL,
   }
 }
 

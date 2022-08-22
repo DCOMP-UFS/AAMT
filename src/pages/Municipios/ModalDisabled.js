@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { updateCityRequest, clearUpdateCity } from '../../store/Municipio/municipioActions';
+import { updateCityRequest, clearUpdateCity, getMunicipiosRequest } from '../../store/Municipio/municipioActions';
 
 // STYLES
 import { Button } from '../../styles/global';
@@ -19,6 +19,7 @@ function ModalDisabled( props ) {
 
   useEffect(() => {
     if( props.updatedCity ) {
+      props.getMunicipiosRequest();
       $('#modal-desativar-municipio').modal('hide');
       setFlLoading( false );
       props.clearUpdateCity();
@@ -32,7 +33,6 @@ function ModalDisabled( props ) {
 
       props.updateCityRequest( id, { ativo: 0 } );
     });
-
     props.clearUpdateCity();
   }
 
@@ -77,7 +77,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ updateCityRequest, clearUpdateCity }, dispatch);
+  bindActionCreators({ updateCityRequest, clearUpdateCity, getMunicipiosRequest }, dispatch);
 
 export default connect(
   mapStateToProps,

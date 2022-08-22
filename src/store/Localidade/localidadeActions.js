@@ -6,6 +6,7 @@ export const ActionTypes = {
   GET_LOCATION_BY_CITY_REQUEST: "GET_LOCATION_BY_CITY_REQUEST",
   GET_LOCATION_BY_CITY_SUCCESS: "GET_LOCATION_BY_CITY_SUCCESS",
   CREATE_LOCATION_REQUEST: "CREATE_LOCATION_REQUEST",
+  CREATE_LOCATION_FAIL: "CREATE_LOCATION_FAIL",
   CREATE_LOCATION_SUCCESS: "CREATE_LOCATION_SUCCESS",
   CLEAR_CREATE_LOCATION: "CLEAR_CREATE_LOCATION",
   UPDATE_LOCATION_REQUEST: "UPDATE_LOCATION_REQUEST",
@@ -75,6 +76,12 @@ export const createLocationRequest = ( codigo, nome, categoria, municipio ) => {
       categoria,
       municipio
     }
+  }
+}
+
+export const createLocationFail = () => {
+  return {
+    type: ActionTypes.CREATE_LOCATION_FAIL,
   }
 }
 

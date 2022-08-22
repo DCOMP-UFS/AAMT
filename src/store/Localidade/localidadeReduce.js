@@ -46,6 +46,13 @@ export default function Localidade(state = INITIAL_STATE, action) {
       }
     }
 
+    case ActionTypes.CREATE_LOCATION_FAIL: {
+      return {
+        ...state,
+        created: false
+      }
+    }
+
     case ActionTypes.CLEAR_CREATE_LOCATION: {
       return {
         ...state,

@@ -110,6 +110,15 @@ export const getDateIso = (dataBR) => {
   return new Date(ano, mes, dia, hora, minuto, 0)
 }
 
+export const ordenadorData = (order) => {
+  return (a, b) => {
+    const dateA = getDateIso(a.data).getTime();
+    const dateB = getDateIso(b.data).getTime();
+    return (dateA < dateB ? -1 : 1) * (order === "desc" ? 1 : -1);
+  };
+
+}
+
 export const desc = ( a, b, orderBy ) => {
   if (b[orderBy] < a[orderBy]) {
     return -1;

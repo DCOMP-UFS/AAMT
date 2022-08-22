@@ -25,7 +25,7 @@ import { GlobalStyle } from './styles';
 import { PageIcon, PageHeader } from '../../styles/util';
 
 //UTILIES FUNCTIONS
-import { getDateIso } from '../../config/function';
+import { getDateIso, ordenadorData } from '../../config/function';
 
 const columns = [
   {
@@ -46,27 +46,14 @@ const columns = [
     name:  "Criado em",
     label: "Criado em",
     options: {
-      sortCompare: (order) => {
-        return (a, b) => {
-          const dateA = getDateIso(a.data).getTime();
-          const dateB = getDateIso(b.data).getTime();
-          return (dateA < dateB ? -1 : 1) * (order === "desc" ? 1 : -1);
-        };
-        
-      }
+      sortCompare: ordenadorData
     }
   },
   {
     name:  "Atualizado em",
     label: "Atualizado em",
     options: {
-      sortCompare: (order) => {
-        return (a, b) => {
-          const dateA = getDateIso(a.data).getTime();
-          const dateB = getDateIso(b.data).getTime();
-          return (dateA < dateB ? -1 : 1) * (order === "desc" ? 1 : -1);
-        };   
-      }
+      sortCompare: ordenadorData
     }
   },
   "Ativo"

@@ -53,10 +53,6 @@ store = async (req, res) => {
   const { municipio_id, nome } = req.body;
   const userId = req.userId;
 
-  console.log("AQUI!!!!!!")
-  console.log(municipio_id)
-  console.log(nome)
-
   const allow = await allowFunction( userId, 'manter_zona' );
   if( !allow ) {
     return res.status(403).json({ error: 'Acesso negado' });
@@ -74,7 +70,7 @@ store = async (req, res) => {
     return res.status(400).json({ error: 'Por favor informe o nome da zona' });
 
   //Verifica se ja existe zona com mesmo nome e municipio
-  if( await alreadyExist(null, nome, municipio_id) ){
+  if( await zoneAlreadyExist(null, nome, municipio_id) ){
     return res.status(400).json({ 
       error: 'Já existe uma zona de nome "'+nome+'" no municipio "'+nomeMunicipio+'"',
       alreadyExist: true
@@ -138,7 +134,7 @@ update = async (req, res) => {
   }
 
   //Verifica se ja existe zona com mesmo nome e municipio
-  if( await alreadyExist(id, nomeZona, idMunicipio) ){
+  if( await zoneAlreadyExist(id, nomeZona, idMunicipio) ){
     return res.status(400).json({ 
       error: 'Já existe uma zona de nome "'+nomeZona+'" no municipio "'+nomeMunicipio+'"',
       alreadyExist: true
@@ -181,46 +177,25 @@ update = async (req, res) => {
 //Para criação de uma zona, essa função deve receber o nome e o id do municipio
 //Para a alteração de zona, essa função tambem deve receber o id da zona alterada, pois é necessario desconsidera-la
 //na verificação de existencia
-alreadyExist = async (id , nome, municipio_id) => {
+async function zoneAlreadyExist(id , nome, municipio_id) {
   var query = null
   var variaveis = null
+  var filtro = {nome: nome}
 
-  //Query para quando o metodo 'update' chama esta função
-  if(id){
-    query =  'SELECT ' +
-              'z.* ' +
-            'FROM ' +
-              '"zonas" AS z ' +
-              'JOIN "municipios" AS m ON( z.municipio_id = m.id ) ' +
-            'WHERE ' +
-              'z.id != $1 AND z.nome = $2 AND m.id = $3 AND z.ativo = 1'
-
-    variaveis = [id, nome, municipio_id]
-
-  //Query para quando o metodo 'store' chama esta função
-  } else {
-    query = 'SELECT ' +
-              'z.* ' +
-            'FROM ' +
-              '"zonas" AS z ' +
-              'JOIN "municipios" AS m ON( z.municipio_id = m.id ) ' +
-            'WHERE ' +
-              'z.nome = $1 AND m.id = $2 AND z.ativo = 1 '
-
-    variaveis = [nome, municipio_id]
-  }
-
-  const zona = await Zona.sequelize.query(
-    query, 
-    {
-      bind: variaveis,
-      //logging: console.log,
-      plain: true,
-      model: Zona,
-      mapToModel: true
-    }
-  );
+  if(id)
+    filtro.id = {[Op.ne]: id}
   
+  const zona = await Zona.findOne({
+    include: {
+      association: 'municipio',
+      where: {
+        id: municipio_id,
+      },
+    },
+    where:{
+      ...filtro
+    }
+  })
   
   if(zona) {
     return true;
@@ -236,7 +211,6 @@ router.use(authMiddleware);
 router.get('/:id', getById);
 router.get('/:municipio_id/municipios', getByCityId);
 router.post('/', store);
-router.put('/exist', alreadyExist);
 router.put('/:id', update);
 
 

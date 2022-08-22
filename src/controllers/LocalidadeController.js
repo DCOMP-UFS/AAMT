@@ -3,6 +3,7 @@ const authMiddleware = require('../middlewares/auth');
 const Localidade = require('../models/Localidade');
 const Categoria = require('../models/Categoria');
 const Municipio = require('../models/Municipio');
+const { Op } = require("sequelize");
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
@@ -111,6 +112,15 @@ store = async (req, res) => {
     return res.status(400).json({ error: 'Município não encontrada' });
   }
 
+  const nomeMunicipio = municipio.dataValues.nome
+
+  if( await localAlreadyExist(null, nome, municipio_id) ){
+    return res.status(400).json({ 
+      error: 'Já existe uma localidade de nome "'+nome+'" no municipio "'+nomeMunicipio+'"',
+      alreadyExist: true
+    });
+  }
+
   const localidade = await Localidade.create({ 
     nome,
     codigo,
@@ -135,17 +145,28 @@ store = async (req, res) => {
 update = async (req, res) => {
   const { id } = req.params;
   const userId = req.userId;
-  const { categoria_id, municipio_id } = req.body;
+  const { categoria_id, municipio_id, nome } = req.body;
+
+  var [nomeMunicipio, idMunicipio, nomeLocal] = [null, municipio_id, nome]
 
   const allow = await allowFunction( req.userId, 'manter_localidade' );
   if( !allow ) {
     return res.status(403).json({ error: 'Acesso negado' });
   }
 
-  const localidade = await Localidade.findByPk( id );
+  const localidade = await Localidade.findByPk( id, {
+    include: { association: 'municipio', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } },
+  });
+
   if( !localidade ) {
     return res.status(400).json({ error: 'Localidade não encontrada' });
   }
+
+  nomeMunicipio = localidade.dataValues.municipio.nome
+  idMunicipio   = localidade.dataValues.municipio.id
+
+  if(!nomeLocal)
+    nomeLocal = localidade.dataValues.nome
 
   if( categoria_id ) {
     const categoria = await Categoria.findByPk( categoria_id );
@@ -159,6 +180,17 @@ update = async (req, res) => {
     if( !municipio ) {
       return res.status(400).json({ error: 'Município não encontrada' });
     }
+    nomeMunicipio = municipio.dataValues.nome
+    idMunicipio   = municipio_id
+  }
+
+  const teste = await localAlreadyExist(id, nomeLocal, idMunicipio) 
+
+  if(teste){
+    return res.status(400).json({ 
+      error: 'Já existe uma localidade de nome "'+nomeLocal+'" no municipio "'+nomeMunicipio+'"',
+      alreadyExist: true
+    });
   }
 
   req.body.id = undefined;
@@ -196,6 +228,46 @@ update = async (req, res) => {
   });
 
   return res.json( result );
+}
+
+async function localAlreadyExist(id , nome, municipio_id) {
+  var query = null
+  var variaveis = null
+  var filtro = {nome: nome}
+
+  if(id)
+    filtro.id = {[Op.ne]: id}
+ 
+  const localidade = await Localidade.findOne({
+    include: {
+      association: 'municipio',
+      where: {
+        id: municipio_id,
+      },
+    },
+    where:{
+      ...filtro
+    }
+  })
+
+  /* const localidade = await Localidade.sequelize.query(
+    query, 
+    {
+      bind: variaveis,
+      //logging: console.log,
+      plain: true,
+      model: Localidade,
+      mapToModel: true
+    }
+  ); */
+  
+  
+  if(localidade) {
+    return true;
+  }
+
+  return false;
+
 }
 
 const router = express.Router();

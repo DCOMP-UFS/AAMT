@@ -11,6 +11,7 @@ import ModalDeleteStreet from './ModalDeleteStreet';
 import ButtonClose from '../../components/ButtonClose';
 import $ from 'jquery';
 import { FaMapSigns } from 'react-icons/fa';
+import SelectWrap from '../../components/SelectWrap'
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -18,7 +19,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../store/Sidebar/sidebarActions';
-import { getLocationByIdRequest, updateLocationRequest } from '../../store/Localidade/localidadeActions';
+import { getLocationByIdRequest, updateLocationRequest, clearUpdate } from '../../store/Localidade/localidadeActions';
 import { getCategoryRequest } from '../../store/Categoria/categoriaActions';
 import { getStreetByLocalityRequest, changeStreetSelect } from '../../store/Rua/ruaActions';
 
@@ -34,14 +35,19 @@ import {
 import { FormGroup, selectDefault, LiEmpty } from '../../styles/global';
 import { ContainerFixed, PageHeader, PageIcon } from '../../styles/util';
 
+// VALIDATIONS FUNCTIONS
+import {onlyNumbers,isBlank,onlyLetters} from '../../config/function';
+
 const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props }) => {
-  const [ id ] = useState(props.match.params.id);
-  const [ codigo, setCodigo ] = useState(null);
-  const [ nome, setNome ] = useState("");
-  const [ categoria, setCategoria ] = useState({});
-  const [ ativo, setAtivo ] = useState({});
-  const [ optionCategoria, setOptionCategoria ] = useState([]);
-  const [ optionAtivo ] = useState([ { value: 1, label: 'Sim' }, { value: 0, label: 'Não' } ]);
+  const [ id ]                                    = useState(props.match.params.id);
+  const [ codigo, setCodigo ]                     = useState(null);
+  const [ nome, setNome ]                         = useState("");
+  const [ isValidNome, setIsValidNome ]           = useState( true );
+  const [ categoria, setCategoria ]               = useState({});
+  const [ ativo, setAtivo ]                       = useState({});
+  const [ optionCategoria, setOptionCategoria ]   = useState([]);
+  const [ optionAtivo ]                           = useState([ { value: 1, label: 'Sim' }, { value: 0, label: 'Não' } ]);
+  const [ isLoading, setIsLoading ]               = useState( false );
 
   useEffect(() => {
     props.changeSidebar( "localidade" );
@@ -65,6 +71,15 @@ const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props 
     }
   }, [ localidade ]);
 
+  useEffect( () => {
+    setIsLoading(false);
+    if( props.updatedLocalidade){
+      getLocationByIdRequest( id );
+      props.getStreetByLocalityRequest( id );
+    }
+    props.clearUpdate();
+  }, [ props.updatedLocalidade ] );
+
   function openModalUpdate( index ) {
     props.changeStreetSelect( index );
     $('#modal-editar-rua').modal('show');
@@ -77,13 +92,18 @@ const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props 
 
   function handleSubmit( e ) {
     e.preventDefault();
-
-    props.updateLocationRequest( id, {
-      codigo,
-      nome,
-      categoria_id: categoria.value,
-      ativo: ativo.value
-    });
+    if(isBlank(nome))
+      setIsValidNome(false)
+    else{
+      setIsValidNome(true)
+      setIsLoading(true);
+      props.updateLocationRequest( id, {
+        codigo,
+        nome,
+        categoria_id: categoria.value,
+        ativo: ativo.value
+      });
+    }
   }
 
   return (
@@ -112,13 +132,18 @@ const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props 
                       <Col sm='6'>
                         <FormGroup>
                           <label htmlFor="codigo">Código</label>
-                          <input id="codigo" value={codigo ? codigo : ""} className="form-control" onChange={ e => setCodigo(e.target.value) } />
+                          <input 
+                            id="codigo" 
+                            value={codigo ? codigo : ""} 
+                            className="form-control" 
+                            onChange={ (e) => (onlyNumbers(e.target.value) ? setCodigo(e.target.value) : () => {} )} 
+                          />
                         </FormGroup>
                       </Col>
                       <Col sm='6'>
                         <FormGroup>
                           <label htmlFor="categoria">Categoria <code>*</code></label>
-                          <Select
+                          <SelectWrap
                             id="categoria"
                             value={ categoria }
                             styles={ selectDefault }
@@ -132,7 +157,17 @@ const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props 
                       <Col>
                         <FormGroup>
                           <label htmlFor="nome">Nome <code>*</code></label>
-                          <input id="nome" value={nome} className="form-control" onChange={ e => setNome(e.target.value) } required />
+                          <input 
+                            id="nome" 
+                            value={nome} 
+                            className="form-control" 
+                            onChange={ (e) => (onlyLetters(e.target.value) ? setNome(e.target.value) : () => {} )} 
+                            required />
+                            {
+                              !isValidNome ?
+                                <span class="form-label-invalid">Nome inválido</span> :
+                                ''
+                            }
                         </FormGroup>
                       </Col>
                     </Row>
@@ -156,6 +191,8 @@ const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props 
                       <ButtonSave
                         title="Salvar"
                         className="bg-info text-white"
+                        loading={ isLoading }
+                        disabled={ isLoading }
                         type="submit" />
                     </ContainerFixed>
                   </form>
@@ -178,7 +215,7 @@ const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props 
                   />
 
                   <ModalAddStreet data-localidade-id={ id } />
-                  <ModalUpdateStreet />
+                  <ModalUpdateStreet municipio_id={ id } />
                   <ModalDeleteStreet />
                 </Col>
               </Row>
@@ -235,7 +272,8 @@ const mapStateToProps = state => ({
   categorias: state.categoria.categorias,
   ruas: state.rua.ruas,
   created: state.rua.created,
-  updatedStreet: state.rua.updated
+  updatedStreet: state.rua.updated,
+  updatedLocalidade: state.localidade.updated,
 });
 
 const mapDispatchToProps = dispatch =>
@@ -244,7 +282,8 @@ const mapDispatchToProps = dispatch =>
     getCategoryRequest,
     updateLocationRequest,
     getStreetByLocalityRequest,
-    changeStreetSelect
+    changeStreetSelect,
+    clearUpdate
   }, dispatch);
 
 export default connect(

@@ -8,6 +8,7 @@ import Table, { ButtonAdd, ButtonDesabled } from '../../components/Table';
 import ModalAdd from './ModalAdd';
 import ModalDisabled from './ModalDisabled';
 import { FaMapSigns } from 'react-icons/fa';
+import $ from "jquery";
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -103,9 +104,13 @@ const Localidades = ({ municipio_id, localidades, municipio, ...props }) => {
       props.changeTableSelected('tableLocation', data);
       return (
         <ButtonDesabled
+          onClick={() => {
+            $("#modal-desativar-localidade").modal("show");
+          }}
           title="Desabilidade bairro/localidade"
           toggle="modal"
-          target="#modal-desativar-localidade" />
+          target="#modal-desativar-localidade"
+        />
       );
     },
     setRowProps: (row) => {

@@ -161,6 +161,9 @@ function ModalAdd( { createCityRequest, createdCity, show, handleClose, ...props
     <Modal id="modal-novo-municipio" onHide={ handleClose() } title="Cadastrar Município" size='lg'>
       <form onSubmit={ handleCadastrar }>
         <ModalBody>
+        <p className="text-description">
+          Atenção os campos com <code>*</code> são obrigatórios
+        </p>
         <Row>
             <Col sm="6">
               <FormGroup>

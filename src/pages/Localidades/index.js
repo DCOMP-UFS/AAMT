@@ -8,6 +8,7 @@ import Table, { ButtonAdd, ButtonDesabled } from '../../components/Table';
 import ModalAdd from './ModalAdd';
 import ModalDisabled from './ModalDisabled';
 import { FaMapSigns } from 'react-icons/fa';
+import $ from "jquery";
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -23,6 +24,8 @@ import { getLocationRequest, getLocationByCityRequest, changeIndex } from '../..
 import { GlobalStyle } from './styles';
 import { PageHeader, PageIcon } from '../../styles/util';
 
+import { ordenadorData } from '../../config/function';
+
 const columns = [
   {
     name: "index",
@@ -30,6 +33,7 @@ const columns = [
     options: {
       filter: false,
       display: 'false',
+      viewColumns: false,
       customBodyRender: (value, tableMeta, updateValue) => {
         return (
           <Typography data-id={ value.id }>{ value.index }</Typography>
@@ -54,7 +58,8 @@ const columns = [
     label: "Criado em",
     options: {
      display: 'false',
-     filter: false
+     filter: false,
+     sortCompare: ordenadorData
     }
   },
   {
@@ -62,7 +67,8 @@ const columns = [
     label: "Atualizado em",
     options: {
      display: 'false',
-     filter: false
+     filter: false,
+     sortCompare: ordenadorData
     }
   },
   {
@@ -90,6 +96,7 @@ const columns = [
 
 const Localidades = ({ municipio_id, localidades, municipio, ...props }) => {
   const [ rows, setRows ] = useState([]);
+  
   const options = {
     customToolbar: () => {
       return (
@@ -103,6 +110,9 @@ const Localidades = ({ municipio_id, localidades, municipio, ...props }) => {
       props.changeTableSelected('tableLocation', data);
       return (
         <ButtonDesabled
+          onClick={() => {
+            $("#modal-desativar-localidade").modal("show");
+          }}
           title="Desabilidade bairro/localidade"
           toggle="modal"
           target="#modal-desativar-localidade" />

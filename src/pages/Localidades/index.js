@@ -24,6 +24,8 @@ import { getLocationRequest, getLocationByCityRequest, changeIndex } from '../..
 import { GlobalStyle } from './styles';
 import { PageHeader, PageIcon } from '../../styles/util';
 
+import { ordenadorData } from '../../config/function';
+
 const columns = [
   {
     name: "index",
@@ -31,6 +33,7 @@ const columns = [
     options: {
       filter: false,
       display: 'false',
+      viewColumns: false,
       customBodyRender: (value, tableMeta, updateValue) => {
         return (
           <Typography data-id={ value.id }>{ value.index }</Typography>
@@ -55,7 +58,8 @@ const columns = [
     label: "Criado em",
     options: {
      display: 'false',
-     filter: false
+     filter: false,
+     sortCompare: ordenadorData
     }
   },
   {
@@ -63,7 +67,8 @@ const columns = [
     label: "Atualizado em",
     options: {
      display: 'false',
-     filter: false
+     filter: false,
+     sortCompare: ordenadorData
     }
   },
   {
@@ -91,6 +96,7 @@ const columns = [
 
 const Localidades = ({ municipio_id, localidades, municipio, ...props }) => {
   const [ rows, setRows ] = useState([]);
+  
   const options = {
     customToolbar: () => {
       return (

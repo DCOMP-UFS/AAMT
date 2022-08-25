@@ -64,6 +64,9 @@ function ModalAdd({ createZoneRequest, created, municipio_id, ...props }) {
     <Modal id="modal-novo-zona" title="Cadastrar Zona">
       <form onSubmit={ handleCadastrar }>
         <ModalBody>
+        <p className="text-description">
+          Atenção os campos com <code>*</code> são obrigatórios
+        </p>
         <Row>
             <Col>
               <FormGroup>

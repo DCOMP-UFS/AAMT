@@ -3,21 +3,27 @@ import React, { useState, useEffect } from 'react';
 import Modal, { ModalBody, ModalFooter } from '../../components/Modal';
 import { Row, Col } from 'react-bootstrap';
 import $ from 'jquery';
+import ButtonSaveModal from '../../components/ButtonSaveModal';
 
 // REDUX
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { createStreetRequest } from '../../store/Rua/ruaActions';
+import { createStreetRequest, clearCreate } from '../../store/Rua/ruaActions';
 
 // STYLES
 import { ContainerArrow } from '../../styles/util';
 import { Button, FormGroup } from '../../styles/global';
 
+// VALIDATIONS FUNCTIONS
+import { isBlank, onlyLetters, onlyNumbers } from '../../config/function';
+
 function ModalAddStreet({ created, ...props }) {
-  const [ logradouro, setLogradouro ] = useState("");
-  const [ cep, setCep ] = useState("");
+  const [ logradouro, setLogradouro ]                    = useState("");
+  const [ isValidLogradouro, setIsValidLogradouro]       = useState( true );
+  const [ cep, setCep ]                                  = useState("");
+  const [ flLoading, setFlLoading ]                      = useState( false );
 
   useEffect(() => {
     if( created ) {
@@ -25,11 +31,19 @@ function ModalAddStreet({ created, ...props }) {
       setLogradouro("");
       setCep("");
     }
+    setFlLoading(false)
+    props.clearCreate()
   }, [ created ]);
 
   function handleSubmit( e ) {
     e.preventDefault();
-    props.createStreetRequest( logradouro, cep, props['data-localidade-id'] );
+    if(isBlank(logradouro))
+      setIsValidLogradouro(false)
+    else{
+      setIsValidLogradouro(true)
+      setFlLoading(true)
+      props.createStreetRequest( logradouro, cep, props['data-localidade-id'] );
+    }
   }
 
   return(
@@ -61,6 +75,11 @@ function ModalAddStreet({ created, ...props }) {
                   onChange={ e => setLogradouro(e.target.value) }
                   required
                 />
+                {
+                    !isValidLogradouro ?
+                      <span class="form-label-invalid">Logradouro inválido</span> :
+                      ''
+                  }
               </FormGroup>
             </Col>
           </Row>
@@ -68,8 +87,14 @@ function ModalAddStreet({ created, ...props }) {
         <ModalFooter>
           <ContainerArrow className="justify-content-end">
             <div>
-              <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
-              <Button type="submit">Salvar</Button>
+              <Button 
+                type="button" 
+                className="secondary" 
+                data-dismiss="modal" 
+                disabled={ flLoading }>
+                  Cancelar
+              </Button>
+              <ButtonSaveModal title="Salvar" loading={ flLoading } disabled={ flLoading } type="submit" />
             </div>
           </ContainerArrow>
         </ModalFooter>
@@ -83,7 +108,7 @@ const mapStateToProps = state => ({
  });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ createStreetRequest }, dispatch);
+  bindActionCreators({ createStreetRequest, clearCreate }, dispatch);
 
 export default connect(
   mapStateToProps,

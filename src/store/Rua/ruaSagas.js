@@ -55,8 +55,22 @@ export function* createStreet( action ) {
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao criar a rua: " + status, "error" ) );
     }
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao criar a rua, favor verifique sua conexão com a internet", "error" ) );
+  } catch (err) {
+
+    yield put(RuaActions.createStreetFail())
+    if(err.response){
+      const {sameName, sameCEP} = err.response.data
+
+      if(sameName)
+        yield put( AppConfigActions.showNotifyToast( "Já existe uma rua com este nome no bairro", "error" ) );
+      if(sameCEP)
+        yield put( AppConfigActions.showNotifyToast( "Já existe uma rua com este CEP no bairro", "error" ) );
+      if(!sameCEP && !sameName)
+        yield put( AppConfigActions.showNotifyToast( "Erro ao criar a rua, entre em contato com o suporte", "error" ) );
+    }
+    else{
+      yield put( AppConfigActions.showNotifyToast( "Erro ao criar a rua, favor verifique sua conexão com a internet", "error" ) );
+    }
   }
 }
 

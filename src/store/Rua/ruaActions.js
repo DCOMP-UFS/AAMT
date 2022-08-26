@@ -5,6 +5,8 @@ export const ActionTypes = {
   GET_STREET_BY_LOCALITY_SUCCESS: "GET_STREET_BY_LOCALITY_SUCCESS",
   CREATE_STREET_REQUEST: "CREATE_STREET_REQUEST",
   CREATE_STREET_SUCCESS: "CREATE_STREET_SUCCESS",
+  CREATE_STREET_FAIL: "CREATE_STREET_FAIL",
+  CLEAR_CREATE_STREET: "CLEAR_CREATE_STREET",
   CHANGE_STREET_SELECT: "CHANGE_STREET_SELECT",
   UPDATE_STREET_REQUEST: "UPDATE_STREET_REQUEST",
   UPDATE_STREET_SUCCESS: "UPDATE_STREET_SUCCESS",
@@ -117,6 +119,19 @@ export const createStreet = rua => {
     }
   }
 }
+
+export const createStreetFail = () => {
+  return {
+    type: ActionTypes.CREATE_STREET_FAIL,
+  }
+}
+
+export const clearCreate = () => {
+  return {
+    type: ActionTypes.CLEAR_CREATE_STREET
+  }
+}
+
 
 export const changeStreetSelect = index => {
   return {

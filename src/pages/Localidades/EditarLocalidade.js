@@ -39,15 +39,17 @@ import { ContainerFixed, PageHeader, PageIcon } from '../../styles/util';
 import {onlyNumbers,isBlank,onlyLetters} from '../../config/function';
 
 const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props }) => {
-  const [ id ]                                    = useState(props.match.params.id);
-  const [ codigo, setCodigo ]                     = useState(null);
-  const [ nome, setNome ]                         = useState("");
-  const [ isValidNome, setIsValidNome ]           = useState( true );
-  const [ categoria, setCategoria ]               = useState({});
-  const [ ativo, setAtivo ]                       = useState({});
-  const [ optionCategoria, setOptionCategoria ]   = useState([]);
-  const [ optionAtivo ]                           = useState([ { value: 1, label: 'Sim' }, { value: 0, label: 'Não' } ]);
-  const [ isLoading, setIsLoading ]               = useState( false );
+  const [ id ]                                                 = useState(props.match.params.id);
+  const [ codigo, setCodigo ]                                  = useState(null);
+  const [ nome, setNome ]                                      = useState("");
+  const [ isValidNome, setIsValidNome ]                        = useState( true );
+  const [ categoria, setCategoria ]                            = useState({});
+  const [ ativo, setAtivo ]                                    = useState({});
+  const [ optionCategoria, setOptionCategoria ]                = useState([]);
+  const [ optionAtivo ]                                        = useState([ { value: 1, label: 'Sim' }, { value: 0, label: 'Não' } ]);
+  const [ isLoading, setIsLoading ]                            = useState( false );
+  const [ showtModalAddStreet, setShowModalAddStreet ]         = useState( false );
+  const [ showtModalUpdatrtreet, setShowModalUpdateStreet ]    =  useState( false );
 
   useEffect(() => {
     props.changeSidebar( "localidade" );
@@ -205,6 +207,7 @@ const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props 
                       title="Cadastrar Rua"
                       data-toggle="modal"
                       data-target="#modal-novo-rua"
+                      onClick={() => {setShowModalAddStreet(true)}}
                     />
                   </h4>
 
@@ -214,7 +217,11 @@ const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props 
                     openModalDelete={ openModalDelete }
                   />
 
-                  <ModalAddStreet data-localidade-id={ id } />
+                  <ModalAddStreet 
+                    data-localidade-id={ id } 
+                    show={showtModalAddStreet}
+                    handleClose={()=>{setShowModalAddStreet(false)}}
+                    />
                   <ModalUpdateStreet municipio_id={ id } />
                   <ModalDeleteStreet />
                 </Col>

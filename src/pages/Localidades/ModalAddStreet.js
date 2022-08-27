@@ -4,6 +4,7 @@ import Modal, { ModalBody, ModalFooter } from '../../components/Modal';
 import { Row, Col } from 'react-bootstrap';
 import $ from 'jquery';
 import ButtonSaveModal from '../../components/ButtonSaveModal';
+import MaskedInput from '../../components/MaskedInput'
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -23,6 +24,7 @@ function ModalAddStreet({ created, ...props }) {
   const [ logradouro, setLogradouro ]                    = useState("");
   const [ isValidLogradouro, setIsValidLogradouro]       = useState( true );
   const [ cep, setCep ]                                  = useState("");
+  const [ isValidCep, setIsValidCep]                     = useState( true );
   const [ flLoading, setFlLoading ]                      = useState( false );
 
   useEffect(() => {
@@ -37,9 +39,14 @@ function ModalAddStreet({ created, ...props }) {
 
   function handleSubmit( e ) {
     e.preventDefault();
-    if(isBlank(logradouro))
+    const cepInvalid = (cep.length > 0 && cep.length < 8)
+    const logInvalid = isBlank(logradouro)
+    if(cepInvalid)
+      setIsValidCep(false)
+    if(logInvalid)
       setIsValidLogradouro(false)
-    else{
+    if(!cepInvalid && !logInvalid){
+      setIsValidCep(true)
       setIsValidLogradouro(true)
       setFlLoading(true)
       props.createStreetRequest( logradouro, cep, props['data-localidade-id'] );
@@ -54,13 +61,19 @@ function ModalAddStreet({ created, ...props }) {
             <Col>
               <FormGroup>
                 <label htmlFor="cep">CEP <code>*</code></label>
-                <input
+                <MaskedInput
                   id="cep"
-                  value={ cep }
                   className="form-control"
+                  type="cep"
+                  value={ cep }
                   onChange={ e => setCep(e.target.value) }
                   required
                 />
+                {
+                    !isValidCep ?
+                      <span class="form-label-invalid">CEP inválido</span> :
+                      ''
+                }
               </FormGroup>
             </Col>
           </Row>
@@ -79,7 +92,7 @@ function ModalAddStreet({ created, ...props }) {
                     !isValidLogradouro ?
                       <span class="form-label-invalid">Logradouro inválido</span> :
                       ''
-                  }
+                }
               </FormGroup>
             </Col>
           </Row>

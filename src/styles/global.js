@@ -842,14 +842,8 @@ export const FormGroup = styled.div`
       border: 1px solid ${ Color.border_input };
     }
   }
-  .select-wrapper-container,
-  .input-mask-container{
-    position: relative;
-    .select-wrapper{
-      position: relative;
-      z-index: 1;
-    }
-    .input-required{
+
+  .input-required{
       position: absolute;
       border: 0;
       color: transparent;
@@ -860,6 +854,17 @@ export const FormGroup = styled.div`
       height: 100%;
       z-index: 0;
     }
+
+  .select-wrapper-container,{
+    position: relative;
+    .select-wrapper{
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  .input-mask-container{
+    position: relative;
     .form-control{
       border: 1px solid ${ Color.border_input };
       font-family: "ubuntu-regular", sans-serif!important;
@@ -879,7 +884,7 @@ export const FormGroup = styled.div`
       box-sizing: inherit!important;
       position: relative;
       z-index: 1;
+      
     }
-    
   }
 `;

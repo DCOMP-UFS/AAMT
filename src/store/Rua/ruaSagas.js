@@ -62,9 +62,9 @@ export function* createStreet( action ) {
       const {sameName, sameCEP} = err.response.data
 
       if(sameName)
-        yield put( AppConfigActions.showNotifyToast( "Já existe uma rua com este nome no bairro", "error" ) );
+        yield put( AppConfigActions.showNotifyToast( "Já existe uma rua com este nome na localidade", "error" ) );
       if(sameCEP)
-        yield put( AppConfigActions.showNotifyToast( "Já existe uma rua com este CEP no bairro", "error" ) );
+        yield put( AppConfigActions.showNotifyToast( "Já existe uma rua com este CEP", "error" ) );
       if(!sameCEP && !sameName)
         yield put( AppConfigActions.showNotifyToast( "Erro ao criar a rua, entre em contato com o suporte", "error" ) );
     }
@@ -84,8 +84,22 @@ export function* updateStreet( action ) {
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao atualizada a rua: " + status, "error" ) );
     }
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao atualizada a rua, favor verifique sua conexão com a internet", "error" ) );
+  } catch (err) {
+
+    yield put(RuaActions.updateStreetFail())
+    if(err.response){
+      const {sameName, sameCEP} = err.response.data
+
+      if(sameName)
+        yield put( AppConfigActions.showNotifyToast( "Já existe uma rua com este nome na localidade", "error" ) );
+      if(sameCEP)
+        yield put( AppConfigActions.showNotifyToast( "Já existe uma rua com este CEP", "error" ) );
+      if(!sameCEP && !sameName)
+        yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar a rua, entre em contato com o suporte", "error" ) );
+    }
+    else{
+      yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar a rua, favor verifique sua conexão com a internet", "error" ) );
+    }
   }
 }
 

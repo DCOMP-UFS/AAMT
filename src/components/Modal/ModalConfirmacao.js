@@ -17,7 +17,7 @@ import { Button } from '../../styles/global';
  */
 const ModalConfirmacao = ( { title, show, handleClose, confimed, children, ...props } ) => {
   return(
-    <Modal show={ show } onHide={ handleClose } { ...props }>
+    <Modal show={ show } onHide={ handleClose }  backdrop="static" keyboard={false} { ...props }>
       <Modal.Header closeButton>
         <Modal.Title>{ title ? title : 'Confirmação' }</Modal.Title>
       </Modal.Header>

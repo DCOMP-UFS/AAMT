@@ -18,7 +18,7 @@ import { ContainerArrow } from '../../styles/util';
 import { Button, FormGroup } from '../../styles/global';
 
 // VALIDATIONS FUNCTIONS
-import { isBlank, onlyLetters, onlyNumbers } from '../../config/function';
+import { isBlank, onlyLetters} from '../../config/function';
 
 function ModalAddStreet({ created, show, handleClose, ...props }) {
   const [ logradouro, setLogradouro ]                    = useState("");
@@ -44,8 +44,6 @@ function ModalAddStreet({ created, show, handleClose, ...props }) {
   useEffect(() => {
     if( created ) {
       $('#modal-novo-rua').modal('hide');
-      setLogradouro("");
-      setCep("");
     }
     setFlLoading(false)
     props.clearCreate()
@@ -74,9 +72,12 @@ function ModalAddStreet({ created, show, handleClose, ...props }) {
   }
 
   return(
-    <Modal id="modal-novo-rua" title="Editar Rua">
+    <Modal id="modal-novo-rua" title="Cadastrar Rua">
       <form onSubmit={ handleSubmit }>
         <ModalBody>
+          <p className="text-description">
+            Atenção os campos com <code>*</code> são obrigatórios
+          </p>
           <Row>
             <Col>
               <FormGroup>

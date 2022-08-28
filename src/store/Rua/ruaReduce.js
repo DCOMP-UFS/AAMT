@@ -65,6 +65,20 @@ export default function Quarteirao( state = INITIAL_STATE, action ) {
       }
     }
 
+    case ActionTypes.UPDATE_STREET_FAIL: {
+      return {
+        ...state,
+        updated: false
+      }
+    }
+
+    case ActionTypes.CLEAR_UPDATE_STREET: {
+      return {
+        ...state,
+        updated: null
+      }
+    }
+
     case ActionTypes.DELETE_STREET_SUCCESS: {
       let ruas = state.ruas;
 

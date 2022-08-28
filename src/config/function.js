@@ -181,3 +181,9 @@ export const onlyLetters = input => {
 
   return false
 }
+export const maskCep = string => {
+  const parte1 = string.substring(0,5);
+  const parte2 = string.substring(5,8);
+
+  return parte1 +"-"+ parte2
+}

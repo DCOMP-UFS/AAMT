@@ -10,6 +10,8 @@ export const ActionTypes = {
   CHANGE_STREET_SELECT: "CHANGE_STREET_SELECT",
   UPDATE_STREET_REQUEST: "UPDATE_STREET_REQUEST",
   UPDATE_STREET_SUCCESS: "UPDATE_STREET_SUCCESS",
+  UPDATE_STREET_FAIL : "UPDATE_STREET_FAIL",
+  CLEAR_UPDATE_STREET : "CLEAR_UPDATE_STREET",
   DELETE_STREET_REQUEST: "DELETE_STREET_REQUEST",
   DELETE_STREET_SUCCESS: "DELETE_STREET_SUCCESS"
 }
@@ -108,6 +110,18 @@ export const updateStreet = rua => {
     payload: {
       rua
     }
+  }
+}
+
+export const updateStreetFail = () => {
+  return {
+    type: ActionTypes.UPDATE_STREET_FAIL,
+  }
+}
+
+export const clearUpdate = () => {
+  return {
+    type: ActionTypes.CLEAR_UPDATE_STREET
   }
 }
 

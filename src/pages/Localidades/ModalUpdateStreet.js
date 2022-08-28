@@ -4,25 +4,35 @@ import Modal, { ModalBody, ModalFooter } from '../../components/Modal';
 import { Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
 import $ from 'jquery';
+import ButtonSaveModal from '../../components/ButtonSaveModal';
+import MaskedInput from '../../components/MaskedInput'
+import SelectWrap from '../../components/SelectWrap'
 
 // REDUX
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { updateStreetRequest } from '../../store/Rua/ruaActions';
+import { updateStreetRequest, clearUpdate } from '../../store/Rua/ruaActions';
 import { getLocationByCityRequest } from '../../store/Localidade/localidadeActions';
 
 // STYLES
 import { ContainerArrow } from '../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../styles/global';
 
-function ModalUpdateStreet({ updated, index, ...props }) {
-  const [ id, setId ] = useState( null );
-  const [ localidade, setLocalidade ] = useState({});
-  const [ optionLocalidade, setOptionLocalidade ] = useState([]);
-  const [ logradouro, setLogradouro ] = useState("");
-  const [ cep, setCep ] = useState("");
+// VALIDATIONS FUNCTIONS
+import { isBlank, onlyLetters} from '../../config/function';
+
+function ModalUpdateStreet({ updated, index, show, handleClose, ...props }) {
+  const [ id, setId ]                                    = useState( null );
+  const [ localidade, setLocalidade ]                    = useState({});
+  const [ optionLocalidade, setOptionLocalidade ]        = useState([]);
+  const [ logradouro, setLogradouro ]                    = useState("");
+  const [ isValidLogradouro, setIsValidLogradouro]       = useState( true );
+  const [ cep, setCep ]                                  = useState("");
+  const [ isValidCep, setIsValidCep]                     = useState( true );
+  const [ flLoading, setFlLoading ]                      = useState( false );
+ 
 
   useEffect(() => {
     props.getLocationByCityRequest( props.municipio_id );
@@ -32,6 +42,8 @@ function ModalUpdateStreet({ updated, index, ...props }) {
     if( updated ) {
       $('#modal-editar-rua').modal('hide');
     }
+    props.clearUpdate()
+    setFlLoading(false)
   }, [ updated ]);
 
   useEffect(() => {
@@ -39,35 +51,52 @@ function ModalUpdateStreet({ updated, index, ...props }) {
     setOptionLocalidade( options );
   }, [ props.localidades ]);
 
+  //Toda vez que o modal for aberto, o dados que foram digitados anteriormente
+  //São substituidos pelos dados originais da rua
   useEffect(() => {
-    if( Number.isInteger( index ) ) {
+    if( show && Number.isInteger( index ) ) {
       const rua = props.ruas[index];
       setId( rua.id );
       setLogradouro( rua.nome );
       setCep( rua.cep );
       setLocalidade({ value: rua.localidade.id, label: rua.localidade.nome });
+
+      setIsValidCep(true)
+      setIsValidLogradouro(true)
+      handleClose()
     }
-  }, [ index ]);
+  }, [ show ]);
 
   function handleCadastrar( e ) {
     e.preventDefault();
+    const cepInvalid = (cep.length > 0 && cep.length < 8)
+    const logInvalid = isBlank(logradouro)
 
-    props.updateStreetRequest( id, {
-      nome: logradouro,
-      cep,
-      localidade_id: localidade.id
-    });
+    cepInvalid ? setIsValidCep(false) : setIsValidCep(true)
+    logInvalid ? setIsValidLogradouro(false): setIsValidLogradouro(true)
+
+    if(!cepInvalid && !logInvalid){
+      setFlLoading(true)
+      props.updateStreetRequest( id, {
+        nome: logradouro,
+        cep,
+        localidade_id: localidade.value
+      });
+    }
   }
 
   return(
-    <Modal id="modal-editar-rua" title="Cadastrar Rua">
+    <Modal id="modal-editar-rua" title="Atualizar Rua">
       <form onSubmit={ handleCadastrar }>
         <ModalBody>
+          <p className="text-description">
+              Atenção os campos com <code>*</code> são obrigatórios
+          </p>
           <Row>
             <Col>
               <FormGroup>
-                <label htmlFor="localidade">Localidade</label>
-                <Select
+                <label htmlFor="localidade">Localidade<code>*</code></label>
+                <SelectWrap
                   id="localidade"
                   value={ localidade }
                   styles={ selectDefault }
@@ -79,29 +108,40 @@ function ModalUpdateStreet({ updated, index, ...props }) {
           </Row>
           <Row>
             <Col>
-              <FormGroup>
-                <label htmlFor="cep">CEP</label>
+            <FormGroup>
+                <label htmlFor="logradouro">Logradouro <code>*</code></label>
                 <input
-                  id="cep"
-                  value={ cep }
+                  id="logradouro"
+                  value={ logradouro }
                   className="form-control"
-                  onChange={ e => setCep(e.target.value) }
+                  onChange={ e =>( onlyLetters(e.target.value) ? setLogradouro(e.target.value) : '' ) }
                   required
                 />
+                {
+                    !isValidLogradouro ?
+                      <span class="form-label-invalid">Logradouro inválido</span> :
+                      ''
+                }
               </FormGroup>
             </Col>
           </Row>
           <Row>
             <Col>
-              <FormGroup>
-                <label htmlFor="logradouro">Logradouro</label>
-                <input
-                  id="logradouro"
-                  value={ logradouro }
+            <FormGroup>
+                <label htmlFor="cep">CEP <code>*</code></label>
+                <MaskedInput
+                  id="cep"
                   className="form-control"
-                  onChange={ e => setLogradouro(e.target.value) }
+                  type="cep"
+                  value={ cep }
+                  onChange={ e => setCep(e.target.value) }
                   required
                 />
+                {
+                    !isValidCep ?
+                      <span class="form-label-invalid">CEP inválido</span> :
+                      ''
+                }
               </FormGroup>
             </Col>
           </Row>
@@ -109,8 +149,14 @@ function ModalUpdateStreet({ updated, index, ...props }) {
         <ModalFooter>
           <ContainerArrow className="justify-content-end">
             <div>
-              <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
-              <Button type="submit">Salvar</Button>
+            <Button 
+                type="button" 
+                className="secondary" 
+                data-dismiss="modal" 
+                disabled={ flLoading }>
+                  Cancelar
+              </Button>
+              <ButtonSaveModal title="Salvar" loading={ flLoading } disabled={ flLoading } type="submit" />
             </div>
           </ContainerArrow>
         </ModalFooter>
@@ -124,11 +170,16 @@ const mapStateToProps = state => ({
   updated: state.rua.updated,
   index: state.rua.indexSelect,
   municipio: state.appConfig.usuario.municipio.id,
-  localidades: state.localidade.localidades
+  localidades: state.localidade.localidades,
+  localidade: state.localidade.localidade,
  });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ getLocationByCityRequest, updateStreetRequest }, dispatch);
+  bindActionCreators({ 
+    getLocationByCityRequest, 
+    updateStreetRequest, 
+    clearUpdate
+   }, dispatch);
 
 export default connect(
   mapStateToProps,

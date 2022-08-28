@@ -36,68 +36,81 @@ import { FormGroup, selectDefault, LiEmpty } from '../../styles/global';
 import { ContainerFixed, PageHeader, PageIcon } from '../../styles/util';
 
 // VALIDATIONS FUNCTIONS
-import {onlyNumbers,isBlank,onlyLetters} from '../../config/function';
+import { onlyNumbers, isBlank, onlyLetters, maskCep } from '../../config/function';
 
 const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props }) => {
-  const [ id ]                                    = useState(props.match.params.id);
-  const [ codigo, setCodigo ]                     = useState(null);
-  const [ nome, setNome ]                         = useState("");
-  const [ isValidNome, setIsValidNome ]           = useState( true );
-  const [ categoria, setCategoria ]               = useState({});
-  const [ ativo, setAtivo ]                       = useState({});
-  const [ optionCategoria, setOptionCategoria ]   = useState([]);
-  const [ optionAtivo ]                           = useState([ { value: 1, label: 'Sim' }, { value: 0, label: 'Não' } ]);
-  const [ isLoading, setIsLoading ]               = useState( false );
+  const [id]                                                        = useState(props.match.params.id);
+  const [codigo, setCodigo]                                         = useState(null);
+  const [nome, setNome]                                             = useState("");
+  const [isValidNome, setIsValidNome]                               = useState(true);
+  const [categoria, setCategoria]                                   = useState({});
+  const [ativo, setAtivo]                                           = useState({});
+  const [optionCategoria, setOptionCategoria]                       = useState([]);
+  const [optionAtivo]                                               = useState([{ value: 1, label: 'Sim' }, { value: 0, label: 'Não' }]);
+  const [isLoading, setIsLoading]                                   = useState(false);
+  const [showtModalAddStreet, setShowModalAddStreet]                = useState(false);
+  const [showtModalUpdateStreet, setShowModalUpdateStreet]          = useState(false);
 
   useEffect(() => {
-    props.changeSidebar( "localidade" );
-    getLocationByIdRequest( id );
+    props.changeSidebar("localidade");
+    getLocationByIdRequest(id);
     props.getCategoryRequest();
-    props.getStreetByLocalityRequest( id );
+    props.getStreetByLocalityRequest(id);
   }, []);
 
   useEffect(() => {
-    const options = props.categorias.map(( c ) => ({ value: c.id, label: c.nome }));
+    const options = props.categorias.map((c) => ({ value: c.id, label: c.nome }));
 
-    setOptionCategoria( options );
-  }, [ props.categorias ]);
+    setOptionCategoria(options);
+  }, [props.categorias]);
 
   useEffect(() => {
-    if( Object.entries( localidade ).length > 0 ) {
-      setCodigo( localidade.codigo );
-      setNome( localidade.nome );
-      setCategoria( { value: localidade.categoria.id, label: localidade.categoria.nome } );
-      setAtivo( { value: localidade.ativo, label: localidade.ativo ? 'Sim' : 'Não' } );
+    if (Object.entries(localidade).length > 0) {
+      setCodigo(localidade.codigo);
+      setNome(localidade.nome);
+      setCategoria({ value: localidade.categoria.id, label: localidade.categoria.nome });
+      setAtivo({ value: localidade.ativo, label: localidade.ativo ? 'Sim' : 'Não' });
     }
-  }, [ localidade ]);
+  }, [localidade]);
 
-  useEffect( () => {
+  //Toda vez que a rua for atualizada, seus dados
+  //e a lista de ruas são recarregados
+  useEffect(() => {
     setIsLoading(false);
-    if( props.updatedLocalidade){
-      getLocationByIdRequest( id );
-      props.getStreetByLocalityRequest( id );
+    if (props.updatedLocalidade) {
+      getLocationByIdRequest(id);
+      props.getStreetByLocalityRequest(id);
     }
     props.clearUpdate();
-  }, [ props.updatedLocalidade ] );
+  }, [props.updatedLocalidade]);
 
-  function openModalUpdate( index ) {
-    props.changeStreetSelect( index );
+  //Toda vez que alguma rua é criada ou atualizada 
+  //a lista de ruas também é recarregada
+  useEffect(() => {
+    if( props.updatedStreet || props.createdStreet ) {
+      props.getStreetByLocalityRequest(id)
+    }
+  }, [ props.updatedStreet, props.createdStreet ]);
+
+  function openModalUpdate(index) {
+    setShowModalUpdateStreet(true)
+    props.changeStreetSelect(index);
     $('#modal-editar-rua').modal('show');
   }
 
-  function openModalDelete( index ) {
-    props.changeStreetSelect( index );
+  function openModalDelete(index) {
+    props.changeStreetSelect(index);
     $('#modal-excluir-rua').modal('show');
   }
 
-  function handleSubmit( e ) {
+  function handleSubmit(e) {
     e.preventDefault();
-    if(isBlank(nome))
+    if (isBlank(nome))
       setIsValidNome(false)
-    else{
+    else {
       setIsValidNome(true)
       setIsLoading(true);
-      props.updateLocationRequest( id, {
+      props.updateLocationRequest(id, {
         codigo,
         nome,
         categoria_id: categoria.value,
@@ -120,23 +133,23 @@ const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props 
           {/* Formulário básico */}
           <article className="col-md-12 stretch-card">
             <div className="card">
-              <h4 className="title">Localidade/Bairro: <mark className="bg-info text-white" >{ localidade.nome }</mark></h4>
+              <h4 className="title">Localidade/Bairro: <mark className="bg-info text-white" >{localidade.nome}</mark></h4>
               <p className="text-description">
                 Atenção os campos com <code>*</code> são obrigatórios
               </p>
               <Row>
                 <Col sm='6'>
-                  <form onSubmit={ handleSubmit } >
+                  <form onSubmit={handleSubmit} >
                     <h4 className="title">Informações da localidade</h4>
                     <Row>
                       <Col sm='6'>
                         <FormGroup>
                           <label htmlFor="codigo">Código</label>
-                          <input 
-                            id="codigo" 
-                            value={codigo ? codigo : ""} 
-                            className="form-control" 
-                            onChange={ (e) => (onlyNumbers(e.target.value) ? setCodigo(e.target.value) : () => {} )} 
+                          <input
+                            id="codigo"
+                            value={codigo ? codigo : ""}
+                            className="form-control"
+                            onChange={(e) => (onlyNumbers(e.target.value) ? setCodigo(e.target.value) : () => { })}
                           />
                         </FormGroup>
                       </Col>
@@ -145,10 +158,10 @@ const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props 
                           <label htmlFor="categoria">Categoria <code>*</code></label>
                           <SelectWrap
                             id="categoria"
-                            value={ categoria }
-                            styles={ selectDefault }
-                            options={ optionCategoria }
-                            onChange={ e => setCategoria(e) }
+                            value={categoria}
+                            styles={selectDefault}
+                            options={optionCategoria}
+                            onChange={e => setCategoria(e)}
                             required />
                         </FormGroup>
                       </Col>
@@ -157,17 +170,17 @@ const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props 
                       <Col>
                         <FormGroup>
                           <label htmlFor="nome">Nome <code>*</code></label>
-                          <input 
-                            id="nome" 
-                            value={nome} 
-                            className="form-control" 
-                            onChange={ (e) => (onlyLetters(e.target.value) ? setNome(e.target.value) : () => {} )} 
+                          <input
+                            id="nome"
+                            value={nome}
+                            className="form-control"
+                            onChange={(e) => (onlyLetters(e.target.value) ? setNome(e.target.value) : () => { })}
                             required />
-                            {
-                              !isValidNome ?
-                                <span class="form-label-invalid">Nome inválido</span> :
-                                ''
-                            }
+                          {
+                            !isValidNome ?
+                              <span class="form-label-invalid">Nome inválido</span> :
+                              ''
+                          }
                         </FormGroup>
                       </Col>
                     </Row>
@@ -177,10 +190,10 @@ const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props 
                           <label htmlFor="ativo">Ativo <code>*</code></label>
                           <Select
                             id="ativo"
-                            value={ ativo }
-                            options={ optionAtivo }
-                            styles={ selectDefault }
-                            onChange={ e => setAtivo(e) }
+                            value={ativo}
+                            options={optionAtivo}
+                            styles={selectDefault}
+                            onChange={e => setAtivo(e)}
                             required
                           />
                         </FormGroup>
@@ -191,8 +204,8 @@ const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props 
                       <ButtonSave
                         title="Salvar"
                         className="bg-info text-white"
-                        loading={ isLoading }
-                        disabled={ isLoading }
+                        loading={isLoading}
+                        disabled={isLoading}
                         type="submit" />
                     </ContainerFixed>
                   </form>
@@ -205,17 +218,26 @@ const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props 
                       title="Cadastrar Rua"
                       data-toggle="modal"
                       data-target="#modal-novo-rua"
+                      onClick={() => { setShowModalAddStreet(true) }}
                     />
                   </h4>
 
                   <ListStreet
-                    ruas={ ruas }
-                    openModalUpdate={ openModalUpdate }
-                    openModalDelete={ openModalDelete }
+                    ruas={ruas}
+                    openModalUpdate={openModalUpdate}
+                    openModalDelete={openModalDelete}
                   />
 
-                  <ModalAddStreet data-localidade-id={ id } />
-                  <ModalUpdateStreet municipio_id={ id } />
+                  <ModalAddStreet
+                    data-localidade-id={id}
+                    show={showtModalAddStreet}
+                    handleClose={() => { setShowModalAddStreet(false) }}
+                  />
+                  <ModalUpdateStreet
+                    municipio_id={props.municipio.id}
+                    show={showtModalUpdateStreet}
+                    handleClose={() => { setShowModalUpdateStreet(false) }}
+                  />
                   <ModalDeleteStreet />
                 </Col>
               </Row>
@@ -227,17 +249,17 @@ const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props 
   );
 }
 
-function ListStreet( props ) {
-  let li = props.ruas.map( (rua, index) => (
-    <Street key={ index } >
-      <Container onClick={ () => props.openModalUpdate( index ) }>
+function ListStreet(props) {
+  let li = props.ruas.map((rua, index) => (
+    <Street key={index} >
+      <Container onClick={() => props.openModalUpdate(index)}>
         <ContainerIcon>
           <FaRoad />
         </ContainerIcon>
         <DivDescription>
           <div>
-            <mark className="mr-2 bg-info text-white">{ rua.nome }</mark>
-            <span>CEP: { rua.cep }</span>
+            <mark className="mr-2 bg-info text-white">{rua.nome}</mark>
+            <span>CEP: {maskCep(rua.cep)}</span>
           </div>
 
           <Span></Span>
@@ -245,13 +267,13 @@ function ListStreet( props ) {
       </Container>
       <ButtonClose
         title="Excluir Rua"
-        onClick={ () => props.openModalDelete( index ) }
+        onClick={() => props.openModalDelete(index)}
         className="ml-2 text-danger"
       />
     </Street>
   ));
 
-  if( props.ruas.length === 0 ) {
+  if (props.ruas.length === 0) {
     li = (
       <LiEmpty>
         <h4>Nenhum imóvel encontrado</h4>
@@ -261,7 +283,7 @@ function ListStreet( props ) {
 
   return (
     <UlStreet>
-      { li }
+      {li}
     </UlStreet>
   )
 }
@@ -274,10 +296,12 @@ const mapStateToProps = state => ({
   created: state.rua.created,
   updatedStreet: state.rua.updated,
   updatedLocalidade: state.localidade.updated,
+  createdStreet: state.rua.created,
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ changeSidebar,
+  bindActionCreators({
+    changeSidebar,
     getLocationByIdRequest,
     getCategoryRequest,
     updateLocationRequest,

@@ -37,6 +37,20 @@ export default function Quarteirao( state = INITIAL_STATE, action ) {
       }
     }
 
+    case ActionTypes.CREATE_STREET_FAIL: {
+      return {
+        ...state,
+        created: false
+      }
+    }
+
+    case ActionTypes.CLEAR_CREATE_STREET: {
+      return {
+        ...state,
+        created: null
+      }
+    }
+
     case ActionTypes.UPDATE_STREET_SUCCESS: {
       let ruas = state.ruas;
       const rua = action.payload.rua;
@@ -48,6 +62,20 @@ export default function Quarteirao( state = INITIAL_STATE, action ) {
         ...state,
         ruas,
         updated: !state.updated
+      }
+    }
+
+    case ActionTypes.UPDATE_STREET_FAIL: {
+      return {
+        ...state,
+        updated: false
+      }
+    }
+
+    case ActionTypes.CLEAR_UPDATE_STREET: {
+      return {
+        ...state,
+        updated: null
       }
     }
 

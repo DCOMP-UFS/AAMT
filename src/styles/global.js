@@ -842,13 +842,8 @@ export const FormGroup = styled.div`
       border: 1px solid ${ Color.border_input };
     }
   }
-  .select-wrapper-container{
-    position: relative;
-    .select-wrapper{
-      position: relative;
-      z-index: 1;
-    }
-    .input-required{
+
+  .input-required{
       position: absolute;
       border: 0;
       color: transparent;
@@ -858,6 +853,38 @@ export const FormGroup = styled.div`
       width: 100%;
       height: 100%;
       z-index: 0;
+    }
+
+  .select-wrapper-container,{
+    position: relative;
+    .select-wrapper{
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  .input-mask-container{
+    position: relative;
+    .form-control{
+      border: 1px solid ${ Color.border_input };
+      font-family: "ubuntu-regular", sans-serif!important;
+      font-size: 0.8125rem!important;
+      box-shadow: none!important;
+      display: block!important;
+      width: 100%!important;
+      height: 2.875rem!important;
+      padding-left: 0.81rem!important;
+      font-weight: 400!important;
+      line-height: 1!important;
+      color: #495057!important;
+      background-color: #ffffff!important;
+      background-clip: padding-box!important;
+      border-radius: 2px!important;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out!important;
+      box-sizing: inherit!important;
+      position: relative;
+      z-index: 1;
+      
     }
   }
 `;

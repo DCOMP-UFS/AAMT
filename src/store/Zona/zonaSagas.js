@@ -44,12 +44,15 @@ export function* createZone( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao criar a zona: " + status, "error" ) );
     }
   } catch (err) {
-      const {alreadyExist, error} = err.response.data
+      yield put( ZonaActions.createZoneFail())
 
-      yield put( ZonaActions.createZoneFail() )
-
-      if(alreadyExist)
-        yield put( AppConfigActions.showNotifyToast( error, "error" ) );
+      if(err.response){
+        const {alreadyExist, error} = err.response.data
+        if(alreadyExist)
+          yield put( AppConfigActions.showNotifyToast( error, "error" ) );
+        else
+          yield put( AppConfigActions.showNotifyToast( "Erro ao criar a zona, entre em contato com o suporte", "error" ) );
+      }
       else
         yield put( AppConfigActions.showNotifyToast( "Erro ao criar a zona, favor verifique sua conexão com a internet", "error" ) );
   }
@@ -65,14 +68,17 @@ export function* updateZone( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao atualizar as informações da zona: " + status, "error" ) );
     }
   } catch (err) {
-    const {alreadyExist, error} = err.response.data
-
     yield put( ZonaActions.updateZoneFail() )
-    
-    if(alreadyExist)
-      yield put( AppConfigActions.showNotifyToast( error, "error" ) );
+
+    if(err.response){
+      const {alreadyExist, error} = err.response.data
+      if(alreadyExist)
+        yield put( AppConfigActions.showNotifyToast( error, "error" ) );
+      else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar a zona, entre em contato com o suporte", "error" ) );
+    }
     else
-     yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar a zona, favor verifique sua conexão com a internet", "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar a zona, favor verifique sua conexão com a internet", "error" ) );
   }
 }
 

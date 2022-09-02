@@ -70,8 +70,21 @@ export function* addQuarteirao( action ) {
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao criar quarteirão: " + status, "error" ) );
     }
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao criar quarteirão, favor verifique sua conexão com a internet", "error" ) );
+  } catch (err) {
+    yield put(QuarteiraoActions.setCreated(false))
+
+    if(err.response){
+      const {alreadyExist, error} = err.response.data
+
+      //caso um quarteirão com mesmo codigo no municipio ja exista
+      if(alreadyExist)
+        yield put( AppConfigActions.showNotifyToast( error, "error" ) );
+      //provavel erro na api ou banco
+      else
+        yield put( AppConfigActions.showNotifyToast( "Erro ao criar quarteirão, entre em contato com o suporte", "error" ) );
+    }
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao criar quarteirão, favor verifique sua conexão com a internet", "error" ) );
   }
 }
 

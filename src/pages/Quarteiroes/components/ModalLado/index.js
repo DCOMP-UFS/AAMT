@@ -2,6 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Modal } from 'react-bootstrap';
 import Select from 'react-select';
+import MaskedInput from '../../../../components/MaskedInput'
+import SelectWrap from '../../../../components/SelectWrap'
+import ButtonSaveModal from '../../../../components/ButtonSaveModal';
 
 // Models
 import { Lado } from '../../../../config/models';
@@ -11,11 +14,14 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { getRuaPorCepRequest } from '../../../../store/Rua/ruaActions';
+import { getRuaPorCepRequest, streetExistRequest, clearStreetExist } from '../../../../store/Rua/ruaActions';
 
 // STYLES
 import { ContainerArrow } from '../../../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../../../styles/global';
+
+// VALIDATIONS FUNCTIONS
+import { isBlank, isCepValid } from '../../../../config/function';
 
 /**
  * Modal de adição/edição de um lado
@@ -28,11 +34,23 @@ import { Button, FormGroup, selectDefault } from '../../../../styles/global';
  * @param {Object} props demais propriedades para funcionamento do componente
  * @returns 
  */
-const ModalLado = ( { lado, acao, show, handleClose, ruas, addLado, ...props } ) => {
-  const [ rua, setRua ]             = useState( {} );
-  const [ optionRua, setOptionRua ] = useState( [] );
-  const [ cep, setCep ]             = useState( "" );
-  const [ outra, setOutra ]         = useState( "" );
+const ModalLado = ( { lado, acao, show, handleClose, ruas, addLado, localidade_id, ...props } ) => {
+  const [ rua, setRua ]                           = useState( {} );
+  const [ optionRua, setOptionRua ]               = useState( [] );
+  const [ cep, setCep ]                           = useState( "" );
+  const [ outra, setOutra ]                       = useState( "" );
+  const [ isValidOutra, setIsValidOutra ]         = useState( true );
+  const [ isValidCep, setIsValidCep ]             = useState( true );
+  const [ flLoading, setFlLoading ]               = useState( false );
+
+   /**
+   *  Limpa os campos toda vez que o modal for aberto
+   */
+  useEffect(() => {
+    if( show ) {
+      limparTudo()
+    }
+  }, [ show ]);
 
   /**
    * Preenchendo as opções do select de rua
@@ -82,23 +100,67 @@ const ModalLado = ( { lado, acao, show, handleClose, ruas, addLado, ...props } )
   const handleSubmit = e => {
     e.preventDefault();
 
-    const lado = new Lado( {
-      rua_id        : rua.value,
-      logradouro    : rua.value ? rua.label : outra,
-      cep           : rua.cep ? rua.cep : cep,
-      outro         : outra
-    } );
+    //quando se cai nessa condicional, a rua será adicionada no useEffect abaixo desse metodo
+    if(rua.label == 'Outra'){
+      const nomeInvalido = isBlank(outra)
+      const cepInvalido = !isCepValid(cep)
 
-    addLado( lado );
+      nomeInvalido  ? setIsValidOutra(false) : setIsValidOutra(true)
+      cepInvalido   ? setIsValidCep(false)   : setIsValidCep(true)
 
-    // Limpando variáveis
+      if(!nomeInvalido && !cepInvalido){
+        setFlLoading(true)
+        props.streetExistRequest(null , outra, cep, localidade_id)
+      }
+    }
+    else{
+      const lado = new Lado( {
+        rua_id        : rua.value,
+        logradouro    : rua.label,
+        cep           : rua.cep,
+        outro         : outra
+      } );
+
+      addLado( lado );
+    }
+  }
+
+  //É disparado toda vez que o usuario quer adicionar no lado uma rua não cadastrada
+  //props.sameName é um bool que diz se o nome da nova rua ja é usado por outra rua na mesma localidade
+  //props.sameCEP  é um bool que diz se o cep da nova rua  já é usado
+  useEffect(() => {
+    
+    //Não pode aceitar null, por isso estou usando ==false
+    if(props.sameName == false && props.sameCEP == false){
+      const lado = new Lado( {
+        rua_id        : rua.value,
+        logradouro    : outra,
+        cep           : cep,
+        outro         : outra
+      } );
+
+      addLado( lado );
+
+      // Limpando variáveis
+      setRua( {} );
+      setCep( "" );
+      setOutra( "" );
+    }
+    setFlLoading(false)
+    props.clearStreetExist();
+
+  }, [ props.sameName, props.sameCEP ])
+
+  function limparTudo(){
     setRua( {} );
     setCep( "" );
     setOutra( "" );
+    setIsValidCep(true)
+    setIsValidOutra(true)
   }
 
   return(
-    <Modal show={ show } onHide={ handleClose }>
+    <Modal show={ show } onHide={ handleClose } backdrop="static" keyboard={false}>
       <Modal.Header closeButton>
         <Modal.Title>
           { acao == 'cadastrar' ? 'Cadastrar' : 'Editar' } Lado
@@ -106,42 +168,58 @@ const ModalLado = ( { lado, acao, show, handleClose, ruas, addLado, ...props } )
       </Modal.Header>
       <form onSubmit={ handleSubmit }>
         <Modal.Body>
+          <p className="text-description">
+              Atenção os campos com <code>*</code> são obrigatórios
+          </p>
           <Row>
             <Col md="12">
               <FormGroup>
                 <label htmlFor="l_rua">Rua <code>*</code></label>
-                <Select
+                <SelectWrap
                   id="l_rua"
                   value={ rua }
                   styles={ selectDefault }
                   options={ optionRua }
                   onChange={ e => setRua( e ) }
+                  required
                 />
               </FormGroup>
             </Col>
-            <Col sm="12" md="6">
+            
+            <Col sm="12" md="6" className={rua.value !== null ? "d-none" :""}>
               <FormGroup className="mb-0">
-                <label htmlFor="l_cep">CEP</label>
-                <input
+                <label htmlFor="l_cep">CEP<code>*</code></label>
+                <MaskedInput
                   id        ="l_cep"
+                  type      ="cep"
                   value     ={ cep }
                   className ="form-control"
                   onChange  ={ e => setCep( e.target.value ) }
-                  onBlur    ={ getRuaPorCep }
-                  disabled  ={ rua.value === null ? false : true }
+                  //onBlur    ={ getRuaPorCep }
+                  required  ={ rua.value !== null ? false : true } 
                 />
+                {
+                    !isValidCep ?
+                      <span class="form-label-invalid">CEP inválido</span> :
+                      ''
+                }
               </FormGroup>
             </Col>
-            <Col sm="12" md="6">
+            <Col sm="12" md="6" className={rua.value !== null ? "d-none" :""}>
               <FormGroup className="mb-0">
-                <label htmlFor="l_outra">Outra</label>
+                <label htmlFor="l_outra">Nome<code>*</code></label>
                 <input
                   id="l_outra"
                   value={ outra }
                   className="form-control"
                   onChange={ e => setOutra( e.target.value ) }
-                  disabled={ rua.value === null ? false : true }
+                  required={ rua.value !== null ? false : true }
                 />
+                {
+                    !isValidOutra ?
+                      <span class="form-label-invalid">Nome inválido</span> :
+                      ''
+                }
               </FormGroup>
             </Col>
           </Row>
@@ -149,8 +227,15 @@ const ModalLado = ( { lado, acao, show, handleClose, ruas, addLado, ...props } )
         <Modal.Footer>
           <ContainerArrow className="justify-content-end">
             <div>
-              <Button type="button" className="secondary" onClick={ handleClose }>Cancelar</Button>
-              <Button type="submit">Salvar</Button>
+            <Button 
+                type="button" 
+                className="secondary" 
+                data-dismiss="modal" 
+                onClick={ handleClose }
+                disabled={ flLoading }>
+                  Cancelar
+              </Button>
+              <ButtonSaveModal title="Salvar" loading={ flLoading } disabled={ flLoading } type="submit" />
             </div>
           </ContainerArrow>
         </Modal.Footer>
@@ -165,7 +250,9 @@ const ModalLado = ( { lado, acao, show, handleClose, ruas, addLado, ...props } )
  * @returns 
  */
 const mapStateToProps = state => ( {
-  rua: state.rua.rua
+  rua: state.rua.rua,
+  sameName: state.rua.sameName,
+  sameCEP: state.rua.sameCEP
 } );
 
 /**
@@ -175,7 +262,9 @@ const mapStateToProps = state => ( {
  */
 const mapDispatchToProps = dispatch =>
   bindActionCreators( {
-    getRuaPorCepRequest
+    getRuaPorCepRequest,
+    streetExistRequest,
+    clearStreetExist,
   }, dispatch );
 
 export default connect(

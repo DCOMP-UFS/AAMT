@@ -70,13 +70,16 @@ const columns = [
 const Quarteiroes = ({ quarteiroes, tableSelection, ...props }) => {
   const [ rows, setRows ] = useState([]);
   const [ rowsSelected, setRowsSelected ] = useState([]);
+  const [ showModalAdd, setShowModalAdd] = useState(false)
+
   const options = {
     customToolbar: () => {
       return (
         <ButtonAdd
           title="Adicionar"
           data-toggle="modal"
-          data-target="#modal-novo-quarteirao" />
+          data-target="#modal-novo-quarteirao"
+          onClick={() => {setShowModalAdd(true)}} />
       );
     },
     customToolbarSelect: ({ data }) => {
@@ -153,7 +156,11 @@ const Quarteiroes = ({ quarteiroes, tableSelection, ...props }) => {
             />
           </article>
         </div>
-        <ModalAdd />
+        <ModalAdd
+          show={showModalAdd}
+          handleClose={() => { setShowModalAdd(false) } 
+        }
+        />
         <ModalConfirm
           id="modal-desativar-quarteirao"
           title="Desativar"

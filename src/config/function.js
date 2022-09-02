@@ -187,3 +187,7 @@ export const maskCep = string => {
 
   return parte1 +"-"+ parte2
 }
+
+export const isCepValid = cep => {
+  return (cep.length == 8)
+}

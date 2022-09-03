@@ -107,6 +107,7 @@ export const getDateIso = (dataBR) => {
   let hora = array3[0],
       minuto= array3[1]
 
+  console.log(dataBR)
   return new Date(ano, mes, dia, hora, minuto, 0)
 }
 
@@ -114,7 +115,7 @@ export const ordenadorData = (order) => {
   return (a, b) => {
     const dateA = getDateIso(a.data).getTime();
     const dateB = getDateIso(b.data).getTime();
-    return (dateA < dateB ? -1 : 1) * (order === "desc" ? 1 : -1);
+    return (dateA - dateB ) * (order === "asc" ? 1 : -1);
   };
 
 }

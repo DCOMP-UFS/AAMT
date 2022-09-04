@@ -192,3 +192,8 @@ export const maskCep = string => {
 export const isCepValid = cep => {
   return (cep.length == 8)
 }
+
+export const isCpfValid = cpf => {
+  return (cpf.length == 11)
+}
+

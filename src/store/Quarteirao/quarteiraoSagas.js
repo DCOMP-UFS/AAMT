@@ -51,9 +51,23 @@ function* setQuarteirao( action ) {
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao atualizar quarteirão: " + status, "error" ) );
     }
-  } catch( e ) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar quarteirão, favor verifique a conexão", "error" ) );
+  } catch( err ) {
+    yield put(QuarteiraoActions.setUpdated(false))
+
+    if(err.response){
+      const {alreadyExist, error} = err.response.data
+
+      //caso um quarteirão com mesmo codigo no municipio ja exista
+      if(alreadyExist)
+        yield put( AppConfigActions.showNotifyToast( error, "error" ) );
+      //provavel erro na api ou banco
+      else
+        yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar quarteirão, entre em contato com o suporte", "error" ) );
+    }
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar quarteirão, favor verifique sua conexão com a internet", "error" ) );
   }
+    
 }
 
 /**

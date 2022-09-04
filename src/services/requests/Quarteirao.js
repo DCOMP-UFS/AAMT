@@ -51,7 +51,8 @@ export const setQuarteiraoRequest = data => {
     zona_id       : quarteirao.zona_id, 
     ativo         : quarteirao.ativo ? 1 : 0, 
     quarteirao_id : quarteirao.quarteirao_id, 
-    lados         : quarteirao.lados
+    lados         : quarteirao.lados,
+    localidade_id : quarteirao.localidade_id
   };
 
   return api.put(`/quarteiroes/${ quarteirao.id }`, body, {

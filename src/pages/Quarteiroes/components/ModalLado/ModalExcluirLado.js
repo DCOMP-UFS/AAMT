@@ -77,6 +77,9 @@ const ModalExcluirLado = ( { lados, ladoIndex, show, handleClose, ...props } ) =
       </Modal.Header>
       <form onSubmit={ handleSubmit }>
         <Modal.Body>
+          <p className="text-description">
+            <code>ATENÇÃO: O lado { numero } será excluido permanentemente</code>
+          </p>
           <Row>
             <Col>
               <FormGroup className="mb-0">

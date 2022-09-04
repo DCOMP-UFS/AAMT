@@ -13,7 +13,10 @@ export const ActionTypes = {
   UPDATE_STREET_FAIL : "UPDATE_STREET_FAIL",
   CLEAR_UPDATE_STREET : "CLEAR_UPDATE_STREET",
   DELETE_STREET_REQUEST: "DELETE_STREET_REQUEST",
-  DELETE_STREET_SUCCESS: "DELETE_STREET_SUCCESS"
+  DELETE_STREET_SUCCESS: "DELETE_STREET_SUCCESS",
+  STREET_EXIST_REQUEST: "STREET_EXIST_REQUEST",
+  STREET_EXIST_SUCCESS: "STREET_EXIST_SUCCESS",
+  CLEAR_STREET_EXIST: "CLEAR_STREET_EXIST"
 }
 
 /**
@@ -153,5 +156,32 @@ export const changeStreetSelect = index => {
     payload: {
       index
     }
+  }
+}
+
+export const streetExistRequest = (id, nome, cep, localidade_id ) => {
+  return {
+    type: ActionTypes.STREET_EXIST_REQUEST,
+    payload: {
+      id,
+      nome,
+      cep,
+      localidade_id
+    }
+  }
+}
+
+export const streetExistSuccess = (data) => {
+  return {
+    type: ActionTypes.STREET_EXIST_SUCCESS,
+    payload: {
+      data: data
+    }
+  }
+}
+
+export const clearStreetExist = () => {
+  return {
+    type: ActionTypes.CLEAR_STREET_EXIST,
   }
 }

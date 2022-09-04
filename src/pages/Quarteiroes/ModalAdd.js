@@ -11,6 +11,8 @@ import { FaBorderAll } from 'react-icons/fa';
 import ButtonClose from '../../components/ButtonClose';
 import ModalLado from './components/ModalLado';
 import { msgInputInvalid } from '../../config/function';
+import SelectWrap from '../../components/SelectWrap';
+import ButtonSaveModal from '../../components/ButtonSaveModal';
 
 // MODELS
 import { Quarteirao } from '../../config/models';
@@ -30,7 +32,7 @@ import { showNotifyToast } from '../../store/AppConfig/appConfigActions';
 import { ContainerArrow } from '../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../styles/global';
 
-function ModalAdd({ municipio_id, created, ...props }) {
+function ModalAdd({ municipio_id, created, show, handleClose, ...props }) {
   const [ numero, setNumero ]                     = useState( null );
   const [ lados, setLados ]                       = useState( [] );
   const [ localidade, setLocalidade ]             = useState( {} );
@@ -39,6 +41,20 @@ function ModalAdd({ municipio_id, created, ...props }) {
   const [ optionZona, setOptionZona ]             = useState( [] );
   const [ showModalLado, setShowModalLado ]       = useState( false );
   const [ botaoSalvar, setBotaoSalvar ]           = useState( false );
+  const [ flLoading, setFlLoading ]               = useState( false );
+
+  /**
+   * Limpa todos inputs e outros estados
+   */
+  function limparTudo(){
+    setNumero(null)
+    setLados([])
+    setLocalidade({})
+    setZona({})
+    //setOptionZona( [] );
+    setShowModalLado(false)
+    setFlLoading(false)
+  }
 
   /**
    * Effect acionado assim que o componente é contruido,
@@ -92,14 +108,26 @@ function ModalAdd({ municipio_id, created, ...props }) {
   useEffect( () => {
     if( created ) {
       $('#modal-novo-quarteirao').modal( 'hide' );
-      setLocalidade( {} );
-      setZona( {} );
-      setOptionZona( [] );
-      setNumero( null );
-      setLados( [] );
-      props.setCreated( null );
+      //não precisa limpar os inputs por causa do useEffect logo abaixo
     }
+    props.setCreated( null );
+    setFlLoading(false)
   }, [ created ] );
+
+  /**
+   * Acionado sempre que o modal é for aberto
+   * Limpa todos os dados digitado anteriormente
+   * atraves da função limparTudo()
+   */
+   useEffect(() => {
+    if( show ) {
+      limparTudo()
+    }
+    //não fecha o modal, mas faz com que o show=false
+    //quando o usuario aperta o botão para abrir o modal novamente
+    //faz com que show=true e então a função limparTudo() é executada
+    handleClose()
+  }, [ show ]);
 
   /**
    * Limpa os valores dos inputs no modal
@@ -107,7 +135,7 @@ function ModalAdd({ municipio_id, created, ...props }) {
   const clearInput = () => {
     setLocalidade( {} );
     setZona( {} );
-    setOptionZona( [] );
+    //setOptionZona( [] );
     setNumero( null );
     setLados( [] );
   }
@@ -184,8 +212,9 @@ function ModalAdd({ municipio_id, created, ...props }) {
 
     if (lados.length === 0) {
       valida_adicionar_quarteirao = false;
-      input_campo_lados.addClass("invalid");
-      input_campo_lados.append(msgInputInvalid(`É necessário associar ao menos um lado`));
+      //input_campo_lados.addClass("invalid");
+      //input_campo_lados.append(msgInputInvalid(`É necessário associar ao menos um lado`));
+      props.showNotifyToast( "É necessário associar ao menos um lado", "warning" );
     }
 
     return valida_adicionar_quarteirao;
@@ -207,7 +236,7 @@ function ModalAdd({ municipio_id, created, ...props }) {
         zona_id: zona.value,
         lados,
       });
-
+      setFlLoading(true)
       props.addQuarteiraoRequest(quarteirao);
     }
   }
@@ -216,13 +245,16 @@ function ModalAdd({ municipio_id, created, ...props }) {
     <Modal id="modal-novo-quarteirao" title="Cadastrar Quarteirão" size="lg">
       <form onSubmit={handleSubmit}>
         <ModalBody>
+          <p className="text-description">
+            Atenção os campos com <code>*</code> são obrigatórios
+          </p>
           <Row>
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="localidade">
                   Localidade <code>*</code>
                 </label>
-                <Select
+                <SelectWrap
                   id="localidade"
                   value={localidade}
                   styles={selectDefault}
@@ -235,13 +267,12 @@ function ModalAdd({ municipio_id, created, ...props }) {
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="zona">Zona</label>
-                <Select
+                <SelectWrap
                   id="zona"
                   value={zona}
                   styles={selectDefault}
                   options={optionZona}
                   onChange={(e) => setZona(e)}
-                  required
                 />
               </FormGroup>
             </Col>
@@ -316,15 +347,19 @@ function ModalAdd({ municipio_id, created, ...props }) {
         <ModalFooter>
           <ContainerArrow>
             <div>
-              <Button type="button" className="warning" onClick={clearInput}>
+              <Button type="button" className="warning" disabled={ flLoading } onClick={clearInput}>
                 Limpar
               </Button>
             </div>
             <div>
-              <Button type="button" className="secondary" data-dismiss="modal">
-                Cancelar
+            <Button 
+                type="button" 
+                className="secondary" 
+                data-dismiss="modal" 
+                disabled={ flLoading }>
+                  Cancelar
               </Button>
-              <Button type="submit">Salvar</Button>
+              <ButtonSaveModal title="Salvar" loading={ flLoading } disabled={ flLoading } type="submit" />
             </div>
           </ContainerArrow>
         </ModalFooter>
@@ -337,6 +372,7 @@ function ModalAdd({ municipio_id, created, ...props }) {
         handleClose={() => setShowModalLado(false)}
         acao={"cadastrar"} // cadastrar ou editar
         addLado={addLado}
+        localidade_id={localidade.value}
       />
     </Modal>
   );

@@ -5,7 +5,9 @@ const INITIAL_STATE = {
   rua: new Rua(),
   ruas: [],
   created: null,
-  indexSelect: null
+  indexSelect: null,
+  sameName:null, // indica se ja existe uma rua com mesmo nome na localidade
+  sameCEP:null   // indica se ja existe uma rua com mesmo cep
 }
 
 export default function Quarteirao( state = INITIAL_STATE, action ) {
@@ -98,7 +100,24 @@ export default function Quarteirao( state = INITIAL_STATE, action ) {
       }
     }
 
+    case ActionTypes.STREET_EXIST_SUCCESS: {
+      return {
+        ...state,
+        sameName:action.payload.data.sameName,
+        sameCEP:action.payload.data.sameCEP
+      }
+    }
+
+    case ActionTypes.CLEAR_STREET_EXIST: {
+      return {
+        ...state,
+        sameName:null,
+        sameCEP:null
+      }
+    }
+
     default:
       return { ...state };
   }
+
 }

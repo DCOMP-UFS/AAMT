@@ -35,7 +35,29 @@ export function* getStreetByLocality(action) {
     const { data, status } = yield call( servico.getStreetByLocalityRequest, action.payload );
 
     if( status === 200 ) {
+
       yield put( RuaActions.getStreetByLocality( data ) );
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas da localidade/bairro: " + status, "error" ) );
+    }
+
+  } catch (error) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas da localidade/bairro, favor verifique a conexão", "error" ) );
+  }
+}
+
+export function* streetAlreadyExist(action) {
+  try {
+    const { data, status } = yield call( servico.streetExistRequest, action.payload );
+
+    if( status === 200 ) {
+      yield put( RuaActions.streetExistSuccess( data ) );
+
+      if( data.sameName ) 
+        yield put( AppConfigActions.showNotifyToast( "Já existe uma rua com este nome na localidade", "error" ))
+      if( data.sameCEP )  
+        yield put( AppConfigActions.showNotifyToast( "Já exise uma rua com este cep", "error" ))
+
     }else {
       yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas da localidade/bairro: " + status, "error" ) );
     }
@@ -138,6 +160,10 @@ function* watchDeleteStreet() {
   yield takeLatest( RuaActions.ActionTypes.DELETE_STREET_REQUEST, deleteStreet );
 }
 
+function* watchStreetAlreadyExist() {
+  yield takeLatest( RuaActions.ActionTypes.STREET_EXIST_REQUEST, streetAlreadyExist );
+}
+
 export function* ruaSaga() {
   yield all( [
     watchGetRuaPorCep(),
@@ -145,5 +171,6 @@ export function* ruaSaga() {
     watchCreateStreet(),
     watchUpdateStreet(),
     watchDeleteStreet(),
+    watchStreetAlreadyExist(),
   ] );
 }

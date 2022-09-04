@@ -6,7 +6,7 @@ const Localidade = require('../models/Localidade');
 const Quarteirao = require('../models/Quarteirao');
 const Rua = require('../models/Rua');
 const Lado = require('../models/Lado');
-
+const { Op } = require("sequelize");
 // UTILITY
 const allowFunction = require('../util/allowFunction');
 
@@ -138,179 +138,238 @@ store = async ( req, res ) => {
   const { numero, localidade_id, zona_id, quarteirao_id, lados } = req.body;
   const userId = req.userId;
 
-  const allow = await allowFunction( userId, 'manter_quarteirao' );
-  if( !allow ) {
-    return res.status(403).json({ error: 'Acesso negado' });
-  }
+  if(!numero) return res.status(400).json({ erro: "Informe o nuemro da quarteirão" });
+  if(!localidade_id) return res.status(400).json({ erro: "Informe o id de localidade do quarteirão" });
+  if(!lados) return res.status(400).json({ erro: "Informe a lados do quarteirão" });
 
-  const quarteiraoExiste = await Quarteirao.findOne({
-    where: {
-      numero,
+  try{
+    const allow = await allowFunction( userId, 'manter_quarteirao' );
+    if( !allow ) {
+      return res.status(403).json({ error: 'Acesso negado' });
     }
-  });
 
-  if( quarteiraoExiste ) {
+    const localidade = await Localidade.findByPk( localidade_id, {
+      include: {
+        association: 'municipio',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+      }
+    });
+    if( !localidade ) {
+      return res.status(400).json({ error: 'Localidade não existe' });
+    }
+    
+    const municipio_id = localidade.dataValues.municipio_id
+    const municipio_nome = localidade.dataValues.municipio.nome
+
+    //Verifica se ja existe um quarteirão no mesmo municipio
+    //com o mesmo codigo
+    const quarteiraoExiste = await Quarteirao.findOne({
+      include: {
+          association: 'localidade',
+          attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+          where:{municipio_id},
+      },
+      where: {numero}
+    });
+   
+    if( quarteiraoExiste ) {
+      return res.status(400).json({
+        alreadyExist:true,
+        error: `Já existe quarteirão com o número ${numero} registrado no municipio ${municipio_nome}`
+      });
+    }
+
+    if( quarteirao_id ) {
+      const quarteiraoFather = await Quateirao.findByPk( quarteirao_id );
+
+      if( !quarteiraoFather ) {
+        return res.status(400).json({
+          fragmentFail:true, 
+          error: `Não foi possível fragmentar o quarteirão pois o quarterião nº ${ quarteirao_id } não existe` 
+        });
+      }
+    }
+
+    if( zona_id ) {
+      const zona = await Zona.findByPk( zona_id );
+      if( !zona ) {
+        return res.status(400).json({ error: 'Zona não existe' });
+      }
+    }
+
+    const quarteirao = await Quarteirao.create({
+      numero,
+      localidade_id,
+      zona_id,
+      quarteirao_id
+    });
+
+    for ( const l of lados ) {
+      if( l.rua_id ) {
+        await createSide( l.numero, quarteirao.id, l.rua_id );
+      } else {
+        const rua = await Rua.create({
+          nome: l.logradouro,
+          cep: l.cep,
+          localidade_id: l.localidade_id
+        });
+
+        await createSide( l.numero, quarteirao.id, rua.id );
+      }
+    }
+    
+    const quarteiraoFind = await Quarteirao.findByPk( quarteirao.id, {
+      include: [
+        { association: 'zona', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } },
+        { association: 'localidade', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } },
+      ],
+      attributes: {
+        exclude: [ 'zona_id', 'localidade_id' ]
+      }
+    });
+
+    return res.status(201).json( quarteiraoFind );
+  } catch(e){
     return res.status(400).json({
-      error: `Não foi possível cadastrar este quarteirão pois já existe um com o número ${numero} registrado`
+      error: "Não foi possível cadastrar este quarteirão, falha na API ou no Banco"
     });
   }
-
-  if( quarteirao_id ) {
-    const quarteiraoFather = await Quateirao.findByPk( quarteirao_id );
-
-    if( !quarteiraoFather ) {
-      return res.status(400).json({ 
-        error: `Não foi possível fragmentar o quarteirão pois o quarterião nº ${ quarteirao_id } não existe` 
-      });
-    }
-  }
-
-  if( zona_id ) {
-    const zona = await Zona.findByPk( zona_id );
-    if( !zona ) {
-      return res.status(400).json({ error: 'Zona não existe' });
-    }
-  }
-
-  const localidade = await Localidade.findByPk( localidade_id );
-  if( !localidade ) {
-    return res.status(400).json({ error: 'Localidade não existe' });
-  }
-
-  const quarteirao = await Quarteirao.create({
-    numero,
-    localidade_id,
-    zona_id,
-    quarteirao_id
-  });
-
-  for ( const l of lados ) {
-    if( l.rua_id ) {
-      await createSide( l.numero, quarteirao.id, l.rua_id );
-    } else {
-      const rua = await Rua.create({
-        nome: l.logradouro,
-        cep: l.cep,
-        localidade_id: l.localidade_id
-      });
-
-      await createSide( l.numero, quarteirao.id, rua.id );
-    }
-  }
-  
-  const quarteiraoFind = await Quarteirao.findByPk( quarteirao.id, {
-    include: [
-      { association: 'zona', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } },
-      { association: 'localidade', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } },
-    ],
-    attributes: {
-      exclude: [ 'zona_id', 'localidade_id' ]
-    }
-  });
-
-  return res.status(201).json( quarteiraoFind );
 }
 
 update = async ( req, res ) => {
-  const { numero, zona_id, ativo, quarteirao_id, lados } = req.body;
+  const { numero, zona_id, ativo, quarteirao_id, lados, localidade_id } = req.body;
   const { id } = req.params;
 
   const userId = req.userId;
 
-  const allow = await allowFunction( userId, 'manter_quarteirao' );
-  if( !allow ) {
-    return res.status(403).json({ error: 'Acesso negado' });
-  }
+  if(!numero) return res.status(400).json({ erro: "Informe o numero da quarteirão" });
+  if(!ativo) return res.status(400).json({ erro: "Informe se o quarteirão é ativo ou não" });
+  if(!localidade_id) return res.status(400).json({ erro: "Informe o id de localidade do quarteirão" });
+  if(!lados) return res.status(400).json({ erro: "Informe a lados do quarteirão, mesmo que seja uma lista vazia" });
 
-  if( quarteirao_id ) {
-    const quarteiraoFather = await Quateirao.findByPk( quarteirao_id );
+  try{
+    const allow = await allowFunction( userId, 'manter_quarteirao' );
+    if( !allow ) {
+      return res.status(403).json({ error: 'Acesso negado' });
+    }
 
-    if( !quarteiraoFather ) {
-      return res.status(400).json({ 
-        error: `Não foi possível fragmentar o quarteirão pois o quarterião nº ${ quarteirao_id } não existe` 
+    if( quarteirao_id ) {
+      const quarteiraoFather = await Quateirao.findByPk( quarteirao_id );
+
+      if( !quarteiraoFather ) {
+        return res.status(400).json({ 
+          error: `Não foi possível fragmentar o quarteirão pois o quarterião nº ${ quarteirao_id } não existe` 
+        });
+      }
+    }
+
+    if( zona_id ) {
+      const zona = await Zona.findByPk( zona_id );
+      if( !zona )
+        return res.status(400).json({ error: 'Zona não existe' });
+    }
+
+    //Procura localidade e o municipio do quarteirão
+    const localidade = await Localidade.findByPk( localidade_id, {
+      include: {
+        association: 'municipio',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+      }
+    });
+    if( !localidade ) {
+      return res.status(400).json({ error: 'Localidade não existe' });
+    }
+    
+    const municipio_id = localidade.dataValues.municipio_id
+    const municipio_nome = localidade.dataValues.municipio.nome
+
+    //Verifica se ja existe um quarteirão no mesmo municipio
+    //com o mesmo codigo
+    const quarteiraoExiste = await quarteiraoExistente(id,municipio_id, numero)
+    if( quarteiraoExiste ) {
+      return res.status(400).json({
+        alreadyExist:true,
+        error: `Já existe quarteirão com o número ${numero} registrado no municipio ${municipio_nome}`
       });
     }
-  }
-
-  if( zona_id ) {
-    const zona = await Zona.findByPk( zona_id );
-    if( !zona )
-      return res.status(400).json({ error: 'Zona não existe' });
-  }
-  
-  const { isRejected } = await Quarteirao.update(
-    {
-      numero,
-      zona_id,
-      ativo,
-      quarteirao_id: null
-    },{
-      where: {
-        id
+    
+    const { isRejected } = await Quarteirao.update(
+      {
+        numero,
+        zona_id,
+        ativo,
+        quarteirao_id: null
+      },{
+        where: {
+          id
+        }
       }
+    );
+
+    if( isRejected ){
+      return res.status(400).json({ error: 'Não foi possível atualizar o quarteirão' });
     }
-  );
 
-  if( isRejected ){
-    return res.status(400).json({ error: 'Não foi possível atualizar o quarteirão' });
-  }
-
-  lados.forEach(async l => {
-    // Lado já existente
-    if (l.id) {
-      // Lado com rua já cadastrada
-      if (l.rua_id) {
-        await updateSide( l.id, l.numero, id, l.rua_id );
+    lados.forEach(async l => {
+      // Lado já existente
+      if (l.id) {
+        // Lado com rua já cadastrada
+        if (l.rua_id) {
+          await updateSide( l.id, l.numero, id, l.rua_id );
+        } else {
+          // Lado sem rua cadastrada
+          const rua = await findOrCreateStreet(
+            l.logradouro,
+            l.localidade_id,
+            l.cep
+          );
+          await updateSide(l.id, l.numero, id, rua.id);
+        }
+      // Lado a ser cadastrado
       } else {
-        // Lado sem rua cadastrada
-        const rua = await findOrCreateStreet(
-          l.logradouro,
-          l.localidade_id,
-          l.cep
-        );
-        await updateSide(l.id, l.numero, id, rua.id);
+        // Lado com rua já cadastrada
+        if( l.rua_id ) {
+          await createSide( l.numero, id, l.rua_id );
+        } else {
+          // Lado sem rua cadastrada
+          const rua = await findOrCreateStreet(
+            l.logradouro,
+            l.localidade_id,
+            l.cep
+          );
+          await createSide(l.numero, id, rua.id);
+        }
       }
-    // Lado a ser cadastrado
-    } else {
-      // Lado com rua já cadastrada
-      if( l.rua_id ) {
-        await createSide( l.numero, id, l.rua_id );
-      } else {
-        // Lado sem rua cadastrada
-        const rua = await findOrCreateStreet(
-          l.logradouro,
-          l.localidade_id,
-          l.cep
-        );
-        await createSide(l.numero, id, rua.id);
+    });
+
+    const quarteirao = await Quarteirao.findByPk( id, {
+      include: [
+        { association: 'zona' },
+        { 
+          association: 'lados',
+          exclude: [ 'rua_id' ],
+          include: {
+            association: 'rua',
+          } 
+        }
+      ],
+      attributes: { exclude: [ 'zona_id' ] }
+    });
+
+    const quarteiraoFind = await Quarteirao.findByPk( quarteirao.id, {
+      include: [
+        { association: 'zona', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } },
+      ],
+      attributes: {
+        exclude: [ 'zona_id' ]
       }
-    }
-  });
+    });
 
-  const quarteirao = await Quarteirao.findByPk( id, {
-    include: [
-      { association: 'zona' },
-      { 
-        association: 'lados',
-        exclude: [ 'rua_id' ],
-        include: {
-          association: 'rua',
-        } 
-      }
-    ],
-    attributes: { exclude: [ 'zona_id' ] }
-  });
-
-  const quarteiraoFind = await Quarteirao.findByPk( quarteirao.id, {
-    include: [
-      { association: 'zona', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } },
-    ],
-    attributes: {
-      exclude: [ 'zona_id' ]
-    }
-  });
-
-  return res.json( quarteiraoFind );
+    return res.json( quarteiraoFind );
+  } catch(e){
+    console.log(e)
+    return res.status(400).json({ error: 'Não foi possível atualizar o quarteirão,falha na API ou no banco' });
+  }
 }
 
 disabled = async ( req, res ) => {
@@ -410,6 +469,31 @@ getLadosQuarteirao = async ( req, res ) => {
   excluirLado.destroy();
 
   res.json( { mensage: 'Lado removido com sucesso' } );
+}
+
+async function quarteiraoExistente(id,municipio_id, numero){
+
+  var filtro = {numero: numero}
+  if(id)
+    filtro.id = {[Op.ne]: id}
+  
+  //Verifica se ja existe um quarteirão no mesmo municipio
+  //com o mesmo codigo
+  const quarteiraoExiste = await Quarteirao.findOne({
+    include: {
+        association: 'localidade',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+        where:{municipio_id},
+    },
+    where: {...filtro}
+  });
+  console.log("-----------")
+  console.log(quarteiraoExiste)
+  console.log("-----------")
+  if( quarteiraoExiste ) return true
+  
+  return false
+  
 }
 
 const router = express.Router();

@@ -174,8 +174,28 @@ destroy = async ( req, res ) => {
   catch (e) {
     return res.status(409).json({ error: "Verifique se existem quarteirões associados a essa rua antes de exclui-la" });
   }
+},
+
+streetExist = async ( req, res ) => {
+  const {id, nome, cep, localidade_id,} = req.query
+
+  console.log(nome)
+  try{
+    if(!nome) return res.status(400).json({ error: `Por favor informe o nome da rua` });
+    if(!cep) return res.status(400).json({ error: `Por favor informe o cep da rua` });
+    if(!localidade_id) return res.status(400).json({ error: `Por favor informe o id da localidade` });
+
+    const {sameName, sameCEP} = await ruaExistente(id,nome,cep,localidade_id)
+    return res.json({sameName, sameCEP});
+
+  }catch(e){
+    return res.status(400).json({ error: `Não foi possivel fazer a verificação dos dados da nova rua` });
+  }
 }
 
+//verifica se ja existe uma rua com determinado nome em uma localidade ou uma rua com determinado cep
+//No caso dessa função ser usada em uma rota de atualização dos dados da rua, é precisso irforma o id da
+//rua para evitar que ela se compare consigo mesma
 async function ruaExistente(id,nome,cep,localidade_id){
   var sameName = null
   var sameCEP = null
@@ -225,6 +245,7 @@ async function ruaExistente(id,nome,cep,localidade_id){
 const router = express.Router();
 router.use(authMiddleware);
 
+router.get('/existe', streetExist);
 router.get('/:localidade_id/localidades', getStreetByLocality);
 router.post('/', store);
 router.delete('/:id', destroy);

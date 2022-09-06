@@ -13,6 +13,7 @@ module.exports = {
         cnpj: {
           type: Sequelize.BIGINT,
           allowNull: false,
+          unique: true,
         },
         nome: {
           type: Sequelize.STRING,

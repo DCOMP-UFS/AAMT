@@ -243,7 +243,7 @@ update = async ( req, res ) => {
   const userId = req.userId;
 
   if(!numero) return res.status(400).json({ erro: "Informe o numero da quarteirão" });
-  if(!ativo) return res.status(400).json({ erro: "Informe se o quarteirão é ativo ou não" });
+  if(ativo == null) return res.status(400).json({ erro: "Informe se o quarteirão é ativo ou não" });
   if(!localidade_id) return res.status(400).json({ erro: "Informe o id de localidade do quarteirão" });
   if(!lados) return res.status(400).json({ erro: "Informe a lados do quarteirão, mesmo que seja uma lista vazia" });
 

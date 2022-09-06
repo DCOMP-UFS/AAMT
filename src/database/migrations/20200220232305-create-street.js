@@ -17,6 +17,7 @@ module.exports = {
         cep: {
           type: Sequelize.STRING,
           allowNull: true,
+          unique: true,
         },
         localidade_id: {
           type: Sequelize.INTEGER,

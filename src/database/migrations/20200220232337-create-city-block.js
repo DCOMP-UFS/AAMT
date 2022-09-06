@@ -13,6 +13,7 @@ module.exports = {
         numero: {
           type: Sequelize.INTEGER,
           allowNull: false,
+          unique: true,
         },
         ativo: {
           type: Sequelize.INTEGER,

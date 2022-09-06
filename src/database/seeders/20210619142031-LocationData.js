@@ -2,11 +2,13 @@
 const { Op }  = require( 'sequelize' );
 const faker   = require( 'faker' );
 
+//faker.address.county()
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert( 'localidades', [
       {
-        nome: faker.address.county(),
+        nome: "Avon",
         codigo: faker.datatype.number({ min: 1, max: 9999 }),
         ativo: 1,
         municipio_id: 1,
@@ -15,7 +17,7 @@ module.exports = {
         updated_at: new Date()
       },
       {
-        nome: faker.address.county(),
+        nome: "Berkshire",
         codigo: faker.datatype.number({ min: 1, max: 9999 }),
         ativo: 1,
         municipio_id: 1,
@@ -24,7 +26,7 @@ module.exports = {
         updated_at: new Date()
       },
       {
-        nome: faker.address.county(),
+        nome: "Cambridge",
         codigo: faker.datatype.number({ min: 1, max: 9999 }),
         ativo: 1,
         municipio_id: 1,
@@ -33,7 +35,7 @@ module.exports = {
         updated_at: new Date()
       },
       {
-        nome: faker.address.county(),
+        nome: "Borders",
         codigo: faker.datatype.number({ min: 1, max: 9999 }),
         ativo: 1,
         municipio_id: 1,
@@ -42,7 +44,7 @@ module.exports = {
         updated_at: new Date()
       },
       {
-        nome: faker.address.county(),
+        nome: "Verol",
         codigo: faker.datatype.number({ min: 1, max: 9999 }),
         ativo: 1,
         municipio_id: 1,
@@ -51,7 +53,7 @@ module.exports = {
         updated_at: new Date()
       },
       {
-        nome: faker.address.county(),
+        nome: "Kharkiv",
         codigo: faker.datatype.number({ min: 1, max: 9999 }),
         ativo: 1,
         municipio_id: 1,
@@ -60,7 +62,7 @@ module.exports = {
         updated_at: new Date()
       },
       {
-        nome: faker.address.county(),
+        nome: "Kie",
         codigo: faker.datatype.number({ min: 1, max: 9999 }),
         ativo: 1,
         municipio_id: 1,
@@ -69,7 +71,7 @@ module.exports = {
         updated_at: new Date()
       },
       {
-        nome: faker.address.county(),
+        nome: "Bedfrov",
         codigo: faker.datatype.number({ min: 1, max: 9999 }),
         ativo: 1,
         municipio_id: 1,
@@ -78,7 +80,7 @@ module.exports = {
         updated_at: new Date()
       },
       {
-        nome: faker.address.county(),
+        nome: "Harv",
         codigo: faker.datatype.number({ min: 1, max: 9999 }),
         ativo: 1,
         municipio_id: 1,
@@ -87,7 +89,7 @@ module.exports = {
         updated_at: new Date()
       },
       {
-        nome: faker.address.county(),
+        nome: "Avon",
         codigo: faker.datatype.number({ min: 1, max: 9999 }),
         ativo: 1,
         municipio_id: 2,
@@ -96,7 +98,7 @@ module.exports = {
         updated_at: new Date()
       },
       {
-        nome: faker.address.county(),
+        nome: "Borders",
         codigo: faker.datatype.number({ min: 1, max: 9999 }),
         ativo: 1,
         municipio_id: 2,
@@ -105,7 +107,7 @@ module.exports = {
         updated_at: new Date()
       },
       {
-        nome: faker.address.county(),
+        nome: "Kie",
         codigo: faker.datatype.number({ min: 1, max: 9999 }),
         ativo: 1,
         municipio_id: 2,
@@ -114,7 +116,7 @@ module.exports = {
         updated_at: new Date()
       },
       {
-        nome: faker.address.county(),
+        nome: "Mosq",
         codigo: faker.datatype.number({ min: 1, max: 9999 }),
         ativo: 1,
         municipio_id: 2,

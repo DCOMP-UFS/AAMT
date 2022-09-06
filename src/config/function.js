@@ -189,11 +189,21 @@ export const maskCep = string => {
   return parte1 +"-"+ parte2
 }
 
+/**
+ * Verifica se a string cep no formato 99999-999 está com comprimento adequado
+ * cep = 49075-180 ==> true
+ * cep = 49000-    ==> false
+ */
 export const isCepValid = cep => {
-  return (cep.length == 8)
+  return (cep.length == 9)
 }
 
+/**
+ * Verifica se a string cep no formato 99999-999 está com comprimento adequado
+ * cep = 066.355-232-18 ==> true
+ * cep = 066.355-23     ==> false
+ */
 export const isCpfValid = cpf => {
-  return (cpf.length == 11)
+  return (cpf.length == 14)
 }
 

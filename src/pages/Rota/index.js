@@ -117,6 +117,7 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
       
       props.changeSidebar( "rota" );
       props.getRouteRequest( usuario.id, current_date );
+      //props.clearInspection()
     }
 
     initHome();

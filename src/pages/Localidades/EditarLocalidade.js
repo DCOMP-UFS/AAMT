@@ -36,7 +36,7 @@ import { FormGroup, selectDefault, LiEmpty } from '../../styles/global';
 import { ContainerFixed, PageHeader, PageIcon } from '../../styles/util';
 
 // VALIDATIONS FUNCTIONS
-import { onlyNumbers, isBlank, onlyLetters, maskCep } from '../../config/function';
+import { onlyNumbers, isBlank, onlyLetters} from '../../config/function';
 
 const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props }) => {
   const [id]                                                        = useState(props.match.params.id);
@@ -259,7 +259,7 @@ function ListStreet(props) {
         <DivDescription>
           <div>
             <mark className="mr-2 bg-info text-white">{rua.nome}</mark>
-            <span>CEP: {maskCep(rua.cep)}</span>
+            <span>CEP: {rua.cep}</span>
           </div>
 
           <Span></Span>

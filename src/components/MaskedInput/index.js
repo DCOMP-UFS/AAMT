@@ -26,7 +26,7 @@ const MaskedInput = props => {
                 id={id}
                 value={value}
                 className={className}
-                onChange={limparMascara}
+                onChange={onChange}
                 mask={MaskTypes[type].mask}
             />
             <input

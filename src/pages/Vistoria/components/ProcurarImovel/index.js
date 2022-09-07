@@ -18,7 +18,7 @@ import { tipoImovel as tipoImovelEnum } from '../../../../config/enumerate';
 import { selectDefault } from '../../../../styles/global';
 import { Container, UlImovel, LiImovel, ContainerIcon, DivDescription, LiEmpty, Span } from './styles';
 
-function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }) {
+function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEdicao, ...props }) {
   const [ optionQuarteirao, setOptionQuarteirao ] = useState([]);
   const [ numero, setNumero ] = useState("");
   const [ sequencia, setSequencia ] = useState("");
@@ -88,19 +88,31 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
     props.setImovelSelected( i );
   }
 
+  function isImovelSelected(){
+    if( !imovel || imovel.id == null)
+      return false
+    
+    return true
+  }
+
   return (
     <Container>
       <Row>
         <Col md="6">
+          {/* 
+            As colunas onde tem 'className={isPaginaEdicao ? "d-none" : ''}' 
+            Nao serão exibidas caso esse componente foi acessado pela pagina
+            de edição de vistoria( /vistoria/editar/:id )
+          */}
           <Row>
-            <Col md="12">
+            <Col md="12" className={isPaginaEdicao ? "d-none" : ''}>
               <h4 className="title">
                 Filtrar
                 <PopDescription title="Filtar imóveis" placement="right" content="Faça uma filtragem da lista de imóveis, exibida a direita, para selecionar o imóvel que deseja realizar uma vistoria!" />
               </h4>
             </Col>
 
-            <Col md="6">
+            <Col md="6" className={isPaginaEdicao ? "d-none" : ''}>
               <div className="form-group">
                 <label>Nº do quarteirão?</label>
                 <Select
@@ -110,13 +122,13 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
                   value={ selectQuarteirao } />
               </div>
             </Col>
-            <Col md="6">
+            {/* <Col md="6">
               <div className="form-group">
                 <label>Rua</label>
                 <Select />
               </div>
-            </Col>
-            <Col md="6">
+            </Col> */}
+            <Col md="6" className={isPaginaEdicao ? "d-none" : ''}>
               <div className="form-group">
                 <label>Nº do imóvel?</label>
                 <input
@@ -125,11 +137,12 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
                   min="0"
                   className="form-control"
                   value={ numero }
-                  onChange={ e => setNumero( e.target.value ) } />
+                  onChange={ e => setNumero( e.target.value )}/>
+                  
               </div>
             </Col>
 
-            <Col md="6">
+            <Col md="6" className={isPaginaEdicao ? "d-none" : ''}>
               <div className="form-group">
                 <label>Sequência</label>
                 <input
@@ -145,20 +158,17 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
             <Col md="12">
               <h4 className="title">
                 Imóvel selecionado
-                <PopDescription
-                  placement="right"
-                  title="Imóvel selecionado"
-                  content={
-                    "Clique na lista de imóveis a direita para selecionar um imóvel. " +
-                    "Após selecionar um imóvel, os campos serão preenchidos e habilitados para edição.\n " +
-                    "As modificações realizadas nestes campos serão aplicadas no imóvel após finalizar os trabalhos do dia!"
-                  } />
+                {isPaginaEdicao ? '' :
+                  <PopDescription
+                    placement="right"
+                    title="Imóvel selecionado"
+                    content={
+                      "Clique na lista de imóveis a direita para selecionar um imóvel. " +
+                      "Após selecionar um imóvel, os campos serão preenchidos e habilitados para edição.\n " +
+                      "As modificações realizadas nestes campos serão aplicadas no imóvel após finalizar os trabalhos do dia!"
+                    } />
+                  }
               </h4>
-              {
-                imovel ?
-                  <p className="description">Imóvel selecionado</p> :
-                  <p className="description">Selecione um imóvel na lista a direita.</p>
-              }
             </Col>
 
             <Col md="6">
@@ -169,9 +179,10 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
                   className="form-control"
                   type="number"
                   min="0"
-                  disabled={ imovel ? "" : "disabled" }
-                  value={ imovel ?  imovel.numero : "" }
+                  disabled={ isImovelSelected() ? "" : "disabled" }
+                  value={ isImovelSelected() ?  imovel.numero : "" }
                   onChange={ handleInputImovel }
+                  
                 />
               </div>
             </Col>
@@ -184,8 +195,8 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
                   type="number"
                   min="0"
                   className="form-control"
-                  disabled={ imovel ? "" : "disabled" }
-                  value={ imovel ? ( imovel.sequencia !== null ? imovel.sequencia : "" ) : "" }
+                  disabled={ isImovelSelected() ? "" : "disabled" }
+                  value={ isImovelSelected() ? ( imovel.sequencia !== null ? imovel.sequencia : "" ) : "" }
                   onChange={ handleInputImovel } />
               </div>
             </Col>
@@ -197,8 +208,8 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
                   name="responsavel"
                   type="text"
                   className="form-control"
-                  disabled={ imovel ? "" : "disabled" }
-                  value={ imovel ? imovel.responsavel : "" }
+                  disabled={ isImovelSelected() ? "" : "disabled" }
+                  value={ isImovelSelected() ? imovel.responsavel : "" }
                   onChange={ handleInputImovel } />
               </div>
             </Col>
@@ -209,9 +220,9 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
                 <Select
                   name="tipoImovel"
                   styles={ selectDefault }
-                  isDisabled={ imovel ? false : true }
+                  isDisabled={ isImovelSelected() ? false : true }
                   value={
-                    imovel ?
+                    isImovelSelected() ?
                       optionTipoImovel.find( ti => ti.value === imovel.tipoImovel ) :
                       {}
                   }
@@ -227,15 +238,16 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, ...props }
                   name="complemento"
                   type="text"
                   className="form-control"
-                  disabled={ imovel ? "" : "disabled" }
-                  value={ imovel ? imovel.complemento : "" }
+                  disabled={ isImovelSelected() ? "" : "disabled" }
+                  value={ isImovelSelected() ? imovel.complemento : "" }
                   onChange={ handleInputImovel } />
               </div>
             </Col>
           </Row>
         </Col>
-
-        <Col md="6">
+        
+        
+        <Col md="6" className={isPaginaEdicao ? "d-none" : ''}>
           <h4 className="title">
             Imóveis
             <PopDescription

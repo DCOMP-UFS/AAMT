@@ -21,6 +21,9 @@ import { setRecipient, setSequenceInspection, setImmobile } from '../../../../st
 import { Separator, selectDefault } from '../../../../styles/global';
 import { ContainerFixed } from '../../../../styles/util';
 
+//FUNCTION
+import {isBlank} from '../../../../config/function'
+
 function LIRAa({ handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, ...props }) {
   const [ entrada, setEntrada ] = useState( "" );
   const [ visita, setVisita ] = useState({ value: "N", label: "Normal" });
@@ -51,16 +54,38 @@ function LIRAa({ handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, .
       setTimeout(() => { window.location = window.location.origin + '/vistoria'; }, 300);
   }, [ handleSave ]);
 
+  function isImovelSelected(){
+    if( !imovel || imovel.id == null)
+      return false
+    
+    return true
+  }
+
   function submit() {
     let fl_valido = true;
 
-    if( !imovel ) {
+    //Horario da vistoria não pode ser antes do horario de inicio do trabalho diario
+    //O metodo slice está sendo usado para remover os segundos da string de hora
+    let horario_minimo = props.trabalhoDiario_horaInicio.slice(0,-3)
+    
+    if( !isImovelSelected() ) {
       fl_valido = false;
       props.showNotifyToast( "Selecione o imóvel inspecionado na vistoria!", "warning" );
+    
+    }else if(isBlank(imovel.numero)){
+      fl_valido = false;
+      props.showNotifyToast( "O Nº imóvel é obrigatório!", "warning" );
+    }else if(imovel.responsavel == null || isBlank(imovel.responsavel)){
+      fl_valido = false;
+      props.showNotifyToast( "O responsavel do imóvel é obrigatório!", "warning" );
     }else if( entrada === "" ) {
       fl_valido = false;
       props.showNotifyToast( "O campo hora de entrada é obrigatório!", "warning" );
+    }else if( entrada < horario_minimo ) {
+      fl_valido = false;
+      props.showNotifyToast( `O horário da vistoria deve ser no mínimo o mesmo que o horário de início do trabalho: ${horario_minimo}`, "warning" );
     }
+    
 
     if( fl_valido ) {
       const vistoria = {
@@ -87,7 +112,7 @@ function LIRAa({ handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, .
         {/* Componente para escolha do imóvel da vistoria */}
         <article className="col-md-12">
           <div className="card">
-            <ProcurarImovel />
+            <ProcurarImovel isPaginaEdicao={ props.indexInspection ? true : false}/>
           </div>
         </article>
         <article className="col-md-12">
@@ -172,7 +197,8 @@ const mapStateToProps = state => ({
   vistorias: state.vistoriaCache.vistorias,
   handleSave: state.vistoriaCache.handleSave,
   trabalhoDiario_id: state.rotaCache.trabalhoDiario.id,
-  reload: state.vistoria.reload
+  reload: state.vistoria.reload,
+  trabalhoDiario_horaInicio: state.rotaCache.trabalhoDiario.horaInicio
 });
 
 const mapDispatchToProps = dispatch =>

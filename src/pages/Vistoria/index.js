@@ -23,6 +23,7 @@ import { getRouteRequest } from '../../store/Rota/rotaActions';
 import { resetHandleSave, routeNotStarted } from '../../store/VistoriaCache/vistoriaCacheActions';
 import { changeTableSelected } from '../../store/SupportInfo/supportInfoActions';
 import { isFinalizadoRequest } from '../../store/Rota/rotaActions';
+import {showNotifyToast} from '../../store/AppConfig/appConfigActions'
 
 // STYLES
 import { Button } from '../../styles/global';
@@ -132,13 +133,18 @@ const Vistoria = ( { vistorias, usuario, trabalhoDiario, rota, showNotStarted, .
     customToolbar: () => {
       return (
         <ButtonAdd
-          title="Vistoria"
+          title="Adicionar Vistoria"
           onClick={
             () => {
-              window.location.href = (
-                window.location.origin.toString() +
-                "/vistoria/cadastrar"
-              );
+              if( rows.length < imoveis.length ){
+                window.location.href = (
+                  window.location.origin.toString() +
+                  "/vistoria/cadastrar"
+                );
+              }
+              else{
+                props.showNotifyToast("Todos os imoveis ja foram vistoriados",'warning')
+              }
             }
           }/>
       );
@@ -147,7 +153,7 @@ const Vistoria = ( { vistorias, usuario, trabalhoDiario, rota, showNotStarted, .
       props.changeTableSelected( 'tableVistoria', data );
       return (
         <ButtonDelete
-          title       ="Deletar usuário"
+          title       ="Deletar Vistoria(s)"
           data-toggle ="modal"
           data-target ="#modal-deletar-vistoria"
           data        ={ data } 
@@ -158,7 +164,7 @@ const Vistoria = ( { vistorias, usuario, trabalhoDiario, rota, showNotStarted, .
       const index = row[ 0 ].props[ 'data-index' ];
 
       window.location = `${ window.location.origin.toString() }/vistoria/editar/${ index }`;
-    }
+    },
   };
 
   /**
@@ -379,6 +385,7 @@ const mapDispatchToProps = dispatch =>
   routeNotStarted,
   changeTableSelected,
   isFinalizadoRequest,
+  showNotifyToast
 }, dispatch );
 
 export default connect(

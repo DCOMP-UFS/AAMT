@@ -67,12 +67,11 @@ function LIRAa({ handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, .
     //Horario da vistoria não pode ser antes do horario de inicio do trabalho diario
     //O metodo slice está sendo usado para remover os segundos da string de hora
     let horario_minimo = props.trabalhoDiario_horaInicio.slice(0,-3)
-    
     if( !isImovelSelected() ) {
       fl_valido = false;
       props.showNotifyToast( "Selecione o imóvel inspecionado na vistoria!", "warning" );
-    
-    }else if(isBlank(imovel.numero)){
+   
+    }else if(imovel.numero == ''){
       fl_valido = false;
       props.showNotifyToast( "O Nº imóvel é obrigatório!", "warning" );
     }else if(imovel.responsavel == null || isBlank(imovel.responsavel)){

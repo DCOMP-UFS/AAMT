@@ -8,7 +8,14 @@ const INITIAL_STATE = {
   fl_iniciada: false,
   openModal: false,
   trabalhoDiario: {},
-  rota: []
+  rota: [],
+  /**
+   * estado usado para identificar quando a rota for finaliza
+   * foi criado como variavel auxiliar para não interferir com
+   * o estado isFinalizado
+  */
+  auxFinalizado: undefined,
+  auxIniciado: undefined  
 }
 
 export default function Rota(state = INITIAL_STATE, action) {
@@ -80,6 +87,16 @@ export default function Rota(state = INITIAL_STATE, action) {
         openModal: !action.payload.fl_iniciada
       }
     }
+    case ActionTypes.SET_AUX_FINALIZADO:
+      return {
+        ...state,
+        auxFinalizado: action.payload.auxFinalizado,
+      };
+    case ActionTypes.SET_AUX_INICIADO:
+      return {
+        ...state,
+        auxIniciado: action.payload.auxFinalizado,
+      };
 
     default:
       return { ...state };

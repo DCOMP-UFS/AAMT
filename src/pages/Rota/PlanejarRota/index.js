@@ -10,7 +10,7 @@ import MapaRotas from './components/MapaRotas';
 // ACTIONS
 import { getOpenCycleRequest } from '../../../store/Ciclo/cicloActions';
 import { getResponsabilityActivitiesRequest, setIndexEquipe, setIndexMembro } from '../../../store/Atividade/atividadeActions';
-import { planejarRotaRequest, setCarregandoRota, getRotasPlanejadasRequest } from '../../../store/Rota/rotaActions';
+import { planejarRotaRequest, setCarregandoRota, getRotasPlanejadasRequest, setRotaPlanejada } from '../../../store/Rota/rotaActions';
 import { showNotifyToast } from '../../../store/AppConfig/appConfigActions';
 import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
 
@@ -62,6 +62,7 @@ export const PlanejarRota = ( {
       props.setIndexEquipe( -1 );
       props.setIndexMembro( -1 );
     }
+    props.setRotaPlanejada( null )
   }, [ fl_rota_planejada ])
 
   const next = () => {
@@ -266,7 +267,8 @@ const mapDispatchToProps = {
   setIndexMembro,
   setCarregandoRota,
   getRotasPlanejadasRequest,
-  changeSidebar
+  changeSidebar,
+  setRotaPlanejada
 }
 
 export default connect(

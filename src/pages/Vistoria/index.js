@@ -129,6 +129,8 @@ const Vistoria = ( { vistorias, usuario, trabalhoDiario, rota, showNotStarted, .
     longitude : -37.081680,
     zoom      : 14
   } );
+  const [ultimoHorarioVistoria, setUltimoHorarioVistoria] = useState(null)
+
   const options = {
     customToolbar: () => {
       return (
@@ -223,7 +225,6 @@ const Vistoria = ( { vistorias, usuario, trabalhoDiario, rota, showNotStarted, .
           vistoria.horaEntrada
         ]
       ) );
-
       setRows( vists );
     }
 
@@ -271,6 +272,17 @@ const Vistoria = ( { vistorias, usuario, trabalhoDiario, rota, showNotStarted, .
   }, [ rota ] );
 
   function openModalFinalizarRota() {
+    let ultimoHorario = ""
+    //Procura o horario da ultima vistoria
+    rows.forEach( l => {
+      if(l[8] > ultimoHorario)
+        ultimoHorario = l[8]
+    } )
+    if(ultimoHorario != "")
+      setUltimoHorarioVistoria(ultimoHorario)
+    else
+      setUltimoHorarioVistoria(null)
+      
     $('#modal-finalizar-rota').modal( 'show' );
   }
 
@@ -357,8 +369,12 @@ const Vistoria = ( { vistorias, usuario, trabalhoDiario, rota, showNotStarted, .
               </Col>
           </article>
         </Row>
-
-        <ModalFinalizarTrabalho id="modal-finalizar-rota" />
+        
+        {/* 
+          horarioUltimaVistoria armazena o horario da ultima vistoria, sendo que recebe null
+          caso não exista vistoria
+         */}
+        <ModalFinalizarTrabalho id="modal-finalizar-rota" horarioUltimaVistoria={ultimoHorarioVistoria} />
         <ModalDeletar />
       </section>
     </Container>

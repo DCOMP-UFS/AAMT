@@ -44,7 +44,23 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEd
     if( selectQuarteirao ) {
       let im = [];
       if(selectQuarteirao.value === -1) {
-        
+        rota.forEach(rota => {
+          var aux = rota.lados.reduce(( imvs, l ) => {
+            l.imoveis = l.imoveis.map( i => {
+              const inspection  = props.vistorias.find( vistoria => {
+                if( imovel ) // existe um imóvel setado
+                  return vistoria.imovel.id === i.id && vistoria.imovel.id !== imovel.id;
+                else
+                  return vistoria.imovel.id === i.id;
+              });
+  
+              return ({ ...i, numeroQuarteirao: rota.numero, logradouro: l.rua.nome, fl_inspection: inspection ? true : false })
+            });
+  
+            return [ ...imvs, ...l.imoveis ];
+          }, []);
+          im = im.concat(aux)
+        });
       } else {
         im = rota[ selectQuarteirao.value ].lados.reduce(( imvs, l ) => {
           l.imoveis = l.imoveis.map( i => {

@@ -54,6 +54,7 @@ function ModalDuplicateInspection({ index, recipientes, objetivo, ...props }) {
     e.preventDefault();
 
     props.duplicateRecipient( index, numberCopies );
+    closeModal()
   }
 
   return (
@@ -146,7 +147,7 @@ function ModalDuplicateInspection({ index, recipientes, objetivo, ...props }) {
                   min={ 1 }
                   className="form-control"
                   value={ numberCopies }
-                  onChange={ e => setNumberCopies( parseInt( e.target.value ) ) } />
+                  onChange={ e => setNumberCopies(e.target.value === "" ? 1 : parseInt( e.target.value ) ) } />
               </div>
             </div>
             <div className="modal-footer">

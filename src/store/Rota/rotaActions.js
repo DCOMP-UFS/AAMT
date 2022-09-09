@@ -14,6 +14,8 @@ export const ActionTypes = {
   ENCERRAR_ROTA_REQUEST: "ENCERRAR_ROTA_REQUEST",
   SALVAR_ROTA: "SALVAR_ROTA",
   RESETAR_OPENMODAL: "RESETAR_OPENMODAL",
+  SET_AUX_FINALIZADO: "SET_AUX_FINALIZADO,",
+  SET_AUX_INICIADO: "SET_AUX_INICIADO"
 }
 
 /**
@@ -184,6 +186,40 @@ export const closeRouteRequest = ( usuario_id, trabalhoDiario_id, horaFim, visto
       trabalhoDiario_id,
       horaFim,
       vistorias
+    }
+  }
+}
+
+/**
+ * Solicita ao reduce que altere a variável auxFinalizado
+ * auxFinalizado é um estado auxiliar para quando o trabalho
+ * diario for finalizado, com o intuito de não interferir como
+ * a variavel isFinalizado 
+ * @param {boolean} AuxFinalizado 
+ * @returns 
+ */
+export const setAuxFinalizado = auxFinalizado => {
+  return {
+    type    : ActionTypes.SET_AUX_FINALIZADO,
+    payload : {
+      auxFinalizado
+    }
+  }
+}
+
+/**
+ * Solicita ao reduce que altere a variável auxIniciado
+ * auxInicado é um estado auxiliar para quando o trabalho
+ * diario for iniciado, com o intuito de não interferir como
+ * a variavel fl_iniciada
+ * @param {boolean} AuxFinalizado 
+ * @returns 
+ */
+export const setAuxIniciado = auxIniciado => {
+  return {
+    type    : ActionTypes.SET_AUX_INICIADO,
+    payload : {
+      auxIniciado
     }
   }
 }

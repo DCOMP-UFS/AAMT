@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col } from 'react-bootstrap';
 
 import { Button } from '../../styles/global';
+import ButtonSaveModal from '../../components/ButtonSaveModal';
 
 // REDUX
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { startRouteRequest } from '../../store/Rota/rotaActions';
+import { startRouteRequest, setAuxIniciado } from '../../store/Rota/rotaActions';
+import { showNotifyToast } from '../../store/AppConfig/appConfigActions';
 
 // import { Container } from './styles';
 // COMPONENTS
@@ -30,8 +32,9 @@ const getDate = () => {
 }
 
 const ModalIniciarTrabalho = ( { trabalhoDiario, atividade, ...props } ) => {
-  const [ horaInicio, setHoraInicio ] = useState( getDate() );
+  const [ horaInicio, setHoraInicio ] = useState("");
   const [ dataRota, setDataRota ] = useState('');
+  const [ flLoading, setFlLoading ] = useState( false );
 
   useEffect(() => {
     if( trabalhoDiario.data ) {
@@ -39,13 +42,21 @@ const ModalIniciarTrabalho = ( { trabalhoDiario, atividade, ...props } ) => {
     }
   }, [ trabalhoDiario ]);
 
+  //Effect que verifica se as rotas foram iniciadas
+  //responsavel por desativar o carregamento do botão Inicar
+  useEffect(() => {
+    setFlLoading (false)
+    props.setAuxIniciado( undefined );
+  }, [ props.auxIniciado ]);
+
   function handleSubmit( e ) {
     e.preventDefault();
+    setFlLoading(true)
     props.startRouteRequest( trabalhoDiario.id, horaInicio );
   }
 
   return (
-    <div id={ props.id } className={`modal fade ${ props.className }`} role="dialog">
+    <div id={ props.id } className={`modal fade ${ props.className }`} role="dialog" data-backdrop={ "static" }>
       <div className="modal-dialog" role="document">
         <div className="modal-content">
           <div className="modal-header">
@@ -80,21 +91,28 @@ const ModalIniciarTrabalho = ( { trabalhoDiario, atividade, ...props } ) => {
                   </Col>
                   <Col md="6">
                     <div className="form-group">
-                      <label htmlFor="horaInicio">Data da rota<code>*</code></label>
+                      <label htmlFor="horaInicio">Horario de Início<code>*</code></label>
                       <input
                         name="horaInicio"
                         className="form-control"
                         type="time"
                         onChange={ e => setHoraInicio( e.target.value ) }
                         value={ horaInicio }
-                        required={ true } />
+                        required
+                      />
                     </div>
                   </Col>
                 </Row>
             </div>
             <div className="modal-footer">
-              <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
-              <Button type="submit">Iniciar</Button>
+              <Button 
+                  type="button" 
+                  className="secondary" 
+                  data-dismiss="modal" 
+                  disabled={ flLoading }>
+                    Cancelar
+              </Button>
+              <ButtonSaveModal title="Iniciar" loading={ flLoading } disabled={ flLoading } type="submit" />
             </div>
           </form>
         </div>
@@ -106,10 +124,11 @@ const ModalIniciarTrabalho = ( { trabalhoDiario, atividade, ...props } ) => {
 const mapStateToProps = state => ({
   atividade: state.atividade,
   trabalhoDiario: state.rotaCache.trabalhoDiario,
+  auxIniciado: state.rota.auxIniciado,
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators( { startRouteRequest }, dispatch );
+  bindActionCreators( { startRouteRequest,showNotifyToast,setAuxIniciado }, dispatch );
 
 export default connect(
   mapStateToProps,

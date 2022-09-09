@@ -24,7 +24,8 @@ import {
 } from './styles';
 import { LiEmpty } from '../../../../styles/global';
 
-function InspecionarRecipiente({ sequenciaRecipiente, inspectionSequence, vistorias, trabalhoDiario_id, recipientes, objetivo, ...props }) {
+function InspecionarRecipiente({ sequenciaRecipiente, inspectionSequence, vistorias, trabalhoDiario_id, 
+                                 recipientes, objetivo, isPaginaEdicao, ...props }) {
   function openModalEdit( index ) {
     props.changeUpdatedIndex( index );
     $('#modalEditarInspecao').modal('show');
@@ -56,7 +57,8 @@ function InspecionarRecipiente({ sequenciaRecipiente, inspectionSequence, vistor
         />
 
         <ModalCadastrarInspecao objetivo={ objetivo } />
-        <ModalEditarInspecao objetivo={ objetivo } />
+         {/*isPaginaEdicao Indica para o componente se ele está sendo usado na pagina de edição de vistoria*/}
+        <ModalEditarInspecao objetivo={ objetivo } isPaginaEdicao={isPaginaEdicao}/>
         <ModalDuplicateInspection />
       </div>
     </Container>

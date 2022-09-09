@@ -23,6 +23,7 @@ import { getRouteRequest } from '../../store/Rota/rotaActions';
 import { resetHandleSave, routeNotStarted } from '../../store/VistoriaCache/vistoriaCacheActions';
 import { changeTableSelected } from '../../store/SupportInfo/supportInfoActions';
 import { isFinalizadoRequest } from '../../store/Rota/rotaActions';
+import {showNotifyToast} from '../../store/AppConfig/appConfigActions'
 
 // STYLES
 import { Button } from '../../styles/global';
@@ -128,17 +129,24 @@ const Vistoria = ( { vistorias, usuario, trabalhoDiario, rota, showNotStarted, .
     longitude : -37.081680,
     zoom      : 14
   } );
+  const [ultimoHorarioVistoria, setUltimoHorarioVistoria] = useState(null)
+
   const options = {
     customToolbar: () => {
       return (
         <ButtonAdd
-          title="Vistoria"
+          title="Adicionar Vistoria"
           onClick={
             () => {
-              window.location.href = (
-                window.location.origin.toString() +
-                "/vistoria/cadastrar"
-              );
+              if( rows.length < imoveis.length ){
+                window.location.href = (
+                  window.location.origin.toString() +
+                  "/vistoria/cadastrar"
+                );
+              }
+              else{
+                props.showNotifyToast("Todos os imoveis ja foram vistoriados",'warning')
+              }
             }
           }/>
       );
@@ -147,7 +155,7 @@ const Vistoria = ( { vistorias, usuario, trabalhoDiario, rota, showNotStarted, .
       props.changeTableSelected( 'tableVistoria', data );
       return (
         <ButtonDelete
-          title       ="Deletar usuário"
+          title       ="Deletar Vistoria(s)"
           data-toggle ="modal"
           data-target ="#modal-deletar-vistoria"
           data        ={ data } 
@@ -158,7 +166,7 @@ const Vistoria = ( { vistorias, usuario, trabalhoDiario, rota, showNotStarted, .
       const index = row[ 0 ].props[ 'data-index' ];
 
       window.location = `${ window.location.origin.toString() }/vistoria/editar/${ index }`;
-    }
+    },
   };
 
   /**
@@ -217,7 +225,6 @@ const Vistoria = ( { vistorias, usuario, trabalhoDiario, rota, showNotStarted, .
           vistoria.horaEntrada
         ]
       ) );
-
       setRows( vists );
     }
 
@@ -265,6 +272,17 @@ const Vistoria = ( { vistorias, usuario, trabalhoDiario, rota, showNotStarted, .
   }, [ rota ] );
 
   function openModalFinalizarRota() {
+    let ultimoHorario = ""
+    //Procura o horario da ultima vistoria
+    rows.forEach( l => {
+      if(l[8] > ultimoHorario)
+        ultimoHorario = l[8]
+    } )
+    if(ultimoHorario != "")
+      setUltimoHorarioVistoria(ultimoHorario)
+    else
+      setUltimoHorarioVistoria(null)
+      
     $('#modal-finalizar-rota').modal( 'show' );
   }
 
@@ -351,8 +369,12 @@ const Vistoria = ( { vistorias, usuario, trabalhoDiario, rota, showNotStarted, .
               </Col>
           </article>
         </Row>
-
-        <ModalFinalizarTrabalho id="modal-finalizar-rota" />
+        
+        {/* 
+          horarioUltimaVistoria armazena o horario da ultima vistoria, sendo que recebe null
+          caso não exista vistoria
+         */}
+        <ModalFinalizarTrabalho id="modal-finalizar-rota" horarioUltimaVistoria={ultimoHorarioVistoria} />
         <ModalDeletar />
       </section>
     </Container>
@@ -379,6 +401,7 @@ const mapDispatchToProps = dispatch =>
   routeNotStarted,
   changeTableSelected,
   isFinalizadoRequest,
+  showNotifyToast
 }, dispatch );
 
 export default connect(

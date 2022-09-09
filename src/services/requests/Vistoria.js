@@ -13,3 +13,10 @@ export const getInspectsByDailyWorkRequest = data => {
     ...headerAuthorization()
   });
 }
+
+export const getInspectsByTeam = data => {
+  const { equipe_id } = data;
+  return api.get(`/vistorias/${ equipe_id }/equipe`, {
+    ...headerAuthorization()
+  });
+}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Modal, { ModalBody, ModalFooter } from '../../components/Modal';
 import LoadginGif from '../../assets/loading.gif';
+import $ from 'jquery';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -8,6 +9,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { deletarVistoria } from '../../store/VistoriaCache/vistoriaCacheActions';
+import { showNotifyToast } from '../../store/AppConfig/appConfigActions'
 
 // STYLES
 import { Button } from '../../styles/global';
@@ -25,6 +27,8 @@ function ModalConfirmar({ tableSelected, ...props }) {
 
   function handleClick() {
     props.deletarVistoria( tableSelected );
+    $('#modal-deletar-vistoria').modal('hide');
+    props.showNotifyToast( "Vistoria(s) deletada(s) com sucesso", "success" )
   }
 
   return(
@@ -41,6 +45,7 @@ function ModalConfirmar({ tableSelected, ...props }) {
           disabled={ flLoading ? 'disabled' : '' }
         >
           {
+            
             flLoading ?
               (
                 <>
@@ -67,7 +72,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
-    deletarVistoria
+    deletarVistoria,
+    showNotifyToast
   }, dispatch);
 
 export default connect(

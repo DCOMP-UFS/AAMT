@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col } from 'react-bootstrap';
+import ButtonSaveModal from '../../components/ButtonSaveModal';
 
 import { Button } from '../../styles/global';
 
@@ -8,7 +9,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { closeRouteRequest, getRouteRequest } from '../../store/Rota/rotaActions';
+import { closeRouteRequest, getRouteRequest, setAuxFinalizado } from '../../store/Rota/rotaActions';
+import { showNotifyToast } from '../../store/AppConfig/appConfigActions';
 
 // import { Container } from './styles';
 // COMPONENTS
@@ -29,9 +31,12 @@ const getDate = () => {
   return today;
 }
 
-function ModalFinalizarTrabalho({ usuario, vistorias, trabalhoDiario, atividade, ...props }) {
+
+
+function ModalFinalizarTrabalho({ usuario, vistorias, trabalhoDiario, atividade, horarioUltimaVistoria, ...props }) {
   const [ horaFim, setHoraFim ] = useState( getDate() );
   const [ dataRota, setDataRota ] = useState('');
+  const [ flLoading, setFlLoading ] = useState( false );
 
   useEffect(() => {
     if( trabalhoDiario.data ) {
@@ -39,13 +44,31 @@ function ModalFinalizarTrabalho({ usuario, vistorias, trabalhoDiario, atividade,
     }
   }, [ trabalhoDiario ]);
 
+  //Effect que verifica se as rotas foram finalizadas
+  //responsavel por desativar o carregamento do botão Encerrar
+  useEffect(() => {
+    setFlLoading (false)
+    props.setAuxFinalizado( undefined );
+  }, [ props.auxFinalizado ]);
+
   function handleSubmit( e ) {
     e.preventDefault();
-    props.closeRouteRequest( usuario.id, trabalhoDiario.id, horaFim, vistorias );
+    console.log(horarioUltimaVistoria)
+    
+    const horaInicio = trabalhoDiario.horaInicio.slice(0,-3)
+    
+    if(horarioUltimaVistoria && horaFim < horarioUltimaVistoria)
+      props.showNotifyToast(`Horario de Encerramento deve ser no minimo igual ao Horario da ultima vistoria: ${horarioUltimaVistoria}` ,"warning")
+    else if (horaFim < horaInicio)
+      props.showNotifyToast("Horario de Encerramento deve ser no minimo igual ao Horario de Início","warning")
+    else{
+      setFlLoading (true)
+      props.closeRouteRequest( usuario.id, trabalhoDiario.id, horaFim, vistorias );
+    }
   }
 
   return (
-    <div id={ props.id } className={`modal fade ${ props.className }`} role="dialog">
+    <div id={ props.id } className={`modal fade ${ props.className }`} role="dialog" data-backdrop={ "static" }>
       <div className="modal-dialog" role="document">
         <div className="modal-content">
           <div className="modal-header">
@@ -80,6 +103,17 @@ function ModalFinalizarTrabalho({ usuario, vistorias, trabalhoDiario, atividade,
                   </Col>
                   <Col md="6">
                     <div className="form-group">
+                      <label htmlFor="horaInicio">Horário de Início</label>
+                      <input
+                        name="horaInicio"
+                        className="form-control"
+                        type="time"
+                        value={ trabalhoDiario.horaInicio ? trabalhoDiario.horaInicio.slice(0,-3) : "" }
+                        disabled={ true } />
+                    </div>
+                  </Col>
+                  <Col md="6">
+                    <div className="form-group">
                       <label htmlFor="horaFim">Horário de encerramento<code>*</code></label>
                       <input
                         name="horaFim"
@@ -93,8 +127,14 @@ function ModalFinalizarTrabalho({ usuario, vistorias, trabalhoDiario, atividade,
                 </Row>
             </div>
             <div className="modal-footer">
-              <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
-              <Button type="submit">Encerrar</Button>
+            <Button 
+                type="button" 
+                className="secondary" 
+                data-dismiss="modal" 
+                disabled={ flLoading }>
+                  Cancelar
+              </Button>
+              <ButtonSaveModal title="Encerrar" loading={ flLoading } disabled={ flLoading } type="submit" />
             </div>
           </form>
         </div>
@@ -108,10 +148,11 @@ const mapStateToProps = state => ({
   atividade: state.atividade,
   trabalhoDiario: state.rotaCache.trabalhoDiario,
   vistorias: state.vistoriaCache.vistorias,
+  auxFinalizado: state.rota.auxFinalizado
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ closeRouteRequest, getRouteRequest }, dispatch);
+  bindActionCreators({ closeRouteRequest, getRouteRequest, showNotifyToast, setAuxFinalizado }, dispatch);
 
 export default connect(
   mapStateToProps,

@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
+import { setVistoriaIndexEdit } from '../../../store/VistoriaCache/vistoriaCacheActions';
 
 // STYLES
 import { PageIcon, PageHeader } from '../../../styles/util';
@@ -18,6 +19,7 @@ import { Container } from './styles';
 function CadastrarVistoria({ trabalhoDiario, rota, vistorias, ...props }) {
   useEffect(() => {
     props.changeSidebar( "vistoria" );
+    props.setVistoriaIndexEdit(props.match.params.index)
   }, []);
 
   function getForm() {
@@ -71,6 +73,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
     changeSidebar,
+    setVistoriaIndexEdit,
   }, dispatch);
 
 export default connect(

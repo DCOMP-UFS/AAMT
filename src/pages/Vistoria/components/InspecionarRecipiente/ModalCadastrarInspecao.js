@@ -144,13 +144,19 @@ function ModalCadastrarInspecao( {
     }
     if( !validInputIsNull( "#fl_foco", fl_foco.value ) ) fl_valido = false;
     if( fl_tratado.value && qtdTratamento === 0 ) {
+
       fl_valido = false;
 
       var input_qtd_tratamento = $( '#qtdTratamento' ),
           form_group = input_qtd_tratamento.parent();
       input_qtd_tratamento.addClass( 'invalid' );
 
+      
       form_group.append( msgInputInvalid( 'O valor não pode ser zero' ) );
+    }
+    else{
+      $( '#qtdTratamento' ).removeClass('invalid')
+      $( '#qtdTratamento' ).parent().find('span.form-label-invalid').remove();
     }
 
     /**
@@ -172,6 +178,7 @@ function ModalCadastrarInspecao( {
       input_seq_amostra.addClass( 'invalid' );
 
       form_group_amostra.append( msgInputInvalid( `Os códigos <strong>${ temCodigoDuplicado.join( ', ' ) }</strong> estão duplicados.` ) );
+      
     }
 
     if( temCodigoDuplicado.length === 0 ) {

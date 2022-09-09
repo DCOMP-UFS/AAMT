@@ -5,7 +5,8 @@ export const ActionTypes = {
   RESETAR_SHOWNOTSTARTED: "RESETAR_SHOWNOTSTARTED",
   LIMPAR_VISTORIAS: "LIMPAR_VISTORIAS",
   DELETAR_VISTORIA: "DELETAR_VISTORIA",
-  UPDATE_INSPECTION: "UPDATE_INSPECTION"
+  UPDATE_INSPECTION: "UPDATE_INSPECTION",
+  SET_VISTORIA_INDEX_EDIT: "SET_VISTORIA_INDEX_EDIT"
 }
 
 export const clearInspection = () => {
@@ -56,6 +57,15 @@ export const deletarVistoria = rowSelected => {
     type: ActionTypes.DELETAR_VISTORIA,
     payload: {
       rowSelected
+    }
+  }
+}
+
+export const setVistoriaIndexEdit = vistoriaIndexEdit => {
+  return {
+    type: ActionTypes.SET_VISTORIA_INDEX_EDIT,
+    payload: {
+      vistoriaIndexEdit
     }
   }
 }

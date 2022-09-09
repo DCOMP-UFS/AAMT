@@ -169,6 +169,9 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEd
                     } />
                   }
               </h4>
+              <p className="text-description">
+                Atenção os campos com <code>*</code> são obrigatórios
+              </p>
             </Col>
 
             <Col md="6">

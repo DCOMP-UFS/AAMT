@@ -111,6 +111,7 @@ function LIRAa({ handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, .
         {/* Componente para escolha do imóvel da vistoria */}
         <article className="col-md-12">
           <div className="card">
+             {/*isPaginaEdicao Indica para o componente se ele está sendo usado na pagina de edição de vistoria*/}
             <ProcurarImovel isPaginaEdicao={ props.indexInspection ? true : false}/>
           </div>
         </article>
@@ -122,6 +123,9 @@ function LIRAa({ handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, .
                 <Row>
                   <Col md="12">
                     <h4 className="title">Vistoria</h4>
+                     <p className="text-description">
+                      Atenção os campos com <code>*</code> são obrigatórios
+                    </p>
                   </Col>
 
                   <Col md="6" className="form-group">
@@ -171,7 +175,8 @@ function LIRAa({ handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, .
               </Col>
 
               <Col md="6" >
-                <InspecionarRecipiente objetivo={ objetivo } />
+                {/*isPaginaEdicao Indica para o componente se ele está sendo usado na pagina de edição de vistoria*/}
+                <InspecionarRecipiente objetivo={ objetivo } isPaginaEdicao={ props.indexInspection ? true : false}  />
               </Col>
             </Row>
           </div>

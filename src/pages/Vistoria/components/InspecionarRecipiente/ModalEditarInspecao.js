@@ -48,6 +48,7 @@ const InspecionarRecipiente = ( {
   trabalhoDiario_sequencia,
   codigoMunicipio,
   sequenciaUsuario,
+  isPaginaEdicao,
   ...props
 } ) => {
   const [ tipoRecipiente, setTipoRecipiente ]       = useState( { value: null, label: null } );
@@ -69,7 +70,8 @@ const InspecionarRecipiente = ( {
   const [ optionsTecnicaTratamento ]                = useState(
     Object.entries( tecnicaTratamentoEnum ).map( ( [ key, value ] ) => ( { value: value.id, label: value.label } ) )
   );
-
+  const [ qtdTratamentoValid , setqtdTratamentoValid] = useState(true)
+  
   useEffect( () => {
     if( updatedIndex > -1 ) {
       const recipiente = recipientes[ updatedIndex ];
@@ -138,6 +140,7 @@ const InspecionarRecipiente = ( {
   function submit() {
     // Validação
     let fl_valido = true;// true -> válido | false -> inválido
+
     if( !validInputIsNull( "#tipoRecipiente", tipoRecipiente.value ) ) fl_valido = false;
     if( !validInputIsNull( "#fl_eliminado", fl_eliminado.value ) ) fl_valido = false;
     if( !validInputIsNull( "#fl_tratado", fl_tratado.value ) ) fl_valido = false;
@@ -150,8 +153,12 @@ const InspecionarRecipiente = ( {
       let form_group            = input_qtd_tratamento.parent();
 
       input_qtd_tratamento.addClass( 'invalid' );
-
       form_group.append( msgInputInvalid( 'O valor não pode ser zero' ) );
+      
+    }
+    else{
+      $( '#edi_qtdTratamento' ).removeClass('invalid')
+      $( '#edi_qtdTratamento' ).parent().find('span.form-label-invalid').remove();
     }
 
     /**
@@ -162,20 +169,21 @@ const InspecionarRecipiente = ( {
     const arrayCodigosAmostra  = unidade.map( item => item.idUnidade );
     const temCodigoDuplicado   = arrayCodigosAmostra.filter( ( item, index ) => arrayCodigosAmostra.indexOf( item ) !== index );
 
-    let input_seq_amostra        = $( '#row-sequence' );
+    let input_seq_amostra        = $( '#edi_row-sequence' );
     let form_group_amostra       = input_seq_amostra.parent();
     let valida_entre_recipiente  = true;
 
     if( temCodigoDuplicado.length > 0 ) {
       fl_valido = false;
-      $( '#row-sequence' ).parent().find('span.form-label-invalid').remove();
+      $( '#edi_row-sequence' ).parent().find('span.form-label-invalid').remove();
       input_seq_amostra.addClass( 'invalid' );
 
       form_group_amostra.append( msgInputInvalid( `Os códigos ${ temCodigoDuplicado.join( ', ' ) } estão duplicados.` ) );
+  
     }
 
     if( temCodigoDuplicado.length === 0 ) {
-      $( '#row-sequence' ).parent().find('span.form-label-invalid').remove();
+      $( '#edi_row-sequence' ).parent().find('span.form-label-invalid').remove();
       recipientes.forEach( ( recipiente, i ) => {
         if( updatedIndex !== i ) {
           recipiente.amostras.forEach( amostra => {
@@ -192,23 +200,47 @@ const InspecionarRecipiente = ( {
         }
       } );
     }
-
+    
     if( temCodigoDuplicado.length === 0 && valida_entre_recipiente ) {
-      $( '#row-sequence' ).parent().find('span.form-label-invalid').remove();
-      vistorias.forEach( ( vistoria, vistoriaIndex ) => {
-        vistoria.recipientes.forEach( recipiente => {
-          recipiente.amostras.forEach( amostra => {
-            const index = arrayCodigosAmostra.findIndex( p => p === amostra.idUnidade );
+      $( '#edi_row-sequence' ).parent().find('span.form-label-invalid').remove();
 
-            if( index !== -1 ) {
-              fl_valido = false;
-              input_seq_amostra.addClass( 'invalid' );
+      //Caso estivermos na pagina de edição de vistoria (/vistoria/editar/:vistoriaIndex)
+      if(isPaginaEdicao){
+        vistorias.forEach( ( vistoria, vistoriaIndex ) => {
+          //Condicional abaixo ignora a vistoria com index == props.vistoriaIndexEdit,
+          //que é justamente a vistoria cujo a pagina de edição nos encontramos.
+          //Essa condicional é necessaria para evitar que uma amostra se compare consigo mesma
+          if( props.vistoriaIndexEdit != vistoriaIndex ) {
+            vistoria.recipientes.forEach( recipiente => {
+              recipiente.amostras.forEach( amostra => {
+                
+                const index = arrayCodigosAmostra.findIndex( p => p === amostra.idUnidade );
 
-              form_group_amostra.append( msgInputInvalid( `O código ${ arrayCodigosAmostra[ index ] } já foi gerado para o recipiente ${ recipiente.sequencia } <a href="/vistoria/editar/${ vistoriaIndex }">em outro imóvel</a>.` ) );
-            }
-          } );
+                if( index !== -1 ) {
+                  fl_valido = false;
+                  input_seq_amostra.addClass( 'invalid' );
+
+                  form_group_amostra.append( msgInputInvalid( `O código ${ arrayCodigosAmostra[ index ] } já foi gerado para o recipiente ${ recipiente.sequencia } <a href="/vistoria/editar/${ vistoriaIndex }">em outro imóvel</a>.` ) );
+                }
+              } );
+            } );
+          }
         } );
-      } );
+      //Caso estivermos na pagina de cadastro de vistoria (/vistoria/cadastrar)
+      } else {
+        vistorias.forEach( ( vistoria, vistoriaIndex ) => {
+            vistoria.recipientes.forEach( recipiente => {
+              recipiente.amostras.forEach( amostra => {
+                const index = arrayCodigosAmostra.findIndex( p => p === amostra.idUnidade );
+                if( index !== -1 ) {
+                  fl_valido = false;
+                  input_seq_amostra.addClass( 'invalid' );
+                  form_group_amostra.append( msgInputInvalid( `O código ${ arrayCodigosAmostra[ index ] } já foi gerado para o recipiente ${ recipiente.sequencia } <a href="/vistoria/editar/${ vistoriaIndex }">em outro imóvel</a>.` ) );
+                }
+              } );
+            } );
+          } )
+      }
     }
 
     if( fl_valido ) {
@@ -312,7 +344,7 @@ const InspecionarRecipiente = ( {
                     value={ qtdTratamento }
                     onChange={ e => setQtdTratamento( e.target.value === "" ? 0 : parseFloat( e.target.value ) ) } />
                 </Col>
-
+                
                 <Col md="6" className="form-group">
                   <label htmlFor="tecnicaTratamento">Técnica? <code>*</code></label>
 
@@ -427,6 +459,7 @@ const mapStateToProps = state => ({
   sequenciaRecipiente     : state.vistoria.sequenciaRecipiente,
   updatedIndex            : state.vistoria.updatedIndex,
   updatedRecipiente       : state.vistoria.updatedRecipiente,
+  vistoriaIndexEdit: state.vistoriaCache.vistoriaIndexEdit
 });
 
 const mapDispatchToProps = dispatch =>

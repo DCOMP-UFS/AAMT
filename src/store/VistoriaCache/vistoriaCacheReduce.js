@@ -5,7 +5,10 @@ const INITIAL_STATE = {
   sequenciaVistoria: 1,
   handleSave: false,
   showNotStarted: false,
-  reload: false
+  reload: false,
+  
+  //armazena o index da vistoria que será editada
+  vistoriaIndexEdit: -1
 }
 
 export default function VistoriaCache(state = INITIAL_STATE, action) {
@@ -71,6 +74,13 @@ export default function VistoriaCache(state = INITIAL_STATE, action) {
         ...state,
         vistorias,
         reload: !state.reload
+      }
+    }
+
+    case ActionTypes.SET_VISTORIA_INDEX_EDIT: {
+      return {
+        ...state,
+        vistoriaIndexEdit: action.payload.vistoriaIndexEdit
       }
     }
 

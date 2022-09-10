@@ -91,33 +91,47 @@ export const getDateBr = ( date, tipo = 'datetime' ) => {
   }
 }
 
-//Recebe uma string no formato "dd/mm/aaaa hh:mm:ss"
+//Recebe uma string no formato "dd/mm/aaaa hh:mm:ss" ou "dd/mm/aaaa"
 //e converter para um Date
 export const getDateIso = (dataBR) => {
   const array1 = dataBR.split(" ")
-  let data = array1[0],
-      tempo = array1[1]
+  let data = array1[0]
 
   const array2 = data.split("/")
   let dia = array2[0],
       mes = array2[1],
       ano = array2[2]
-  
-  const array3 = tempo.split(":")
-  let hora = array3[0],
-      minuto= array3[1]
 
-  console.log(dataBR)
-  return new Date(ano, mes, dia, hora, minuto, 0)
+  //significa que a string é do formato "dd/mm/aaaa hh:mm:ss"
+  if(array1.length == 2){
+    let tempo = array1[1]
+    const array3 = tempo.split(":")
+    let hora = array3[0],
+        minuto= array3[1]
+
+    return new Date(ano, mes, dia, hora, minuto, 0)
+  }
+  
+  //significa que a string é do formato "dd/mm/aaaa"
+  return new Date(ano, mes, dia, 0, 0, 0)
 }
 
+//receber 2 strings data no formato "dd/mm/aaaa hh:mm:ss"
+export const ordenadorDataHora = (order) => {
+  return (a, b) => {
+    const dateA = getDateIso(a.data).getTime();
+    const dateB = getDateIso(b.data).getTime();
+    return (dateA - dateB ) * (order === "asc" ? 1 : -1);
+  };
+}
+
+//receber 2 strings data no formato "dd/mm/aaaa"
 export const ordenadorData = (order) => {
   return (a, b) => {
     const dateA = getDateIso(a.data).getTime();
     const dateB = getDateIso(b.data).getTime();
     return (dateA - dateB ) * (order === "asc" ? 1 : -1);
   };
-
 }
 
 export const desc = ( a, b, orderBy ) => {

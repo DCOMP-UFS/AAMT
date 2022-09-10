@@ -22,7 +22,7 @@ import { GlobalStyle } from './styles';
 import { PageIcon, PageHeader } from '../../styles/util';
 
 //UTILIES FUNCTIONS
-import { ordenadorData } from '../../config/function';
+import { ordenadorDataHora } from '../../config/function';
 import ModalDisabled from './ModalDisabled';
 
 const columns = [
@@ -61,14 +61,14 @@ const columns = [
     name:  "createdAt",
     label: "Criado em",
     options: {
-      sortCompare: ordenadorData
+      sortCompare: ordenadorDataHora
     }
   },
   {
     name:  "updatedAt",
     label: "Atualizado em",
     options: {
-      sortCompare: ordenadorData
+      sortCompare: ordenadorDataHora
     }
   },
 ];

@@ -10,7 +10,7 @@ const INITIAL_STATE = {
   trabalhoDiario: {},
   rota: [],
   /**
-   * estado usado para identificar quando a rota for finaliza
+   * estado usado para identificar quando a rota acabou de ser finalizada,
    * foi criado como variavel auxiliar para não interferir com
    * o estado isFinalizado
   */

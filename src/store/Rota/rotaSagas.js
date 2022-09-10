@@ -117,7 +117,9 @@ export function* closeRoute(action) {
         yield put( RotaActions.setAuxFinalizado(true) );
         yield put( AppConfigActions.showNotifyToast( "Rota finalizada e vistorias registradas com sucesso!", "success" ) );
 
-        window.location = window.location.origin.toString() + '/relatorio/boletimDiario/' + action.payload.trabalhoDiario_id;
+        //linha abaixo foi comentado porque o redirecionamento não permitia a limpeza da barra de progressão de vistorias
+
+        //window.location = window.location.origin.toString() + '/relatorio/boletimDiario/' + action.payload.trabalhoDiario_id;
       }else {
         yield put( RotaActions.setAuxFinalizado(false) );
         yield put( AppConfigActions.showNotifyToast( "Ocorreu um erro no servidor durante a requisição! Por favor, aguarde e tente novamente mais tarde.", "error" ) );

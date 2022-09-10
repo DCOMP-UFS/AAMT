@@ -17,6 +17,9 @@ import { getByUserRequest } from '../../../store/TrabalhoDiario/trabalhoDiarioAc
 // STYLES
 import { PageIcon, PageHeader } from '../../../styles/util';
 
+//UTILIES FUNCTIONS
+import { ordenadorData } from '../../../config/function';
+
 const columns = [
   {
     name: "index",
@@ -35,7 +38,8 @@ const columns = [
     options: {
       filter: true,
       align: "left",
-      disablePadding: false
+      disablePadding: false,
+      sortCompare: ordenadorData
     }
   },
   {

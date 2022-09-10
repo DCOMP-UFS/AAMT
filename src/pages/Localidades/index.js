@@ -24,7 +24,7 @@ import { getLocationRequest, getLocationByCityRequest, changeIndex } from '../..
 import { GlobalStyle } from './styles';
 import { PageHeader, PageIcon } from '../../styles/util';
 
-import { ordenadorData } from '../../config/function';
+import { ordenadorDataHora } from '../../config/function';
 
 const columns = [
   {
@@ -59,7 +59,7 @@ const columns = [
     options: {
      display: 'false',
      filter: false,
-     sortCompare: ordenadorData
+     sortCompare: ordenadorDataHora
     }
   },
   {
@@ -68,7 +68,7 @@ const columns = [
     options: {
      display: 'false',
      filter: false,
-     sortCompare: ordenadorData
+     sortCompare: ordenadorDataHora
     }
   },
   {

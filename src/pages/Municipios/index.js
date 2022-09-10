@@ -25,7 +25,7 @@ import { GlobalStyle } from './styles';
 import { PageIcon, PageHeader } from '../../styles/util';
 
 //UTILIES FUNCTIONS
-import { getDateIso, ordenadorData } from '../../config/function';
+import { getDateIso, ordenadorDataHora } from '../../config/function';
 
 const columns = [
   {
@@ -46,14 +46,14 @@ const columns = [
     name:  "Criado em",
     label: "Criado em",
     options: {
-      sortCompare: ordenadorData
+      sortCompare: ordenadorDataHora
     }
   },
   {
     name:  "Atualizado em",
     label: "Atualizado em",
     options: {
-      sortCompare: ordenadorData
+      sortCompare: ordenadorDataHora
     }
   },
   "Ativo"

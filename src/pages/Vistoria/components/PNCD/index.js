@@ -39,8 +39,10 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
   const [ sequenciaVistoria, setSequenciaVistoria ] = useState( 0 );
 
   useEffect( () => {
-    let seq = props.vistorias.length + 1;
-
+    //Coletar da vistoriasCache somente as vistorias do trabalho diario atual
+    let vistoriasFiltradas = props.vistoriasCache.filter((vistoria) => vistoria.trabalhoDiario_id == trabalhoDiario_id)
+    let seq = vistoriasFiltradas.length + 1;
+  
     if( props.vistoria ) {
       const inspection                = props.vistoria;
       const class_inspectionSituation = optionVisita.find( option => props.vistoria.situacaoVistoria === option.value );
@@ -224,7 +226,7 @@ const mapStateToProps = state => ({
   imovel: state.vistoria.imovel,
   recipientes: state.vistoria.recipientes,
   handleSave: state.vistoriaCache.handleSave,
-  vistorias: state.vistoriaCache.vistorias,
+  vistoriasCache: state.vistoriaCache.vistorias,
   trabalhoDiario_id: state.rotaCache.trabalhoDiario.id,
   rota: state.rotaCache.rota,
   trabalhoDiario_horaInicio: state.rotaCache.trabalhoDiario.horaInicio,

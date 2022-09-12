@@ -14,8 +14,8 @@ export function* authenticate(action) {
       if( status === "error" ) {
         yield put( AppConfigActions.showNotifyToast( mensage, "error" ) );
       } else {
+        yield put( AppConfigActions.setAcabouDeLogar( true ) );
         redirectUser( user.atuacoes );
-
         yield put( AppConfigActions.authenticate( user ) );
         yield put( AppConfigActions.setToken( token ) );
       }

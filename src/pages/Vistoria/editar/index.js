@@ -16,28 +16,52 @@ import { setVistoriaIndexEdit } from '../../../store/VistoriaCache/vistoriaCache
 import { PageIcon, PageHeader } from '../../../styles/util';
 import { Container } from './styles';
 
-function CadastrarVistoria({ trabalhoDiario, rota, vistorias, ...props }) {
+function CadastrarVistoria({ trabalhoDiario, rota, vistoriasCache, ...props }) {
   useEffect(() => {
     props.changeSidebar( "vistoria" );
     props.setVistoriaIndexEdit(props.match.params.index)
   }, []);
 
+  //A parametro index que recebemos na url indica o index da vistoria em relação a lista vistoriaFiltradas
+  //A função abaixo encontra o index da vistoria em relação a lista vistoriasCache
+  function findIndexCache(){
+    const indexURL = props.match.params.index
+    var indexFiltrado = 0
+
+    for(var indexCache = 0 ; indexCache <  vistoriasCache.length; indexCache++){
+      if(vistoriasCache[indexCache].trabalhoDiario_id == trabalhoDiario.id){ 
+        if(indexFiltrado == indexURL) 
+          return indexCache
+
+        indexFiltrado++
+      }
+    }
+    //Nunca deveria chegar aqui
+    return null
+  }
+
   function getForm() {
+     //Coletar da vistoriasCache somente as vistorias do trabalho diario atual
+    let vistoriasFiltradas = vistoriasCache.filter((vistoria) => vistoria.trabalhoDiario_id == trabalhoDiario.id)
+
+    //Index da vistoria selecionada em relação à lista vistoriasCache
+    let indexCache = findIndexCache()
+
     switch ( trabalhoDiario.atividade.metodologia.sigla ) {
       case 'PNCD':
         return (
           <PNCD
             objetivo="LI+T"
-            vistoria={ vistorias[ props.match.params.index ] }
-            indexInspection={ props.match.params.index } />
+            vistoria={ vistoriasCache[ indexCache ] }
+            indexInspection={ indexCache } />
         )
 
       default: // LIRAa
         return (
           <LIRAa
             objetivo="LI"
-            vistoria={ vistorias[ props.match.params.index ] }
-            indexInspection={ props.match.params.index } />
+            vistoria={ vistoriasCache[ indexCache ] }
+            indexInspection={ indexCache } />
         )
     }
   }
@@ -67,7 +91,7 @@ function CadastrarVistoria({ trabalhoDiario, rota, vistorias, ...props }) {
 const mapStateToProps = state => ({
   trabalhoDiario: state.rotaCache.trabalhoDiario,
   rota: state.rotaCache.rota,
-  vistorias: state.vistoriaCache.vistorias
+  vistoriasCache: state.vistoriaCache.vistorias
 });
 
 const mapDispatchToProps = dispatch =>

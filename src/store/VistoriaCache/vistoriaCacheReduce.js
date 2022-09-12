@@ -14,9 +14,19 @@ const INITIAL_STATE = {
 export default function VistoriaCache(state = INITIAL_STATE, action) {
   switch (action.type) {
     case ActionTypes.LIMPAR_VISTORIAS: {
+
+      let vistorias = state.vistorias;
+      const trabalhoDiario_id = action.payload.trabalhoDiario_id
+
+      let vist = []
+      if(trabalhoDiario_id){
+        //Remove do cache todas as vistoria do trabalho recem-finalizado
+        vist = vistorias.filter((vistoria) => vistoria.trabalhoDiario_id != trabalhoDiario_id)
+      }
+
       return {
         ...state,
-        vistorias: []
+        vistorias: vist
       }
     }
 
@@ -62,10 +72,12 @@ export default function VistoriaCache(state = INITIAL_STATE, action) {
 
     case ActionTypes.DELETAR_VISTORIA: {
       let vistorias = state.vistorias,
-          rowSelected = action.payload.rowSelected;
+          rowSelected = action.payload.rowSelected,
+          trabalhoDiario_id = action.payload.trabalhoDiario_id
 
       rowSelected.forEach( row => {
-        vistorias[ row.dataIndex ].delete = true;
+        var indexCache = findIndexCache(vistorias,row.dataIndex,trabalhoDiario_id)
+        vistorias[ indexCache ].delete = true;
       });
 
       vistorias = vistorias.filter( v => v.delete ? false : true );
@@ -87,4 +99,38 @@ export default function VistoriaCache(state = INITIAL_STATE, action) {
     default:
       return state;
   }
+}
+
+/*
+ Ao longo da aplicação, precisamos coletar da vistoriaCahe apenas as vistorias feitas pelo Usuario Logado.
+ Para fazer essa filtragem, são pegos apenas as vistorias cujo o id trabalho diario é igual ao trabalho diario do usuario logado
+
+ A tabela de vistoria exibida em (/vistoria) usa a lista de vistoria filtrada, logo o index de cada linha da tabela referencia à lista filtrada,
+ e não à lista original
+
+ Chega um momento que precisamos encontrar o index de uma vistoria em relação a lista original, o que é justamente o que esta função faz
+
+ PARAMETROS
+  vistoriasCache     : é a lista original guardado no cache
+  indexFiltrado      : é o index da vistoria que desejamos encontrar em relação a lista filtrada
+  trabalhoDiario_id  : é o id do trabalho diario do usuario logado, utilizado como o filtro
+
+ RETORNO:
+  indexCache: é o index da vistoria que desejamos encontrar em relação a lista original do cache
+
+*/
+function findIndexCache(vistoriasCache, indexFiltrado, trabalhoDiario_id){
+
+  var indexComparador = 0
+
+  for(var indexCache = 0 ; indexCache <  vistoriasCache.length; indexCache++){
+    if(vistoriasCache[indexCache].trabalhoDiario_id == trabalhoDiario_id){ 
+      if(indexComparador == indexFiltrado) 
+        return indexCache
+
+        indexComparador++
+    }
+  }
+  //Nunca deveria chegar aqui
+  return null
 }

@@ -34,7 +34,10 @@ function LIRAa({ handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, .
   ]);
 
   useEffect(() => {
-    let seq = props.vistorias.length + 1;
+    //Coletar da vistoriasCache somente as vistorias do trabalho diario atual
+    let vistoriasFiltradas = props.vistoriasCache.filter((vistoria) => vistoria.trabalhoDiario_id == trabalhoDiario_id)
+
+    let seq = vistoriasFiltradas.length + 1;
 
     if( props.vistoria ) {
       const inspection = props.vistoria;
@@ -198,7 +201,7 @@ const mapStateToProps = state => ({
   rota: state.rotaCache.rota,
   imovel: state.vistoria.imovel,
   recipientes: state.vistoria.recipientes,
-  vistorias: state.vistoriaCache.vistorias,
+  vistoriasCache: state.vistoriaCache.vistorias,
   handleSave: state.vistoriaCache.handleSave,
   trabalhoDiario_id: state.rotaCache.trabalhoDiario.id,
   reload: state.vistoria.reload,

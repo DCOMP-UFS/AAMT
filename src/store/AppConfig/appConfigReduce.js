@@ -16,6 +16,10 @@ const INITIAL_STATE = {
   navToggle: true,
   token: "",
   toast: {},
+  //Indica se o usuario logou neste instante ou não
+  //é setado true quando loga e imediatamente volta para
+  //false após as ações do useEffect
+  acabouDeLogar:false
 }
 
 export default function appConfig(state = INITIAL_STATE, action){
@@ -70,6 +74,13 @@ export default function appConfig(state = INITIAL_STATE, action){
 
     case ActionTypes.CLEAR_TOAST:
       return { ...state, toast: { message: null, type: null } };
+
+    case ActionTypes.SET_ACABOU_DE_LOGAR: {
+      return {
+        ...state,
+        acabouDeLogar: action.payload.acabouDeLogar
+      }
+    }
 
     default:
       return state;

@@ -26,7 +26,7 @@ function ModalConfirmar({ tableSelected, ...props }) {
   // }, [ updateUser ]);
 
   function handleClick() {
-    props.deletarVistoria( tableSelected );
+    props.deletarVistoria( tableSelected, props.trabalhoDiario.id );
     $('#modal-deletar-vistoria').modal('hide');
     props.showNotifyToast( "Vistoria(s) deletada(s) com sucesso", "success" )
   }
@@ -67,7 +67,8 @@ function ModalConfirmar({ tableSelected, ...props }) {
 }
 
 const mapStateToProps = state => ({
-  tableSelected: state.supportInfo.tableSelection.tableVistoria
+  tableSelected: state.supportInfo.tableSelection.tableVistoria,
+  trabalhoDiario: state.rotaCache.trabalhoDiario,
 });
 
 const mapDispatchToProps = dispatch =>

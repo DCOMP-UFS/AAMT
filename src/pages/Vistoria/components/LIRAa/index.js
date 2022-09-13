@@ -34,7 +34,10 @@ function LIRAa({ handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, .
   ]);
 
   useEffect(() => {
-    let seq = props.vistorias.length + 1;
+    //Coletar da vistoriasCache somente as vistorias do trabalho diario atual
+    let vistoriasFiltradas = props.vistoriasCache.filter((vistoria) => vistoria.trabalhoDiario_id == trabalhoDiario_id)
+
+    let seq = vistoriasFiltradas.length + 1;
 
     if( props.vistoria ) {
       const inspection = props.vistoria;
@@ -97,7 +100,7 @@ function LIRAa({ handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, .
       };
 
       // Editar
-      if( props.indexInspection ) {
+      if( props.indexInspection != null ) {
         props.updateInspection( vistoria, props.indexInspection );
       } else {
         props.addVistoria( vistoria );
@@ -112,7 +115,7 @@ function LIRAa({ handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, .
         <article className="col-md-12">
           <div className="card">
              {/*isPaginaEdicao Indica para o componente se ele está sendo usado na pagina de edição de vistoria*/}
-            <ProcurarImovel isPaginaEdicao={ props.indexInspection ? true : false}/>
+            <ProcurarImovel isPaginaEdicao={ props.indexInspection != null ? true : false}/>
           </div>
         </article>
         <article className="col-md-12">
@@ -176,7 +179,7 @@ function LIRAa({ handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, .
 
               <Col md="6" >
                 {/*isPaginaEdicao Indica para o componente se ele está sendo usado na pagina de edição de vistoria*/}
-                <InspecionarRecipiente objetivo={ objetivo } isPaginaEdicao={ props.indexInspection ? true : false}  />
+                <InspecionarRecipiente objetivo={ objetivo } isPaginaEdicao={ props.indexInspection != null ? true : false}  />
               </Col>
             </Row>
           </div>
@@ -198,7 +201,7 @@ const mapStateToProps = state => ({
   rota: state.rotaCache.rota,
   imovel: state.vistoria.imovel,
   recipientes: state.vistoria.recipientes,
-  vistorias: state.vistoriaCache.vistorias,
+  vistoriasCache: state.vistoriaCache.vistorias,
   handleSave: state.vistoriaCache.handleSave,
   trabalhoDiario_id: state.rotaCache.trabalhoDiario.id,
   reload: state.vistoria.reload,

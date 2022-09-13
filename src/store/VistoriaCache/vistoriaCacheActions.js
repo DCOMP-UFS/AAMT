@@ -9,9 +9,12 @@ export const ActionTypes = {
   SET_VISTORIA_INDEX_EDIT: "SET_VISTORIA_INDEX_EDIT"
 }
 
-export const clearInspection = () => {
+export const clearInspection = (trabalhoDiario_id) => {
   return {
-    type: ActionTypes.LIMPAR_VISTORIAS
+    type: ActionTypes.LIMPAR_VISTORIAS,
+    payload: {
+      trabalhoDiario_id
+    }
   }
 }
 
@@ -52,11 +55,12 @@ export const resetHandleSave = () => {
   }
 }
 
-export const deletarVistoria = rowSelected => {
+export const deletarVistoria = (rowSelected,trabalhoDiario_id) => {
   return {
     type: ActionTypes.DELETAR_VISTORIA,
     payload: {
-      rowSelected
+      rowSelected,
+      trabalhoDiario_id
     }
   }
 }

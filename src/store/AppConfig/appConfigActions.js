@@ -6,7 +6,8 @@ export const ActionTypes = {
   CLEAR_TOAST: "CLEAR_TOAST",
   AUTHENTICATE_REQUEST: "AUTHENTICATE_REQUEST",
   AUTHENTICATE_SUCCESS: "AUTHENTICATE_SUCCESS",
-  SIGN_OUT: "SIGN_OUT"
+  SIGN_OUT: "SIGN_OUT",
+  SET_ACABOU_DE_LOGAR: "SET_ACABOU_DE_LOGAR"
 };
 
 export const authenticateRequest = (usuario, senha, redirectUser) => {
@@ -67,6 +68,15 @@ export const showNotifyToast = ( message, type ) => {
     payload: {
       message,
       type
+    }
+  }
+}
+
+export const setAcabouDeLogar = acabouDeLogar => {
+  return {
+    type: ActionTypes.SET_ACABOU_DE_LOGAR,
+    payload: {
+      acabouDeLogar,
     }
   }
 }

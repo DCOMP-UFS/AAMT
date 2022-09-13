@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import ButtonSaveModal from '../../components/ButtonSaveModal';
+import $ from 'jquery';
 
 import { Button } from '../../styles/global';
 
@@ -33,7 +34,7 @@ const getDate = () => {
 
 
 
-function ModalFinalizarTrabalho({ usuario, vistorias, trabalhoDiario, atividade, horarioUltimaVistoria, ...props }) {
+function ModalFinalizarTrabalho({ usuario, vistoriasCache, trabalhoDiario, atividade, horarioUltimaVistoria, ...props }) {
   const [ horaFim, setHoraFim ] = useState( getDate() );
   const [ dataRota, setDataRota ] = useState('');
   const [ flLoading, setFlLoading ] = useState( false );
@@ -47,13 +48,14 @@ function ModalFinalizarTrabalho({ usuario, vistorias, trabalhoDiario, atividade,
   //Effect que verifica se as rotas foram finalizadas
   //responsavel por desativar o carregamento do botão Encerrar
   useEffect(() => {
+    if(props.auxFinalizado)
+      $( "#"+props.id ).modal( 'hide' );
     setFlLoading (false)
     props.setAuxFinalizado( undefined );
   }, [ props.auxFinalizado ]);
 
   function handleSubmit( e ) {
     e.preventDefault();
-    console.log(horarioUltimaVistoria)
     
     const horaInicio = trabalhoDiario.horaInicio.slice(0,-3)
     
@@ -63,7 +65,8 @@ function ModalFinalizarTrabalho({ usuario, vistorias, trabalhoDiario, atividade,
       props.showNotifyToast("Horario de Encerramento deve ser no minimo igual ao Horario de Início","warning")
     else{
       setFlLoading (true)
-      props.closeRouteRequest( usuario.id, trabalhoDiario.id, horaFim, vistorias );
+      const vistoriasFiltradas = vistoriasCache.filter((vistoria) => vistoria.trabalhoDiario_id == trabalhoDiario.id)
+      props.closeRouteRequest( usuario.id, trabalhoDiario.id, horaFim, vistoriasFiltradas );
     }
   }
 
@@ -147,7 +150,7 @@ const mapStateToProps = state => ({
   usuario: state.appConfig.usuario,
   atividade: state.atividade,
   trabalhoDiario: state.rotaCache.trabalhoDiario,
-  vistorias: state.vistoriaCache.vistorias,
+  vistoriasCache: state.vistoriaCache.vistorias,
   auxFinalizado: state.rota.auxFinalizado
 });
 

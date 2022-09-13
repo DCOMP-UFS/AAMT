@@ -64,7 +64,7 @@ export const INITIAL_STATE = {
 function ModalCadastrarInspecao( {
   sequenciaRecipiente,
   recipientes,
-  vistorias,
+  vistoriasCache,
   trabalhoDiario_id,
   data,
   objetivo,
@@ -136,7 +136,7 @@ function ModalCadastrarInspecao( {
   function submit() {
     // Validação
     let fl_valido = true;// true -> válido | false -> inválido
-
+    
     if( !validInputIsNull( "#tipoRecipiente", tipoRecipiente.value ) ) fl_valido = false;
     if( objetivo === 'LI+T' || objetivo === 'T' ) {
       if( !validInputIsNull( "#fl_eliminado", fl_eliminado.value ) ) fl_valido = false;
@@ -200,7 +200,11 @@ function ModalCadastrarInspecao( {
 
     if( temCodigoDuplicado.length === 0 && valida_entre_recipiente ) {
       $( '#row-sequence' ).parent().find( 'span.form-label-invalid' ).remove();
-      vistorias.forEach( ( vistoria, vistoriaIndex ) => {
+
+      //Lista contem apenas as vistorias do trabalho diario do usuario logado
+      var vistoriasFiltradas = vistoriasCache.filter((vistoria) => vistoria.trabalhoDiario_id == trabalhoDiario_id)
+      
+      vistoriasFiltradas.forEach( ( vistoria, vistoriaIndex ) => {
         vistoria.recipientes.forEach( recipiente => {
           recipiente.amostras.forEach( amostra => {
             const index = arrayCodigosAmostra.findIndex( p => p === amostra.idUnidade );
@@ -215,7 +219,7 @@ function ModalCadastrarInspecao( {
         } );
       } );
     }
-
+    
     if( fl_valido ) {
       const recipiente = {
         fl_comFoco:     fl_foco.value,
@@ -431,7 +435,7 @@ const mapStateToProps = state => ({
   trabalhoDiario_sequencia: state.rotaCache.trabalhoDiario.sequencia,
   codigoMunicipio: state.rotaCache.trabalhoDiario.codigo_municipio,
   sequenciaUsuario: state.rotaCache.trabalhoDiario.sequencia_usuario,
-  vistorias: state.vistoriaCache.vistorias,
+  vistoriasCache: state.vistoriaCache.vistorias,
   recipientes: state.vistoria.recipientes,
   sequenciaRecipiente: state.vistoria.sequenciaRecipiente,
 });

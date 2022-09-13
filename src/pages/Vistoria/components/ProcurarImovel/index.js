@@ -18,7 +18,7 @@ import { tipoImovel as tipoImovelEnum } from '../../../../config/enumerate';
 import { selectDefault } from '../../../../styles/global';
 import { Container, UlImovel, LiImovel, ContainerIcon, DivDescription, LiEmpty, Span } from './styles';
 
-function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEdicao, ...props }) {
+function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEdicao, trabalhoDiario_id, ...props }) {
   const [ optionQuarteirao, setOptionQuarteirao ] = useState([]);
   const [ numero, setNumero ] = useState("");
   const [ sequencia, setSequencia ] = useState("");
@@ -26,6 +26,7 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEd
     return { value: value.id, label: value.label };
   }));
   const [ imoveis, setImoveis ] = useState( [] );
+  const [ vistoriasFiltradas , setVistoriasFiltradas]  = useState([]) 
 
   useEffect(() => {
     let optQuarteirao = rota.map(( quarteirao, index ) => {
@@ -36,6 +37,8 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEd
       ...optQuarteirao
     ]);
 
+    var filtragem = props.vistorias.filter((vistoria) => vistoria.trabalhoDiario_id == trabalhoDiario_id)
+    setVistoriasFiltradas(filtragem)
 
     props.setQuarteiraoSelect({ value: 0, label: rota[0].numero, id: rota[0].id });
   }, []);
@@ -47,7 +50,7 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEd
         rota.forEach(rota => {
           var aux = rota.lados.reduce(( imvs, l ) => {
             l.imoveis = l.imoveis.map( i => {
-              const inspection  = props.vistorias.find( vistoria => {
+              const inspection  = vistoriasFiltradas.find( vistoria => {
                 if( imovel ) // existe um imóvel setado
                   return vistoria.imovel.id === i.id && vistoria.imovel.id !== imovel.id;
                 else
@@ -64,7 +67,7 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEd
       } else {
         im = rota[ selectQuarteirao.value ].lados.reduce(( imvs, l ) => {
           l.imoveis = l.imoveis.map( i => {
-            const inspection  = props.vistorias.find( vistoria => {
+            const inspection  = vistoriasFiltradas.find( vistoria => {
               if( imovel ) // existe um imóvel setado
                 return vistoria.imovel.id === i.id && vistoria.imovel.id !== imovel.id;
               else
@@ -283,7 +286,7 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEd
             handleImovel={ handleImovel }
             numero={ numero === "" ? "-1" : numero }
             sequencia={ sequencia === "" ? "-1" : sequencia }
-            vistorias={ props.vistorias } />
+            vistorias={ vistoriasFiltradas } />
         </Col>
       </Row>
     </Container>
@@ -355,6 +358,7 @@ const mapStateToProps = state => ({
   imovel: state.vistoria.imovel,
   reload: state.vistoria.reload,
   vistorias: state.vistoriaCache.vistorias,
+  trabalhoDiario_id: state.rotaCache.trabalhoDiario.id,
 });
 
 const mapDispatchToProps = dispatch =>

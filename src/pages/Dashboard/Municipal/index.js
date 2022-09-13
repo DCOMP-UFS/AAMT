@@ -4,9 +4,13 @@ import { FaChartPie } from 'react-icons/fa';
 import { Row } from 'react-bootstrap';
 import ReactMapGL from 'react-map-gl';
 import Select from 'react-select';
+import $ from 'jquery';
+
 
 // ACTIONS
 import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
+import { getRouteRequest } from '../../../store/Rota/rotaActions';
+import { setAcabouDeLogar } from '../../../store/AppConfig/appConfigActions';
 
 // STYLES
 import { PageIcon, PageHeader } from '../../../styles/util';
@@ -20,10 +24,19 @@ export const HomeSupervisor = ({ ...props }) => {
     longitude: -47.9292,
     zoom: 2
   });
-
+  
   useEffect(() => {
     props.changeSidebar( "dashboard_municipío" );
   }, []);
+
+  useEffect(() => {
+    if(props.acabouDeLogar){
+      const [ d, m, Y ]  = new Date().toLocaleDateString().split( '/' );
+      const current_date = `${ Y }-${ m }-${ d }`;
+      props.getRouteRequest( props.usuario.id, current_date );
+    }
+    props.setAcabouDeLogar(false)
+  }, [props.acabouDeLogar]);
 
   return (
     <>
@@ -67,11 +80,14 @@ export const HomeSupervisor = ({ ...props }) => {
 }
 
 const mapStateToProps = state => ({
-
+  acabouDeLogar  :state.appConfig.acabouDeLogar,
+  usuario        :state.appConfig.usuario,
 });
 
 const mapDispatchToProps = {
-  changeSidebar
+  changeSidebar,
+  setAcabouDeLogar,
+  getRouteRequest,
 }
 
 export default connect(

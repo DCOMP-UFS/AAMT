@@ -119,7 +119,7 @@ const columns = [
   }
 ];
 
-const Vistoria = ( { vistorias, usuario, trabalhoDiario, rota, showNotStarted, ...props } ) => {
+const Vistoria = ( { vistoriasCache, usuario, trabalhoDiario, rota, showNotStarted, ...props } ) => {
   const [ rows, setRows ]         = useState( [] );
   const [ imoveis, setImoveis ]   = useState( [] );
   const [ viewport, setViewport ] = useState( {
@@ -130,6 +130,11 @@ const Vistoria = ( { vistorias, usuario, trabalhoDiario, rota, showNotStarted, .
     zoom      : 14
   } );
   const [ultimoHorarioVistoria, setUltimoHorarioVistoria] = useState(null)
+
+  //VistoriaCache pode armazena vistorias do trabalhos diario de varios usuarios
+  //por isso é necessario coletar as vistorias do trabalho diario do usuario que está logado agora.
+  //O estado abaixo armazena a lista de vistorias filtradas
+  const [ vistoriasFiltradas, setVistoriasFiltradas ]  = useState( [] );
 
   const options = {
     customToolbar: () => {
@@ -152,6 +157,7 @@ const Vistoria = ( { vistorias, usuario, trabalhoDiario, rota, showNotStarted, .
       );
     },
     customToolbarSelect: ( { data } ) => {
+      console.log(data)
       props.changeTableSelected( 'tableVistoria', data );
       return (
         <ButtonDelete
@@ -210,26 +216,31 @@ const Vistoria = ( { vistorias, usuario, trabalhoDiario, rota, showNotStarted, .
 
   useEffect( () => {
     const createRows = () => {
-      const vists = vistorias.map( ( vistoria, index ) => (
-        [
-          index,
-          vistoria.imovel.numeroQuarteirao,
-          vistoria.imovel.logradouro,
-          vistoria.imovel.numero,
-          vistoria.imovel.sequencia,
-          tipoImovelEnum[
-            Object.entries( tipoImovelEnum ).find( ( [ key, value ] ) => value.id === vistoria.imovel.tipoImovel )[ 0 ]
-          ].sigla,
-          vistoria.situacaoVistoria === "N" ? "Normal" : "Recuperada",
-          vistoria.pendencia ? ( vistoria.pendencia === "F" ? "Fechada" : "Recusada" ) : "",
-          vistoria.horaEntrada
-        ]
-      ) );
+      let vists = []
+      let filtragem = vistoriasCache.filter((vistoria) => vistoria.trabalhoDiario_id == trabalhoDiario.id)
+      setVistoriasFiltradas(filtragem)
+      
+      //Apenas as vistorias do trabalho diario atual são mostradas
+      filtragem.forEach( ( vistoria, index ) => {
+          vists.push([
+            index,
+            vistoria.imovel.numeroQuarteirao,
+            vistoria.imovel.logradouro,
+            vistoria.imovel.numero,
+            vistoria.imovel.sequencia,
+            tipoImovelEnum[
+              Object.entries( tipoImovelEnum ).find( ( [ key, value ] ) => value.id === vistoria.imovel.tipoImovel )[ 0 ]
+            ].sigla,
+            vistoria.situacaoVistoria === "N" ? "Normal" : "Recuperada",
+            vistoria.pendencia ? ( vistoria.pendencia === "F" ? "Fechada" : "Recusada" ) : "",
+            vistoria.horaEntrada
+          ])
+      } );
       setRows( vists );
     }
 
     createRows();
-  }, [ vistorias, props.reload ] );
+  }, [ vistoriasCache, props.reload ] );
 
   useEffect(() => {
     if( !trabalhoDiario.id ) {
@@ -319,7 +330,7 @@ const Vistoria = ( { vistorias, usuario, trabalhoDiario, rota, showNotStarted, .
           </PagePopUp>
 
           <article className="col-12">
-            <ProgressBar className="bg-success" percentage={ vistorias.length } total={ imoveis.length } />
+            <ProgressBar className="bg-success" percentage={ vistoriasFiltradas.length } total={ imoveis.length } />
           </article>
 
           <article className="col-md-12">
@@ -332,7 +343,7 @@ const Vistoria = ( { vistorias, usuario, trabalhoDiario, rota, showNotStarted, .
                 >
                   {
                     rota.map( r => r.lados.map( lado => lado.imoveis.map( ( imovel, index ) => {
-                      const inspection = vistorias.find(vistoria => vistoria.imovel.id === imovel.id );
+                      const inspection = vistoriasCache.find(vistoria => vistoria.imovel.id === imovel.id );
 
                       return (
                         <Marker
@@ -387,7 +398,7 @@ const mapStateToProps = state => ( {
   rota          : state.rotaCache.rota,
   quarteirao    : state.quarteirao.quarteirao,
   form_vistoria : state.supportInfo.form_vistoria,
-  vistorias     : state.vistoriaCache.vistorias,
+  vistoriasCache: state.vistoriaCache.vistorias,
   showNotStarted: state.vistoriaCache.showNotStarted,
   reload        : state.vistoriaCache.reload,
   isFinalizado  : state.rota.isFinalizado,

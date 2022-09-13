@@ -88,7 +88,10 @@ export function* startRoute(action) {
 
     if( status === 200 ) {
       yield put( RotaCacheActions.saveRoute( data, action.payload.horaInicio ) );
-      yield put( VistoriaCacheActions.clearInspection() );
+
+      //Linha abaixo foi comentada porque não é necessario limpar as vistorias de um trabalho que acabou de começar, ou seja, não possui vistorias ainda
+      //yield put( VistoriaCacheActions.clearInspection(null) );
+
       yield put( RotaActions.setAuxIniciado(true) );
       window.location = window.location.origin.toString() + '/vistoria';
     }else {
@@ -113,7 +116,7 @@ export function* closeRoute(action) {
         const { data } = yield call( service.getRouteRequest, { usuario_id: action.payload.usuario_id, dia: current_date } );
 
         yield put( RotaCacheActions.getRoute( data ) );
-        yield put( VistoriaCacheActions.clearInspection() );
+        yield put( VistoriaCacheActions.clearInspection(action.payload.trabalhoDiario_id) );
         yield put( RotaActions.setAuxFinalizado(true) );
         yield put( AppConfigActions.showNotifyToast( "Rota finalizada e vistorias registradas com sucesso!", "success" ) );
 

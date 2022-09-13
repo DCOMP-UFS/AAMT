@@ -94,7 +94,7 @@ const columns = [
   }
 ];
 
-const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vistorias, ...props } ) => {
+const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vistoriasCache, ...props } ) => {
   const [ trabalhoDiario_date, setTrabalhoDiario_date ] = useState( '' );
   const [ viewport, setViewport ]                       = useState( {
     width:      '100%',
@@ -109,6 +109,11 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
   const options                                         = {
     selectableRows: 'none'
   };
+
+  //VistoriaCache pode armazena vistorias do trabalhos diario de varios usuarios
+  //por isso é necessario coletar as vistorias do trabalho diario do usuario que está logado agora.
+  //O estado abaixo armazena a lista de vistorias filtradas
+  const [ vistoriasFiltradas, setVistoriasFiltradas ]  = useState( [] );
 
   useEffect( () => {
     const initHome = () => {
@@ -154,7 +159,7 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
 
       setTrabalhoDiario_date( `${ date[ 2 ] }/${ date[ 1 ] }/${ date[ 0 ] }` );
     } else {
-      props.clearInspection();
+      props.clearInspection(null);
     }
   }, [ trabalhoDiario ] );
 
@@ -183,6 +188,9 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
 
   useEffect( () => {
     function createRows() {
+      let filtragem = vistoriasCache.filter((vistoria) => vistoria.trabalhoDiario_id == trabalhoDiario.id)
+      setVistoriasFiltradas(filtragem)
+      
       let qtdTipo = [ 0, 0, 0, 0 ];
       const imovs = imoveis.map( ( imovel, index ) => {
         switch( imovel.tipoImovel ) {
@@ -299,7 +307,7 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
 
         <Row>
           <article className="col-12">
-            <ProgressBar className="bg-success" percentage={ vistorias.length } total={ imoveis.length } />
+            <ProgressBar className="bg-success" percentage={ vistoriasFiltradas.length } total={ imoveis.length } />
           </article>
           <article className="col-md-8">
             <div className="card" style={ { height: '350px' } }>
@@ -310,7 +318,7 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
               >
                 {
                   rota.map( r => r.lados.map( lado => lado.imoveis.map(( imovel, index ) => {
-                    const inspection = vistorias.find( vistoria => vistoria.imovel.id === imovel.id );
+                    const inspection = vistoriasCache.find( vistoria => vistoria.imovel.id === imovel.id );
 
                     return (
                       <Marker
@@ -391,7 +399,7 @@ const mapStateToProps = state => ( {
   fl_iniciada:    state.rota.fl_iniciada,
   openModal:      state.rota.openModal,
   showNotStarted: state.vistoriaCache.showNotStarted,
-  vistorias:      state.vistoriaCache.vistorias,
+  vistoriasCache: state.vistoriaCache.vistorias,
   isFinalizado:   state.rota.isFinalizado,
 } );
 

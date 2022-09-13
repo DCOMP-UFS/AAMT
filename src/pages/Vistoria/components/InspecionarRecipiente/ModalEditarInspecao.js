@@ -41,7 +41,7 @@ import {
 const InspecionarRecipiente = ( {
   updatedIndex,
   recipientes,
-  vistorias,
+  vistoriasCache,
   trabalhoDiario_id,
   data,
   objetivo,
@@ -71,9 +71,14 @@ const InspecionarRecipiente = ( {
     Object.entries( tecnicaTratamentoEnum ).map( ( [ key, value ] ) => ( { value: value.id, label: value.label } ) )
   );
   const [ qtdTratamentoValid , setqtdTratamentoValid] = useState(true)
+  const [ vistoriasFiltradas , setVistoriasFiltrada]  = useState([]) 
   
   useEffect( () => {
     if( updatedIndex > -1 ) {
+
+      var filtragem = vistoriasCache.filter((vistoria) => vistoria.trabalhoDiario_id == trabalhoDiario_id)
+      setVistoriasFiltrada(filtragem)
+
       const recipiente = recipientes[ updatedIndex ];
       setTipoRecipiente({ value: recipiente.tipoRecipiente, label: recipiente.tipoRecipiente });
       setFl_eliminado({ value: recipiente.fl_eliminado, label: recipiente.fl_eliminado ? "Sim" : "Não" });
@@ -206,7 +211,7 @@ const InspecionarRecipiente = ( {
 
       //Caso estivermos na pagina de edição de vistoria (/vistoria/editar/:vistoriaIndex)
       if(isPaginaEdicao){
-        vistorias.forEach( ( vistoria, vistoriaIndex ) => {
+        vistoriasFiltradas.forEach( ( vistoria, vistoriaIndex ) => {
           //Condicional abaixo ignora a vistoria com index == props.vistoriaIndexEdit,
           //que é justamente a vistoria cujo a pagina de edição nos encontramos.
           //Essa condicional é necessaria para evitar que uma amostra se compare consigo mesma
@@ -228,7 +233,7 @@ const InspecionarRecipiente = ( {
         } );
       //Caso estivermos na pagina de cadastro de vistoria (/vistoria/cadastrar)
       } else {
-        vistorias.forEach( ( vistoria, vistoriaIndex ) => {
+        vistoriasFiltradas.forEach( ( vistoria, vistoriaIndex ) => {
             vistoria.recipientes.forEach( recipiente => {
               recipiente.amostras.forEach( amostra => {
                 const index = arrayCodigosAmostra.findIndex( p => p === amostra.idUnidade );
@@ -278,7 +283,7 @@ const InspecionarRecipiente = ( {
               Inspeção cód.:
               {
                 updatedIndex > -1 ?
-                  (`${ trabalhoDiario_id }.${ ( vistorias.length + 1) }.${ recipientes[ updatedIndex ].sequencia }`):
+                  (`${ trabalhoDiario_id }.${ ( vistoriasFiltradas.length + 1) }.${ recipientes[ updatedIndex ].sequencia }`):
                   ''
               }
             </h5>
@@ -454,12 +459,12 @@ const mapStateToProps = state => ({
   trabalhoDiario_sequencia: state.rotaCache.trabalhoDiario.sequencia,
   codigoMunicipio         : state.rotaCache.trabalhoDiario.codigo_municipio,
   sequenciaUsuario        : state.rotaCache.trabalhoDiario.sequencia_usuario,
-  vistorias               : state.vistoriaCache.vistorias,
+  vistoriasCache          : state.vistoriaCache.vistorias,
   recipientes             : state.vistoria.recipientes,
   sequenciaRecipiente     : state.vistoria.sequenciaRecipiente,
   updatedIndex            : state.vistoria.updatedIndex,
   updatedRecipiente       : state.vistoria.updatedRecipiente,
-  vistoriaIndexEdit: state.vistoriaCache.vistoriaIndexEdit
+  vistoriaIndexEdit       : state.vistoriaCache.vistoriaIndexEdit
 });
 
 const mapDispatchToProps = dispatch =>

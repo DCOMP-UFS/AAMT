@@ -113,7 +113,7 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
         justificativa
       };
 
-      if( props.indexInspection ) {
+      if( props.indexInspection != null ) {
         props.updateInspection( vistoria, props.indexInspection );
       } else {
         props.addVistoria( vistoria );
@@ -127,7 +127,7 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
         <article className="col-md-12">
           <div className="card">
             {/*isPaginaEdicao Indica para o componente se ele está sendo usado na pagina de edição de vistoria*/}
-            <ProcurarImovel isPaginaEdicao={ props.indexInspection ? true : false }/>
+            <ProcurarImovel isPaginaEdicao={ props.indexInspection != null ? true : false }/>
           </div>
         </article>
         <article className="col-md-12">
@@ -203,7 +203,7 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
 
               <Col md="6" >
                  {/*isPaginaEdicao Indica para o componente se ele está sendo usado na pagina de edição de vistoria*/}
-                <InspecionarRecipiente objetivo={ objetivo } isPaginaEdicao={ props.indexInspection ? true : false}/>
+                <InspecionarRecipiente objetivo={ objetivo } isPaginaEdicao={ props.indexInspection != null ? true : false}/>
               </Col>
             </Row>
           </div>

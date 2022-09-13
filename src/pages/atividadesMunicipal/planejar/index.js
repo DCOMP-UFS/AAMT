@@ -54,6 +54,11 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
   const [ metodologia, setMetodologia ]             = useState( {
     sigla: ""
   } );
+  const [modalEstratoOpen, setModalEstratoOpen] = useState(false);
+  const [modalEquipeOpen,  setModalEquipeOpen]  = useState(false);
+
+  const handleCloseModalEstrato = () => {setModalEstratoOpen(false)} 
+  const handleCloseModalEquipe = () => {setModalEquipeOpen(false)} 
 
   useEffect( () => {
     props.changeSidebar( "atividade_municipio", "atm_consultar" );
@@ -194,6 +199,7 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
                         title="Planejar Estrato"
                         data-toggle="modal"
                         data-target="#modal-novo-estrato"
+                        onClick={() => setModalEstratoOpen(true)}
                       />
                       <span className="text-danger">{ mensageEstrato }</span>
                     </h4>
@@ -207,6 +213,7 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
                         title="Planejar Equipe"
                         data-toggle="modal"
                         data-target="#modal-novo-equipe"
+                        onClick={() => setModalEquipeOpen(true)}
                       />
                       <span className="text-danger">{ mensageEquipe }</span>
                     </h4>
@@ -216,8 +223,8 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
                 </Row>
               </form>
 
-              <ModalEstrato />
-              <ModalEquipe />
+              <ModalEstrato isOpen={modalEstratoOpen} handleClose={handleCloseModalEstrato} />
+              <ModalEquipe  isOpen={modalEquipeOpen} handleClose={handleCloseModalEquipe}/>
             </div>
           </article>
         </div>

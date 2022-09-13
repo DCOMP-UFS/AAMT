@@ -17,11 +17,20 @@ import { UlLocal, LiLocal, ContainerCheck, DivDescription, LiEmpty, Arrows } fro
 import { ContainerArrow } from '../../../../styles/util';
 import { Button, FormGroup } from '../../../../styles/global';
 
-const ModalEstrato = ( { atividade, estratos, ...props } ) => {
+const ModalEstrato = ( { atividade, estratos, isOpen, handleClose, ...props } ) => {
   const [ abrangencia, setAbrangencia ]               = useState( "" );
   const [ locais, setLocais ]                         = useState( [] );
   const [ locaisSelecionados, setLocaisSelecionados ] = useState( [] );
   const [ reload, setReload ]                         = useState( false );
+
+  //É acionado sempre que o modal é aberto
+  //Limpa os dados deixados quando o modal foi fechado
+  useEffect( () => {
+    if(isOpen)
+      clearInput()
+
+    handleClose()
+  }, [ isOpen ] );
 
   useEffect( () => {
     if( Object.entries( atividade ).length > 0 ) {
@@ -101,7 +110,7 @@ const ModalEstrato = ( { atividade, estratos, ...props } ) => {
   }
 
   function clearInput() {
-    const est = [];
+    /* const est = [];
     for (const estrato of estratos) {
       for (const local of estrato.locais) {
         est.push(local)
@@ -109,7 +118,15 @@ const ModalEstrato = ( { atividade, estratos, ...props } ) => {
     }
     const nw_locais = locais.filter(local => !est.find(e => local.nome === e.nome));
     setLocais( nw_locais.map((l) => ({ ...l, checked: false })) );
+    setLocaisSelecionados( [] ); */
+
+    const l = props.locais
+      .map( ( loc, index ) => ( { ...loc, dataIndex: index } ) )
+      .filter( loc => loc.flEstrato ? !loc.flEstrato : true );
+
+    setLocais(l);
     setLocaisSelecionados( [] );
+  
   }
 
   function handleSubmit( e ) {
@@ -123,7 +140,7 @@ const ModalEstrato = ( { atividade, estratos, ...props } ) => {
   }
 
   return (
-    <Modal id="modal-novo-estrato" title="Planejar estrato" size="lg">
+    <Modal id="modal-novo-estrato" title="Planejar estrato" size="lg" >
       <form onSubmit={ handleSubmit }>
         <ModalBody>
           <Row>

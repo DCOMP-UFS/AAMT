@@ -31,6 +31,17 @@ function PlanejarAtividade({ ciclos, atividades, ...props }) {
 
   useEffect(() => {
     const options = ciclos.map( (ciclo) => {
+
+      let arrayInicio = ciclo.dataInicio.split("-")
+      let arrayFim = ciclo.dataFim.split("-")
+
+      //Strings que armazenao o inicio e fim do ciclo no formato dd/mm/aaaa
+      //Quandos as datas são convertidas para o tipo date, acabam ficando 
+      //em outros fuso, para não atrapalhar a logica ja criada pelos desenvolvedores originais, 
+      //eu criei essas 2 strings para serem exibidas para o usuario
+      let stringDataInicio = arrayInicio[2]+"/"+arrayInicio[1]+"/"+arrayInicio[0]
+      let stringDataFim = arrayFim[2]+"/"+arrayFim[1]+"/"+arrayFim[0]
+
       let current_date = new Date();
       let dataInicio = new Date( ciclo.dataInicio );
       let dataFim = new Date( ciclo.dataFim );
@@ -39,10 +50,10 @@ function PlanejarAtividade({ ciclos, atividades, ...props }) {
       dataFim.setHours(0,0,0,0);
 
       if( dataInicio <= current_date && dataFim >= current_date )
-        setCiclo({ value: ciclo.id, label: `${ ciclo.ano }.${ ciclo.sequencia }`, dataInicio, dataFim });
+        setCiclo({ value: ciclo.id, label: `${ ciclo.ano }.${ ciclo.sequencia }`, dataInicio, dataFim, stringDataInicio, stringDataFim  });
 
       return (
-        { value: ciclo.id, label: `${ ciclo.ano }.${ ciclo.sequencia }`, dataInicio, dataFim }
+        { value: ciclo.id, label: `${ ciclo.ano }.${ ciclo.sequencia }`, dataInicio, dataFim, stringDataInicio, stringDataFim  }
       );
     });
 
@@ -122,7 +133,11 @@ function PlanejarAtividade({ ciclos, atividades, ...props }) {
                       </div>
                       <div className="info">
                         <h4 className="title">Atividade</h4>
-                        <span>De: { ciclo.dataInicio ? ciclo.dataInicio.toLocaleDateString('en-GB') : '' } até { ciclo.dataFim ? ciclo.dataFim.toLocaleDateString('en-GB') : '' }</span>
+                        {/*
+                          span original
+                          <span>De: { ciclo.dataInicio ? ciclo.dataInicio.toLocaleDateString('en-GB') : '' } até { ciclo.dataFim ? ciclo.dataFim.toLocaleDateString('en-GB') : '' }</span
+                        */}
+                        <span>De: { ciclo.dataInicio ? ciclo.stringDataInicio : '' } até { ciclo.dataFim ? ciclo.stringDataFim : '' }</span>
                       </div>
                     </Header>
                     <Body>

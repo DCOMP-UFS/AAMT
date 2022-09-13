@@ -6,6 +6,7 @@ import { Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
 import { abrangencia as abrangenciaEnum }  from '../../../config/enumerate';
 import ButtonSave from '../../../components/ButtonSave';
+import SelectWrap from '../../../components/SelectWrap'
 
 // ACTIONS
 import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
@@ -16,6 +17,8 @@ import { createActiveRequest } from '../../../store/Atividade/atividadeActions';
 // STYLES
 import { FormGroup, selectDefault } from '../../../styles/global';
 import { ContainerFixed } from '../../../styles/util';
+
+import {isBlank} from '../../../config/function';
 
 const Atividades = ( { metodologias, ciclos, ...props } ) => {
   const [ objetivoAtividade, setObjetivoAtividade ] = useState( "" );
@@ -35,6 +38,7 @@ const Atividades = ( { metodologias, ciclos, ...props } ) => {
     .map( ( [ key, value ] ) => {
       return { value: value.id, label: value.label };
     } );
+  const [ isValidObjetivo, setIsValidObjetivo ] = useState( true );
 
   useEffect(() => {
     props.changeSidebar( "atividade_municipio", "atm_cadastrar" );
@@ -78,16 +82,22 @@ const Atividades = ( { metodologias, ciclos, ...props } ) => {
   function handleSubmit( e ) {
     e.preventDefault();
 
-    props.createActiveRequest(
-      objetivoAtividade,
-      flTodosImoveis.value,
-      2,//responsabilidade
-      ciclo.value,
-      props.municipio_id,
-      metodologia.value,
-      objetivo.value,
-      abrangencia.value
-    );
+    if(isBlank(objetivoAtividade))
+      setIsValidObjetivo(false)
+    else{
+      setIsValidObjetivo(true)
+      
+     props.createActiveRequest(
+        objetivoAtividade,
+        flTodosImoveis.value,
+        2,//responsabilidade
+        ciclo.value,
+        props.municipio_id,
+        metodologia.value,
+        objetivo.value,
+        abrangencia.value
+      );
+    }
   }
 
   return (
@@ -123,6 +133,11 @@ const Atividades = ( { metodologias, ciclos, ...props } ) => {
                         rows="5"
                         required
                       ></textarea>
+                       {
+                        !isValidObjetivo ?
+                          <span className="form-label-invalid">Objetivo inválido</span> :
+                          ''
+                        }
                     </FormGroup>
                     </Col>
                   </Row>
@@ -130,24 +145,26 @@ const Atividades = ( { metodologias, ciclos, ...props } ) => {
                     <Col sm='6'>
                       <FormGroup>
                         <label>Metodologia <code>*</code></label>
-                        <Select
+                        <SelectWrap
                           id="metodologia"
                           value={ metodologia }
                           styles={ selectDefault }
                           options={ optionMetodologia }
                           onChange={ e => setMetodologia( e ) }
+                          required
                         />
                       </FormGroup>
                     </Col>
                     <Col sm='6'>
                       <FormGroup>
                         <label>Atividade <code>*</code></label>
-                        <Select
+                        <SelectWrap
                           id="objetivo"
                           value={ objetivo }
                           styles={ selectDefault }
                           options={ optionObjetivo }
                           onChange={ e => setObjetivo( e ) }
+                          required
                         />
                       </FormGroup>
                     </Col>
@@ -156,7 +173,7 @@ const Atividades = ( { metodologias, ciclos, ...props } ) => {
                     <Col sm="6">
                       <FormGroup>
                         <label htmlFor="flTodosImoveis">Realizar a atividade em todos os imóveis? <code>*</code></label>
-                        <Select
+                        <SelectWrap
                           id="flTodosImoveis"
                           value={ flTodosImoveis }
                           options={ optionflTodosImoveis }
@@ -169,12 +186,13 @@ const Atividades = ( { metodologias, ciclos, ...props } ) => {
                     <Col sm="6">
                       <FormGroup>
                         <label>Abrangência <code>*</code></label>
-                        <Select
+                        <SelectWrap
                           id="abrangencia"
                           value={ abrangencia }
                           styles={ selectDefault }
                           options={ optionAbrangencia }
                           onChange={ e => setAbrangencia( e ) }
+                          required
                         />
                       </FormGroup>
                     </Col>
@@ -183,12 +201,13 @@ const Atividades = ( { metodologias, ciclos, ...props } ) => {
                     <Col>
                       <FormGroup>
                         <label>Ciclo <code>*</code></label>
-                        <Select
+                        <SelectWrap
                           id="ciclo"
                           value={ ciclo }
                           styles={ selectDefault }
                           options={ optionCiclo }
                           onChange={ e => setCiclo( e ) }
+                          required
                         />
                       </FormGroup>
                     </Col>

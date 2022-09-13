@@ -26,7 +26,7 @@ import {
 import { ContainerArrow } from '../../../../styles/util';
 import { Button, FormGroup, selectDefault, Separator } from '../../../../styles/global';
 
-const ModalEquipe = ( { equipes, ...props } ) => {
+const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
   const [ membros, setMembros ]                         = useState( [] );
   const [ membrosSelecionados, setMembrosSelecionados ] = useState( [] );
   const [ internalReload, setInternalReload ]           = useState( false );
@@ -35,6 +35,17 @@ const ModalEquipe = ( { equipes, ...props } ) => {
   const [ message, setMessage ]                         = useState( "" );
   const [ messageMembro, setMessageMembro ]             = useState( "" );
   const [ locais, setLocais ]                           = useState( [] );
+  const [ messageLocais, setMessageLocais ]             = useState( "" );
+
+  //É acionado sempre que o modal é aberto abre
+  //Limpa os dados deixados quando o modal foi fechado
+  useEffect( () => {
+    if(isOpen)
+      clearInput()
+
+    handleClose()
+  }, [ isOpen ] );
+
 
   useEffect( () => {
     const m = props.membros.map( m => ( {
@@ -153,12 +164,20 @@ const ModalEquipe = ( { equipes, ...props } ) => {
     setMembros( m );
     setMembrosSelecionados( [] );
     setSupervisor( {} );
+
+    const l = props.locais
+      .filter( loc => loc.flEstrato ? !loc.flEquipe : false )
+      .map( loc => ( { ...loc, checked: false } ) );
+
+    setLocais( l );
   }
 
   function handleSubmit( e ) {
     e.preventDefault();
-
-    if( membrosSelecionados.length === 0 ) {
+    if( locaisSelecionados() == 0){
+      setMessageLocais("Adicione ao menos um local");
+      setTimeout(() => setMessageLocais("") , 3000);
+    }else if( membrosSelecionados.length === 0 ) {
       setMessageMembro("Adicione ao menos um membro a equipe");
       setTimeout(() => setMessageMembro("") , 3000);
     } else if( !supervisor.value ) {
@@ -179,6 +198,14 @@ const ModalEquipe = ( { equipes, ...props } ) => {
     }
   }
 
+  function locaisSelecionados() {
+    var numLocaisSelecionados = 0
+    locais.forEach( l => {
+      if(l.checked) numLocaisSelecionados++
+    })
+    return numLocaisSelecionados
+  }
+
   return (
     <Modal
       id="modal-novo-equipe"
@@ -190,7 +217,7 @@ const ModalEquipe = ( { equipes, ...props } ) => {
           <Row>
             <Col>
               <FormGroup>
-                <label>Locai(s) de responsabilidade da equipe <code>*</code></label>
+                <label>Locai(s) de responsabilidade da equipe <code>*</code><span className="text-danger">{ messageLocais }</span></label>
                 <ListLocaly
                   locais={ locais }
                   onClick={ handleLocal }

@@ -77,12 +77,19 @@ getRoute = async ( req, res ) => {
   if( !td )
     return res.json( {} );
 
+  var imoveisId = await imoveisVistoriados(td, td.equipe.id)
+
   let rota = await Quarteirao.findAll( {
     include: {
       association: 'lados',
       include: [
         {
-          association: 'imoveis'
+          association: 'imoveis',
+          where:{
+            id: {
+              [Op.notIn]: imoveisId
+            },
+          }
         },
         {
           association: 'rota',
@@ -109,7 +116,7 @@ getRoute = async ( req, res ) => {
   } ).then( mun => mun.codigo );
 
   rota = rota.filter( r => r.lados.length > 0 );
-
+  
   let equipe = {
     id: td.equipe.id,
     atividade_id: td.equipe.atividade_id
@@ -340,7 +347,13 @@ startRoute = async ( req, res ) => {
   const userId = req.userId;
 
   // Validando
-  const td = await TrabalhoDiario.findByPk( trabalhoDiario_id );
+  const td = await TrabalhoDiario.findByPk( trabalhoDiario_id,
+  {
+    include: {
+      association: 'equipe'
+    }
+  })
+
   if( !td ) 
     res.json({
       status: 'error',
@@ -386,14 +399,21 @@ startRoute = async ( req, res ) => {
         mensage: 'Falha ao tentar iniciar a rota, por favor, aguarde e tente novamente.'
       });
   }
-  // Iniciando a rota
 
+  var imoveisId = await imoveisVistoriados(td, td.equipe.id)
+
+  // Iniciando a rota
   let rota = await Quarteirao.findAll({
     include: {
       association: 'lados',
       include: [
         {
-          association: 'imoveis'
+          association: 'imoveis',
+          where:{
+            id: {
+              [Op.notIn]: imoveisId
+            },
+          }
         },
         {
           association: 'rota',
@@ -937,6 +957,58 @@ const isFinalizado = async ( req, res ) => {
     return res.json( false );
 
   return res.json( true );
+}
+
+/**
+ * Dado um trabalho diario, a função abaixo procurar todos os imoveis ja vistoriado por trabalhos diarios anteriores.
+ * Retorna uma lista de id de imoveis vistoriados.
+ * Caso nenhum id tenha sido encontrado, retorna a lista contendo o numero -1. 
+ * */
+async function imoveisVistoriados(trabalhoDiario, equipe_id ) {
+  const imoveisVistoriados = await Imovel.sequelize.query(
+    'SELECT ' +
+      'v.id as "vistoria_id", ' +
+      'i.id, ' +
+      'i.numero, ' +
+      'v.pendencia as "vistoria_pendencia", ' +
+      'td.data as "vistoria_data" ' +
+    'FROM ' +
+      'imoveis as i ' +
+      'JOIN vistorias as v ON( i.id = v.imovel_id ) ' +
+      'JOIN trabalhos_diarios as td ON( td.id = v.trabalho_diario_id ) ' +
+    'WHERE ' +
+      'td.equipe_id = $1 ' +
+      'AND td.data < $2 '+
+      'AND td.hora_fim IS NOT NULL '+ 
+      'AND v.pendencia IS NULL '+
+    'ORDER BY '+
+      'td.data', 
+    {
+      bind: [ equipe_id, trabalhoDiario.data ],
+      logging: console.log,
+    }
+  );
+
+  //td.data < $2 AND
+  const imo = imoveisVistoriados[ 1 ].rows.map( i => ({
+    vistoria_id: i.vistoria_id,
+    id: i.id,
+    numero: i.numero,
+    vistoria_pendencia: i.vistoria_pendencia,
+    vistoria_data: i.vistoria_data
+  }));
+
+  let result = []
+  imo.forEach( i => result.push(i.id))
+  if(result.length == 0) result.push(-1)
+
+ /*  console.log("-----------------------------------------")
+  console.log(result)
+  console.log(imo)
+  console.log("-----------------------------------------") */
+
+  return result
+
 }
 
 const router = express.Router();

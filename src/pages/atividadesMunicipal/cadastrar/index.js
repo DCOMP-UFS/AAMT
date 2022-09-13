@@ -109,7 +109,7 @@ const Atividades = ( { metodologias, ciclos, ...props } ) => {
           <div className="card">
             <h4 className="title">Atividade</h4>
             <p className="text-description">
-              Atenção os campos com <code>*</code> são obrigatórios
+              Atenção! Os campos com <code>*</code> são obrigatórios
             </p>
 
             <form onSubmit={ handleSubmit }>

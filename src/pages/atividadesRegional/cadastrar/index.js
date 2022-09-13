@@ -7,6 +7,7 @@ import Select from 'react-select';
 import Checkbox from '@material-ui/core/Checkbox';
 import { abrangencia as abrangenciaEnum }  from '../../../config/enumerate';
 import ButtonSave from '../../../components/ButtonSave';
+import SelectWrap from '../../../components/SelectWrap'
 
 // ACTIONS
 import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
@@ -24,6 +25,8 @@ import {
   ContainerUl,
   DivDescription
 } from '../../../styles/util';
+
+import {isBlank} from '../../../config/function';
 
 const AtividadesRegCadastrar = ( { metodologias, ciclos, ...props } ) => {
   const [ reload, setReload ] = useState( false );
@@ -45,6 +48,8 @@ const AtividadesRegCadastrar = ( { metodologias, ciclos, ...props } ) => {
   const [ optionObjetivo, setoptionObjetivo ] = useState([]);
   const [ listaMunicipios, setListaMunicipios ] = useState([]);
   const [ flBtnLoading, setFlBtnLoading ] = useState( false );
+  const [ isValidObjetivo, setIsValidObjetivo ] = useState( true );
+  const [ isValidListaMunicipios, setIsListaMunicipios ] = useState( true );
 
   useEffect(() => {
     props.changeSidebar( "atividade", "at_cadastrar" );
@@ -93,27 +98,38 @@ const AtividadesRegCadastrar = ( { metodologias, ciclos, ...props } ) => {
   useEffect(() => {
     if( props.created )
       window.location = window.location.origin.toString() + "/atividadesRegional";
+    
+    setFlBtnLoading(false)
   }, [ props.created ]);
 
   function handleSubmit( e ) {
     e.preventDefault();
     setFlBtnLoading( true );
+    
+    setIsValidObjetivo(true)
+    setIsListaMunicipios(true)
 
     const mun = listaMunicipios
       .filter( l => l.checked )
       .map( l => ( l.municipio ));
-
-    for (const m of mun) {
-      props.createActiveRequest(
-        objetivoAtividade,
-        flTodosImoveis.value,
-        1,//responsabilidade
-        ciclo.value,
-        m.id,
-        metodologia.value,
-        objetivo.value,
-        abrangencia.value
-      );
+    
+    if(isBlank(objetivoAtividade))
+      setIsValidObjetivo(false)
+    else if(mun.length == 0)
+      setIsListaMunicipios(false)
+    else{
+      for (const m of mun) {
+        props.createActiveRequest(
+          objetivoAtividade,
+          flTodosImoveis.value,
+          1,//responsabilidade
+          ciclo.value,
+          m.id,
+          metodologia.value,
+          objetivo.value,
+          abrangencia.value
+        );
+      }
     }
   }
 
@@ -126,7 +142,7 @@ const AtividadesRegCadastrar = ( { metodologias, ciclos, ...props } ) => {
           <div className="card">
             <h4 className="title">Atividade</h4>
             <p className="text-description">
-              Atenção os campos com <code>*</code> são obrigatórios
+              Atenção! Os campos com <code>*</code> são obrigatórios
             </p>
 
             <form onSubmit={ handleSubmit }>
@@ -153,6 +169,11 @@ const AtividadesRegCadastrar = ( { metodologias, ciclos, ...props } ) => {
                         rows="5"
                         required
                       ></textarea>
+                      {
+                        !isValidObjetivo ?
+                          <span className="form-label-invalid">Objetivo inválido</span> :
+                          ''
+                        }
                     </FormGroup>
                     </Col>
                   </Row>
@@ -160,24 +181,26 @@ const AtividadesRegCadastrar = ( { metodologias, ciclos, ...props } ) => {
                     <Col sm='6'>
                       <FormGroup>
                         <label>Metodologia <code>*</code></label>
-                        <Select
+                        <SelectWrap
                           id="metodologia"
                           value={ metodologia }
                           styles={ selectDefault }
                           options={ optionMetodologia }
                           onChange={ e => setMetodologia( e ) }
+                          required
                         />
                       </FormGroup>
                     </Col>
                     <Col sm='6'>
                       <FormGroup>
                         <label>Atividade <code>*</code></label>
-                        <Select
+                        <SelectWrap
                           id="objetivo"
                           value={ objetivo }
                           styles={ selectDefault }
                           options={ optionObjetivo }
                           onChange={ e => setObjetivo( e ) }
+                          required
                         />
                       </FormGroup>
                     </Col>
@@ -185,8 +208,8 @@ const AtividadesRegCadastrar = ( { metodologias, ciclos, ...props } ) => {
                   <Row>
                     <Col sm="6">
                       <FormGroup>
-                        <label htmlFor="flTodosImoveis">Realizar a atividade em todos os imóveis? <code>*</code></label>
-                        <Select
+                        <label htmlFor="flTodosImoveis">Em todos os imóveis? <code>*</code></label>
+                        <SelectWrap
                           id="flTodosImoveis"
                           value={ flTodosImoveis }
                           options={ optionflTodosImoveis }
@@ -199,12 +222,13 @@ const AtividadesRegCadastrar = ( { metodologias, ciclos, ...props } ) => {
                     <Col sm="6">
                       <FormGroup>
                         <label>Abrangência <code>*</code></label>
-                        <Select
+                        <SelectWrap
                           id="abrangencia"
                           value={ abrangencia }
                           styles={ selectDefault }
                           options={ optionAbrangencia }
                           onChange={ e => setAbrangencia( e ) }
+                          required
                         />
                       </FormGroup>
                     </Col>
@@ -213,19 +237,25 @@ const AtividadesRegCadastrar = ( { metodologias, ciclos, ...props } ) => {
                     <Col>
                       <FormGroup>
                         <label>Ciclo <code>*</code></label>
-                        <Select
+                        <SelectWrap
                           id="ciclo"
                           value={ ciclo }
                           styles={ selectDefault }
                           options={ optionCiclo }
                           onChange={ e => setCiclo( e ) }
+                          required
                         />
                       </FormGroup>
                     </Col>
                   </Row>
                 </Col>
                 <Col sm='6'>
-                  <h4 className="title">Município(s)</h4>
+                  <h4 className="title">Município(s)<code>*</code></h4>
+                  {
+                        !isValidListaMunicipios ?
+                          <span className="form-label-invalid">Selecione pelo menos um município</span> :
+                          ''
+                  }
                   <p className="text-description">
                     Qual(is) os município(s) deseja aplicar a atividade?
                   </p>

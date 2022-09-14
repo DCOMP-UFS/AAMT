@@ -7,6 +7,7 @@ import { perfil } from '../../config/enumerate';
 import $ from 'jquery';
 import ButtonSaveModal from '../../components/ButtonSaveModal';
 import MaskedInput from '../../components/MaskedInput'
+import SelectWrap from '../../components/SelectWrap';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -21,7 +22,7 @@ import { Button, FormGroup, selectDefault } from '../../styles/global';
 
 //FUNCTIONS
 import { isBlank, onlyLetters, onlyNumbers, isCpfValid} from '../../config/function';
-import SelectWrap from '../../components/SelectWrap';
+
 
 function ModalAdd({ createUsuarioRequest, municipio, createUser, ...props }) {
   const [ nome, setNome ] = useState("");

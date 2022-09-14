@@ -15,7 +15,8 @@ export const ActionTypes = {
   UPDATE_ALL_USUARIO_REQUEST: "UPDATE_ALL_USUARIO_REQUEST",
   UPDATE_USUARIO_SUCCESS: "UPDATE_USUARIO_SUCCESS",
   CLEAR_UPDATE_USER: "CLEAR_UPDATE_USER",
-  CHANGE_USER_EDIT_INDEX: "CHANGE_USER_EDIT_INDEX"
+  CHANGE_USER_EDIT_INDEX: "CHANGE_USER_EDIT_INDEX",
+  UPDATE_USUARIO_FAILURE: "UPDATE_USUARIO_FAILURE"
 }
 
 export const getUsuariosRequest = municipio_id => {
@@ -142,6 +143,7 @@ export const updateUsuarioRequest = ( id, body ) => {
   }
 }
 
+
 export const updateAllUsuarioRequest = ( id, body ) => {
   return {
     type: ActionTypes.UPDATE_ALL_USUARIO_REQUEST,
@@ -161,6 +163,12 @@ export const updateUsuario = usuario => {
 export const clearUpdateUser = () => {
   return {
     type: ActionTypes.CLEAR_UPDATE_USER
+  }
+}
+
+export const updateUsuarioFailure = () => {
+  return {
+    type: ActionTypes.UPDATE_USUARIO_FAILURE
   }
 }
 

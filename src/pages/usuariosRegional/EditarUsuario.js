@@ -5,6 +5,8 @@ import Select from 'react-select';
 import ButtonSave from '../../components/ButtonSave';
 import { perfil } from '../../config/enumerate';
 import { FaUsers } from 'react-icons/fa';
+import MaskedInput from '../../components/MaskedInput'
+import SelectWrap from '../../components/SelectWrap';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -22,6 +24,9 @@ import { getCityByRegionalHealthRequest } from '../../store/Municipio/municipioA
 // STYLES
 import { FormGroup, selectDefault } from '../../styles/global';
 import { ContainerFixed, PageIcon, PageHeader } from '../../styles/util';
+
+//FUNCTIONS
+import { isBlank, onlyLetters, onlyNumbers, isCpfValid} from '../../config/function';
 
 const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
   const [ id ] = useState(props.match.params.id);
@@ -50,6 +55,10 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
   const [ userEstado, setUserEstado ] = useState({});
   const [ userRegionalSaude, setUserRegionalSaude ] = useState({});
   const [ userMunicipio, setUserMunicipio ] = useState({});
+
+  const [isValidNome , setIsValidNome] = useState(true)
+  const [isValidCpf , setIsValidCpf] = useState(true)
+  const [isValidRg , setIsValidRg] = useState(true)
 
   const optionPerfil = Object.entries(perfil).map(([key, value]) => {
     return { value: value.id, label: value.label };
@@ -193,10 +202,8 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
   }, [ usuarioUpdate ]);
 
   useEffect(() => {
-    if( props.updateUser ) {
-      setFlLoading( false );
-      props.clearUpdateUser();
-    }
+    setFlLoading( false );
+    props.clearUpdateUser();
   }, [ props.updateUser ]);
 
   function handleSubmit( e ) {
@@ -216,17 +223,31 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
       at.local_id = municipio.value;
     }
 
-    props.updateUsuarioRequest( id, {
-      nome,
-      cpf,
-      rg,
-      email,
-      celular,
-      ativo: ativo.value,
-      atuacoes: [
-        at
-      ]
-    });
+    if(isCamposValidos()){
+      props.updateUsuarioRequest( id, {
+        nome,
+        cpf,
+        rg,
+        email,
+        celular,
+        ativo: ativo.value,
+        atuacoes: [
+          at
+        ]
+      });
+    }
+  }
+
+  function isCamposValidos() {
+
+    const nomeValido = !isBlank(nome)
+    const cpfValido =  isCpfValid(cpf)
+
+    nomeValido      ? setIsValidNome(true)     : setIsValidNome(false)
+    cpfValido       ? setIsValidCpf(true)      : setIsValidCpf(false)
+    rg              ? setIsValidRg(true)       : setIsValidRg(false)
+
+    return (nomeValido && cpfValido && rg)
   }
 
   return (
@@ -245,7 +266,7 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
             <div className="card">
               <h4 className="title">Usuário: <mark className="bg-info text-white" >{ usuarioUpdate.nome }</mark></h4>
               <p className="text-description">
-                Atenção os campos com <code>*</code> são obrigatórios
+                Atenção! Os campos com <code>*</code> são obrigatórios
               </p>
               <form onSubmit={ handleSubmit }>
                 <Row>
@@ -254,7 +275,17 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
                       <Col>
                         <FormGroup>
                           <label htmlFor="nome">Nome <code>*</code></label>
-                          <input id="nome" value={nome} className="form-control" onChange={ e => setNome(e.target.value) } required />
+                          <input 
+                            id="nome" 
+                            value={nome} 
+                            className="form-control" 
+                            onChange={ e =>( onlyLetters(e.target.value) ? setNome(e.target.value) : '' ) } 
+                            required />
+                            {
+                              !isValidNome ?
+                                <span class="form-label-invalid">Nome inválido</span> :
+                                ''
+                            }
                         </FormGroup>
                       </Col>
                     </Row>
@@ -262,13 +293,34 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
                       <Col sm="6">
                         <FormGroup>
                           <label htmlFor="cpf">CPF <code>*</code></label>
-                          <input id="cpf" value={ cpf } className="form-control" onChange={ e => setCpf(e.target.value) }  required />
+                          <MaskedInput
+                            id="cpf" 
+                            type="cpf"
+                            value={ cpf } 
+                            className="form-control" 
+                            onChange={ e => setCpf(e.target.value) }  
+                            required />
+                            {
+                              !isValidCpf ?
+                                <span class="form-label-invalid">CPF inválido</span> :
+                              ''
+                            }
                         </FormGroup>
                       </Col>
                       <Col sm="6">
                         <FormGroup>
                           <label htmlFor="rg">RG <code>*</code></label>
-                          <input id="rg" value={ rg } className="form-control" onChange={ e => setRg(e.target.value) }  required />
+                          <input 
+                            id="rg" 
+                            value={ rg } 
+                            className="form-control" 
+                            onChange={ e =>( onlyNumbers(e.target.value) ? setRg(e.target.value) : '') }  
+                            required />
+                            {
+                              !isValidRg ?
+                                <span class="form-label-invalid">RG inválido</span> :
+                                ''
+                            }
                         </FormGroup>
                       </Col>
                     </Row>
@@ -286,7 +338,7 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
                             id="celular"
                             value={ celular }
                             className="form-control"
-                            onChange={ e => setCelular(e.target.value) }
+                            onChange={ e => ( onlyNumbers(e.target.value) ? setCelular(e.target.value) : '' ) }
                           />
                         </FormGroup>
                       </Col>
@@ -294,14 +346,14 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
                     <Row>
                       <Col sm="6">
                         <FormGroup>
-                          <label htmlFor="usuario">Usuário <code>*</code></label>
+                          <label htmlFor="usuario">Usuário</label>
                           <input id="usuario" value={ usuario } className="form-control" onChange={ e => setUsuario(e.target.value) } disabled required />
                         </FormGroup>
                       </Col>
                       <Col sm="6">
                         <FormGroup>
                           <label htmlFor="tipoPerfil">Perfil <code>*</code></label>
-                          <Select
+                          <SelectWrap
                             value={ tipoPerfil }
                             styles={ selectDefault }
                             options={ optionPerfil }
@@ -321,7 +373,7 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
                       <Col sm='6'>
                       <FormGroup>
                           <label htmlFor="ativo">Ativo <code>*</code></label>
-                          <Select
+                          <SelectWrap
                             id="ativo"
                             value={ ativo }
                             options={ optionAtivo }
@@ -339,24 +391,26 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
                       <Col sm="6">
                         <FormGroup>
                           <label htmlFor="pais">País <code>*</code></label>
-                          <Select
+                          <SelectWrap
                             id="pais"
                             value={ pais }
                             styles={ selectDefault }
                             options={ optionPais }
                             onChange={ e => setPais(e) }
+                            required
                           />
                         </FormGroup>
                       </Col>
                       <Col sm="6">
                         <FormGroup>
                           <label htmlFor="regiao">Região <code>*</code></label>
-                          <Select
+                          <SelectWrap
                             id="regiao"
                             value={ regiao }
                             styles={ selectDefault }
                             options={ optionRegiao }
                             onChange={ e => setRegiao(e) }
+                            required
                           />
                         </FormGroup>
                       </Col>
@@ -365,24 +419,26 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
                       <Col sm="6">
                         <FormGroup>
                           <label htmlFor="estado">Estado <code>*</code></label>
-                          <Select
+                          <SelectWrap
                             id="estado"
                             value={ estado }
                             styles={ selectDefault }
                             options={ optionEstado }
                             onChange={ e => setEstado(e) }
+                            required
                           />
                         </FormGroup>
                       </Col>
                       <Col sm="6">
                         <FormGroup>
                           <label htmlFor="regionalSaude">Regional de saúde <code>*</code></label>
-                          <Select
+                          <SelectWrap
                             id="regionalSaude"
                             value={ regionalSaude }
                             styles={ selectDefault }
                             options={ optionRegionalSaude }
                             onChange={ e => setRegionalSaude(e) }
+                            required
                           />
                         </FormGroup>
                       </Col>
@@ -391,7 +447,7 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
                       <Col>
                         <FormGroup>
                           <label htmlFor="municipio">Município <code>*</code></label>
-                          <Select
+                          <SelectWrap
                             id="municipio"
                             value={ municipio }
                             styles={ selectDefault }

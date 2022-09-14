@@ -96,8 +96,28 @@ export function* createUsuario( action ) {
     }else {
       yield put( UsuarioActions.createUsuarioFailure() );
     }
-  } catch (error) {
+  } catch (err) {
     yield put( UsuarioActions.createUsuarioFailure() )
+
+    if(err.response){
+      const { sameCpf, sameUsuario, sameEmail} = err.response.data
+
+      if(sameCpf || sameUsuario || sameEmail){
+        var repetidos = ""
+        if(sameCpf) repetidos = repetidos+"CPF " 
+        if(sameUsuario) repetidos = repetidos+"Usuario "
+        if(sameEmail) repetidos = repetidos+"Email "
+
+        yield put( AppConfigActions.showNotifyToast("Erro ao criar Usuário, já existe(m) funcionário(s) com este(s): "+repetidos, "error" ) );
+      }
+      else{
+        //Provavel erro de logica na API
+        yield put( AppConfigActions.showNotifyToast( "Erro ao criar Usuário, entre em contato com o suporte", "error" ) );
+      }
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao cria Usuário, favor verifique sua conexão com a internet", "error" ) );
   }
 }
 

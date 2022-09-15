@@ -25,6 +25,9 @@ import { getUsersByCityRequest, changeUserEditIndex } from '../../store/Usuario/
 import { GlobalStyle } from './styles';
 import { PageIcon, PageHeader } from '../../styles/util';
 
+//UTILIES FUNCTIONS
+import { ordenadorDataHora } from '../../config/function';
+
 const columns = [
   {
     name: "index",
@@ -32,6 +35,7 @@ const columns = [
     options: {
       filter: false,
       display: 'false',
+      viewColumns: false,
       customBodyRender: (value, tableMeta, updateValue) => (
         <Typography data-id={ value.id }>{ value.index }</Typography>
       )
@@ -60,7 +64,8 @@ const columns = [
     label: "Criado em",
     options: {
       filter: false,
-      display: 'false'
+      display: 'false',
+      sortCompare: ordenadorDataHora
     }
   },
   "Perfil",

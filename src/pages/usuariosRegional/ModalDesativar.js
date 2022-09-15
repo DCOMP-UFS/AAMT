@@ -19,16 +19,23 @@ function ModalDesativar({ updateUser, tableSelected, ...props }) {
   useEffect(() => {
     if( updateUser ) {
       $('#modal-desativar-usuario').modal('hide');
-      setFlLoading( false );
       props.clearUpdateUser();
     }
+    setFlLoading( false );
   }, [ updateUser ]);
 
   function handleClick() {
     setFlLoading( true );
     tableSelected.forEach( row => {
-      const { id } = props.usuarios[ row.dataIndex ];
-      props.updateAllUsuarioRequest( id, { ativo: 0 } );
+      var user = props.usuarios[ row.dataIndex ];
+      props.updateAllUsuarioRequest( user.id, {
+         cpf: user.cpf,
+         rg:  user.rg,
+         email: user.email,
+         celular: user.celular,
+         ativo: 0,
+         atuacoes: user.atuacoes
+        } );
     });
 
     props.clearUpdateUser();
@@ -40,7 +47,7 @@ function ModalDesativar({ updateUser, tableSelected, ...props }) {
         <p>Deseja desativar o(s) usuário(s)?</p>
       </ModalBody>
       <ModalFooter>
-        <Button className="secondary" data-dismiss="modal">Cancelar</Button>
+        <Button className="secondary" data-dismiss="modal" disabled={ flLoading }>Cancelar</Button>
         <Button
           className="danger"
           onClick={ handleClick }

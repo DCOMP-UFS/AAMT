@@ -4,7 +4,8 @@ class Rua extends Model {
   static init(sequelize) {
     super.init({
       nome: DataTypes.STRING,
-      cep: DataTypes.STRING
+      cep: DataTypes.STRING,
+      ativo: DataTypes.BOOLEAN
     }, {
       sequelize
     });

@@ -10,7 +10,8 @@ class Imovel extends Model {
       tipoImovel: DataTypes.INTEGER,
       ativo: DataTypes.BOOLEAN,
       lng: DataTypes.DECIMAL,
-      lat: DataTypes.DECIMAL
+      lat: DataTypes.DECIMAL,
+      ativo: DataTypes.BOOLEAN
     }, {
       sequelize,
       tableName: 'imoveis'

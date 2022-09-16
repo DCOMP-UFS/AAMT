@@ -5,7 +5,7 @@ module.exports = {
     return Promise.all([ 
       queryInterface.addColumn('imoveis', 'ativo', {
         type: Sequelize.BOOLEAN,
-        allawNull: false,
+        allowNull: false,
         defaultValue: true
       }),
     ]);

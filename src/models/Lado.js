@@ -3,7 +3,8 @@ const { Model, DataTypes } = require('sequelize');
 class Lado extends Model {
   static init(sequelize) {
     super.init({
-      numero: DataTypes.INTEGER
+      numero: DataTypes.INTEGER,
+      ativo: DataTypes.BOOLEAN
     }, {
       sequelize
     });

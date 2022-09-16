@@ -39,7 +39,7 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
   const [ ativo, setAtivo ] = useState("");
   const [ tipoPerfil, setTipoPerfil ] = useState({});
   const [ pais, setPais ] = useState({});
-  const [ optionPais ] = useState([]);
+  const [ optionPais, setOptionPais ] = useState([]);
   const [ regiao, setRegiao ] = useState({});
   const [ optionRegiao, setOptionRegiao ] = useState([]);
   const [ estado, setEstado ] = useState({});
@@ -69,7 +69,13 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
   useEffect( () => {
     props.changeSidebar( "usuario" );
     props.getUsuarioByIdRequest( id );
+    props.getNationsRequest();
   }, [] );
+
+  useEffect( () => {
+    const options = props.paises.map( p => ( { value: p.id, label: p.nome } ) );
+    setOptionPais( options );
+  }, [ props.paises ] );
 
   useEffect(() => {
     if( Object.entries(pais).length > 0 ) {

@@ -9,7 +9,8 @@ class Usuario extends Model {
       email: DataTypes.STRING,
       usuario: DataTypes.STRING,
       senha: DataTypes.STRING,
-      ativo: DataTypes.INTEGER
+      ativo: DataTypes.INTEGER,
+      celular: DataTypes.STRING
     }, {
       sequelize
     });

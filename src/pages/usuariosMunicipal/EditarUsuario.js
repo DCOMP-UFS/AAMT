@@ -5,6 +5,8 @@ import Select from 'react-select';
 import ButtonSave from '../../components/ButtonSave';
 import { perfil } from '../../config/enumerate';
 import { FaUsers } from 'react-icons/fa';
+import MaskedInput from '../../components/MaskedInput'
+import SelectWrap from '../../components/SelectWrap';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -22,6 +24,9 @@ import { getCityByRegionalHealthRequest } from '../../store/Municipio/municipioA
 // STYLES
 import { FormGroup, selectDefault } from '../../styles/global';
 import { ContainerFixed, PageIcon, PageHeader } from '../../styles/util';
+
+//FUNCTIONS
+import { isBlank, onlyLetters, onlyNumbers, isCpfValid} from '../../config/function';
 
 function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequest, ...props }) {
   const [ id ] = useState(props.match.params.id);
@@ -48,6 +53,10 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
   const [ userRegionalSaude, setUserRegionalSaude ] = useState({});
   const [ userMunicipio, setUserMunicipio ] = useState({});
   const [ flBtnLoading, setFlBtnLoading ] = useState( false );
+
+  const [isValidNome , setIsValidNome] = useState(true)
+  const [isValidCpf , setIsValidCpf] = useState(true)
+  const [isValidRg , setIsValidRg] = useState(true)
 
   const optionPerfil = Object.entries(perfil)
     .filter( ([ key, value ]) => {
@@ -194,10 +203,8 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
   }, [ usuarioUpdate ]);
 
   useEffect(() => {
-    if( props.update ) {
-      setFlBtnLoading( false );
-      props.clearUpdateUser();
-    }
+    props.clearUpdateUser();
+    setFlBtnLoading( false );
   }, [ props.update ]);
 
   function handleSubmit( e ) {
@@ -216,18 +223,31 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
       at.tipoPerfil = tipoPerfil.value;
       at.local_id = municipio.value;
     }
+    if(isCamposValidos()){
+      updateUsuarioRequest( id, {
+        nome,
+        cpf,
+        rg,
+        email,
+        celular,
+        ativo: ativo.value,
+        atuacoes: [
+          at
+        ]
+      });
+    }
+  }
 
-    updateUsuarioRequest( id, {
-      nome,
-      cpf,
-      rg,
-      email,
-      celular,
-      ativo: ativo.value,
-      atuacoes: [
-        at
-      ]
-    });
+  function isCamposValidos() {
+
+    const nomeValido = !isBlank(nome)
+    const cpfValido =  isCpfValid(cpf)
+
+    nomeValido      ? setIsValidNome(true)     : setIsValidNome(false)
+    cpfValido       ? setIsValidCpf(true)      : setIsValidCpf(false)
+    rg              ? setIsValidRg(true)       : setIsValidRg(false)
+
+    return (nomeValido && cpfValido && rg)
   }
 
   return (
@@ -255,7 +275,17 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
                       <Col>
                         <FormGroup>
                           <label htmlFor="nome">Nome <code>*</code></label>
-                          <input id="nome" value={nome} className="form-control" onChange={ e => setNome(e.target.value) } required />
+                          <input 
+                            id="nome" 
+                            value={nome} 
+                            className="form-control" 
+                            onChange={ e =>( onlyLetters(e.target.value) ? setNome(e.target.value) : '' ) } 
+                            required />
+                            {
+                              !isValidNome ?
+                                <span class="form-label-invalid">Nome inválido</span> :
+                                ''
+                            }
                         </FormGroup>
                       </Col>
                     </Row>
@@ -263,13 +293,34 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
                       <Col sm="6">
                         <FormGroup>
                           <label htmlFor="cpf">CPF <code>*</code></label>
-                          <input id="cpf" value={ cpf } className="form-control" onChange={ e => setCpf(e.target.value) }  required />
+                          <MaskedInput
+                            id="cpf" 
+                            type="cpf"
+                            value={ cpf } 
+                            className="form-control" 
+                            onChange={ e => setCpf(e.target.value) }  
+                            required />
+                            {
+                              !isValidCpf ?
+                                <span class="form-label-invalid">CPF inválido</span> :
+                              ''
+                            }
                         </FormGroup>
                       </Col>
                       <Col sm="6">
                         <FormGroup>
                           <label htmlFor="rg">RG <code>*</code></label>
-                          <input id="rg" value={ rg } className="form-control" onChange={ e => setRg(e.target.value) }  required />
+                          <input 
+                            id="rg" 
+                            value={ rg } 
+                            className="form-control" 
+                            onChange={ e =>( onlyNumbers(e.target.value) ? setRg(e.target.value) : '') }  
+                            required />
+                            {
+                              !isValidRg ?
+                                <span class="form-label-invalid">RG inválido</span> :
+                                ''
+                            }
                         </FormGroup>
                       </Col>
                     </Row>
@@ -287,15 +338,14 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
                             id="celular"
                             value={ celular }
                             className="form-control"
-                            onChange={ e => setCelular(e.target.value) }
-                          />
+                            onChange={ e => ( onlyNumbers(e.target.value) ? setCelular(e.target.value) : '' ) } />
                         </FormGroup>
                       </Col>
                     </Row>
                     <Row>
                       <Col sm="6">
                         <FormGroup>
-                          <label htmlFor="usuario">Usuário <code>*</code></label>
+                          <label htmlFor="usuario">Usuário</label>
                           <input id="usuario" value={ usuario } className="form-control" onChange={ e => setUsuario(e.target.value) } disabled required />
                         </FormGroup>
                       </Col>

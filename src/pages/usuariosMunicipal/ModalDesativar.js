@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal, { ModalBody, ModalFooter } from '../../components/Modal';
 import $ from 'jquery';
+import LoadginGif from '../../assets/loading.gif';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -13,10 +14,20 @@ import { updateAllUsuarioRequest, clearUpdateUser } from '../../store/Usuario/us
 import { Button } from '../../styles/global';
 
 function ModalDesativar( props ) {
+  const [ flLoading, setFlLoading ] = useState( false );
+
   function handleClick() {
+    setFlLoading( true );
     props.tableSelected.forEach( row => {
-      const { id } = props.usuarios[ row.dataIndex ];
-      props.updateAllUsuarioRequest( id, { ativo: 0 } );
+      var user = props.usuarios[ row.dataIndex ];
+      props.updateAllUsuarioRequest( user.id, {
+         cpf: user.cpf,
+         rg:  user.rg,
+         email: user.email,
+         celular: user.celular,
+         ativo: 0,
+         atuacoes: user.atuacoes
+        } );
     });
 
     props.clearUpdateUser();
@@ -25,7 +36,9 @@ function ModalDesativar( props ) {
   useEffect(() => {
     if( props.updateUser ) {
       $('#modal-desativar-usuario').modal('hide');
+      props.clearUpdateUser();
     }
+    setFlLoading( false );
   }, [ props.updateUser ]);
 
   return(
@@ -34,8 +47,29 @@ function ModalDesativar( props ) {
         <p>Deseja desativar o(s) usuário(s)?</p>
       </ModalBody>
       <ModalFooter>
-        <Button className="secondary" data-dismiss="modal">Cancelar</Button>
-        <Button className="danger" onClick={ handleClick }>Confirmar</Button>
+        <Button className="secondary" data-dismiss="modal" disabled={ flLoading }>Cancelar</Button>
+        <Button
+          className="danger"
+          onClick={ handleClick }
+          loading={ flLoading }
+          disabled={ flLoading }
+        >
+          {
+            flLoading ?
+              (
+                <>
+                  <img
+                    src={ LoadginGif }
+                    width="25"
+                    style={{ marginRight: 10 }}
+                    alt="Carregando"
+                  />
+                  Desativando...
+                </>
+              ) :
+              "Confirmar"
+          }
+        </Button>
       </ModalFooter>
     </Modal>
   );

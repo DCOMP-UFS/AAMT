@@ -6,6 +6,9 @@ import { Row, Col } from 'react-bootstrap';
 import { perfil } from '../../config/enumerate';
 import $ from 'jquery';
 import LoadginGif from '../../assets/loading.gif';
+import ButtonSaveModal from '../../components/ButtonSaveModal';
+import MaskedInput from '../../components/MaskedInput'
+import SelectWrap from '../../components/SelectWrap'
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -22,6 +25,9 @@ import { getCityByRegionalHealthRequest } from '../../store/Municipio/municipioA
 // STYLES
 import { ContainerArrow } from '../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../styles/global';
+
+//FUNCTIONS
+import { isBlank, onlyLetters, onlyNumbers, isCpfValid} from '../../config/function';
 
 const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
   const [ nome, setNome ]                               = useState( "" );
@@ -47,6 +53,12 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
   const optionPerfil = Object.entries( perfil ).map( ( [ key, value ] ) => {
     return { value: value.id, label: value.label };
   } );
+
+  const [isValidNome , setIsValidNome] = useState(true)
+  const [isValidCpf , setIsValidCpf] = useState(true)
+  const [isValidRg , setIsValidRg] = useState(true)
+  const [isValidUsuario , setIsValidUsuario] = useState(true)
+  const [isValidSenha , setIsValidSenha] = useState(true)
 
   useEffect( () => {
     props.getNationsRequest();
@@ -125,10 +137,10 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
   useEffect(() => {
     if( createUser ) {
       $('#modal-novo-usuario').modal('hide');
-      setFlLoading( false );
       props.clearCreateUser();
       clearInput();
     }
+    setFlLoading( false );
   }, [ createUser ] );
 
   function clearInput() {
@@ -140,35 +152,70 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
     setUsuario( "" );
     setSenha( "" );
     setTipoPerfil( {} );
+    setPais( {} );
+    setRegiao( {} )
+    setEstado( {} )
+    setRegionalSaude( {} )
+    setMunicipio( {} )
   }
 
   function handleCadastrar( e ) {
     e.preventDefault();
     setFlLoading( true );
+    if(isCamposValidos()){
+      createUsuarioRequest(
+        nome,
+        cpf,
+        rg,
+        email,
+        celular,
+        usuario,
+        senha,
+        tipoPerfil.value,
+        regionalSaude.value,
+        municipio.value
+      );
+    }
+  }
 
-    createUsuarioRequest(
-      nome,
-      cpf,
-      rg,
-      email,
-      celular,
-      usuario,
-      senha,
-      tipoPerfil.value,
-      regionalSaude.value,
-      municipio.value
-    );
+  function isCamposValidos() {
+
+    const nomeValido = !isBlank(nome)
+    const cpfValido =  isCpfValid(cpf)
+    const usuarioValido = !isBlank(usuario)
+    const senhaValida = !isBlank(senha)
+
+    nomeValido      ? setIsValidNome(true)     : setIsValidNome(false)
+    cpfValido       ? setIsValidCpf(true)      : setIsValidCpf(false)
+    rg              ? setIsValidRg(true)       : setIsValidRg(false)
+    usuarioValido   ? setIsValidUsuario(true)  : setIsValidUsuario(false)
+    senhaValida     ? setIsValidSenha(true)    : setIsValidSenha(false)
+
+    return (nomeValido && cpfValido && rg && usuarioValido && senhaValida)
   }
 
   return(
     <Modal id="modal-novo-usuario" title="Cadastrar Usuário" size='lg'>
       <form onSubmit={ handleCadastrar }>
         <ModalBody>
+          <p className="text-description">
+            Atenção! Os campos com <code>*</code> são obrigatórios
+          </p>
           <Row>
             <Col>
               <FormGroup>
                 <label htmlFor="nome">Nome <code>*</code></label>
-                <input id="nome" value={nome} className="form-control" onChange={ e => setNome(e.target.value) } required />
+                <input 
+                  id="nome" 
+                  value={nome} 
+                  className="form-control" 
+                  onChange={ e =>( onlyLetters(e.target.value) ? setNome(e.target.value) : '' ) } 
+                  required />
+                  {
+                    !isValidNome ?
+                      <span class="form-label-invalid">Nome inválido</span> :
+                      ''
+                  }
               </FormGroup>
             </Col>
           </Row>
@@ -176,13 +223,34 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="cpf">CPF <code>*</code></label>
-                <input id="cpf" value={ cpf } className="form-control" onChange={ e => setCpf(e.target.value) }  required />
+                <MaskedInput
+                  id="cpf" 
+                  type="cpf"
+                  value={ cpf } 
+                  className="form-control" 
+                  onChange={ e => setCpf(e.target.value) }  
+                  required />
+                  {
+                    !isValidCpf ?
+                      <span class="form-label-invalid">CPF inválido</span> :
+                    ''
+                  }
               </FormGroup>
             </Col>
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="rg">RG <code>*</code></label>
-                <input id="rg" value={ rg } className="form-control" onChange={ e => setRg(e.target.value) }  required />
+                <input 
+                  id="rg" 
+                  value={ rg } 
+                  className="form-control" 
+                  onChange={ e =>( onlyNumbers(e.target.value) ? setRg(e.target.value) : '') }  
+                  required />
+                  {
+                    !isValidRg ?
+                      <span class="form-label-invalid">RG inválido</span> :
+                      ''
+                  }
               </FormGroup>
             </Col>
           </Row>
@@ -205,12 +273,22 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
               <FormGroup>
                 <label htmlFor="usuario">Usuário <code>*</code></label>
                 <input id="usuario" value={ usuario } className="form-control" onChange={ e => setUsuario(e.target.value) }  required />
+                {
+                  !isValidUsuario ?
+                    <span class="form-label-invalid">Usuario inválido</span> :
+                    ''
+                }
               </FormGroup>
             </Col>
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="senha">Senha <code>*</code></label>
-                <input id="senha" value={ senha } type="password" className="form-control" onChange={ e => setSenha(e.target.value) }  required />
+                <input id="senha" value={ senha } type="password" className="form-control" onChange={ e => setSenha(e.target.value.trim()) }  required />
+                {
+                  !isValidSenha ?
+                    <span class="form-label-invalid">Senha inválida</span> :
+                    ''
+                }
               </FormGroup>
             </Col>
           </Row>
@@ -218,7 +296,7 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
             <Col>
               <FormGroup>
                 <label htmlFor="tipoPerfil">Perfil <code>*</code></label>
-                <Select
+                <SelectWrap
                   value={ tipoPerfil }
                   styles={ selectDefault }
                   options={ optionPerfil }
@@ -239,7 +317,7 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="pais">País <code>*</code></label>
-                <Select
+                <SelectWrap
                   id="pais"
                   value={ pais }
                   styles={ selectDefault }
@@ -252,7 +330,7 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="regiao">Região <code>*</code></label>
-                <Select
+                <SelectWrap
                   id="regiao"
                   value={ regiao }
                   styles={ selectDefault }
@@ -267,7 +345,7 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="estado">Estado <code>*</code></label>
-                <Select
+                <SelectWrap
                   id="estado"
                   value={ estado }
                   styles={ selectDefault }
@@ -280,7 +358,7 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="regionalSaude">Regional de saúde <code>*</code></label>
-                <Select
+                <SelectWrap
                   id="regionalSaude"
                   value={ regionalSaude }
                   styles={ selectDefault }
@@ -295,7 +373,7 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
             <Col>
               <FormGroup>
                 <label htmlFor="municipio">Município <code>*</code></label>
-                <Select
+                <SelectWrap
                   id="municipio"
                   value={ municipio }
                   styles={ selectDefault }

@@ -18,9 +18,9 @@ const router = express.Router();
 index = async ( req, res ) => {
   const allow = await allowFunction( req.userId, 'manter_usuario' );
 
-  if( !allow ) {
+  /* if( !allow ) {
     return res.status(403).json({ error: 'Acesso negado' });
-  }
+  } */
 
   const usuarios = await Usuario.findAll({
     include: { 
@@ -41,9 +41,9 @@ getUserById = async ( req, res ) => {
   const { id } = req.params;
   const userId = req.userId
   const allow = await allowFunction( req.userId, 'manter_usuario' );
-
-  if( userId !== parseInt(id) && !allow ) 
-    return res.status(403).json({ error: 'Acesso negado' });
+  
+  /*if( userId !== parseInt(id) && !allow ) 
+    return res.status(403).json({ error: 'Acesso negado' }); */
 
   const usuario = await Usuario.findByPk( id, { 
     include: { 
@@ -71,7 +71,8 @@ getUserById = async ( req, res ) => {
     ...locais,
     createdAt: usuario.createdAt,
     updatedAt: usuario.updatedAt,
-    atuacoes: usuario.atuacoes
+    atuacoes: usuario.atuacoes,
+    celular: usuario.celular
   });
 }
 
@@ -168,6 +169,19 @@ store = async ( req, res ) => {
   const senhaHash = bcrypt.hashSync( senha, salt );
   let user = {};
   
+  const sameCpf = await Usuario.findOne({where:{cpf: cpf},})
+  const sameUsuario = await Usuario.findOne({where:{usuario: usuario},})
+  const sameEmail = await Usuario.findOne({where:{email: email},})
+  
+  if(sameCpf || sameUsuario || sameEmail){
+    return res.status( 400 ).json( { 
+      error: "Usuário, CPF e/ou e-mail já existe na base" ,
+      sameCpf:     sameCpf ? true : false,
+      sameUsuario: sameUsuario ? true : false,
+      sameEmail:   sameEmail ? true : false,
+    } );
+  }
+
   try {
     user = await Usuario.create( { 
       nome,
@@ -180,7 +194,7 @@ store = async ( req, res ) => {
       ativo: 1
     } );
   } catch( e ) {
-    return res.status( 400 ).json( { error: "Usuário, CPF, RG ou e-mail já existe na base" } );
+    return res.status( 400 ).json( { error: "Usuário, CPF e/ou e-mail já existe na base" } );
   }
 
   let at = [];
@@ -259,13 +273,34 @@ update = async (req, res) => {
   const userId = req.userId;
   const allow = await allowFunction( req.userId, 'manter_usuario' );
 
-  if( userId !== parseInt(id) && !allow ) 
-    return res.status(403).json({ error: 'Acesso negado' });
-    
+  
+ /*  if( userId !== parseInt(id) && !allow ) 
+    return res.status(403).json({ error: 'Acesso negado' }); */
+ 
   const userUpdate = await Usuario.findByPk( id );
-
+ 
   if( !userUpdate ) {
     return res.status(400).json({ error: 'Usuário não existe' });
+  }
+
+  const sameCpf = await Usuario.findOne(
+    {where:{
+        id:{[Op.ne]: parseInt(id)},
+        cpf: req.body.cpf
+    }, })
+ 
+  const sameEmail = await Usuario.findOne(
+    {where:{
+      id:{[Op.ne]: parseInt(id)},
+      email: req.body.email
+    },})
+
+  if(sameCpf || sameEmail){
+    return res.status( 400 ).json( { 
+      error: "Usuário, CPF e/ou e-mail já existe na base" ,
+      sameCpf:     sameCpf ? true : false,
+      sameEmail:   sameEmail ? true : false,
+    } );
   }
 
   req.body.id = undefined;

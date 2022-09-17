@@ -7,6 +7,7 @@ import { FaChevronDown, FaChevronUp, FaMapMarkerAlt } from 'react-icons/fa';
 import { Collapse } from 'react-bootstrap';
 import ReactMapGL, { Marker } from 'react-map-gl';
 import { removeMultipleSpaces } from '../../../../config/function';
+import SelectWrap from '../../../../components/SelectWrap'
 
 // Models
 import { Imovel } from '../../../../config/models';
@@ -17,11 +18,14 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { setUpdated } from '../../../../store/Quarteirao/quarteiraoActions';
-import { addImovelRequest, editarImovelRequest, clearCreate } from '../../../../store/Imovel/imovelActions';
+import { addImovelRequest, editarImovelRequest, clearCreate, clearUpdate } from '../../../../store/Imovel/imovelActions';
 
 // STYLES
 import { ContainerArrow } from '../../../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../../../styles/global';
+
+// VALIDATIONS FUNCTIONS
+import {onlyLetters} from '../../../../config/function';
 
 /**
  * Modal de adição de um imóvel
@@ -140,8 +144,18 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
       setLado( {} );
       props.clearCreate();
       props.setUpdated( null );
+      setTimeout(() => { document.location.reload( true );}, 1000)
     }
   }, [ props.created ] );
+
+  useEffect( () => {
+    if( props.updated ) {
+      handleClose();
+      //props.setUpdated( null );
+      setTimeout(() => { document.location.reload( true );}, 1000)
+    }
+    props.clearUpdate();
+  }, [ props.updated ] );
 
   /**
    * Valida se a localização inserida é válida
@@ -242,7 +256,7 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
   }
 
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false} >
       <Modal.Header closeButton>
         <Modal.Title>
           {acao == "cadastrar" ? "Cadastrar" : "Editar"} Imóvel
@@ -256,12 +270,13 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
                 <label htmlFor="lado">
                   Lado <code>*</code>
                 </label>
-                <Select
+                <SelectWrap
                   id="lado"
                   value={lado}
                   styles={selectDefault}
                   options={optionLado}
                   onChange={(e) => setLado(e)}
+                  required
                 />
               </FormGroup>
             </Col>
@@ -283,6 +298,7 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
                   }
                   onChange={(e) => setNumero(e.target.value)}
                   min="1"
+                  required
                 />
               </FormGroup>
             </Col>
@@ -312,7 +328,7 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
                   id="responsavel"
                   value={responsavel}
                   className="form-control"
-                  onChange={(e) => setResponsavel(e.target.value)}
+                  onChange={(e) => ( onlyLetters(e.target.value) ? setResponsavel(e.target.value) : () => {} )}
                 />
               </FormGroup>
             </Col>
@@ -334,12 +350,13 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
                 <label>
                   Tipo do imóvel <code>*</code>
                 </label>
-                <Select
+                <SelectWrap
                   id="tipoImovel"
                   value={tipoImovel}
                   styles={selectDefault}
                   options={optionTipoImovel}
                   onChange={(e) => setTipoImovel(e)}
+                  required                 
                 />
               </FormGroup>
             </Col>
@@ -362,6 +379,7 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
                         className="form-control"
                         value={localizacao}
                         onChange={(e) => checkLocalizacao(e.target.value)}
+                        required
                       />
                     </div>
                     <div className="toggle-control">
@@ -394,6 +412,7 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
                             setLng(e.target.value);
                             checkLocValida(e.target.value, "lng");
                           }}
+                          required
                         />
                       </FormGroup>
                       <FormGroup className="mb-0">
@@ -409,6 +428,7 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
                             setLat(e.target.value);
                             checkLocValida(e.target.value, "lat");
                           }}
+                          required
                         />
                       </FormGroup>
                     </div>
@@ -460,7 +480,8 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
  * @returns
  */
 const mapStateToProps = state => ( {
-  created: state.imovel.created
+  created: state.imovel.created,
+  updated: state.imovel.updated
 } );
 
 /**
@@ -474,6 +495,7 @@ const mapDispatchToProps = dispatch =>
     addImovelRequest,
     editarImovelRequest,
     setUpdated,
+    clearUpdate,
   }, dispatch );
 
 export default connect(

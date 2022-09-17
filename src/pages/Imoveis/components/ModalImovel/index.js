@@ -17,7 +17,10 @@ import { addImovelRequest, editarImovelRequest, clearCreate } from '../../../../
 // STYLES
 import { Button, FormGroup, selectDefault } from '../../../../styles/global';
 
-export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) => {
+// VALIDATIONS FUNCTIONS
+import {onlyLetters} from '../../../../config/function';
+
+export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, isOpen, handleClose, ...props }) => {
   const [ imovel_id, setImovelId ]                = useState( null );
   const [ numero, setNumero ]                     = useState( null );
   const [ sequencia, setSequencia ]               = useState( null );
@@ -45,6 +48,18 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
     zoom: 2
   });
   const [ marcador, setMarcador ]                 = useState( {} );
+
+  useEffect(() => {
+    if(isOpen){
+      if( Object.entries( imovel ).length > 0 ){
+        setClss([]);
+        setFlLocValido(true)
+      }
+      else
+        limparCampos()
+    }
+    handleClose()
+  }, [isOpen]);
 
   useEffect(() => {
     props.getQuarteiroesMunicipioRequest( usuario.municipio.id, true );
@@ -123,6 +138,8 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
     setLat( "" );
     setLocalizacao( "" );
     setMarcador( {} );
+    setClss([]);
+    setFlLocValido(true)
   }
 
   const limparClss = index => {
@@ -216,6 +233,24 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
       c         = clss;
 
       c[ 'tipoImovel' ] = 'invalid';
+      setClss( c );
+    }
+
+    if( !lng ) {
+      fl_valido = false;
+      c         = clss;
+
+      c[ 'longitude' ] = 'invalid';
+      setFlLocValido(false)
+      setClss( c );
+    }
+
+    if( !lat ) {
+      fl_valido = false;
+      c         = clss;
+
+      c[ 'latitulde' ] = 'invalid';
+      setFlLocValido(false)
       setClss( c );
     }
 
@@ -330,7 +365,7 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
                   id="responsavel"
                   value={ responsavel }
                   className="form-control"
-                  onChange={ e => setResponsavel( e.target.value ) }
+                  onChange={ e =>( onlyLetters(e.target.value) ?  setResponsavel( e.target.value ) : () => {} )}
                 />
               </FormGroup>
             </Col>
@@ -374,6 +409,7 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
                         className="form-control"
                         value={ localizacao }
                         onChange={ e => checkLocalizacao( e.target.value ) }
+                        onBlur={ () => setFlLocValido(true) }
                       />
                     </div>
                     <div className="toggle-control">
@@ -398,7 +434,8 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
                           type      ="number"
                           pattern   ="[0-9]*"
                           onKeyDown ={ e => [ "e", "E", "+", "," ].includes( e.key ) && e.preventDefault() }
-                          className ="form-control"
+                          className ={ "form-control " + clss[ 'longitude' ] }
+                          onBlur    ={ () => limparClss( 'longitude' ) }
                           onChange  ={ e => { setLng( e.target.value ); checkLocValida( e.target.value, "lng" ); } }
                         />
                       </FormGroup>
@@ -410,7 +447,8 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, ...props }) =
                           type      ="number"
                           pattern   ="[0-9]*"
                           onKeyDown ={ e => [ "e", "E", "+", "," ].includes( e.key ) && e.preventDefault() }
-                          className ="form-control"
+                          className ={ "form-control " + clss[ 'latitulde' ] }
+                          onBlur    ={ () => limparClss( 'latitulde' ) }
                           onChange  ={ e => { setLat( e.target.value ); checkLocValida( e.target.value, "lat" ); } }
                         />
                       </FormGroup>

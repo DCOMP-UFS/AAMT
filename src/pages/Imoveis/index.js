@@ -88,6 +88,7 @@ const columns = [
 export const Imoveis = ({ imoveis, usuario, ...props }) => {
   const [ rowsSelected, setRowsSelected ] = useState( [] );
   const [ rows, setRows ]                 = useState( [] );
+  const [ isModalOpen, setIsModalOpen]    = useState( false );
   const options = {
     customToolbar: () => {
       return (
@@ -95,7 +96,10 @@ export const Imoveis = ({ imoveis, usuario, ...props }) => {
           title="Adicionar Imóvel"
           data-toggle="modal"
           data-target="#modal-imovel"
-          onClick={ () => props.setImovel( {} ) }
+          onClick={ () => {
+            props.setImovel( {} )
+            setIsModalOpen(true)
+          } }
         />
       );
     },
@@ -134,7 +138,10 @@ export const Imoveis = ({ imoveis, usuario, ...props }) => {
         <Tooltip
             className="bg-warning text-white"
             title="Editar"
-            onClick={ () => handlerImovel( index ) }
+            onClick={ () => {
+              setIsModalOpen(true)
+              handlerImovel( index )
+            } }
           >
             <IconButton aria-label="Editar">
               <FaPenSquare />
@@ -151,6 +158,8 @@ export const Imoveis = ({ imoveis, usuario, ...props }) => {
 
     $( '#modal-imovel' ).modal( 'show' );
   }
+
+  const handleClose = () => {setIsModalOpen(false)}
 
   /**
    * Aciona o action para remover os imóveis
@@ -180,7 +189,7 @@ export const Imoveis = ({ imoveis, usuario, ...props }) => {
               data={ rows }
               options={ options }
             />
-            <ModalImovel />
+            <ModalImovel isOpen={isModalOpen} handleClose={handleClose} />
             <ModalConfirm id="modal-deletar-imovel" title="Deletar Imóvel" confirm={ desativarImoveis }>
               <p>Deseja realmente deletar o(s) imóvel(is)</p>
             </ModalConfirm>

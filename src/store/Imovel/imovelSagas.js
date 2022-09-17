@@ -52,6 +52,7 @@ export function* editarImovel( action ) {
     const { status } = yield call( servico.updateHouseRequest, action.payload.imovel );
 
     if( status === 200 ) {
+      yield put( ImovelActions.setUpdatedTrue() );
       yield put( AppConfigActions.showNotifyToast( "Imóvel atualizado com sucesso!", "success" ) );
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao atualizar imóvel: " + status, "error" ) );

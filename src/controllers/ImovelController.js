@@ -4,6 +4,7 @@ const Imovel          = require(  '../models/Imovel' );
 const Lado            = require(  '../models/Lado' );
 const Quarteirao      = require(  '../models/Quarteirao' );
 const Rua             = require(  '../models/Rua' );
+const Vistoria = require('../models/Vistoria');
 
 getImoveisMunicipio = async ( req, res ) => {
   const { municipio_id } = req.params;
@@ -22,7 +23,11 @@ getImoveisMunicipio = async ( req, res ) => {
       'JOIN quarteiroes as q ON( l.quarteirao_id = q.id ) ' +
       'JOIN localidades as loc ON( q.localidade_id = loc.id ) ' +
     'WHERE ' +
-      'loc.municipio_id = $1', 
+      'loc.municipio_id = $1 '+
+      'AND q.ativo = 1 '+
+      'AND r.ativo = true '+
+      'AND l.ativo = true ' +
+      'AND i.ativo = true ', 
     {
       bind: [ municipio_id ],
       logging: console.log,
@@ -54,6 +59,7 @@ getImoveisMunicipio = async ( req, res ) => {
 
 index = async ( req, res ) => {
   const imoveis = await Imovel.findAll({
+    where:{ativo:true}, // apenas imoveis ativos devem ser listados
     order: [[ 'numero', 'asc' ]]
   });
 
@@ -130,6 +136,26 @@ update = async ( req, res ) => {
 
 destroy = async ( req, res ) => {
   const { id } = req.params;
+
+  const vistoria = await Vistoria.findOne({
+    where:{
+      imovel_id: id
+    }
+  })
+
+  //Possui uma vistoria associada, logo não pode ser deletada
+  //A alternartiva é inativar o imovel
+  if(vistoria){
+    const { isRejected } = await Imovel.update(
+      {ativo: false},
+      {where: {id}}
+    );
+  
+    if( isRejected ) 
+      return res.status(400).json({ error: 'Não foi possível remover o imóvel' });
+    
+    return res.json({ message: "Imóvel deletado" });
+  }
 
   const deleted = await Imovel.destroy({
     where: {

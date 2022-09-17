@@ -27,6 +27,7 @@ index = async ( req, res ) => {
         association: 'lados',
         attributes: { exclude: [ 'rua_id', 'createdAt', 'updatedAt' ] },
         order: [[ 'numero', 'asc' ]],
+        where:{ativo:true},
         include: [
           {
             association: 'rua',
@@ -35,7 +36,8 @@ index = async ( req, res ) => {
           {
             association: 'imoveis',
             attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-            order: [[ 'numero', 'asc' ]]
+            order: [[ 'numero', 'asc' ]],
+            where:{ativo:true}
           }
         ]
       }

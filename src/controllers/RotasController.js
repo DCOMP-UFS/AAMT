@@ -86,6 +86,7 @@ getRoute = async ( req, res ) => {
         {
           association: 'imoveis',
           where:{
+            ativo:true,
             id: {
               [Op.notIn]: imoveisId
             },
@@ -409,6 +410,7 @@ startRoute = async ( req, res ) => {
       include: [
         {
           association: 'imoveis',
+          ativo:true,
           where:{
             id: {
               [Op.notIn]: imoveisId
@@ -666,7 +668,7 @@ const getOpenRouteByTeam = async ( req, res ) => {
       'r.cep AS rua_cep, ' +
       'r.localidade_id AS rua_localidade_id, ' +
       'CAST( ' +
-        '(SELECT COUNT(*) FROM imoveis WHERE lado_id = l.id) ' +
+        '(SELECT COUNT(*) FROM imoveis WHERE lado_id = l.id AND ativo = true) ' +
       ' AS INTEGER ) AS imoveis, ' +
       'CAST( ' +
         '( ' +
@@ -686,7 +688,7 @@ const getOpenRouteByTeam = async ( req, res ) => {
       'quarteiroes AS q ' +
       'JOIN lados AS l ON(q.id = l.quarteirao_id) ' +
       'JOIN ruas AS r ON(l.rua_id = r.id) ' +
-    'WHERE ';
+    'WHERE l.ativo = true AND ';
       // 'q.id = 1 ' +
       // 'OR q.id = 2';
 

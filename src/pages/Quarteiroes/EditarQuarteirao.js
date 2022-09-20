@@ -192,7 +192,6 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
 
   const loadInfo = () => {
     if( Object.entries( quarteirao ).length > 0 ) {
-      console.log(quarteirao)
       setNumero(quarteirao.numero);
       setAtivo( {
         value: quarteirao.ativo,

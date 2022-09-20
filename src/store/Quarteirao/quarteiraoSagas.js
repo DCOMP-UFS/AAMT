@@ -111,7 +111,11 @@ function* excluirLado( action ) {
   try {
     const { status } = yield call( service.excluirLadoRequest, action.payload );
     if( status === 200 ) {
-      yield put( QuarteiraoActions.excluirLadoReduce( action.payload.excluirLadoId, action.payload.addImovelLadoId ) );
+      //Ultimo lado foi excluido
+      if(action.payload.isUltimoLado)
+        yield put(QuarteiraoActions.setUpdated(true))
+      else
+        yield put( QuarteiraoActions.excluirLadoReduce( action.payload.excluirLadoId, action.payload.addImovelLadoId ) );
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao excluir lado do quarteirão: " + status, "error" ) );
     }

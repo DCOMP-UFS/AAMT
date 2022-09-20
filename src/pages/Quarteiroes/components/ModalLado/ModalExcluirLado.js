@@ -36,8 +36,8 @@ const ModalExcluirLado = ( { lados, ladoIndex, show, handleClose, ...props } ) =
   const [ classValido, setClassValido ]     = useState( '' );
 
   useEffect(() => {
-    const options = lados.filter( ( l, index ) => index != ladoIndex ).map( l => ( { value: l.id, label: l.numero } ) );
-
+    var options = lados.filter( ( l, index ) => index != ladoIndex ).map( l => ( { value: l.id, label: l.numero } ) );
+    options.unshift({value: -1 , label: `Nenhum lado, também desejo excluir os imoveis `})
     setOptionLado( options );
   }, [ ladoIndex ]);
 
@@ -58,13 +58,22 @@ const ModalExcluirLado = ( { lados, ladoIndex, show, handleClose, ...props } ) =
    */
   const handleSubmit = e => {
     e.preventDefault();
-
-    if( lado.value ) {
-      props.excluirLadoRequest( excluirLadoId, lado.value );
+    if(lados.length > 1 ){
+      if( lado.value ) {
+        const isUltimoLado = false
+        props.excluirLadoRequest( excluirLadoId, lado.value, isUltimoLado );
+        setLado( {} );
+        handleClose();
+      } else {
+        setClassValido( 'invalid' );
+      }
+    }
+    //O ultimo lado será excluido
+    else{
+      const isUltimoLado = true
+      props.excluirLadoRequest( excluirLadoId, -1 , isUltimoLado );
       setLado( {} );
       handleClose();
-    } else {
-      setClassValido( 'invalid' );
     }
   }
 
@@ -78,23 +87,30 @@ const ModalExcluirLado = ( { lados, ladoIndex, show, handleClose, ...props } ) =
       <form onSubmit={ handleSubmit }>
         <Modal.Body>
           <p className="text-description">
-            <code>ATENÇÃO: O lado { numero } será excluido permanentemente</code>
+            {
+              lados.length > 1 ? 
+                <code>ATENÇÃO: O lado { numero } será excluido permanentemente</code> :
+                "Você está prestes a deletar o ultimo lado do quarteirão. O quarteirão se tornará inativo e todos os imoveis também serão excluidos"
+            }
           </p>
-          <Row>
-            <Col>
-              <FormGroup className="mb-0">
-                <label htmlFor="l_rua">Selecione um lado para atribuir os imóveis do lado { numero }<code>*</code></label>
-                <Select
-                  id="l_rua"
-                  className={ classValido }
-                  value={ lado }
-                  styles={ selectDefault }
-                  options={ optionLado }
-                  onChange={ e => setLado( e ) }
-                />
-              </FormGroup>
-            </Col>
-          </Row>
+          { lados.length > 1 ? 
+            <Row>
+              <Col>
+                <FormGroup className="mb-0">
+                  <label htmlFor="l_rua">Selecione um lado para atribuir os imóveis do lado { numero }<code>*</code></label>
+                  <Select
+                    id="l_rua"
+                    className={ classValido }
+                    value={ lado }
+                    styles={ selectDefault }
+                    options={ optionLado }
+                    onChange={ e => setLado( e ) }
+                  />
+                </FormGroup>
+              </Col>
+            </Row> :
+            ''
+          }
         </Modal.Body>
         <Modal.Footer>
           <ContainerArrow className="justify-content-end">

@@ -66,9 +66,10 @@ export const setQuarteiraoRequest = data => {
  * @returns {Promise} response
  */
 export const excluirLadoRequest = data => {
-  const { excluirLadoId, addImovelLadoId } = data;
+  const { excluirLadoId, addImovelLadoId, isUltimoLado } = data;
   const body = {
-    addImovelLadoId
+    addImovelLadoId,
+    isUltimoLado
   };
 
   return api.post( `/quarteiroes/excluirLado/${ excluirLadoId }`, body, {

@@ -33,7 +33,8 @@ import {
   getQuarteiraoPorIdRequest,
   setImovelEditar,
   setQuarteiraoRequest,
-  excluirImovelRequest
+  excluirImovelRequest,
+  setUpdated
 } from '../../store/Quarteirao/quarteiraoActions';
 import { showNotifyToast } from "../../store/AppConfig/appConfigActions";
 
@@ -121,6 +122,7 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
       //espera 1s para recarregar a pagina
       setTimeout(() => { document.location.reload( true );}, 1000)
     }
+    props.setUpdated(null)
   }, [ props.updated ]);
 
   /**
@@ -155,10 +157,12 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
       return;
     }
     if (lados.length === 1) {
-      props.showNotifyToast(
+     /*  props.showNotifyToast(
         "Não é possível excluir este lado, pois deve existir pelo menos um lado associado ao quarteirão.",
         "warning"
-      );
+      ); */
+      setLadoIndex(index);
+      setShowExcluirLado(true);
       return;
     }
     //caso seja um lado que ainda não foi salvo
@@ -684,6 +688,7 @@ const mapDispatchToProps = (dispatch) =>
       excluirImovelRequest,
       setQuarteiraoRequest,
       showNotifyToast,
+      setUpdated,
     },
     dispatch
   );

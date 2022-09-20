@@ -66,13 +66,19 @@ export default function Quarteirao( state = INITIAL_STATE, action ) {
       const excluirIndex    = quarteirao.lados.findIndex( l => l.id == excluirLadoId );
       const addIndex        = quarteirao.lados.findIndex( l => l.id == addImovelLadoId );
 
-      if( excluirIndex != -1 ) {
-        quarteirao.lados[ addIndex ].imoveis = [ 
-          ...quarteirao.lados[ addIndex ].imoveis,
-          ...quarteirao.lados[ excluirIndex ].imoveis,
-        ];
-        
-        quarteirao.lados.splice( excluirIndex, 1 );
+      //Significa que não houve transferencia de imoveis
+      //do lado excluido para outro lado ainda existente
+      if(addImovelLadoId == -1)
+        quarteirao.lados.splice( excluirIndex, 1 )
+      else{
+        if( excluirIndex != -1 ) {
+          quarteirao.lados[ addIndex ].imoveis = [ 
+            ...quarteirao.lados[ addIndex ].imoveis,
+            ...quarteirao.lados[ excluirIndex ].imoveis,
+          ];
+          
+          quarteirao.lados.splice( excluirIndex, 1 );
+        }
       }
 
       return {

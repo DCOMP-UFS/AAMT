@@ -26,7 +26,7 @@ import { Container, Block, Usuario, Avatar, StreetCard } from './styles';
  * @param {Object} props demais parametros do componente
  * @returns 
  */
-export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, rota_equipe, equipes, ...props } ) => {
+export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, rota_equipe, equipes, indexAtividade, ...props } ) => {
   /**
    * Este effect é acionado assi mque o componente é montado.
    * Sua responsabilidade é ativar o componente de loading e solicitar
@@ -37,7 +37,7 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
       props.setFl_loading( true );
       props.getRotaEquipeRequest( equipes[ indexEquipe ].id );
     }
-  }, [ indexEquipe ] );
+  }, [ indexEquipe, indexAtividade ] );
 
   /**
    * Verificando se o indexMembro é válido, se sim, solicita
@@ -162,13 +162,14 @@ const ExibirQuarteiroes = ( { rota_equipe, fl_loading, indexEquipe, indexMembro,
 };
 
 const mapStateToProps = state => ( {
-  usuario     : state.appConfig.usuario,
-  equipes     : state.atividade.equipes,
-  rota_equipe : state.atividade.rota_equipe,
-  indexEquipe : state.atividade.indexEquipe,
-  indexMembro : state.atividade.indexMembro,
-  reload      : state.atividade.reload,
-  fl_loading  : state.atividade.fl_loading,
+  usuario        : state.appConfig.usuario,
+  equipes        : state.atividade.equipes,
+  rota_equipe    : state.atividade.rota_equipe,
+  indexEquipe    : state.atividade.indexEquipe,
+  indexMembro    : state.atividade.indexMembro,
+  reload         : state.atividade.reload,
+  fl_loading     : state.atividade.fl_loading,
+  indexAtividade : state.atividade.indexAtividade
 } );
 
 const mapDispatchToProps = {

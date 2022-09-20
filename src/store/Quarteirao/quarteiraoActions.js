@@ -186,12 +186,13 @@ export const setCreated = created => {
  * @param {bollean} updated
  * @returns 
  */
-export const excluirLadoRequest = ( excluirLadoId, addImovelLadoId ) => {
+export const excluirLadoRequest = ( excluirLadoId, addImovelLadoId, isUltimoLado ) => {
   return {
     type    : ActionTypes.EXCLUIR_LADO_REQUEST,
     payload : {
       excluirLadoId,
-      addImovelLadoId
+      addImovelLadoId,
+      isUltimoLado
     }
   }
 }

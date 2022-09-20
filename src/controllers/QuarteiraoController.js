@@ -6,6 +6,7 @@ const Localidade = require('../models/Localidade');
 const Quarteirao = require('../models/Quarteirao');
 const Rua = require('../models/Rua');
 const Lado = require('../models/Lado');
+const Imovel= require(  '../models/Imovel' );
 const { Op } = require("sequelize");
 // UTILITY
 const allowFunction = require('../util/allowFunction');
@@ -27,7 +28,6 @@ index = async ( req, res ) => {
         association: 'lados',
         attributes: { exclude: [ 'rua_id', 'createdAt', 'updatedAt' ] },
         order: [[ 'numero', 'asc' ]],
-        where:{ativo:true},
         include: [
           {
             association: 'rua',
@@ -37,7 +37,6 @@ index = async ( req, res ) => {
             association: 'imoveis',
             attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
             order: [[ 'numero', 'asc' ]],
-            where:{ativo:true}
           }
         ]
       }
@@ -47,11 +46,59 @@ index = async ( req, res ) => {
     }
   });
 
-  if( !quarteirao ) {
+  if( !quarteirao ) 
     return res.status(400).json({ error: "Quarteirão não existe" });
+
+  var result = {
+    ativo: -1,
+    createdAt: "",
+    id: -1,
+    lados:[],
+    localidade: null,
+    localidade_id:-1,
+    numero:-1,
+    quarteirao_id:null,
+    updatedAt:"",
+    zona:null
   }
 
-  return res.json( quarteirao );
+  result.ativo         = quarteirao.ativo
+  result.createdAt     = quarteirao.createdAt
+  result.id            = quarteirao.id
+  result.lados         = quarteirao.lados
+  result.localidade    = quarteirao.localidade
+  result.localidade_id = quarteirao.localidade_id
+  result.numero        = quarteirao.numero
+  result.quarteirao_id = quarteirao.quarteirao_id
+  result.updatedAt     = quarteirao.updatedAt
+  result.zona          = quarteirao.zona
+
+  //Filtrar todos os lados inativos
+  result.lados = result.lados.filter( l => l.ativo == true)
+
+  //Array que ira armazena os lados com a lista de imoveis filtrados
+  //Apenas serão pegos os imoveis ativos
+  var lados= []
+  
+  result.lados.forEach(l => {
+    var lado = {
+      ativo: l.ativo,
+      id: l.id,
+      numero: l.numero,
+      quarteirao_id: l.quarteirao_id,
+      rua: l.rua
+    }
+    var imoveis = []
+    l.imoveis.forEach( i => {
+      if(i.ativo)
+        imoveis.push(i)
+    })
+    lado.imoveis = imoveis;
+    lados.push(lado)
+  })
+  
+  result.lados = lados
+  return res.json( result );
 }
 
 getBlockByCity = async (req, res) => {
@@ -441,36 +488,97 @@ getLadosQuarteirao = async ( req, res ) => {
 
 /**
  * Excluir um lado do quarteirão e atribuir seus imóveis a outro lado
- * 
+ * Na visão do usuario parece uma exclusão, mas na verdade ocorre  uma inativação
  * @params integer id
  * @return array lados
  */
  excluirLadoPorId = async ( req, res ) => {
-  const { excluirLadoId } = req.params;
-  const { addImovelLadoId }     = req.body;
+  const { excluirLadoId }       = req.params;
+  const { addImovelLadoId, isUltimoLado }     = req.body;
 
   // Checando se o ID existe
-  const excluirLado = await Lado.findByPk( excluirLadoId );
-  const addLado     = await Lado.findByPk( addImovelLadoId );
+  const excluirLado = await Lado.findByPk( excluirLadoId, {include: {association: 'quarteirao'}} );
 
-  if( !excluirLado && !addLado )
-    return res.status( 400 ).json( { error: 'Não é possível excluir o lado, um dos lados não existe' } );
+  //Significa que o usuario além de excluir o lado,
+  //deseja excluir todos os imoveis do lado
+  if(addImovelLadoId == -1){
+    if( !excluirLado )
+      return res.status( 400 ).json( { error: 'Não é possível excluir o lado, ja que ele não existe' } );
+    
+    //Encontrar o id dos imoveis que não possuem nenhuma vistorias
+    //e que pertencem ao lado que será inativado
+    let sql = `SELECT i.id FROM imoveis as i 
+            LEFT OUTER JOIN vistorias as v ON i.id = v.imovel_id
+            WHERE i.lado_id = $1 AND v.imovel_id is NULL`
 
-  if( excluirLado.quarteirao_id !== addLado.quarteirao_id )
-    return res.status( 400 ).json( { error: 'Não é permitido adicionar imóveis a um quarteirão diferente' } );
+    const result = await Imovel.sequelize.query( sql, 
+      {
+        bind: [ excluirLado.id ],
+        logging: console.log,
+      }
+    );
+    let idImoveis = []
+    result[ 1 ].rows.forEach( i => idImoveis.push(i.id))
+    console.log(idImoveis)
 
-  let sql = `UPDATE imoveis SET lado_id = $1 WHERE lado_id = $2`;
+    //Deleta todos os imoveis do lado que não tem vistorias
+    if(idImoveis.length > 0){
+      await Imovel.destroy({
+        where:{ id: { [Op.in]: idImoveis} }
+      })
+    }
 
+    //Desativa os imoveis restantes
+    sql = `UPDATE imoveis SET ativo = false WHERE lado_id = $1`;
+    await Imovel.sequelize.query( sql, 
+      {
+        bind: [ excluirLado.id ],
+        logging: console.log,
+      }
+    );
+  }
+  //Siginifica que o imoveis do lado que será inativado serão
+  //transferidos para outro lado
+  else{
+    const addLado     = await Lado.findByPk( addImovelLadoId );
+
+    if( !excluirLado && !addLado )
+      return res.status( 400 ).json( { error: 'Não é possível excluir o lado, um dos lados não existe' } );
+
+    if( excluirLado.quarteirao_id !== addLado.quarteirao_id )
+      return res.status( 400 ).json( { error: 'Não é permitido adicionar imóveis a um quarteirão diferente' } );
+
+    //Tranferir todos os imoveis do lado que será inativado para
+    //o outro lado
+    let sql = `UPDATE imoveis SET lado_id = $1 WHERE lado_id = $2`;
+    await Lado.sequelize.query( sql, 
+      {
+        bind: [ addLado.id, excluirLado.id ],
+        logging: console.log,
+      }
+    );
+  }
+
+  //Inativa o lado
+  let sql = `UPDATE lados SET ativo = false WHERE id = $1`;
   await Lado.sequelize.query( sql, 
     {
-      bind: [ addLado.id, excluirLado.id ],
+      bind: [ excluirLado.id ],
       logging: console.log,
     }
   );
+  
+  //Caso o ultimo lado for inativado
+  if(isUltimoLado){
+    sql = `UPDATE quarteiroes SET ativo = 0 WHERE id = $1`;
+    await Quarteirao.sequelize.query( sql, {
+      bind: [ excluirLado.quarteirao_id ],
+      logging: console.log,
+    })
+  }
 
-  excluirLado.destroy();
+  return res.json( { mensage: 'Lado removido com sucesso' } );
 
-  res.json( { mensage: 'Lado removido com sucesso' } );
 }
 
 async function quarteiraoExistente(id,municipio_id, numero){
@@ -489,9 +597,6 @@ async function quarteiraoExistente(id,municipio_id, numero){
     },
     where: {...filtro}
   });
-  console.log("-----------")
-  console.log(quarteiraoExiste)
-  console.log("-----------")
   if( quarteiraoExiste ) return true
   
   return false

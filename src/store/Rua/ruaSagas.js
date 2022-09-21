@@ -135,8 +135,21 @@ export function* deleteStreet( action ) {
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao excluir rua: " + status, "error" ) );
     }
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Verifique se existem quarteirões associados a essa rua", "warning" ) );
+  } catch (err) {
+
+    if(err.response){
+      const {numQuarteiroes, error} = err.response.data
+
+      //caso um quarteirão com esteja associado com a rua
+      if(numQuarteiroes){
+        yield put( AppConfigActions.showNotifyToast( "Existem lados associados a esta rua que devem ser excluidos antes. Os números dos quarteirões que contem esses lados são: "+numQuarteiroes, "warning" ) );
+      //provavel erro na api ou banco
+      }else
+        yield put( AppConfigActions.showNotifyToast( "Erro ao deletar rua, entre em contato com o suporte", "error" ) );
+    }
+    //Não conseguiu entrar em contato com api
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro deletar rua, favor verifique sua conexão com a internet", "error" ) );
   }
 }
 

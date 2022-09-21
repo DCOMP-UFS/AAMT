@@ -153,7 +153,8 @@ const findOrCreateStreet = async ( nome, localidade_id, cep ) => {
   const [ rua ] = await Rua.findOrCreate({
     where: {
       nome,
-      localidade_id
+      localidade_id,
+      ativo:true
     },
     defaults: { 
       nome,

@@ -102,7 +102,8 @@ function ModalUpdateStreet({ updated, index, show, handleClose, ...props }) {
                   styles={ selectDefault }
                   options={ optionLocalidade }
                   onChange={ e => setLocalidade(e) }
-                  required />
+                  required 
+                  isDisabled={true}/>
               </FormGroup>
             </Col>
           </Row>

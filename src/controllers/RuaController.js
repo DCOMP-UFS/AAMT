@@ -3,6 +3,7 @@ const authMiddleware = require('../middlewares/auth');
 const Rua = require('../models/Rua');
 const Localidade = require('../models/Localidade');
 const { Op } = require("sequelize");
+const Lado = require('../models/Lado');
 
 getStreetByLocality = async ( req, res ) => {
   const { localidade_id } = req.params;
@@ -19,7 +20,8 @@ getStreetByLocality = async ( req, res ) => {
 
   const ruas = await Rua.findAll({
     where: {
-      localidade_id
+      localidade_id,
+      ativo:true
     },
     include: {
       association: 'localidade',
@@ -157,22 +159,50 @@ destroy = async ( req, res ) => {
   const { id } = req.params;
 
   try {
-
     if(!id) return res.status(400).json({ erro: "Informe o id da rua" });
-   
-    const deleted = await Rua.destroy({
-      where: {
-        id
-      }
-    });
-  
-    if( deleted )
+
+    const rua = await Rua.findByPk(id)
+    if(!rua)
+      return res.status(404).json({ message: "Rua não encontrado" });
+
+    //Procura todos os lados ativos associados a rua
+    const lados = await Lado.findAll({
+      where:{
+        ativo:true,
+        rua_id:id
+      },
+      include: [
+        {
+          association: 'quarteirao',
+          attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+        },
+      ]
+    })
+    
+    //Não existem lados associados
+    if(lados.length == 0){
+      await Rua.update(
+        {ativo:false},
+        {where: { id } }
+      );
+    
       return res.json({ message: "Rua deletada" });
-  
-    return res.status(404).json({ message: "Rua não encontrado" });
+    }
+    else{
+      var numQuarteiroes = []
+      lados.forEach(l => {
+        if(numQuarteiroes.indexOf(l.quarteirao.numero) == -1)
+          numQuarteiroes.push(l.quarteirao.numero)
+      })
+      return res.status(409).json({ 
+        error: "Verifique se existem quarteirões associados a essa rua antes de exclui-la" ,
+        numQuarteiroes
+      });
+    }
   }
   catch (e) {
-    return res.status(409).json({ error: "Verifique se existem quarteirões associados a essa rua antes de exclui-la" });
+    console.log(e)
+    return res.status(400).json({ error: "Ocorreu algum problema na API ou no banco" });
   }
 },
 
@@ -193,15 +223,15 @@ streetExist = async ( req, res ) => {
   }
 }
 
-//verifica se ja existe uma rua com determinado nome em uma localidade ou uma rua com determinado cep
+//verifica se ja existe uma rua ativa com determinado nome em uma localidade ou uma rua ativa com determinado cep
 //No caso dessa função ser usada em uma rota de atualização dos dados da rua, é precisso irforma o id da
 //rua para evitar que ela se compare consigo mesma
 async function ruaExistente(id,nome,cep,localidade_id){
   var sameName = null
   var sameCEP = null
 
-  var filtro1 = {nome: nome}
-  var filtro2 = {cep: cep}
+  var filtro1 = {nome: nome, ativo:true}
+  var filtro2 = {cep: cep, ativo:true}
 
   if(id){
     filtro1.id = {[Op.ne]: id}

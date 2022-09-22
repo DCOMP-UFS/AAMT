@@ -5,6 +5,7 @@ import Modal, { ModalBody, ModalFooter } from '../../components/Modal';
 import { Row, Col } from 'react-bootstrap';
 import { abrangencia as abrangenciaEnum }  from '../../config/enumerate';
 import LoadginGif from '../../assets/loading.gif';
+import SelectWrap from '../../components/SelectWrap'
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -17,7 +18,10 @@ import { getMethodologiesRequest } from '../../store/Metodologia/metodologiaActi
 import { ContainerArrow } from '../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../styles/global';
 
-function ModalUpdateActive({ atividade, updateAtividade, metodologias, ...props }) {
+// VALIDATIONS FUNCTIONS
+import { isBlank } from '../../config/function';
+
+function ModalUpdateActive({ atividade, updateAtividade, metodologias, isOpen, handleClose, ...props }) {
   const [ objetivoAtividade, setObjetivoAtividade ] = useState("");
   const [ flTodosImoveis, setFlTodosImoveis ] = useState({ value: false, label: "Não" });
   const [ abrangencia, setAbrangencia ] = useState({});
@@ -33,12 +37,28 @@ function ModalUpdateActive({ atividade, updateAtividade, metodologias, ...props 
     return { value: value.id, label: value.label };
   });
   const [ flLoading, setFlLoading ] = useState( false );
+  const [ isValidObjetivoAtividade, setIsValidObjetivoAtividade ] = useState(true);
+
+  //Use effect é acionado toda fez que o modal for aberto
+  useEffect(() => {
+    if(isOpen){
+      setObjetivoAtividade( atividade.objetivoAtividade );
+      setFlTodosImoveis( atividade.selectFlTodosImoveis );
+      setAbrangencia( atividade.selectAbrangencia );
+
+      const mtd = optionMetodologia.find( m => m.value === atividade.selectMetodologia.value );
+      setMetodologia( mtd );
+      setObjetivo( atividade.selectObjetivo );
+      setIsValidObjetivoAtividade(true)
+    }
+    handleClose()
+  }, [isOpen]);
 
   useEffect(() => {
     props.getMethodologiesRequest();
   }, []);
 
-  useEffect(() => {
+  /* useEffect(() => {
     if( atividade ) {
       setObjetivoAtividade( atividade.objetivoAtividade );
       setFlTodosImoveis( atividade.selectFlTodosImoveis );
@@ -47,7 +67,7 @@ function ModalUpdateActive({ atividade, updateAtividade, metodologias, ...props 
       const mtd = optionMetodologia.find( m => m.value === atividade.selectMetodologia.value );
       setMetodologia( mtd );
     }
-  }, [ atividade ]);
+  }, [ atividade ]); */
 
   useEffect(() => {
     const option = metodologias.map( (m, index) => (
@@ -58,9 +78,6 @@ function ModalUpdateActive({ atividade, updateAtividade, metodologias, ...props 
   }, [ metodologias ]);
 
   useEffect(() => {
-    if( atividade )
-      setObjetivo( atividade.selectObjetivo );
-
     if( Object.entries(metodologia).length > 0 ) {
       const option = metodologias[ metodologia.index ].objetivos.map( atv => (
         { value: atv.id, label: atv.descricao }
@@ -76,30 +93,34 @@ function ModalUpdateActive({ atividade, updateAtividade, metodologias, ...props 
     setAbrangencia({});
     setMetodologia({});
     setObjetivo({});
+    setIsValidObjetivoAtividade( true )
   }
 
   function handleSubmit( e ) {
     e.preventDefault();
-    setFlLoading( true );
+    if(isBlank(objetivoAtividade))
+      setIsValidObjetivoAtividade( false )
+    else{
+      setIsValidObjetivoAtividade( true )
+      updateAtividade({
+        objetivoAtividade,
+        flTodosImoveis: flTodosImoveis.value,
+        abrangencia: abrangencia.value,
+        metodologia_id: metodologia.value,
+        objetivo_id: objetivo.value,
 
-    updateAtividade({
-      objetivoAtividade,
-      flTodosImoveis: flTodosImoveis.value,
-      abrangencia: abrangencia.value,
-      metodologia_id: metodologia.value,
-      objetivo_id: objetivo.value,
+        selectFlTodosImoveis: flTodosImoveis,
+        selectAbrangencia: abrangencia,
+        selectMetodologia: metodologia,
+        selectObjetivo: objetivo
+      });
+    }
 
-      selectFlTodosImoveis: flTodosImoveis,
-      selectAbrangencia: abrangencia,
-      selectMetodologia: metodologia,
-      selectObjetivo: objetivo
-    });
-
-    clearInput();
+    //clearInput();
   }
 
   return(
-    <Modal id="modal-editar-atividade" title="Cadastrar Atividade" size="lg">
+    <Modal id="modal-editar-atividade" title="Editar Atividade" size="lg">
       <form onSubmit={ handleSubmit }>
         <ModalBody>
           <Row>
@@ -114,6 +135,11 @@ function ModalUpdateActive({ atividade, updateAtividade, metodologias, ...props 
                   rows="5"
                   required
                 ></textarea>
+                {
+                  !isValidObjetivoAtividade ?
+                    <span class="form-label-invalid">Objetivo da atividade inválido</span> :
+                      ''
+                }
               </FormGroup>
             </Col>
           </Row>
@@ -121,7 +147,7 @@ function ModalUpdateActive({ atividade, updateAtividade, metodologias, ...props 
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="metodologia">Metodologia <code>*</code></label>
-                <Select
+                <SelectWrap
                   id="metodologia"
                   value={ metodologia }
                   options={ optionMetodologia }
@@ -134,7 +160,7 @@ function ModalUpdateActive({ atividade, updateAtividade, metodologias, ...props 
             <Col sm="6">
             <FormGroup>
                 <label htmlFor="objetivo">Objetivo <code>*</code></label>
-                <Select
+                <SelectWrap
                   id="objetivo"
                   value={ objetivo }
                   options={ optionObjetivo }
@@ -149,7 +175,7 @@ function ModalUpdateActive({ atividade, updateAtividade, metodologias, ...props 
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="flTodosImoveis">Realizar a atividade em todos os imóveis? <code>*</code></label>
-                <Select
+                <SelectWrap
                   id="flTodosImoveis"
                   value={ flTodosImoveis }
                   options={ optionflTodosImoveis }
@@ -162,7 +188,7 @@ function ModalUpdateActive({ atividade, updateAtividade, metodologias, ...props 
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="abrangencia">Abrangência <code>*</code></label>
-                <Select
+                <SelectWrap
                   id="abrangencia"
                   value={ abrangencia }
                   options={ optionAbrangencia }

@@ -136,7 +136,6 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
   function handleSubmit( e ) {
     e.preventDefault();
     setFlBtnLoading( true );
-    console.log("Foi")
     props.createCycleRequest(
       ano.value,
       sequencia.value,

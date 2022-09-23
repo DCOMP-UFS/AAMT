@@ -17,7 +17,7 @@ import { updateCycleRequest, changeFlUpdate } from '../../store/Ciclo/cicloActio
 import { ContainerArrow } from '../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../styles/global';
 
-function ModalUpdateCycle({ ciclos, index, ...props }) {
+function ModalUpdateCycle({ ciclos, index, isOpen, handleClose, ...props }) {
   const [ano, setAno] = useState({});
   const [sequencia, setSequencia] = useState({});
   const [dataInicio, setDataInicio] = useState("");
@@ -37,6 +37,36 @@ function ModalUpdateCycle({ ciclos, index, ...props }) {
   const [minDate, setMinDate] = useState("");
   const [maxDate, setMaxDate] = useState("");
 
+  //Executa toda vez que o modal é aberto
+  useEffect(() => {
+    if(isOpen){
+      if (index >= 0) {
+        const ciclo = ciclos[index];
+        let today = new Date();
+        today.setDate(today.getDate() - 1);
+  
+        if (index === 0) {
+          setMinDate(today.toISOString().split("T")[0]);
+        } else {
+          let lastCycle = ciclos.at(-2);
+          let tomorrow = new Date(lastCycle.dataFim);
+          tomorrow.setDate((tomorrow.getDate()) + 1);
+          setMinDate(tomorrow.toISOString().split("T")[0]);
+        }
+  
+        setAno({ value: ciclo.ano, label: ciclo.ano });
+        setSequencia({ value: ciclo.sequencia, label: ciclo.sequencia });
+        setDataInicio(ciclo.dataInicio.split("T")[0]);
+        setDataFim(ciclo.dataFim.split("T")[0]);
+        setMaxDate(`${today.getFullYear()}-12-31`);
+      }
+    }
+    //Não fecha o modal, mas sim faz com que o isOpen se torne false
+    //Para que assim quando o modal for aberto, o isOpen recebe true
+    //e assim o useEffect é acionado novamente
+    handleClose()
+  }, [isOpen]);
+
   useEffect(() => {
     const current_year = new Date().getFullYear();
     let optionYear = [];
@@ -51,7 +81,7 @@ function ModalUpdateCycle({ ciclos, index, ...props }) {
     setOptionAno(optionYear);
   }, []);
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (index >= 0) {
       const ciclo = ciclos[index];
       let today = new Date();
@@ -72,7 +102,7 @@ function ModalUpdateCycle({ ciclos, index, ...props }) {
       setDataFim(ciclo.dataFim.split("T")[0]);
       setMaxDate(`${today.getFullYear()}-12-31`);
     }
-  }, [index]);
+  }, [index]); */
 
   // Evita que a dataFim seja anterior a dataInicio
   useEffect(() => {
@@ -142,6 +172,9 @@ function ModalUpdateCycle({ ciclos, index, ...props }) {
     <Modal id="modal-editar-ciclo" title="Editar Ciclo" size="lg">
       <form onSubmit={handleSubmit}>
         <ModalBody>
+            <p className="text-description">
+              Atenção! Os campos com <code>*</code> são obrigatórios
+            </p>
           <Row>
             <Col sm="6">
               <FormGroup>

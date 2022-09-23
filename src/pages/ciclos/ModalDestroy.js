@@ -23,6 +23,7 @@ function ModalDestroy( props ) {
       setFlLoading( false );
       props.changeFlDestroyed( null );
       $('#modal-excluir-ciclo').modal('hide');
+      setTimeout(() => { document.location.reload( true );}, 1000)
     }else if( props.destroyed === false ) {
       setFlLoading( false );
       props.changeFlDestroyed( null );
@@ -46,18 +47,31 @@ function ModalDestroy( props ) {
         return true;
       }
     });
+    var idCicloMaisAntigo = null
 
-    const { id } = props.ciclos[props.tableSelected[0].dataIndex];
+    //Procura o menor id dos ciclos selecionados
+    //o menor id indica que o ciclo é o mais antigo do conjunto
+    props.tableSelected.forEach((element,index) => {
+      if(index == 0)
+        idCicloMaisAntigo = props.ciclos[element.dataIndex].id
+      else{
+        const aux = props.ciclos[element.dataIndex].id
+        if(aux < idCicloMaisAntigo)
+          idCicloMaisAntigo = aux
+      }
+    });
 
     if (noOpenOrFinishCycle) {
-      props.destroyCycleRequest(id);
+      //Além de deletar o ciclo com o id informado,também deleta todos os ciclos posteriores.
+      //Para cada ciclo deletado, também são excluidos suas atividades
+      props.destroyCycleRequest(idCicloMaisAntigo);
     }
   }
 
   return(
     <Modal id="modal-excluir-ciclo" title="Excluir Ciclo(s)" centered={ true }>
       <ModalBody>
-        <p>Atenção! Se excluir este(s) ciclo(s), todas as informações serão perdidas, incluindo as atividades planejadas. Deseja, mesmo assim, excluir o(s) ciclo(s)?</p>
+        <p>Atenção! Caso a operação seja feita, os ciclos selecionados e os ciclos posteriores ao selecionados serão deletados. Alem disso, as atividades planejadas de cada ciclo afetado serão deletadas. Deseja, mesmo assim, excluir o(s) ciclo(s)?</p>
       </ModalBody>
       <ModalFooter>
         <Button className="secondary" data-dismiss="modal">Cancelar</Button>

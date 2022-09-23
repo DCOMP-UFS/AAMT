@@ -5,6 +5,7 @@ import Modal, { ModalBody, ModalFooter } from '../../components/Modal';
 import { Row, Col } from 'react-bootstrap';
 import { abrangencia as abrangenciaEnum }  from '../../config/enumerate';
 import LoadginGif from '../../assets/loading.gif';
+import SelectWrap from '../../components/SelectWrap'
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -18,7 +19,10 @@ import { changeFlAddActive } from '../../store/Ciclo/cicloActions';
 import { ContainerArrow } from '../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../styles/global';
 
-function ModalAddActive({ addAtividade, metodologias, ...props }) {
+// VALIDATIONS FUNCTIONS
+import { isBlank } from '../../config/function';
+
+function ModalAddActive({ addAtividade, metodologias, isOpen, handleClose, ...props }) {
   const [ objetivoAtividade, setObjetivoAtividade ] = useState("");
   const [ flTodosImoveis, setFlTodosImoveis ] = useState({ value: false, label: "Não" });
   const [ abrangencia, setAbrangencia ] = useState({});
@@ -34,6 +38,14 @@ function ModalAddActive({ addAtividade, metodologias, ...props }) {
     return { value: value.id, label: value.label };
   });
   const [ flLoading, setFlLoading ] = useState( false );
+  const [ isValidObjetivoAtividade, setIsValidObjetivoAtividade ] = useState(true);
+
+  useEffect(() => {
+    if(isOpen){
+      clearInput()
+    }
+    handleClose()
+  }, [isOpen]);
 
   useEffect(() => {
     props.getMethodologiesRequest();
@@ -65,6 +77,7 @@ function ModalAddActive({ addAtividade, metodologias, ...props }) {
     setAbrangencia({});
     setMetodologia({});
     setObjetivo({});
+    setIsValidObjetivoAtividade( true )
   }
 
   useEffect(() => {
@@ -76,28 +89,33 @@ function ModalAddActive({ addAtividade, metodologias, ...props }) {
 
   function handleSubmit( e ) {
     e.preventDefault();
-    setFlLoading( true );
+    if(isBlank(objetivoAtividade))
+      setIsValidObjetivoAtividade( false )
+    else{
+      setFlLoading( true );
+      setIsValidObjetivoAtividade( true )
+       addAtividade({
+        objetivoAtividade,
+        flTodosImoveis: flTodosImoveis.value,
+        abrangencia: abrangencia.value,
+        metodologia_id: metodologia.value,
+        objetivo_id: objetivo.value,
 
-    addAtividade({
-      objetivoAtividade,
-      flTodosImoveis: flTodosImoveis.value,
-      abrangencia: abrangencia.value,
-      metodologia_id: metodologia.value,
-      objetivo_id: objetivo.value,
-
-      selectFlTodosImoveis: flTodosImoveis,
-      selectAbrangencia: abrangencia,
-      selectMetodologia: metodologia,
-      selectObjetivo: objetivo
-    });
-
-    clearInput();
+        selectFlTodosImoveis: flTodosImoveis,
+        selectAbrangencia: abrangencia,
+        selectMetodologia: metodologia,
+        selectObjetivo: objetivo
+      });
+    }
   }
 
   return(
     <Modal id="modal-novo-atividade" title="Cadastrar Atividade" size="lg">
       <form onSubmit={ handleSubmit }>
         <ModalBody>
+          <p className="text-description">
+            Atenção! Os campos com <code>*</code> são obrigatórios
+          </p>
           <Row>
             <Col>
               <FormGroup>
@@ -110,6 +128,11 @@ function ModalAddActive({ addAtividade, metodologias, ...props }) {
                   rows="5"
                   required
                 ></textarea>
+                {
+                  !isValidObjetivoAtividade ?
+                    <span class="form-label-invalid">Objetivo da atividade inválido</span> :
+                      ''
+                }
               </FormGroup>
             </Col>
           </Row>
@@ -117,7 +140,7 @@ function ModalAddActive({ addAtividade, metodologias, ...props }) {
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="metodologia">Metodologia <code>*</code></label>
-                <Select
+                <SelectWrap
                   id="metodologia"
                   value={ metodologia }
                   options={ optionMetodologia }
@@ -130,7 +153,7 @@ function ModalAddActive({ addAtividade, metodologias, ...props }) {
             <Col sm="6">
             <FormGroup>
                 <label htmlFor="objetivo">Objetivo <code>*</code></label>
-                <Select
+                <SelectWrap
                   id="objetivo"
                   value={ objetivo }
                   options={ optionObjetivo }
@@ -145,7 +168,7 @@ function ModalAddActive({ addAtividade, metodologias, ...props }) {
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="flTodosImoveis">Realizar a atividade em todos os imóveis? <code>*</code></label>
-                <Select
+                <SelectWrap
                   id="flTodosImoveis"
                   value={ flTodosImoveis }
                   options={ optionflTodosImoveis }
@@ -158,7 +181,7 @@ function ModalAddActive({ addAtividade, metodologias, ...props }) {
             <Col sm="6">
               <FormGroup>
                 <label htmlFor="abrangencia">Abrangência <code>*</code></label>
-                <Select
+                <SelectWrap
                   id="abrangencia"
                   value={ abrangencia }
                   options={ optionAbrangencia }

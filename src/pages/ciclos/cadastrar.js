@@ -58,6 +58,11 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
   const [ flBtnLoading, setFlBtnLoading ] = useState( false );
   const [ minDate, setMinDate ] = useState( "" );
   const [ maxDate, setMaxDate ] = useState( "" );
+  const [ isModalAddActiveOpen, setIsModalAddActiveOpen ] = useState( false );
+  const [ isModalUpdateActiveOpen, setIsModalUpdateOpen ] = useState( false );
+
+  const handleCloseAddActive = () => {setIsModalAddActiveOpen(false)}
+  const handleCloseUpdateActive = () => {setIsModalUpdateOpen(false)}
 
   useEffect(() => {
     props.changeSidebar( "ciclo", "ci_cadastrar" );
@@ -109,7 +114,6 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
   function addAtividade( atividade ) {
     setAtividades( [...atividades, atividade] );
     props.changeFlAddActive( true );
-
     $("#modal-novo-atividade").modal('hide');
   }
 
@@ -132,7 +136,6 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
   function handleSubmit( e ) {
     e.preventDefault();
     setFlBtnLoading( true );
-
     props.createCycleRequest(
       ano.value,
       sequencia.value,
@@ -175,7 +178,7 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
 
                     <h4 className="title">Informações do ciclo</h4>
                     <p className="text-description">
-                      Atenção as atividades cadastradas neste ciclo serão aplicadas a todos os municípios de responsabilidades da regional de saúde
+                      Atenção! As atividades cadastradas neste ciclo serão aplicadas a todos os municípios de responsabilidade da regional de saúde
                     </p>
                     <Row>
                       <Col sm="6">
@@ -225,7 +228,7 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
                       </Col>
                       <Col sm="6">
                         <FormGroup>
-                          <label htmlFor="sequencia">Data fim <code>*</code></label>
+                          <label htmlFor="sequencia">Data de fim <code>*</code></label>
                           <input
                             id="dataFim"
                             type="date"
@@ -250,21 +253,25 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
                       title="Cadastrar Atividade"
                       data-toggle="modal"
                       data-target="#modal-novo-atividade"
+                      onClick={() => {setIsModalAddActiveOpen(true)}}
                     />
-                    <small>Quais atividades deseja ser executadas neste ciclo?</small>
+                    <small>Quais atividades deseja executadar neste ciclo?</small>
                   </h4>
 
                   <ListActive
                     atividades={ atividades }
                     deleteAction={ removeActive }
                     setIndexAtv={ setIndexAtv }
+                    setIsModalUpdateOpen={ setIsModalUpdateOpen }
                   />
                 </Col>
 
-                <ModalAddActive addAtividade={ addAtividade } />
+                <ModalAddActive addAtividade={ addAtividade } isOpen={isModalAddActiveOpen} handleClose={handleCloseAddActive}/>
                 <ModalUpdateActive
                   atividade={ atividades[ indexAtv ] }
                   updateAtividade={ updateAtividade }
+                  isOpen={isModalUpdateActiveOpen}
+                  handleClose={handleCloseUpdateActive}
                 />
               </Row>
             </div>
@@ -275,13 +282,14 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
   );
 }
 
-function ListActive({ atividades, deleteAction, setIndexAtv }) {
+function ListActive({ atividades, deleteAction, setIndexAtv, setIsModalUpdateOpen }) {
   let list = atividades.map( (atv, index) => (
     <LiIcon
       key={ index }
       onClick={
         () => {
           setIndexAtv( index );
+          setIsModalUpdateOpen(true);
           $("#modal-editar-atividade").modal('show');
         }
       }

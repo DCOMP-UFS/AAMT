@@ -24,6 +24,9 @@ import { showNotifyToast } from '../../store/AppConfig/appConfigActions';
 import { GlobalStyle } from './styles';
 import { PageIcon, PageHeader } from '../../styles/util';
 
+//UTILIES FUNCTIONS
+import { ordenadorData } from '../../config/function';
+
 const columns = [
   {
     name: "index",
@@ -50,6 +53,7 @@ const columns = [
     label: "Data de Início",
     options: {
       filter: false,
+      sortCompare: ordenadorData,
     },
   },
   {
@@ -57,6 +61,7 @@ const columns = [
     label: "Data de Fim",
     options: {
       filter: false,
+      sortCompare: ordenadorData,
     },
   },
   "Situação",
@@ -72,7 +77,16 @@ const columns = [
 
 function Ciclos({ ciclos, regionalSaude_id, ...props }) {
   const [ rows, setRows ] = useState([]);
+  const [ isModalUpateCycleOpen, setIsModalUpateCycleOpen ] = useState( false );
+
+  const handleCloseModalUpdateCycle = () => {setIsModalUpateCycleOpen(false)}
+
   const options = {
+    //Não permite que ciclos em aberto ou finalizados sejam selecionados
+    //para exclusão
+    isRowSelectable: (dataIndex) => {
+      return rows[dataIndex][4] == "Planejado"
+    },
     customToolbar: props => {
       return (
         <ButtonAdd
@@ -100,6 +114,7 @@ function Ciclos({ ciclos, regionalSaude_id, ...props }) {
         props.showNotifyToast( "Não é permitido editar ciclos finalizados", "warning" );
       else {
         props.setIndexArray( index.dataIndex );
+        setIsModalUpateCycleOpen(true)
         $('#modal-editar-ciclo').modal('show');
       }
     }
@@ -173,7 +188,7 @@ function Ciclos({ ciclos, regionalSaude_id, ...props }) {
               options={ options }
             />
 
-            <ModalUpdateCycle />
+            <ModalUpdateCycle isOpen={isModalUpateCycleOpen} handleClose={handleCloseModalUpdateCycle} />
             <ModalDestroy />
           </article>
         </div>

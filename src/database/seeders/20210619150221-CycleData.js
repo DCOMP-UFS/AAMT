@@ -8,7 +8,6 @@ module.exports = {
 
     return queryInterface.bulkInsert( 'ciclos', [
       {
-        id: 1,
         ano: date.getFullYear(),
         data_inicio: `${ date.getFullYear() }-01-01`,
         data_fim: `${ date.getFullYear() }-03-01`,
@@ -18,7 +17,6 @@ module.exports = {
         regional_saude_id: 1
       },
       {
-        id: 2,
         ano: date.getFullYear(),
         data_inicio: `${ date.getFullYear() }-03-02`,
         data_fim: `${ date.getFullYear() }-05-01`,
@@ -28,7 +26,6 @@ module.exports = {
         regional_saude_id: 1
       },
       {
-        id: 3,
         ano: date.getFullYear(),
         data_inicio: `${ date.getFullYear() }-05-02`,
         data_fim: `${ date.getFullYear() }-07-01`,
@@ -38,7 +35,6 @@ module.exports = {
         regional_saude_id: 1
       },
       {
-        id: 4,
         ano: date.getFullYear(),
         data_inicio: `${ date.getFullYear() }-07-02`,
         data_fim: `${ date.getFullYear() }-09-01`,
@@ -48,7 +44,6 @@ module.exports = {
         regional_saude_id: 1
       },
       {
-        id: 5,
         ano: date.getFullYear(),
         data_inicio: `${ date.getFullYear() }-09-02`,
         data_fim: `${ date.getFullYear() }-11-01`,
@@ -58,7 +53,6 @@ module.exports = {
         regional_saude_id: 1
       },
       {
-        id: 6,
         ano: date.getFullYear(),
         data_inicio: `${ date.getFullYear() }-11-02`,
         data_fim: `${ date.getFullYear() }-12-31`,

@@ -260,53 +260,65 @@ destroyMultiple = async ( req, res ) => {
 
   const allow = await allowFunction(req.userId, 'definir_ciclo');
   if (!allow) return res.status(403).json({ error: 'Acesso negado' });
+  try{
+    const ciclo = await Ciclo.findByPk(id);
 
-  const ciclo = await Ciclo.findByPk(id);
-
-  if (!ciclo) {
-    return res.status(400).json({ error: 'Ciclo não existe' });
-  }
-
-  const { sequencia, ano, regional_saude_id } = ciclo;
-
-  const ciclosDaqueleAno = await Ciclo.findAll({
-    where: {
-      regional_saude_id,
-      ano,
-      sequencia: {
-        [Sequelize.Op.gte]: sequencia
-      },
+    if (!ciclo) {
+      return res.status(400).json({ error: 'Ciclo não existe' });
     }
-  });
 
-  for (const cl of ciclosDaqueleAno) {
-    const today = new Date();
-    const dataInicio = new Date(cl.dataInicio);
-    const dataFim = new Date(cl.dataFim);
-    if (today >= dataInicio) {
-      return res
-        .status(400)
-        .json({
-          error: `O ciclo de sequencia ${cl.sequencia} não pode ser excluído pois já foi encerrado`,
-        });
-    }
-    if (today >= dataInicio) {
-      return res.status(400).json({ error: `O ciclo de sequencia ${cl.sequencia} não pode ser excluído pois está em andamento` })
-    }
-  }
+    const { sequencia, ano, regional_saude_id } = ciclo;
 
-  const ciclosASeremExcluidos = ciclosDaqueleAno.map(ciclo => ciclo.id);
+    const ciclosDaqueleAno = await Ciclo.findAll({
+      where: {
+        regional_saude_id,
+        ano,
+        sequencia: {
+          [Sequelize.Op.gte]: sequencia
+        },
+      }
+    });
 
-  const ciclosExcluidos = await Ciclo.destroy({
-    where: {
-      id: {
-        [Sequelize.Op.in]: ciclosASeremExcluidos
+    for (const cl of ciclosDaqueleAno) {
+      const today = new Date();
+      const dataInicio = new Date(cl.dataInicio);
+      const dataFim = new Date(cl.dataFim);
+      if (today >= dataInicio) {
+        return res
+          .status(400)
+          .json({
+            error: `O ciclo de sequencia ${cl.sequencia} não pode ser excluído pois já foi encerrado`,
+          });
+      }
+      if (today >= dataInicio) {
+        return res.status(400).json({ error: `O ciclo de sequencia ${cl.sequencia} não pode ser excluído pois está em andamento` })
       }
     }
-  });
 
-  if (ciclosExcluidos)
-    return res.json({ ids: ciclosASeremExcluidos });
+    const ciclosASeremExcluidos = ciclosDaqueleAno.map(ciclo => ciclo.id);
+    const atividadesExcluidas = await Atividade.destroy({
+      where: {
+        ciclo_id: {
+          [Sequelize.Op.in]: ciclosASeremExcluidos
+        }
+      }
+    });
+
+    const ciclosExcluidos = await Ciclo.destroy({
+      where: {
+        id: {
+          [Sequelize.Op.in]: ciclosASeremExcluidos
+        }
+      }
+    });
+
+    if (ciclosExcluidos)
+      return res.json({ ids: ciclosASeremExcluidos });
+
+  }catch(e){
+    //console.log(e)
+    return res.status(400).json({ error: `Não foi possivel excluir o(s) ciclos(s).Ocorreu algum problema no banco ou na API` })
+  }
 }
 
 const router = express.Router();

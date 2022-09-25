@@ -12,12 +12,13 @@ import { FaTrash } from 'react-icons/fa';
 // ACTIONS
 import { registrarExameRequest } from '../../../../store/Amostra/amostraActions';
 import { getMosquitosRequest } from '../../../../store/Mosquito/mosquitoActions';
+import { showNotifyToast } from '../../../../store/AppConfig/appConfigActions';
 
 // STYLES
 import { Button, FormGroup, selectDefault } from '../../../../styles/global';
 import { PanelTitle, Container } from './styles';
 
-export const ModalExaminar = ({ mosquitos, amostra, ...props }) => {
+export const ModalExaminar = ({ mosquitos, amostra, isOpen, handleClose, ...props }) => {
   const [ sampleSituationOptions, setsampleSituationOptions ] = useState( [
     { value: 3, label: 'Sim' },
     { value: 4, label: 'Não' }
@@ -27,6 +28,18 @@ export const ModalExaminar = ({ mosquitos, amostra, ...props }) => {
   const [ examination, setExamination ] = useState( [] );
   const [ reload, setReload ] = useState( false );
   const [ codAmostra, setCodAmostra ] = useState( '' );
+  const [ reloadAllModal, setReloadAllModal ] = useState( false );
+
+  //Effect usado toda vez que o modal é aberto
+  //Recarrega todas as informações do exame
+  useEffect(() => {
+   if(isOpen)
+    setReloadAllModal(!reloadAllModal)
+   
+   //Seta isOpen como false, para que quando o modal
+   //for aberto novamente, o useEffect seja acionado
+   handleClose()
+  }, [isOpen]);
 
   useEffect(() => {
     props.getMosquitosRequest();
@@ -92,7 +105,7 @@ export const ModalExaminar = ({ mosquitos, amostra, ...props }) => {
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [amostra, gnatOptions, sampleSituationOptions])
+  }, [amostra, gnatOptions, sampleSituationOptions, reloadAllModal])
 
   const addExamination = () => {
     let e = examination;
@@ -169,51 +182,70 @@ export const ModalExaminar = ({ mosquitos, amostra, ...props }) => {
 
   const submit = e => {
     e.preventDefault();
+    if(existeMosquitosIguais()){
+      props.showNotifyToast( "Não pode inserir dois ou mais mosquitos do mesmo tipo", "warning" );
+    }
+    else{
+      const exemplary = examination.reduce(( exem, ex ) => {
+        const e = [
+          {
+            "amostra_id": amostra.id,
+            "quantidade": ex.eggs,
+            "fase": 1, // Ovo - Eggs
+            "mosquito_id": ex.gnat.value
+          },
+          {
+            "amostra_id": amostra.id,
+            "quantidade": ex.pulps,
+            "fase": 2, // Pulpa - Pulps
+            "mosquito_id": ex.gnat.value
+          },
+          {
+            "amostra_id": amostra.id,
+            "quantidade": ex.pulpExuvia,
+            "fase": 3, // Exúvia de Pulpa - Pulp Exuvia
+            "mosquito_id": ex.gnat.value
+          },
+          {
+            "amostra_id": amostra.id,
+            "quantidade": ex.maggots,
+            "fase": 4, // Larva - Maggots
+            "mosquito_id": ex.gnat.value
+          },
+          {
+            "amostra_id": amostra.id,
+            "quantidade": ex.adults,
+            "fase": 5, // Adulto - adults
+            "mosquito_id": ex.gnat.value
+          }
+        ];
 
-    const exemplary = examination.reduce(( exem, ex ) => {
-      const e = [
-        {
-          "amostra_id": amostra.id,
-          "quantidade": ex.eggs,
-          "fase": 1, // Ovo - Eggs
-          "mosquito_id": ex.gnat.value
-        },
-        {
-          "amostra_id": amostra.id,
-          "quantidade": ex.pulps,
-          "fase": 2, // Pulpa - Pulps
-          "mosquito_id": ex.gnat.value
-        },
-        {
-          "amostra_id": amostra.id,
-          "quantidade": ex.pulpExuvia,
-          "fase": 3, // Exúvia de Pulpa - Pulp Exuvia
-          "mosquito_id": ex.gnat.value
-        },
-        {
-          "amostra_id": amostra.id,
-          "quantidade": ex.maggots,
-          "fase": 4, // Larva - Maggots
-          "mosquito_id": ex.gnat.value
-        },
-        {
-          "amostra_id": amostra.id,
-          "quantidade": ex.adults,
-          "fase": 5, // Adulto - adults
-          "mosquito_id": ex.gnat.value
-        }
-      ];
+        return ([ ...exem, ...e ]);
+      }, [] );
 
-      return ([ ...exem, ...e ]);
-    }, [] );
+      const data = {
+        "id": amostra.id,
+        "situacaoAmostra": sampleSituation.value,
+        "exemplares": exemplary
+      };
 
-    const data = {
-      "id": amostra.id,
-      "situacaoAmostra": sampleSituation.value,
-      "exemplares": exemplary
-    };
+      props.registrarExameRequest( data );
+    }
+  }
 
-    props.registrarExameRequest( data );
+  function existeMosquitosIguais() {
+    if(examination.length == 0)
+      return false
+
+    for(var i = 0; i < (examination.length - 1); i++){
+      var aux1 = examination[i].gnat.value
+      for(var j = i +1; j < examination.length; j++){
+        if(aux1 == examination[j].gnat.value)
+          return true
+      }
+    }
+
+    return false
   }
 
   return (
@@ -375,7 +407,8 @@ const mapStateToProps = state => ( {
 
 const mapDispatchToProps = {
   registrarExameRequest,
-  getMosquitosRequest
+  getMosquitosRequest,
+  showNotifyToast,
 }
 
 export default connect(

@@ -19,6 +19,10 @@ import { getLaboratoriosRequest } from '../../store/Laboratorio/laboratorioActio
 import { Button, FormGroup, selectDefault } from '../../styles/global';
 import { PageIcon, PageHeader } from '../../styles/util';
 import { Container } from './styles';
+import { TramRounded } from '@material-ui/icons';
+
+//UTILIES FUNCTIONS
+import { ordenadorData } from '../../config/function';
 
 const columns = [
   {
@@ -32,7 +36,8 @@ const columns = [
     name: "createdAt",
     label: "Coletada Em",
     options: {
-      filter: false
+      filter: false,
+      sortCompare: ordenadorData
     }
   },
   "Atividade",
@@ -65,7 +70,16 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
   const [ rowsSelected, setRowsSelected ] = useState( [] );
   const [ laboratoriosOptions, setLaboratoriosOptions ] = useState( [] );
   const [ laboratorioSelect, setLaboratorioSelect ] = useState( { value: null, label: '' } );
+  const [ openModalExaminar, setOpenModalExaminar] = useState(false)
+
+  const handleCloseModalExaminar = () => {setOpenModalExaminar(false)}
+
   const options = {
+    //Não permite que amostras com situação positiva ou negativa 
+    //sejam selecionados para serem encaminhadas
+    isRowSelectable: (dataIndex) => {
+      return (rows[dataIndex][5] != "Positiva" && rows[dataIndex][5] != "Negativa")
+    },
     customToolbarSelect: () => {
       return (
         <Button
@@ -134,14 +148,13 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
         </Tooltip>,
       ]
     } );
-
     setRows( r );
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ amostras ] );
 
   const handlerSample = index => {
     props.setAmostra( amostras[ index ] );
-
+    setOpenModalExaminar(true)
     $( '#modal-examinar' ).modal( 'show' );
   }
 
@@ -173,7 +186,7 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
               options={ options }
             />
 
-            <ModalExaminar id="modal-examinar" />
+            <ModalExaminar id="modal-examinar" isOpen={openModalExaminar} handleClose={handleCloseModalExaminar}/>
             <Modal id="modal-encaminhar" title="Encaminhar amostras">
               <form onSubmit={ e => enviarAmostras( e ) }>
                 <ModalBody>

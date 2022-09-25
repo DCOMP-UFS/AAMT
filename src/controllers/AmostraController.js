@@ -84,7 +84,8 @@ getSampleBySurpervision = async ( req, res ) => {
     )
   } );
 
-  // Pegando as equipes que o usuário é supervisor
+  // Pegando todas as atividades do ciclo atual
+  // que pertencem ao municipio do usuario
   const atividades = await Atividade.findAll( {
     where: {
       ciclo_id: ciclo.id,
@@ -106,11 +107,13 @@ getSampleBySurpervision = async ( req, res ) => {
     ]
   } );
 
+  //Array irá armazenar os ids das equipes que são lideradas
+  //pelo supervisor que fez a requisição
   let equipes = [];
   atividades.forEach( atividade => {
     atividade.equipes.forEach( equipe => {
       equipe.membros.forEach( membro => {
-        if( membro.usuario_id === parseInt( id ) && membro.tipoPerfil === 4 )
+        if( membro.usuario_id === parseInt( id ) && membro.tipoPerfil === 3 )
           equipes.push( equipe.id );
       } );
     } );
@@ -137,21 +140,32 @@ getSampleBySurpervision = async ( req, res ) => {
     ]
   } );
 
+  var result = []
   // Tratando resultados
   amostras.forEach(async ( amostra, index ) => {
     let a = amostra.dataValues;
-
     amostras[ index ].dataValues.trabalhoDiario = a.deposito.dataValues.vistoria.dataValues.trabalhoDiario.dataValues;
-    a.deposito.dataValues.vistoria.dataValues.trabalhoDiario = undefined;
-    amostras[ index ].dataValues.vistoria = a.deposito.dataValues.vistoria.dataValues;
-    a.deposito.dataValues.vistoria = undefined;
-    amostras[ index ].dataValues.deposito = a.deposito.dataValues;
-    amostras[ index ].dataValues.ciclo = ciclo;
 
-    amostras[ index ].dataValues.atividade = atividades.find( atividade => atividade.id === amostras[ index ].dataValues.trabalhoDiario.equipe.dataValues.atividade_id );
+    //Verifica se a amostra em questão foi feita por alguma equipe liderada pelo supervisor que fez a requisição
+    let isAmostraSupervisor = equipes.includes(amostras[index].dataValues.trabalhoDiario.equipe.dataValues.id)
+
+    if(isAmostraSupervisor){
+
+      //Busca a atividade da amostra com sua informações
+      var ativ = atividades.find( atividade => atividade.id === amostras[ index ].dataValues.trabalhoDiario.equipe.dataValues.atividade_id );
+
+      a.deposito.dataValues.vistoria.dataValues.trabalhoDiario = undefined;
+      amostras[ index ].dataValues.vistoria = a.deposito.dataValues.vistoria.dataValues;
+      a.deposito.dataValues.vistoria = undefined;
+      amostras[ index ].dataValues.deposito = a.deposito.dataValues;
+      amostras[ index ].dataValues.ciclo = ciclo;
+      amostras[ index ].dataValues.atividade = ativ
+
+      result.push( amostras[ index ])
+    }
   });
 
-  return res.json( amostras );
+  return res.json( result );
 }
 
 /**
@@ -222,7 +236,7 @@ getSamplesByLab = async ( req, res ) => {
   const { laboratorio_id } = req.params;
 
   const amostras = await Amostra.findAll( {
-    where: { laboratorio_id },
+    where: { laboratorio_id: parseInt(laboratorio_id) },
     attributes: { exclude: [ 'cnpj' ] },
   } );
   
@@ -230,7 +244,7 @@ getSamplesByLab = async ( req, res ) => {
 }
 
 router.get( '/:id', getSampleBySurpervision );
-router.get( '/laboratorio/:laboratorio_cnpj', getSamplesByLab);
+router.get( '/laboratorio/:laboratorio_id', getSamplesByLab);
 router.post( '/enviar', sendSample );
 router.post( '/examinar', insertExamination );
 

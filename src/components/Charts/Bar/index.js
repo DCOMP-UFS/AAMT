@@ -36,6 +36,13 @@ export default class BarChart extends Component {
       });
 
     const options = {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      },
       responsive: true,
       legend: {
         display: false

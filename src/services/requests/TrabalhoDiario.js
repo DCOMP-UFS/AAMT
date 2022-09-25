@@ -13,3 +13,10 @@ export const getDailyWorkByIdRequest = data => {
     ...headerAuthorization()
   });
 }
+
+export const getByTeamAndUserRequest = data => {
+  const { equipe_id, user_id } = data;
+  return api.get(`/trabalhoDiario/${ equipe_id }/equipes/${ user_id }/usuarios`, {
+    ...headerAuthorization()
+  });
+}

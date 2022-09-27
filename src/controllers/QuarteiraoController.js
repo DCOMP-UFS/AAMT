@@ -520,7 +520,6 @@ getLadosQuarteirao = async ( req, res ) => {
     );
     let idImoveis = []
     result[ 1 ].rows.forEach( i => idImoveis.push(i.id))
-    console.log(idImoveis)
 
     //Deleta todos os imoveis do lado que não tem vistorias
     if(idImoveis.length > 0){

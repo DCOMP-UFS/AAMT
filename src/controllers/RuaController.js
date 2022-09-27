@@ -209,7 +209,6 @@ destroy = async ( req, res ) => {
 streetExist = async ( req, res ) => {
   const {id, nome, cep, localidade_id,} = req.query
 
-  console.log(nome)
   try{
     if(!nome) return res.status(400).json({ error: `Por favor informe o nome da rua` });
     if(!cep) return res.status(400).json({ error: `Por favor informe o cep da rua` });

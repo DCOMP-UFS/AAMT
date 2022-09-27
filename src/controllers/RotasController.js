@@ -933,7 +933,7 @@ const isFinalizado = async ( req, res ) => {
 
   // Validando
   const td = await TrabalhoDiario.findByPk( trabalhoDiario_id );
-  console.log(td);
+
   if( !td ) 
     return res.status( 404 ).json( {
       status  : 'error',
@@ -983,7 +983,7 @@ async function imoveisVistoriados(trabalhoDiario, equipe_id ) {
       'JOIN trabalhos_diarios as td ON( td.id = v.trabalho_diario_id ) ' +
     'WHERE ' +
       'td.equipe_id = $1 ' +
-      'AND td.data < $2 '+
+      'AND td.data <= $2 '+
       'AND td.hora_fim IS NOT NULL '+ 
       'AND v.pendencia IS NULL '+
     'ORDER BY '+

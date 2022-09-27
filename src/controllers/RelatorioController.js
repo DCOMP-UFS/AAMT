@@ -278,7 +278,7 @@ getTeamDailyActivity = async (req, res) => {
         }
       }
 
-      if( vistoria.pendencia === null ) {
+      if( vistoria.pendencia === "R" ||  vistoria.pendencia === "F") {
         imoveisPorSituacao.pendencia.total += 1;
         index = imoveisPorSituacao.pendencia.agentes.findIndex( ag => ag.usuario.id === agente.id );
         if( index === -1 ) {
@@ -338,7 +338,7 @@ getTeamDailyActivity = async (req, res) => {
 
         depositosPorTipo[ indexDeposito ].value++;
 
-        if( amostras.length > 0 )
+        if( deposito.fl_comFoco )
           fl_foco = true;
         
         if( deposito.fl_tratado ) {
@@ -812,8 +812,6 @@ getActivityWeeklyReport = async (req, res) => {
             propertiesByPendency[2].value++;
             break;
         }
-
-        console.log(vistoria.tipoImovelVistoria)
 
         switch (vistoria.tipoImovelVistoria) {
           case 1:
@@ -1395,8 +1393,6 @@ getCurrentActivityReport = async ( req, res ) => {
         const depositos = vistoria.depositos;
         const num_quarteirao = vistoria.imovel.lado.quarteirao.numero;
 
-        console.log(vistoria)
-
         switch (vistoria.situacaoVistoria) {
           case 'N':
             propertiesByStatus[0].value++;
@@ -1851,7 +1847,6 @@ getTeamActivityReport = async (req, res) => {
       const depositos = vistoria.depositos;
       const tipoImovel = vistoria.tipoImovelVistoria;
       let index = -1;
-      console.log(tipoImovel);
 
       // Calculando Dash Imóveis Por Tipo.
       switch( tipoImovel ) {

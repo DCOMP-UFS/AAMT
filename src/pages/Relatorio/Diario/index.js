@@ -6,7 +6,7 @@ import { Accordion, AccordionSummary, AccordionDetails } from '@material-ui/core
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ModalTrabalhoDiario from '../components/ModalTrabalhoDiario';
 import $ from 'jquery';
-import { getDateBr } from '../../../config/function';
+import { dataToStringBr } from '../../../config/function';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
@@ -62,7 +62,7 @@ export const RelatorioDiario = ({ atividades, ciclo, usuario, ...props }) => {
                     </div>
                     <div className="form-group">
                       <label style={{ fontWeight: 'bold' }}>Data de Início</label>
-                      <span>{ getDateBr( ciclo.dataInicio, 'date' ) }</span>
+                      <span>{ dataToStringBr( ciclo.dataInicio) }</span>
                     </div>
                     {
                       atividade.equipes.map( equipe => (

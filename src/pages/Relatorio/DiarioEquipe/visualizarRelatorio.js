@@ -480,7 +480,7 @@ export const VisualizarRelatorio = ({ membros, boletimDiarioEquipe, ...props }) 
           <Col md="6">
             <article className="p-0">
               <div className="card">
-                <h2 className="title">Larvicida por Agente</h2>
+                <h2 className="title">Larvicida por Agente(g)</h2>
                 <Bar data={ larvicidaPorAgente } options={ { legend: { display: false } } } />
               </div>
             </article>

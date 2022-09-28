@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { FaChartLine } from 'react-icons/fa';
 import { Row, Col } from 'react-bootstrap';
-import { getDateBr } from '../../../config/function';
+import { dataToStringBr } from '../../../config/function';
 import ModalDia from '../components/ModalDia';
 import $ from 'jquery';
 
@@ -61,7 +61,7 @@ export const RelatorioDiarioEquipe = ({ atividades, ciclo, usuario, ...props }) 
                     </div>
                     <div className="form-group">
                       <label style={{ fontWeight: 'bold' }}>Data de Início</label>
-                      <span>{ getDateBr( ciclo.dataInicio, 'date' ) }</span>
+                      <span>{ dataToStringBr( ciclo.dataInicio ) }</span>
                     </div>
                     <ul className="lista-equipes">
                       {

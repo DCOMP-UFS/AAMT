@@ -151,9 +151,10 @@ function VisualizarRelatorioDiario({ usuario, vistorias, trabalhoDiario, ...prop
         qtdTratado      = 0,
         qtdPendencia    = 0,
         qtdRecuperado   = 0;
-
+    
+    console.log(vistorias)
     vistorias.forEach(( vistoria, index ) => {
-      switch ( vistoria.imovel.tipoImovel ) {
+      switch ( vistoria.tipoImovelVistoria ) {
         case tipoImovelEnum.residencial.id:// residencial
           qtdResidencial++;
           break;
@@ -169,6 +170,7 @@ function VisualizarRelatorioDiario({ usuario, vistorias, trabalhoDiario, ...prop
       }
 
       let fl_tratado = false;
+      let fl_foco = false
       vistoria.depositos.forEach( d => {
         qtdA += d.amostras.length;
         if( d.fl_tratado ) {
@@ -178,7 +180,7 @@ function VisualizarRelatorioDiario({ usuario, vistorias, trabalhoDiario, ...prop
           qtdTratGrama += d.tratamentos.length > 0 ? d.tratamentos[ 0 ].quantidade : 0;
         }
         if( d.fl_eliminado ) qtdDepElim++;
-        if( d.fl_comFoco ) qtdFoco++;
+        if( d.fl_comFoco ) fl_foco = true;
 
         switch ( d.tipoRecipiente ) {
           case "A1":
@@ -206,9 +208,11 @@ function VisualizarRelatorioDiario({ usuario, vistorias, trabalhoDiario, ...prop
       });
 
       if( fl_tratado ) qtdTratado++;
+      if( fl_foco ) qtdFoco++
 
-      if( vistoria.situacaoVistoria === "N" ) qtdInspecionado++;
-      else qtdRecuperado++;
+      if(vistoria.depositos.length > 0)  qtdInspecionado++
+
+      if( vistoria.situacaoVistoria === "R" ) qtdRecuperado++;
 
       qtdTrabalhados++;
 

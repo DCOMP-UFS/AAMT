@@ -134,6 +134,12 @@ export const ordenadorData = (order) => {
   };
 }
 
+/**Recebe data no formato aaaa-mm-dd e retorna string no formato dd/mm/aaaa */
+export const dataToStringBr = (data) => {
+  const [a,m,d] = data.split("-")
+  return `${d}/${m}/${a}`
+}
+
 export const desc = ( a, b, orderBy ) => {
   if (b[orderBy] < a[orderBy]) {
     return -1;

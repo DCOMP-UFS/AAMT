@@ -452,6 +452,7 @@ getTeamDailyActivity = async (req, res) => {
 }
 
 getActivityWeeklyReport = async (req, res) => {
+    //
     const { atividade_id, ano, semana } = req.query;
     const userId = req.userId;
 
@@ -608,11 +609,13 @@ getActivityWeeklyReport = async (req, res) => {
     let propertiesByStatus = [
       { label: 'Normal', value: 0 },
       { label: 'Recuperado', value: 0 },
+      { label: 'Trabalhado', value: 0 },
     ];
 
     let properties = [
       { label: 'Inspecionada', value: 0 },
-      { label: 'Tratada', value: 0 }
+      { label: 'Tratada', value: 0 },
+      { label: 'Com Foco', value: 0 }
     ];
 
     let depositTreated = [
@@ -788,6 +791,8 @@ getActivityWeeklyReport = async (req, res) => {
       const vistorias = trabalho.vistorias;
 
       propertiesByType[ 4 ].value += vistorias.length;
+      propertiesByStatus[ 2 ].value += vistorias.length
+
       vistorias.map(vistoria => {
         const depositos = vistoria.depositos;
         const num_quarteirao = vistoria.imovel.lado.quarteirao.numero;
@@ -806,7 +811,7 @@ getActivityWeeklyReport = async (req, res) => {
             propertiesByPendency[0].value++;
             break;
           case 'R':
-            propertiesByPendency[0].value++;
+            propertiesByPendency[1].value++;
             break;
           case null:
             propertiesByPendency[2].value++;
@@ -835,7 +840,8 @@ getActivityWeeklyReport = async (req, res) => {
         let property_is_trated          = false,
             property_contain_aegypti    = false,
             property_contain_albopictus = false,
-            property_contain_other      = false;
+            property_contain_other      = false,
+            property_is_focus           = false;
 
         depositos.map(deposito => {
           switch (deposito.tipoRecipiente) {
@@ -875,6 +881,10 @@ getActivityWeeklyReport = async (req, res) => {
             // Setando imóvel como tratado
             property_is_trated = true;
           }
+
+          //Caso verdadeiro, seta imovel como Com Foco
+          if( deposito.fl_comFoco )
+            property_is_focus = true;
 
           totalSample += deposito.amostras.length;
           deposito.amostras.map( amostra => {
@@ -991,6 +1001,10 @@ getActivityWeeklyReport = async (req, res) => {
         // Somando imóveis tratados
         if( property_is_trated )
           properties[ 1 ].value++;
+        
+        //Somando Imoveis com Foco
+        if(property_is_focus)
+          properties[ 2 ].value++;
 
         // Preenchendo resultados de laboratório por imóvel
         switch( vistoria.tipoImovelVistoria ) {

@@ -105,6 +105,7 @@ function VisualizarRelatorioDiario({ usuario, vistorias, trabalhoDiario, ...prop
   const [ qtdTratamentoGrama, setQtdTratamentoGrama ] = useState( 0 );
   const [ qtdDepositoEliminado, setQtdDepositoEliminado ] = useState( 0 );
   const [ data, setData ] = useState( '' );
+  const [ qtdDeposito, setQtdDeposito ] = useState( 0 );
 
   useEffect(() => {
     props.changeSidebar( "relatorio" );
@@ -258,6 +259,7 @@ function VisualizarRelatorioDiario({ usuario, vistorias, trabalhoDiario, ...prop
     setQtdDepositoTratado( qtdDepTrat );
     setQtdDepositoEliminado( qtdDepElim );
     setQtdTratamentoGrama( qtdTratGrama );
+    setQtdDeposito( depA1 + depA2 + depB + depC + depD1 + depD2 + depE )
   };
 
   return (
@@ -299,19 +301,8 @@ function VisualizarRelatorioDiario({ usuario, vistorias, trabalhoDiario, ...prop
           </Col>
           <Col md="3">
             <article className="p-0">
+            
               <InfoBox className="mb-3 bg-primary template-no-icon text-white">
-                <div className="info-box-content">
-                  <div className="content-left">
-                    <div className="info-title">Amostra(s)</div>
-                    <div className="info-subtitle">Nº amostras</div>
-                  </div>
-                  <div className="content-right">
-                    <span className="info-box-number">{ qtdAmostra }</span>
-                  </div>
-                </div>
-              </InfoBox>
-
-              <InfoBox className="mb-3 bg-danger template-no-icon text-white">
                 <div className="info-box-content">
                   <div className="content-left">
                     <div className="info-title">Recusa(s)</div>
@@ -323,7 +314,7 @@ function VisualizarRelatorioDiario({ usuario, vistorias, trabalhoDiario, ...prop
                 </div>
               </InfoBox>
 
-              <InfoBox className="mb-3 bg-warning template-no-icon text-white">
+              <InfoBox className="mb-3 bg-info template-no-icon text-white">
                 <div className="info-box-content">
                   <div className="content-left">
                     <div className="info-title">Fechada(s)</div>
@@ -331,6 +322,30 @@ function VisualizarRelatorioDiario({ usuario, vistorias, trabalhoDiario, ...prop
                   </div>
                   <div className="content-right">
                     <span className="info-box-number">{ qtdFechada }</span>
+                  </div>
+                </div>
+              </InfoBox>
+
+              <InfoBox className="mb-3 bg-danger template-no-icon text-white">
+                <div className="info-box-content">
+                  <div className="content-left">
+                    <div className="info-title">Amostra(s)</div>
+                    <div className="info-subtitle">Nº amostras</div>
+                  </div>
+                  <div className="content-right">
+                    <span className="info-box-number">{ qtdAmostra }</span>
+                  </div>
+                </div>
+              </InfoBox>
+
+              <InfoBox className="mb-3 bg-primary template-no-icon text-white">
+                <div className="info-box-content">
+                  <div className="content-left">
+                    <div className="info-title">Deposito(s)</div>
+                    <div className="info-subtitle">Nº depositos</div>
+                  </div>
+                  <div className="content-right">
+                    <span className="info-box-number">{ qtdDeposito }</span>
                   </div>
                 </div>
               </InfoBox>
@@ -347,7 +362,7 @@ function VisualizarRelatorioDiario({ usuario, vistorias, trabalhoDiario, ...prop
                 </div>
               </InfoBox>
 
-              <InfoBox className="mb-3 bg-primary template-no-icon text-white">
+              <InfoBox className="mb-3 bg-danger template-no-icon text-white">
                 <div className="info-box-content">
                   <div className="content-left">
                     <div className="info-title">Tratado(s)</div>
@@ -359,7 +374,7 @@ function VisualizarRelatorioDiario({ usuario, vistorias, trabalhoDiario, ...prop
                 </div>
               </InfoBox>
 
-              <InfoBox className="mb-3 bg-danger template-no-icon text-white">
+              <InfoBox className="mb-3 bg-primary template-no-icon text-white">
                 <div className="info-box-content">
                   <div className="content-left">
                     <div className="info-title">Larvicida</div>

@@ -2,9 +2,10 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
+    const dateAux = new Date();
     let data        = [];
     let amount      = 30;
-    let cicle_open  = '2021-09-02';
+    let cicle_open  = `${ dateAux.getFullYear() }-09-02`;
     let date        = new Date( cicle_open );
 
     // LIRAa Simão Dias

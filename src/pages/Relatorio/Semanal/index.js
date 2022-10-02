@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { FaChartLine } from 'react-icons/fa';
 import { Row, Col } from 'react-bootstrap';
 import ModalSemana from '../components/ModalSemana';
-import { getDateBr } from '../../../config/function';
+import { dataToStringBr } from '../../../config/function';
 import $ from 'jquery';
 
 // ACTIONS
@@ -64,7 +64,7 @@ export const RelatorioSemanal = ({ atividades, ciclo, usuario, ...props }) => {
                     </div>
                     <div className="form-group">
                       <label style={{ fontWeight: 'bold' }}>Data de Início</label>
-                      <span>{ getDateBr( ciclo.dataInicio, 'date' ) }</span>
+                      <span>{ dataToStringBr( ciclo.dataInicio ) }</span>
                     </div>
                   </div>
                 </div>

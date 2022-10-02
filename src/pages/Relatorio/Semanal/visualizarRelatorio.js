@@ -166,8 +166,8 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
       nImoveisData.datasets[ 0 ].data[ 0 ] = boletimSemanal.propertiesByStatus[ 2 ].value;
       // Imóveis inspecionados
       nImoveisData.datasets[ 0 ].data[ 1 ] = boletimSemanal.properties[ 0 ].value;
-       // Imóveis com foco
-       nImoveisData.datasets[ 0 ].data[ 2 ] = boletimSemanal.properties[ 2 ].value;
+      // Imóveis com foco
+      nImoveisData.datasets[ 0 ].data[ 2 ] = boletimSemanal.properties[ 2 ].value;
       // Imóveis tratados
       nImoveisData.datasets[ 0 ].data[ 3 ] = boletimSemanal.properties[ 1 ].value;
       // Imóveis fechados

@@ -1946,6 +1946,22 @@ getTeamActivityReport = async (req, res) => {
       total: 0,
       agentes: []
     },
+    fechado: {
+      total: 0,
+      agentes: []
+    },
+    recusado: {
+      total: 0,
+      agentes: []
+    },
+    nenhuma:{
+      total: 0,
+      agentes: []
+    },
+    normal: {
+      total: 0,
+      agentes: []
+    },
     recuperado: {
       total: 0,
       agentes: []
@@ -1954,34 +1970,138 @@ getTeamActivityReport = async (req, res) => {
   let larvicidaPorAgente    = [];
   let amostrasPorAgente     = [];
 
-  trabalhos.map(trabalho => {
+  //Armazena dados de todos os imoveis UNICOS vistoriados,já que existe 
+  //a possibilidade de um imovel ser vistoriado mais de uma vez ao longo da atividade
+  var dadosImoveisUnicos = []
+
+  //Irá fazer a contagem de imoveis unicos por tipo, situação e pendencia
+  trabalhos.map((trabalho) => {
     const vistorias = trabalho.vistorias;
-    const rotas     = trabalho.rota;
     const agente    = trabalho.usuario;
 
-    totalImoveisVisitados += vistorias.length;
+    vistorias.forEach( vist => {
 
-    const index = totalImoveisAgente.findIndex(p => p.usuario.id === agente.id);
+      const tipoImovel = vist.tipoImovelVistoria;
 
-    if (index >= 0) {
-      totalImoveisAgente[ index ].imoveisVistoriados += vistorias.length;
-    } else {
-      const imoveisPorAgente = {
-        usuario: trabalho.usuario,
-        imoveisVistoriados: vistorias.length,
-      }
+      //Verifica se o imovel da vistoria atual ja foi vistoriado anteriormente
+      var indexImovel = dadosImoveisUnicos.findIndex(im => im.imovel_id == vist.imovel_id)
+      var index = null
 
-      totalImoveisAgente.push( imoveisPorAgente );
-    }
+      //Primeira vistoria do imovel
+      if(indexImovel == -1){
 
-    rotas.map(rota => {
-      imoveisPlanejados += rota.imoveis.length;
-    });
+        const dadosImovel = {
+          imovel_id:  vist.imovel_id,
+          tipoImovel: vist.tipoImovelVistoria,
+          situacao:{
+            //Se verdadeiro, imovel foi vistoriado como normal/recuperado ao menos uma vez
+            normal: vist.situacaoVistoria == "N" ? true : false, 
+            recuperado: vist.situacaoVistoria == "R" ? true : false,
+          },
+          pendencia:{
+            //Se verdadeiro, imovel foi vistoriado como fechado/recusado/nenhuma ao menos uma vez
+            fechado:  vist.pendencia == "F"  ? true : false,
+            recusado: vist.pendencia == "R"  ? true : false,
+            nenhum:  vist.pendencia == null ? true : false
+          },
+        }
 
-    vistorias.map(vistoria => {
-      const depositos = vistoria.depositos;
-      const tipoImovel = vistoria.tipoImovelVistoria;
-      let index = -1;
+        //Armazena os dados do imovel atual na lista
+        dadosImoveisUnicos.push(dadosImovel )
+
+        imoveisPorSituacao.trabalhado.total += 1
+        index = imoveisPorSituacao.trabalhado.agentes.findIndex( ag => ag.usuario.id === agente.id );
+        
+        if( index === -1 ) {
+          imoveisPorSituacao.trabalhado.agentes.push({
+            usuario: agente,
+            valor: 1
+          });
+        } else {
+          imoveisPorSituacao.trabalhado.agentes[ index ].valor += 1;
+        }
+
+        // Calculando Dash Imóveis Por Situacao.
+        if(vist.situacaoVistoria == "N"){
+          imoveisPorSituacao.normal.total += 1
+          index = imoveisPorSituacao.normal.agentes.findIndex( ag => ag.usuario.id === agente.id );
+
+          if( index === -1 ) {
+            imoveisPorSituacao.normal.agentes.push({
+              usuario: agente,
+              valor: 1
+            });
+          } else {
+            imoveisPorSituacao.normal.agentes[ index ].valor += 1;
+          }
+        }
+        else{
+          imoveisPorSituacao.recuperado.total += 1
+          index = imoveisPorSituacao.recuperado.agentes.findIndex( ag => ag.usuario.id === agente.id );
+
+          if( index === -1 ) {
+            imoveisPorSituacao.recuperado.agentes.push({
+              usuario: agente,
+              valor: 1
+            });
+          } else {
+            imoveisPorSituacao.recuperado.agentes[ index ].valor += 1;
+          }
+        }
+
+        //Calculando Dash imoveis por pendencia
+        if( vist.pendencia === "F" || vist.pendencia === "R" ) {
+          imoveisPorSituacao.pendencia.total += 1;
+          index = imoveisPorSituacao.pendencia.agentes.findIndex( ag => ag.usuario.id === agente.id );
+          if( index === -1 ) {
+            imoveisPorSituacao.pendencia.agentes.push({
+              usuario: agente,
+              valor: 1
+            });
+          } else {
+            imoveisPorSituacao.pendencia.agentes[ index ].valor += 1;
+          }
+        }
+
+        if(vist.pendencia == "F"){
+          imoveisPorSituacao.fechado.total += 1
+          index = imoveisPorSituacao.fechado.agentes.findIndex( ag => ag.usuario.id === agente.id );
+
+          if( index === -1 ) {
+            imoveisPorSituacao.fechado.agentes.push({
+              usuario: agente,
+              valor: 1
+            });
+          } else {
+            imoveisPorSituacao.fechado.agentes[ index ].valor += 1;
+          }
+        }
+        else if(vist.pendencia == "R"){
+          imoveisPorSituacao.recusado.total += 1
+          index = imoveisPorSituacao.recusado.agentes.findIndex( ag => ag.usuario.id === agente.id );
+
+          if( index === -1 ) {
+            imoveisPorSituacao.recusado.agentes.push({
+              usuario: agente,
+              valor: 1
+            });
+          } else {
+            imoveisPorSituacao.recusado.agentes[ index ].valor += 1;
+          }
+        }
+        else{
+          imoveisPorSituacao.nenhuma.total += 1
+          index = imoveisPorSituacao.nenhuma.agentes.findIndex( ag => ag.usuario.id === agente.id );
+
+          if( index === -1 ) {
+            imoveisPorSituacao.nenhuma.agentes.push({
+              usuario: agente,
+              valor: 1
+            });
+          } else {
+            imoveisPorSituacao.nenhuma.agentes[ index ].valor += 1;
+          }
+        }
 
       // Calculando Dash Imóveis Por Tipo.
       switch( tipoImovel ) {
@@ -2040,18 +2160,132 @@ getTeamActivityReport = async (req, res) => {
           break;
       }
 
-      // Calculando dash imóveis por situação
-      imoveisPorSituacao.trabalhado.total += 1;
-      index = imoveisPorSituacao.trabalhado.agentes.findIndex( ag => ag.usuario.id === agente.id );
-      if( index === -1 ) {
-        imoveisPorSituacao.trabalhado.agentes.push({
-          usuario: agente,
-          valor: 1
-        });
-      } else {
-        imoveisPorSituacao.trabalhado.agentes[ index ].valor += 1;
-      }
+      //Imovel ja foi vistoriado anteriormente
+      }else {
 
+        const imovelJaFoiNormal     = dadosImoveisUnicos[indexImovel].normal
+        const imovelJaFoiRecuperado = dadosImoveisUnicos[indexImovel].recuperado
+        const imovelJaFoiFechado    = dadosImoveisUnicos[indexImovel].fechado
+        const imovelJaFoiRecusado   = dadosImoveisUnicos[indexImovel].recusado
+        const imovelJaFoiNenhum     = dadosImoveisUnicos[indexImovel].nenhum
+
+        if(vist.situacaoVistoria == "N" && !imovelJaFoiNormal){
+          
+          imoveisPorSituacao.normal.total += 1
+          dadosImoveisUnicos[indexImovel].normal = true
+          
+          index = imoveisPorSituacao.normal.agentes.findIndex( ag => ag.usuario.id === agente.id );
+
+          if( index === -1 ) {
+            imoveisPorSituacao.normal.agentes.push({
+              usuario: agente,
+              valor: 1
+            });
+          } else {
+            imoveisPorSituacao.normal.agentes[ index ].valor += 1;
+          }
+        }
+        else if(vist.situacaoVistoria == "R" && !imovelJaFoiRecuperado){
+          
+          imoveisPorSituacao.recuperado.total += 1
+          dadosImoveisUnicos[indexImovel].recuperado = true
+
+          index = imoveisPorSituacao.recuperado.agentes.findIndex( ag => ag.usuario.id === agente.id );
+
+          if( index === -1 ) {
+            imoveisPorSituacao.recuperado.agentes.push({
+              usuario: agente,
+              valor: 1
+            });
+          } else {
+            imoveisPorSituacao.recuperado.agentes[ index ].valor += 1;
+          }
+        }
+
+        if( vist.pendencia === "F" || vist.pendencia === "R" &&  !imovelJaFoiFechado  && !imovelJaFoiRecusado) {
+        
+          imoveisPorSituacao.pendencia.total += 1;
+          
+          index = imoveisPorSituacao.pendencia.agentes.findIndex( ag => ag.usuario.id === agente.id );
+
+          if( index === -1 ) {
+            imoveisPorSituacao.pendencia.agentes.push({
+              usuario: agente,
+              valor: 1
+            });
+          } else {
+            imoveisPorSituacao.pendencia.agentes[ index ].valor += 1;
+          }
+        }
+
+        if(vist.pendencia == "F" && !imovelJaFoiFechado){
+          
+          imoveisPorSituacao.fechado.total += 1
+          dadosImoveisUnicos[indexImovel].fechado = true
+
+          index = imoveisPorSituacao.fechado.agentes.findIndex( ag => ag.usuario.id === agente.id );
+
+          if( index === -1 ) {
+            imoveisPorSituacao.fechado.agentes.push({
+              usuario: agente,
+              valor: 1
+            });
+          } else {
+            imoveisPorSituacao.fechado.agentes[ index ].valor += 1;
+          }
+        }
+        else if(vist.pendencia == "R" && !imovelJaFoiRecusado){
+          
+          imoveisPorSituacao.recusado.total += 1
+          dadosImoveisUnicos[indexImovel].recusado = true
+
+          index = imoveisPorSituacao.recusado.agentes.findIndex( ag => ag.usuario.id === agente.id );
+
+          if( index === -1 ) {
+            imoveisPorSituacao.recusado.agentes.push({
+              usuario: agente,
+              valor: 1
+            });
+          } else{
+            imoveisPorSituacao.recusado.agentes[ index ].valor += 1;
+          }
+        }
+        else if(vist.pendencia == null && !imovelJaFoiNenhum){
+          
+          imoveisPorSituacao.nenhuma.total += 1
+          dadosImoveisUnicos[indexImovel].nenhum = true
+          
+          index = imoveisPorSituacao.nenhuma.agentes.findIndex( ag => ag.usuario.id === agente.id );
+
+          if( index === -1 ) {
+            imoveisPorSituacao.nenhuma.agentes.push({
+              usuario: agente,
+              valor: 1
+            });
+          } else {
+            imoveisPorSituacao.nenhuma.agentes[ index ].valor += 1;
+          }
+        }
+      }  
+    })
+  });
+
+  // Gerando os indíces do relatório relacionados aos depositos
+  // Caso o imovel seja vistoriado e coletado depositos, ele não
+  // será mais vistoriado nos trabalhos diarios seguintes, portanto
+  // a partir daqui não é necessario tomar cuidado com repetição de
+  // vistorias em um mesmo imovel
+
+  trabalhos.map(trabalho => {
+    const vistorias = trabalho.vistorias;
+    const rotas     = trabalho.rota;
+    const agente    = trabalho.usuario;
+
+    totalImoveisVisitados += vistorias.length;
+
+    vistorias.map(vistoria => {
+      const depositos = vistoria.depositos;
+  
       if( depositos.length > 0 ) {
         imoveisPorSituacao.inspecionado.total += 1;
         index = imoveisPorSituacao.inspecionado.agentes.findIndex( ag => ag.usuario.id === agente.id );
@@ -2063,56 +2297,6 @@ getTeamActivityReport = async (req, res) => {
         } else {
           imoveisPorSituacao.inspecionado.agentes[ index ].valor += 1;
         }
-      }
-
-      if( vistoria.pendencia === null ) {
-        imoveisPorSituacao.pendencia.total += 1;
-        index = imoveisPorSituacao.pendencia.agentes.findIndex( ag => ag.usuario.id === agente.id );
-        if( index === -1 ) {
-          imoveisPorSituacao.pendencia.agentes.push({
-            usuario: agente,
-            valor: 1
-          });
-        } else {
-          imoveisPorSituacao.pendencia.agentes[ index ].valor += 1;
-        }
-      }
-
-      if( vistoria.situacaoVistoria === "R" ) {
-        imoveisPorSituacao.recuperado.total += 1;
-        index = imoveisPorSituacao.recuperado.agentes.findIndex( ag => ag.usuario.id === agente.id );
-        if( index === -1 ) {
-          imoveisPorSituacao.recuperado.agentes.push({
-            usuario: agente,
-            valor: 1
-          });
-        } else {
-          imoveisPorSituacao.recuperado.agentes[ index ].valor += 1;
-        }
-      }
-
-      switch( vistoria.pendencia ) {
-        case "R": // Recusada
-          imoveisRecusados++;
-          break;
-        case "F": // Fechada
-          imoveisFechados++;
-          break;
-        case null:
-          break;
-        default:
-          break;
-      }
-
-      switch( vistoria.situacaoVistoria ) {
-        case "R": // Recuperada
-          vistoriaRecuperada++;
-          break;
-        case "N": // Normal
-          vistoriaNormal++;
-          break;
-        default:
-          break;
       }
 
       let fl_foco     = false;
@@ -2219,14 +2403,13 @@ getTeamActivityReport = async (req, res) => {
       negativas: amostrasNegativas,
     },
     imoveis: {
-      totalVistoriado: totalImoveisVisitados,
-      naoVistoriados: imoveisPlanejados - totalImoveisVisitados,
-      fechados: imoveisFechados,
-      recusados: imoveisRecusados,
-      vistoriaNormal,
-      vistoriaRecuperada,
+      totalVistoriado: imoveisPorSituacao.trabalhado.total,
+      fechados: imoveisPorSituacao.fechado.total,
+      recusados: imoveisPorSituacao.recusado.total,
+      vistoriaNormal: imoveisPorSituacao.normal.total,
+      vistoriaRecuperada: imoveisPorSituacao.recuperado.total
     },
-    vistoriasPorAgentes: totalImoveisAgente,
+    vistoriasPorAgentes: imoveisPorSituacao.trabalhado.agentes,
     imoveisPorTipo,
     imoveisPorSituacao,
     depositosPorTipo,

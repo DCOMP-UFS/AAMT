@@ -6,13 +6,13 @@ import { Accordion, AccordionSummary, AccordionDetails } from '@material-ui/core
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ModalTrabalhoDiario from '../components/ModalTrabalhoDiario';
 import $ from 'jquery';
-import { getDateBr } from '../../../config/function';
+import { dataToStringBr } from '../../../config/function';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
 import { getResponsabilityActivitiesRequest } from '../../../store/Atividade/atividadeActions';
 import { getCicloAbertoRequest } from '../../../store/Ciclo/cicloActions';
-import { getTrabalhosUsuarioRequest, setTrabalhos } from '../../../store/TrabalhoDiario/trabalhoDiarioActions';
+import { getTrabalhosEquipeAndUsuarioRequest, setTrabalhos } from '../../../store/TrabalhoDiario/trabalhoDiarioActions';
 
 // STYLES
 import { Container, PanelTitle } from './styles';
@@ -30,9 +30,9 @@ export const RelatorioDiario = ({ atividades, ciclo, usuario, ...props }) => {
     }
   }, [ ciclo ]);
 
-  const abrirModalTrabalho = usuario_id => {
+  const abrirModalTrabalho = (equipe_id, usuario_id) => {
     props.setTrabalhos( [] );
-    props.getTrabalhosUsuarioRequest( usuario_id );
+    props.getTrabalhosEquipeAndUsuarioRequest(equipe_id, usuario_id );
 
     $( '#modal-trabalho' ).modal( 'show' );
   }
@@ -62,7 +62,7 @@ export const RelatorioDiario = ({ atividades, ciclo, usuario, ...props }) => {
                     </div>
                     <div className="form-group">
                       <label style={{ fontWeight: 'bold' }}>Data de Início</label>
-                      <span>{ getDateBr( ciclo.dataInicio, 'date' ) }</span>
+                      <span>{ dataToStringBr( ciclo.dataInicio) }</span>
                     </div>
                     {
                       atividade.equipes.map( equipe => (
@@ -80,7 +80,7 @@ export const RelatorioDiario = ({ atividades, ciclo, usuario, ...props }) => {
                             <ul className="lista-membros">
                               {
                                 equipe.membros.map( membro => (
-                                  <li key={ 'mb-' + membro.usuario.id } onClick={ () => abrirModalTrabalho( membro.usuario.id ) }>{ membro.usuario.nome }</li>
+                                  <li key={ 'mb-' + membro.usuario.id } onClick={ () => abrirModalTrabalho( equipe.id, membro.usuario.id ) }>{ membro.usuario.nome }</li>
                                 ) )
                               }
                             </ul>
@@ -111,7 +111,7 @@ const mapDispatchToProps = {
   changeSidebar,
   getResponsabilityActivitiesRequest,
   getCicloAbertoRequest,
-  getTrabalhosUsuarioRequest,
+  getTrabalhosEquipeAndUsuarioRequest,
   setTrabalhos
 }
 

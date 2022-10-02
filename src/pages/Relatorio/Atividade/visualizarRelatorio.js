@@ -16,7 +16,7 @@ import { Color } from '../../../styles/global';
 
 const initVar = {
   imoveisTipoData: {
-    labels: [ 'Residência', 'Comércio', 'TB', 'PE', 'Total' ],
+    labels: [ 'R', 'C', 'TB', 'PE', 'Total' ],
     reload: false,
     datasets: [{
       data: [ 0, 0, 0, 0, 0 ],
@@ -70,8 +70,8 @@ const initVar = {
     reload: false,
     datasets: [{
         label: 'total',
-        // A1, A2, B, C, D1, D2, E
-        data: [ 0, 0, 0, 0, 0, 0, 0 ],
+        // A1, A2, B, C, D1, D2, E, Total
+        data: [ 0, 0, 0, 0, 0, 0, 0, 0 ],
         backgroundColor: [
           Color.chartColor[ 0 ][ 0 ],
           Color.chartColor[ 1 ][ 0 ],
@@ -161,9 +161,11 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
           dTipoData = depositosTipoData;
 
       // Imóveis trabalhados
-      nImoveisData.datasets[ 0 ].data[ 0 ] = boletimAtividade.propertiesByStatus[ 0 ].value;
+      nImoveisData.datasets[ 0 ].data[ 0 ] = boletimAtividade.propertiesByStatus[ 2 ].value;
       // Imóveis inspecionados
       nImoveisData.datasets[ 0 ].data[ 1 ] = boletimAtividade.properties[ 0 ].value;
+       // Imóveis com foco
+       nImoveisData.datasets[ 0 ].data[ 2 ] = boletimAtividade.properties[ 2 ].value;
       // Imóveis tratados
       nImoveisData.datasets[ 0 ].data[ 3 ] = boletimAtividade.properties[ 1 ].value;
       // Imóveis fechados
@@ -199,7 +201,9 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
       // Depósitos inspecionado por tipo E
       dTipoData.datasets[ 0 ].data[ 6 ] = boletimAtividade.recipientsByType[ 6 ].value;
       // Depósitos total
-      setQtdDeposito( dTipoData.datasets[ 0 ].data.reduce( ( ac, d ) => ac + d ) );
+      var depositosTotais =  dTipoData.datasets[ 0 ].data.reduce( ( ac, d ) => ac + d )
+      dTipoData.datasets[ 0 ].data[ 7 ] = depositosTotais
+      setQtdDeposito(depositosTotais);
 
       nImoveisData.reload = !nImoveisData.reload;
       setNumeroImoveisData( nImoveisData );
@@ -262,11 +266,11 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
               <InfoBox className="mb-3 bg-info template-no-icon text-white">
                 <div className="info-box-content">
                   <div className="content-left">
-                    <div className="info-title">Depósito(s)</div>
-                    <div className="info-subtitle">Nº depositos</div>
+                    <div className="info-title">Amostra(s)</div>
+                    <div className="info-subtitle">Nº amostras</div>
                   </div>
                   <div className="content-right">
-                    <span className="info-box-number">{ qtdDeposito }</span>
+                    <span className="info-box-number">{ qtdAmostra }</span>
                   </div>
                 </div>
               </InfoBox>
@@ -274,11 +278,11 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
               <InfoBox className="mb-3 bg-danger template-no-icon text-white">
                 <div className="info-box-content">
                   <div className="content-left">
-                    <div className="info-title">Amostra(s)</div>
-                    <div className="info-subtitle">Nº amostras</div>
+                    <div className="info-title">Depósito(s)</div>
+                    <div className="info-subtitle">Nº depositos</div>
                   </div>
                   <div className="content-right">
-                    <span className="info-box-number">{ qtdAmostra }</span>
+                    <span className="info-box-number">{ qtdDeposito }</span>
                   </div>
                 </div>
               </InfoBox>

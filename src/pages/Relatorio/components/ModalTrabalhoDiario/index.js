@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Modal, { ModalBody, ModalFooter } from '../../../../components/Modal';
 import { FaFileAlt } from 'react-icons/fa';
-import { getDateBr } from '../../../../config/function';
+import { dataToStringBr } from '../../../../config/function';
 
 // ACTIONS
 import { showNotifyToast } from '../../../../store/AppConfig/appConfigActions';
@@ -29,7 +29,7 @@ export const ModalTrabalhoDiario = ({ trabalhos, id, title, ...props }) => {
                 <li key={ 'trab-' + trabalho.id } onClick={ () => abrirRelatorio( index ) }>
                   <div>
                     <FaFileAlt className="icon icon-md" />
-                    <label className="mb-0 font-weight-bold">{ getDateBr( trabalho.data, 'date' ) }</label>
+                    <label className="mb-0 font-weight-bold">{ dataToStringBr( trabalho.data) }</label>
                   </div>
                   <div className="form-group mb-0">
                     <label className="mb-0">Jornada de trabalho</label>

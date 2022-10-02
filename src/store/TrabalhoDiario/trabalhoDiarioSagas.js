@@ -50,6 +50,21 @@ export function* getDailyWorkById( action ) {
   }
 }
 
+export function* getTrabalhosEquipeAndUsuario( action ) {
+  try {
+    const { data, status } = yield call( servico.getByTeamAndUserRequest, action.payload );
+
+    if( status === 200 ) {
+      yield put( TrabalhoDiarioActions.setTrabalhos( data.data ) );
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Falha ao consultar os trabalhos do usuário: " + status, "error" ) );
+    }
+
+  } catch ( error ) {
+    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os trabalhos do usuário, favor verifique a conexão", "error" ) );
+  }
+}
+
 function* watchGetTrabalhosUsuario() {
   yield takeLatest( TrabalhoDiarioActions.ActionTypes.GET_TRABALHOS_USUARIO_REQUEST, getTrabalhosUsuario );
 }
@@ -62,10 +77,17 @@ function* watchGetDailyWorkById() {
   yield takeLatest( TrabalhoDiarioActions.ActionTypes.GET_DAILY_WORK_BY_ID_REQUEST, getDailyWorkById );
 }
 
+function* watchGetTrabalhosEquipeAndUsuario() {
+  yield takeLatest( TrabalhoDiarioActions.ActionTypes.GET_TRABALHOS_EQUIPE_USUARIO_REQUEST, getTrabalhosEquipeAndUsuario );
+}
+
+//GET_TRABALHOS_EQUIPE_USUARIO_REQUEST
+
 export function* trabalhoDiarioSaga() {
   yield all( [
     watchGetTrabalhosUsuario(),
     watchGetByUser(),
     watchGetDailyWorkById(),
+    watchGetTrabalhosEquipeAndUsuario(),
   ] );
 }

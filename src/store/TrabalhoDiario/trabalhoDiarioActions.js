@@ -1,5 +1,6 @@
 export const ActionTypes = {
   GET_TRABALHOS_USUARIO_REQUEST: "GET_TRABALHOS_USUARIO_REQUEST",
+  GET_TRABALHOS_EQUIPE_USUARIO_REQUEST: "GET_TRABALHOS_EQUIPE_USUARIO_REQUEST",
   SET_TRABALHOS: "SET_TRABALHOS",
   ADD_TRABALHO_DIARIO: "ADD_TRABALHO_DIARIO",
   GET_TRABALHO_DIARIO: "GET_TRABALHO_DIARIO",
@@ -19,6 +20,16 @@ export const getTrabalhosUsuarioRequest = user_id => {
   return {
     type: ActionTypes.GET_TRABALHOS_USUARIO_REQUEST,
     payload: {
+      user_id
+    }
+  }
+}
+
+export const getTrabalhosEquipeAndUsuarioRequest = (equipe_id, user_id) => {
+  return {
+    type: ActionTypes.GET_TRABALHOS_EQUIPE_USUARIO_REQUEST,
+    payload: {
+      equipe_id,
       user_id
     }
   }

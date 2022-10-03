@@ -121,7 +121,7 @@ function Usuarios({ municipio_id, usuarios, ...props }) {
 
   useEffect(() => {
     props.changeSidebar( "usuario_municipio" );
-    props.getUsersByCityRequest( municipio_id );
+    props.getUsersByCityRequest( municipio_id, true );
   }, []);
 
   useEffect(() => {

@@ -61,11 +61,12 @@ export const getUsuarioById = usuario => {
   }
 }
 
-export const getUsersByRegionalRequest = regionalSaude_id => {
+export const getUsersByRegionalRequest = (regionalSaude_id, incluirLaboratoristas = false) => {
   return {
     type: ActionTypes.GET_USERS_BY_REGIONAL_REQUEST,
     payload: {
-      regionalSaude_id
+      regionalSaude_id,
+      incluirLaboratoristas
     }
   }
 }
@@ -79,11 +80,12 @@ export const getUsersByRegional = usuarios => {
   }
 }
 
-export const getUsersByCityRequest = municipio_id => {
+export const getUsersByCityRequest = (municipio_id, incluirLaboratoristas = false) => {
   return {
     type: ActionTypes.GET_USERS_BY_CITY_REQUEST,
     payload: {
-      municipio_id
+      municipio_id,
+      incluirLaboratoristas
     }
   }
 }

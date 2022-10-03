@@ -121,7 +121,7 @@ const UsuariosRegConsultar = ( { regionalSaude_id, usuarios, ...props } ) => {
 
   useEffect(() => {
     props.changeSidebar( "usuario" );
-    props.getUsersByRegionalRequest( regionalSaude_id );
+    props.getUsersByRegionalRequest( regionalSaude_id, true );
   }, []);
 
   useEffect(() => {

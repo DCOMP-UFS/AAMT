@@ -20,6 +20,7 @@ import { GetRegionsByNationRequest } from '../../store/Regiao/regiaoActions';
 import { GetStatesByRegionRequest } from '../../store/Estado/estadoActions';
 import { getRegionalHealthByStateRequest } from '../../store/RegionalSaude/regionalSaudeActions';
 import { getCityByRegionalHealthRequest } from '../../store/Municipio/municipioActions';
+import { getLaboratoriosRequest } from '../../store/Laboratorio/laboratorioActions';
 
 // STYLES
 import { FormGroup, selectDefault } from '../../styles/global';
@@ -53,6 +54,8 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
   const [ userRegionalSaude, setUserRegionalSaude ] = useState({});
   const [ userMunicipio, setUserMunicipio ] = useState({});
   const [ flBtnLoading, setFlBtnLoading ] = useState( false );
+  const [ optionsLaboratorio, setOptionsLaboratorio] = useState([]);
+  const [ laboratorio, setLaboratorio ] = useState({});
 
   const [isValidNome , setIsValidNome] = useState(true)
   const [isValidCpf , setIsValidCpf] = useState(true)
@@ -161,6 +164,8 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
   }, [ props.municipiosList ]);
 
   useEffect(() => {
+    props.getLaboratoriosRequest(usuarioUpdate.municipio.id)
+
     if( Object.entries( usuarioUpdate ).length > 0 ) {
       let regionalHealth = {};
       let city = {};
@@ -203,6 +208,19 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
   }, [ usuarioUpdate ]);
 
   useEffect(() => {
+    const options = props.laboratorios.map(lab => ({value: lab.id, label: lab.nome}));
+    setOptionsLaboratorio(options)
+    if(usuarioUpdate.laboratorio){
+      const labVinculado = options.find(lab => lab.value == usuarioUpdate.laboratorio.laboratorio_id)
+      setLaboratorio(labVinculado);
+    }
+  }, [props.laboratorios]);
+
+  useEffect(() => {
+    setLaboratorio({});
+  }, [ tipoPerfil ]);
+
+  useEffect(() => {
     props.clearUpdateUser();
     setFlBtnLoading( false );
   }, [ props.update ]);
@@ -219,6 +237,9 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
     if( tipoPerfil.value === 1 ) {
       at.tipoPerfil = tipoPerfil.value;
       at.local_id = regionalSaude.value;
+    }else if( tipoPerfil.value === 5 ){
+      at.tipoPerfil = tipoPerfil.value;
+      at.local_id = laboratorio.value;
     }else {
       at.tipoPerfil = tipoPerfil.value;
       at.local_id = municipio.value;
@@ -362,6 +383,17 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
                       </Col>
                     </Row>
                     <Row>
+                      <Col sm="6" className={tipoPerfil.value !== 5 ? "d-none" :""}>
+                        <FormGroup>
+                          <label htmlFor="laboratorio">Laboratorio Vinculado<code>*</code></label>
+                          <SelectWrap
+                            value={ laboratorio }
+                            styles={ selectDefault }
+                            options={ optionsLaboratorio }
+                            onChange={ e => setLaboratorio(e) }
+                            required={tipoPerfil.value !== 5 ? false : true} />
+                        </FormGroup>
+                      </Col>
                       <Col sm='6'>
                       <FormGroup>
                           <label htmlFor="ativo">Ativo <code>*</code></label>
@@ -479,7 +511,8 @@ const mapStateToProps = state => ({
   estados: state.estado.estados,
   regionaisSaude: state.regionalSaude.regionaisSaude,
   municipiosList: state.municipio.municipiosList,
-  update: state.usuario.updateUser
+  update: state.usuario.updateUser,
+  laboratorios: state.nw_laboratorio.laboratorios
 });
 
 const mapDispatchToProps = dispatch =>
@@ -492,7 +525,8 @@ const mapDispatchToProps = dispatch =>
     GetStatesByRegionRequest,
     getRegionalHealthByStateRequest,
     getCityByRegionalHealthRequest,
-    clearUpdateUser
+    clearUpdateUser,
+    getLaboratoriosRequest
   }, dispatch);
 
 export default connect(

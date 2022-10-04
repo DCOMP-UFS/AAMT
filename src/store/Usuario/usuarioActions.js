@@ -99,7 +99,7 @@ export const getUsersByCity = usuarios => {
   }
 }
 
-export const createUsuarioRequest = ( nome, cpf, rg, email, celular, usuario, senha, tipoPerfil, regionalSaude_id, municipio_id ) => {
+export const createUsuarioRequest = ( nome, cpf, rg, email, celular, usuario, senha, tipoPerfil, regionalSaude_id, municipio_id, laboratorio_id ) => {
   return {
     type: ActionTypes.CREATE_USUARIO_REQUEST,
     payload: {
@@ -112,7 +112,8 @@ export const createUsuarioRequest = ( nome, cpf, rg, email, celular, usuario, se
       senha,
       tipoPerfil,
       regionalSaude_id,
-      municipio_id
+      municipio_id,
+      laboratorio_id
     }
   }
 }

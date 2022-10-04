@@ -21,6 +21,7 @@ import { GetRegionsByNationRequest } from '../../store/Regiao/regiaoActions';
 import { GetStatesByRegionRequest } from '../../store/Estado/estadoActions';
 import { getRegionalHealthByStateRequest } from '../../store/RegionalSaude/regionalSaudeActions';
 import { getCityByRegionalHealthRequest } from '../../store/Municipio/municipioActions';
+import { getLaboratoriosRequest } from '../../store/Laboratorio/laboratorioActions';
 
 // STYLES
 import { ContainerArrow } from '../../styles/util';
@@ -29,7 +30,7 @@ import { Button, FormGroup, selectDefault } from '../../styles/global';
 //FUNCTIONS
 import { isBlank, onlyLetters, onlyNumbers, isCpfValid} from '../../config/function';
 
-const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
+const ModalAdd = ( { createUsuarioRequest, createUser, isOpen, handleClose, ...props } ) => {
   const [ nome, setNome ]                               = useState( "" );
   const [ cpf, setCpf ]                                 = useState( "" );
   const [ rg, setRg ]                                   = useState( "" );
@@ -50,6 +51,8 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
   const [ optionMunicipio, setOptionMunicipio ]         = useState( [] );
   const [ flMunicipio, setFlMunicipio]                  = useState( true );
   const [ flLoading, setFlLoading ]                     = useState( false );
+  const [ optionsLaboratorio, setOptionsLaboratorio]    = useState([]);
+  const [ laboratorio, setLaboratorio ]                 = useState({});
   const optionPerfil = Object.entries( perfil ).map( ( [ key, value ] ) => {
     return { value: value.id, label: value.label };
   } );
@@ -59,6 +62,16 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
   const [isValidRg , setIsValidRg] = useState(true)
   const [isValidUsuario , setIsValidUsuario] = useState(true)
   const [isValidSenha , setIsValidSenha] = useState(true)
+
+  //É acionado toda fez que o modal é aberto
+  //No momento que o modal é aberto, todas as informações
+  //que o usuario digitou anteriormente são limpas
+  useEffect(() => {
+    if(isOpen)
+      clearInput()
+
+    handleClose()
+  }, [isOpen]);
 
   useEffect( () => {
     props.getNationsRequest();
@@ -80,6 +93,8 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
       setOptionRegionalSaude( [] );
       setMunicipio( {} );
       setOptionMunicipio( [] );
+      setLaboratorio( {} )
+      setOptionsLaboratorio( [] )
     }
   }, [ pais ] );
 
@@ -97,6 +112,8 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
       setOptionRegionalSaude( [] );
       setMunicipio( {} );
       setOptionMunicipio( [] );
+      setLaboratorio( {} )
+      setOptionsLaboratorio( [] )
     }
   }, [ regiao ] );
 
@@ -112,6 +129,8 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
       setRegionalSaude({});
       setMunicipio({});
       setOptionMunicipio([]);
+      setLaboratorio( {} )
+      setOptionsLaboratorio( [] )
     }
   }, [ estado ]);
 
@@ -125,6 +144,8 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
     if( Object.entries(regionalSaude).length > 0 ) {
       props.getCityByRegionalHealthRequest( regionalSaude.value );
       setMunicipio({});
+      setLaboratorio( {} )
+      setOptionsLaboratorio( [] )
     }
   }, [ regionalSaude ]);
 
@@ -133,6 +154,22 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
 
     setOptionMunicipio( options );
   }, [ props.municipiosList ]);
+
+  useEffect(() => {
+    if( Object.entries(municipio).length > 0 ) {
+      props.getLaboratoriosRequest( municipio.value );
+      setLaboratorio({});
+    }
+  }, [ municipio ]);
+
+  useEffect(() => {
+    const options = props.laboratorios.map(lab => ({value: lab.laboratorio_id, label: lab.nome}));
+    setOptionsLaboratorio(options)
+  }, [props.laboratorios]);
+
+  useEffect(() => {
+    setLaboratorio({});
+  }, [ tipoPerfil ]);
 
   useEffect(() => {
     if( createUser ) {
@@ -157,6 +194,7 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
     setEstado( {} )
     setRegionalSaude( {} )
     setMunicipio( {} )
+    setLaboratorio( {} )
   }
 
   function handleCadastrar( e ) {
@@ -173,7 +211,8 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
         senha,
         tipoPerfil.value,
         regionalSaude.value,
-        municipio.value
+        municipio.value,
+        laboratorio.value
       );
     }
   }
@@ -201,97 +240,6 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
           <p className="text-description">
             Atenção! Os campos com <code>*</code> são obrigatórios
           </p>
-          <Row>
-            <Col>
-              <FormGroup>
-                <label htmlFor="nome">Nome <code>*</code></label>
-                <input 
-                  id="nome" 
-                  value={nome} 
-                  className="form-control" 
-                  onChange={ e =>( onlyLetters(e.target.value) ? setNome(e.target.value) : '' ) } 
-                  required />
-                  {
-                    !isValidNome ?
-                      <span class="form-label-invalid">Nome inválido</span> :
-                      ''
-                  }
-              </FormGroup>
-            </Col>
-          </Row>
-          <Row>
-            <Col sm="6">
-              <FormGroup>
-                <label htmlFor="cpf">CPF <code>*</code></label>
-                <MaskedInput
-                  id="cpf" 
-                  type="cpf"
-                  value={ cpf } 
-                  className="form-control" 
-                  onChange={ e => setCpf(e.target.value) }  
-                  required />
-                  {
-                    !isValidCpf ?
-                      <span class="form-label-invalid">CPF inválido</span> :
-                    ''
-                  }
-              </FormGroup>
-            </Col>
-            <Col sm="6">
-              <FormGroup>
-                <label htmlFor="rg">RG <code>*</code></label>
-                <input 
-                  id="rg" 
-                  value={ rg } 
-                  className="form-control" 
-                  onChange={ e =>( onlyNumbers(e.target.value) ? setRg(e.target.value) : '') }  
-                  required />
-                  {
-                    !isValidRg ?
-                      <span class="form-label-invalid">RG inválido</span> :
-                      ''
-                  }
-              </FormGroup>
-            </Col>
-          </Row>
-          <Row>
-            <Col sm="6">
-              <FormGroup>
-                <label htmlFor="email">E-mail <code>*</code></label>
-                <input id="email" value={ email } type="email" className="form-control" onChange={ e => setEmail(e.target.value) }  required />
-              </FormGroup>
-            </Col>
-            <Col sm="6">
-              <FormGroup>
-                <label htmlFor="celular">Telefone/Ramal</label>
-                <input id="celular" value={ celular } className="form-control" onChange={ e => setCelular(e.target.value) } />
-              </FormGroup>
-            </Col>
-          </Row>
-          <Row>
-            <Col sm="6">
-              <FormGroup>
-                <label htmlFor="usuario">Usuário <code>*</code></label>
-                <input id="usuario" value={ usuario } className="form-control" onChange={ e => setUsuario(e.target.value) }  required />
-                {
-                  !isValidUsuario ?
-                    <span class="form-label-invalid">Usuario inválido</span> :
-                    ''
-                }
-              </FormGroup>
-            </Col>
-            <Col sm="6">
-              <FormGroup>
-                <label htmlFor="senha">Senha <code>*</code></label>
-                <input id="senha" value={ senha } type="password" className="form-control" onChange={ e => setSenha(e.target.value.trim()) }  required />
-                {
-                  !isValidSenha ?
-                    <span class="form-label-invalid">Senha inválida</span> :
-                    ''
-                }
-              </FormGroup>
-            </Col>
-          </Row>
           <Row>
             <Col>
               <FormGroup>
@@ -385,6 +333,110 @@ const ModalAdd = ( { createUsuarioRequest, createUser, ...props } ) => {
               </FormGroup>
             </Col>
           </Row>
+          <Row className={tipoPerfil.value !== 5 ? "d-none" :""}>
+            <Col>
+              <FormGroup>
+                <label htmlFor="tipoPerfil">Laboratorio vinculado <code>*</code></label>
+                <SelectWrap
+                  value={ laboratorio }
+                  styles={ selectDefault }
+                  options={ optionsLaboratorio }
+                  onChange={ e => setLaboratorio(e) }
+                  required={tipoPerfil.value !== 5 ? false : true} />
+              </FormGroup>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <FormGroup>
+                <label htmlFor="nome">Nome <code>*</code></label>
+                <input 
+                  id="nome" 
+                  value={nome} 
+                  className="form-control" 
+                  onChange={ e =>( onlyLetters(e.target.value) ? setNome(e.target.value) : '' ) } 
+                  required />
+                  {
+                    !isValidNome ?
+                      <span class="form-label-invalid">Nome inválido</span> :
+                      ''
+                  }
+              </FormGroup>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm="6">
+              <FormGroup>
+                <label htmlFor="cpf">CPF <code>*</code></label>
+                <MaskedInput
+                  id="cpf" 
+                  type="cpf"
+                  value={ cpf } 
+                  className="form-control" 
+                  onChange={ e => setCpf(e.target.value) }  
+                  required />
+                  {
+                    !isValidCpf ?
+                      <span class="form-label-invalid">CPF inválido</span> :
+                    ''
+                  }
+              </FormGroup>
+            </Col>
+            <Col sm="6">
+              <FormGroup>
+                <label htmlFor="rg">RG <code>*</code></label>
+                <input 
+                  id="rg" 
+                  value={ rg } 
+                  className="form-control" 
+                  onChange={ e =>( onlyNumbers(e.target.value) ? setRg(e.target.value) : '') }  
+                  required />
+                  {
+                    !isValidRg ?
+                      <span class="form-label-invalid">RG inválido</span> :
+                      ''
+                  }
+              </FormGroup>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm="6">
+              <FormGroup>
+                <label htmlFor="email">E-mail <code>*</code></label>
+                <input id="email" value={ email } type="email" className="form-control" onChange={ e => setEmail(e.target.value) }  required />
+              </FormGroup>
+            </Col>
+            <Col sm="6">
+              <FormGroup>
+                <label htmlFor="celular">Telefone/Ramal</label>
+                <input id="celular" value={ celular } className="form-control" onChange={ e => setCelular(e.target.value) } />
+              </FormGroup>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm="6">
+              <FormGroup>
+                <label htmlFor="usuario">Usuário <code>*</code></label>
+                <input id="usuario" value={ usuario } className="form-control" onChange={ e => setUsuario(e.target.value) }  required />
+                {
+                  !isValidUsuario ?
+                    <span class="form-label-invalid">Usuario inválido</span> :
+                    ''
+                }
+              </FormGroup>
+            </Col>
+            <Col sm="6">
+              <FormGroup>
+                <label htmlFor="senha">Senha <code>*</code></label>
+                <input id="senha" value={ senha } type="password" className="form-control" onChange={ e => setSenha(e.target.value.trim()) }  required />
+                {
+                  !isValidSenha ?
+                    <span class="form-label-invalid">Senha inválida</span> :
+                    ''
+                }
+              </FormGroup>
+            </Col>
+          </Row>
         </ModalBody>
         <ModalFooter>
           <ContainerArrow>
@@ -424,7 +476,8 @@ const mapStateToProps = state => ({
   regioes: state.regiao.regioes,
   estados: state.estado.estados,
   regionaisSaude: state.regionalSaude.regionaisSaude,
-  municipiosList: state.municipio.municipiosList
+  municipiosList: state.municipio.municipiosList,
+  laboratorios: state.nw_laboratorio.laboratorios
  });
 
 const mapDispatchToProps = dispatch =>
@@ -435,7 +488,8 @@ const mapDispatchToProps = dispatch =>
     GetRegionsByNationRequest,
     GetStatesByRegionRequest,
     getRegionalHealthByStateRequest,
-    getCityByRegionalHealthRequest
+    getCityByRegionalHealthRequest,
+    getLaboratoriosRequest
   }, dispatch);
 
 export default connect(

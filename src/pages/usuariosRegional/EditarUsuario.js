@@ -20,6 +20,7 @@ import { GetRegionsByNationRequest } from '../../store/Regiao/regiaoActions';
 import { GetStatesByRegionRequest } from '../../store/Estado/estadoActions';
 import { getRegionalHealthByStateRequest } from '../../store/RegionalSaude/regionalSaudeActions';
 import { getCityByRegionalHealthRequest } from '../../store/Municipio/municipioActions';
+import { getLaboratoriosRequest } from '../../store/Laboratorio/laboratorioActions';
 
 // STYLES
 import { FormGroup, selectDefault } from '../../styles/global';
@@ -48,6 +49,8 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
   const [ optionRegionalSaude, setOptionRegionalSaude ] = useState([]);
   const [ municipio, setMunicipio ] = useState({});
   const [ optionMunicipio, setOptionMunicipio ] = useState([]);
+  const [ optionsLaboratorio, setOptionsLaboratorio]    = useState([]);
+  const [ laboratorio, setLaboratorio ]                 = useState({});
   const [ flMunicipio, setFlMunicipio] = useState( true );
   const [ flLoading, setFlLoading ] = useState( false );
 
@@ -55,6 +58,7 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
   const [ userEstado, setUserEstado ] = useState({});
   const [ userRegionalSaude, setUserRegionalSaude ] = useState({});
   const [ userMunicipio, setUserMunicipio ] = useState({});
+  const [ userLaboratorio, setUserLaboratorio ] = useState({});
 
   const [isValidNome , setIsValidNome] = useState(true)
   const [isValidCpf , setIsValidCpf] = useState(true)
@@ -87,6 +91,8 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
       setOptionRegionalSaude([]);
       setMunicipio({});
       setOptionMunicipio([]);
+      setLaboratorio( {} )
+      setOptionsLaboratorio( [] )
     }
   }, [ pais ]);
 
@@ -109,6 +115,8 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
       setOptionRegionalSaude([]);
       setMunicipio({});
       setOptionMunicipio([]);
+      setLaboratorio( {} )
+      setOptionsLaboratorio( [] )
     }
   }, [ regiao ]);
 
@@ -129,6 +137,8 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
       setRegionalSaude({});
       setMunicipio({});
       setOptionMunicipio([]);
+      setLaboratorio( {} )
+      setOptionsLaboratorio( [] )
     }
   }, [ estado ]);
 
@@ -146,7 +156,9 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
   useEffect(() => {
     if( Object.entries(regionalSaude).length > 0 ) {
       props.getCityByRegionalHealthRequest( regionalSaude.value );
-      setMunicipio( userMunicipio );
+      //setMunicipio( userMunicipio );
+      setLaboratorio( {} )
+      setOptionsLaboratorio( [] )
     }
   }, [ regionalSaude ]);
 
@@ -162,6 +174,29 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
   }, [ props.municipiosList ]);
 
   useEffect(() => {
+    if( Object.entries(municipio).length > 0 ) {
+      props.getLaboratoriosRequest( municipio.value );
+      setLaboratorio({});
+    }
+  }, [ municipio ]);
+
+  useEffect(() => {
+    const options = props.laboratorios.map(( l ) => {
+      if( l.id === userLaboratorio.id )
+        setLaboratorio( { value: l.id, label: l.nome } );
+
+      return ({ value: l.id, label: l.nome })
+    });
+    setOptionsLaboratorio( options );
+  }, [props.laboratorios]);
+
+  useEffect(() => {
+    setLaboratorio({});
+  }, [ tipoPerfil ]);
+
+  useEffect(() => {
+    //props.getLaboratoriosRequest(usuarioUpdate.municipio.id)
+
     if( Object.entries( usuarioUpdate ).length > 0 ) {
       let regionalHealth = {};
       let city = {};
@@ -184,7 +219,14 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
       setUserRegiao( region );
       setUserEstado( state );
       setUserRegionalSaude( regionalHealth );
-      setUserMunicipio( city);
+      setUserMunicipio( city );
+
+      if(usuarioUpdate.atuacoes[0].tipoPerfil == 5){
+        setUserLaboratorio({
+          id: usuarioUpdate.laboratorio.laboratorio_id,
+          nome: usuarioUpdate.nome,
+        })
+      }
 
       props.getNationsRequest();
 
@@ -224,6 +266,9 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
     if( tipoPerfil.value === 1 ) {
       at.tipoPerfil = tipoPerfil.value;
       at.local_id = regionalSaude.value;
+    }else if( tipoPerfil.value === 5 ){
+      at.tipoPerfil = tipoPerfil.value;
+      at.local_id = laboratorio.value;
     }else {
       at.tipoPerfil = tipoPerfil.value;
       at.local_id = municipio.value;
@@ -376,6 +421,17 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
                       </Col>
                     </Row>
                     <Row>
+                    <Col sm="6" className={tipoPerfil.value !== 5 ? "d-none" :""}>
+                        <FormGroup>
+                          <label htmlFor="laboratorio">Laboratorio Vinculado<code>*</code></label>
+                          <SelectWrap
+                            value={ laboratorio }
+                            styles={ selectDefault }
+                            options={ optionsLaboratorio }
+                            onChange={ e => setLaboratorio(e) }
+                            required={tipoPerfil.value !== 5 ? false : true} />
+                        </FormGroup>
+                      </Col>
                       <Col sm='6'>
                       <FormGroup>
                           <label htmlFor="ativo">Ativo <code>*</code></label>
@@ -494,7 +550,9 @@ const mapStateToProps = state => ( {
   regioes: state.regiao.regioes,
   estados: state.estado.estados,
   regionaisSaude: state.regionalSaude.regionaisSaude,
-  municipiosList: state.municipio.municipiosList
+  municipiosList: state.municipio.municipiosList,
+  laboratorios: state.nw_laboratorio.laboratorios
+  
 } );
 
 const mapDispatchToProps = dispatch =>
@@ -507,7 +565,8 @@ const mapDispatchToProps = dispatch =>
     GetStatesByRegionRequest,
     getRegionalHealthByStateRequest,
     getCityByRegionalHealthRequest,
-    clearUpdateUser
+    clearUpdateUser,
+    getLaboratoriosRequest
   }, dispatch );
 
 export default connect(

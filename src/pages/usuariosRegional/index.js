@@ -86,13 +86,18 @@ const MapPerfil = ( atuacoes ) => {
 
 const UsuariosRegConsultar = ( { regionalSaude_id, usuarios, ...props } ) => {
   const [ rows, setRows ] = useState([]);
+  const [ isModalAddOpen, setIsModalAddOpen] = useState(false);
+
+  const handleCloseModalAdd = () => {setIsModalAddOpen(false)}
+
   const options = {
     customToolbar: () => {
       return (
         <ButtonAdd
           title="Adicionar"
           data-toggle="modal"
-          data-target="#modal-novo-usuario" />
+          data-target="#modal-novo-usuario" 
+          onClick={() => setIsModalAddOpen(true)} />
       );
     },
     customToolbarSelect: ({ data }) => {
@@ -121,7 +126,7 @@ const UsuariosRegConsultar = ( { regionalSaude_id, usuarios, ...props } ) => {
 
   useEffect(() => {
     props.changeSidebar( "usuario" );
-    props.getUsersByRegionalRequest( regionalSaude_id );
+    props.getUsersByRegionalRequest( regionalSaude_id, true );
   }, []);
 
   useEffect(() => {
@@ -176,7 +181,7 @@ const UsuariosRegConsultar = ( { regionalSaude_id, usuarios, ...props } ) => {
           </article>
         </div>
 
-        <ModalAdd />
+        <ModalAdd isOpen={isModalAddOpen} handleClose={handleCloseModalAdd}/>
         <ModalDesativar />
       </section>
       <ToastContainer />

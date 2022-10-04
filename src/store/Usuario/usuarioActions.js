@@ -61,11 +61,12 @@ export const getUsuarioById = usuario => {
   }
 }
 
-export const getUsersByRegionalRequest = regionalSaude_id => {
+export const getUsersByRegionalRequest = (regionalSaude_id, incluirLaboratoristas = false) => {
   return {
     type: ActionTypes.GET_USERS_BY_REGIONAL_REQUEST,
     payload: {
-      regionalSaude_id
+      regionalSaude_id,
+      incluirLaboratoristas
     }
   }
 }
@@ -79,11 +80,12 @@ export const getUsersByRegional = usuarios => {
   }
 }
 
-export const getUsersByCityRequest = municipio_id => {
+export const getUsersByCityRequest = (municipio_id, incluirLaboratoristas = false) => {
   return {
     type: ActionTypes.GET_USERS_BY_CITY_REQUEST,
     payload: {
-      municipio_id
+      municipio_id,
+      incluirLaboratoristas
     }
   }
 }
@@ -97,7 +99,7 @@ export const getUsersByCity = usuarios => {
   }
 }
 
-export const createUsuarioRequest = ( nome, cpf, rg, email, celular, usuario, senha, tipoPerfil, regionalSaude_id, municipio_id ) => {
+export const createUsuarioRequest = ( nome, cpf, rg, email, celular, usuario, senha, tipoPerfil, regionalSaude_id, municipio_id, laboratorio_id ) => {
   return {
     type: ActionTypes.CREATE_USUARIO_REQUEST,
     payload: {
@@ -110,7 +112,8 @@ export const createUsuarioRequest = ( nome, cpf, rg, email, celular, usuario, se
       senha,
       tipoPerfil,
       regionalSaude_id,
-      municipio_id
+      municipio_id,
+      laboratorio_id
     }
   }
 }

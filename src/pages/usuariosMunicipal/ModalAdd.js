@@ -13,8 +13,9 @@ import SelectWrap from '../../components/SelectWrap';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-// ACTIONS
+// ACTIONS 
 import { createUsuarioRequest, clearCreateUser } from '../../store/Usuario/usuarioActions';
+import { getLaboratoriosRequest } from '../../store/Laboratorio/laboratorioActions';
 
 // STYLES
 import { ContainerArrow } from '../../styles/util';
@@ -24,7 +25,7 @@ import { Button, FormGroup, selectDefault } from '../../styles/global';
 import { isBlank, onlyLetters, onlyNumbers, isCpfValid} from '../../config/function';
 
 
-function ModalAdd({ createUsuarioRequest, municipio, createUser, ...props }) {
+function ModalAdd({ createUsuarioRequest, municipio, createUser, laboratorios, isOpen, handleClose, ...props }) {
   const [ nome, setNome ] = useState("");
   const [ cpf, setCpf ] = useState("");
   const [ rg, setRg ] = useState("");
@@ -33,6 +34,8 @@ function ModalAdd({ createUsuarioRequest, municipio, createUser, ...props }) {
   const [ usuario, setUsuario ] = useState("");
   const [ senha, setSenha ] = useState("");
   const [ tipoPerfil, setTipoPerfil ] = useState({});
+  const [ optionsLaboratorio, setOptionsLaboratorio] = useState([]);
+  const [ laboratorio, setLaboratorio ] = useState({});
 
   const [isValidNome , setIsValidNome] = useState(true)
   const [isValidCpf , setIsValidCpf] = useState(true)
@@ -50,10 +53,26 @@ function ModalAdd({ createUsuarioRequest, municipio, createUser, ...props }) {
     .map(([key, value]) => {
       return { value: value.id, label: value.label };
     });
-
+  
+  //É acionado toda fez que o modal é aberto
+  //No momento que o modal é aberto, todas as informações
+  //que o usuario digitou anteriormente são limpas
   useEffect(() => {
+    if(isOpen)
+      clearInput()
+
+    handleClose()
+  }, [isOpen]);
+  
+  useEffect(() => {
+    props.getLaboratoriosRequest(municipio.id)
     props.clearCreateUser();
   }, []);
+
+  useEffect(() => {
+    const options = laboratorios.map(lab => ({value: lab.laboratorio_id, label: lab.nome}));
+    setOptionsLaboratorio(options)
+  }, [laboratorios]);
 
   useEffect(() => {
     if( createUser ) {
@@ -66,9 +85,14 @@ function ModalAdd({ createUsuarioRequest, municipio, createUser, ...props }) {
       setUsuario("");
       setSenha("");
       setTipoPerfil({});
+      setLaboratorio({});
     }
     props.clearCreateUser();
   }, [ createUser ]);
+
+  useEffect(() => {
+    setLaboratorio({});
+  }, [ tipoPerfil ]);
 
   function clearInput() {
     setNome("");
@@ -79,11 +103,11 @@ function ModalAdd({ createUsuarioRequest, municipio, createUser, ...props }) {
     setUsuario("");
     setSenha("");
     setTipoPerfil({});
+    setLaboratorio({});
   }
 
   function handleCadastrar( e ) {
     e.preventDefault();
-
     if( isCamposValidos() ){
       createUsuarioRequest(
         nome,
@@ -95,13 +119,13 @@ function ModalAdd({ createUsuarioRequest, municipio, createUser, ...props }) {
         senha,
         tipoPerfil.value,
         null,
-        municipio.id
+        municipio.id,
+        laboratorio.value,
       );
     }
   }
 
   function isCamposValidos() {
-
     const nomeValido = !isBlank(nome)
     const cpfValido =  isCpfValid(cpf)
     const usuarioValido = !isBlank(usuario)
@@ -127,6 +151,33 @@ function ModalAdd({ createUsuarioRequest, municipio, createUser, ...props }) {
           <p className="text-description">
             Atenção! Os campos com <code>*</code> são obrigatórios
           </p>
+          <Row>
+            <Col>
+              <FormGroup>
+                <label htmlFor="tipoPerfil">Perfil <code>*</code></label>
+                <SelectWrap
+                  value={ tipoPerfil }
+                  styles={ selectDefault }
+                  options={ optionPerfil }
+                  onChange={ e => setTipoPerfil(e) }
+                  required />
+                {/* <input id="tipoPerfil" className="form-control" onChange={ e => setTipoPerfil(e.target.value) }  /> */}
+              </FormGroup>
+            </Col>
+          </Row>
+          <Row className={tipoPerfil.value !== 5 ? "d-none" :""}>
+            <Col>
+              <FormGroup>
+                <label htmlFor="tipoPerfil">Laboratorio vinculado <code>*</code></label>
+                <SelectWrap
+                  value={ laboratorio }
+                  styles={ selectDefault }
+                  options={ optionsLaboratorio }
+                  onChange={ e => setLaboratorio(e) }
+                  required={tipoPerfil.value !== 5 ? false : true} />
+              </FormGroup>
+            </Col>
+          </Row>
           <Row>
             <Col>
               <FormGroup>
@@ -222,20 +273,6 @@ function ModalAdd({ createUsuarioRequest, municipio, createUser, ...props }) {
               </FormGroup>
             </Col>
           </Row>
-          <Row>
-            <Col>
-              <FormGroup>
-                <label htmlFor="tipoPerfil">Perfil <code>*</code></label>
-                <SelectWrap
-                  value={ tipoPerfil }
-                  styles={ selectDefault }
-                  options={ optionPerfil }
-                  onChange={ e => setTipoPerfil(e) }
-                  required />
-                {/* <input id="tipoPerfil" className="form-control" onChange={ e => setTipoPerfil(e.target.value) }  /> */}
-              </FormGroup>
-            </Col>
-          </Row>
         </ModalBody>
         <ModalFooter>
           <ContainerArrow>
@@ -256,12 +293,14 @@ function ModalAdd({ createUsuarioRequest, municipio, createUser, ...props }) {
 const mapStateToProps = state => ({
   municipio: state.appConfig.usuario.municipio,
   createUser: state.usuario.createUser,
+  laboratorios: state.nw_laboratorio.laboratorios
  });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
     createUsuarioRequest,
-    clearCreateUser
+    clearCreateUser,
+    getLaboratoriosRequest
   }, dispatch);
 
 export default connect(

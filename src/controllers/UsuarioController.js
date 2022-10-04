@@ -1,11 +1,15 @@
-const express         = require( 'express' );
-const bcrypt          = require( 'bcryptjs' );
-const { Op }          = require( 'sequelize' );
-const authMiddleware  = require( '../middlewares/auth' );
-const Atuacao         = require( '../models/Atuacao' );
-const Usuario         = require( '../models/Usuario' );
-const Municipio       = require( '../models/Municipio' );
-const RegionalSaude   = require( '../models/RegionalSaude' );
+const express               = require( 'express' );
+const bcrypt                = require( 'bcryptjs' );
+const { Op }                = require( 'sequelize' );
+const authMiddleware        = require( '../middlewares/auth' );
+const Atuacao               = require( '../models/Atuacao' );
+const Usuario               = require( '../models/Usuario' );
+const Municipio             = require( '../models/Municipio' );
+const RegionalSaude         = require( '../models/RegionalSaude' );
+const Laboratorio           = require( '../models/Laboratorio' );
+const LaboratorioMunicipio  = require( '../models/LaboratorioMunicipio' );
+
+
 
 // UTILITY
 const allowFunction             = require( '../util/allowFunction' );
@@ -78,6 +82,8 @@ getUserById = async ( req, res ) => {
 
 getUsersByRegional = async ( req, res ) => {
   const { regionalSaude_id } = req.params;
+  const { incluirLaboratoristas } = req.query;
+
   const userId = req.userId
   const allow = await allowFunction( userId, 'manter_usuario' );
 
@@ -97,24 +103,34 @@ getUsersByRegional = async ( req, res ) => {
     }
   });
 
-  const usuarios = await getAllUsersByRegional( municipios, regionalSaude );
+  const usuarios = await getAllUsersByRegional( municipios, regionalSaude, incluirLaboratoristas );
 
   return res.json( usuarios );
 }
 
 listByCity = async ( req, res ) => {
   const { municipio_id } = req.params;
+  const { incluirLaboratoristas } = req.query;
 
   const municipio = await Municipio.findByPk( municipio_id, {
     include: { association: 'regional', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } },
     attributes: { exclude: [ 'createdAt', 'updatedAt' ] } 
   });
 
+  var labsId = [-1]
+  if(incluirLaboratoristas == '1'){
+    const laboratorios = await LaboratorioMunicipio.findAll( { where: { municipio_id : municipio_id } });
+    labsId = laboratorios.map(lab => lab.id )
+  }
+
   const usuarios = await Usuario.findAll({
     include: { 
       where: {
-        escopo: 2,
-        local_id: municipio_id
+        [Op.or]:[
+          { escopo: 2, local_id: municipio_id },
+          { escopo: 3, local_id: { [Op.in]: labsId} }
+        ]
+        
       },
       association: 'atuacoes',
       attributes: { exclude: [ 'createdAt', 'updatedAt', 'usuario_id' ] } 
@@ -205,7 +221,9 @@ store = async ( req, res ) => {
       case 1:
         escopo = 1;
         break;
-    
+      case 5:
+        escopo = 3;
+        break;
       default:
         escopo = 2;
         break;
@@ -334,7 +352,9 @@ update = async (req, res) => {
         case 1:
           escopo = 1;
           break;
-      
+        case 5:
+          escopo = 3;
+          break;
         default:
           escopo = 2;
           break;

@@ -1,5 +1,6 @@
 const Municipio = require('../models/Municipio');
 const RegionalSaude = require('../models/RegionalSaude');
+const LaboratorioMunicipio  = require( '../models/LaboratorioMunicipio' );
 
 module.exports = async ( atuacoes ) => {
   let locais = {};
@@ -29,6 +30,31 @@ module.exports = async ( atuacoes ) => {
         );
         break;
       case 3:
+        const laboratorio = await LaboratorioMunicipio.findOne({where:{laboratorio_id:at.local_id}})
+        
+        locais.laboratorio = laboratorio
+        locais.municipio =  await Municipio.findByPk( 
+          laboratorio.dataValues.municipio_id, 
+          { 
+            include: { 
+              association: 'regional',
+              attributes: [ 'id', 'nome' ],
+              include: {
+                association: 'estado',
+                attributes: [ 'id', 'nome' ],
+                include: {
+                  association: 'regiao',
+                  attributes: [ 'id', 'nome', 'sigla' ],
+                  include: {
+                    association: 'pais',
+                    attributes: [ 'id', 'nome', 'sigla' ]
+                  }
+                }
+              }
+            },
+            attributes: [ 'id', 'nome', 'codigo' ],
+          }
+        );
         break;
     
       default:

@@ -29,7 +29,8 @@ import {
   LiIcon,
   ContainerIcon,
   DivDescription,
-  ListContainer
+  ListContainer,
+  Tratamento,
 } from './styles';
 import {
   Button,
@@ -147,13 +148,14 @@ const InspecionarRecipiente = ( {
     let fl_valido = true;// true -> válido | false -> inválido
 
     if( !validInputIsNull( "#tipoRecipiente", tipoRecipiente.value ) ) fl_valido = false;
-    if( !validInputIsNull( "#fl_eliminado", fl_eliminado.value ) ) fl_valido = false;
-    if( !validInputIsNull( "#fl_tratado", fl_tratado.value ) ) fl_valido = false;
+    if( objetivo === 'LI+T' || objetivo === 'T' ) {
+      if( !validInputIsNull( "#fl_eliminado", fl_eliminado.value ) ) fl_valido = false;
+      if( !validInputIsNull( "#fl_tratado", fl_tratado.value ) ) fl_valido = false;
+    }
     if( !validInputIsNull( "#fl_foco", fl_foco.value ) ) fl_valido = false;
 
     if( fl_tratado.value && qtdTratamento === 0 ) {
       fl_valido = false;
-
       let input_qtd_tratamento  = $( '#edi_qtdTratamento' );
       let form_group            = input_qtd_tratamento.parent();
 
@@ -304,65 +306,65 @@ const InspecionarRecipiente = ( {
                 styles={ selectDefault }
                 onChange={ option => setTipoRecipiente( option ) } />
             </div>
+            <Tratamento className={ ( objetivo === 'LI+T' || objetivo === 'T' ) ? "active" : "" }>
+              <div className="form-group">
+                <label htmlFor="fl_eliminado">Depósito eliminado? <code>*</code></label>
 
-            <div className="form-group">
-              <label htmlFor="fl_eliminado">Depósito eliminado? <code>*</code></label>
+                <Select
+                  id="fl_eliminado"
+                  options={ optionsSimNao }
+                  value={ fl_eliminado }
+                  styles={ selectDefault }
+                  onChange={ option => {
+                    setFl_eliminado( option );
+                    if( option.value )
+                      setFl_tratado({ value: false, label: "Não" });
+                  }} />
+              </div>
 
-              <Select
-                id="fl_eliminado"
-                options={ optionsSimNao }
-                value={ fl_eliminado }
-                styles={ selectDefault }
-                onChange={ option => {
-                  setFl_eliminado( option );
-                  if( option.value )
-                    setFl_tratado({ value: false, label: "Não" });
-                }} />
-            </div>
+              <div className="form-group">
+                <label htmlFor="fl_tratado">Depósito tratado? <code>*</code></label>
 
-            <div className="form-group">
-              <label htmlFor="fl_tratado">Depósito tratado? <code>*</code></label>
+                <Select
+                  id="fl_tratado"
+                  options={ optionsSimNao }
+                  value={ fl_tratado }
+                  styles={ selectDefault }
+                  onChange={ option => {
+                    setFl_tratado( option );
+                    if( option.value )
+                      setFl_eliminado({ value: false, label: "Não" });
+                  } } />
+              </div>
 
-              <Select
-                id="fl_tratado"
-                options={ optionsSimNao }
-                value={ fl_tratado }
-                styles={ selectDefault }
-                onChange={ option => {
-                  setFl_tratado( option );
-                  if( option.value )
-                    setFl_eliminado({ value: false, label: "Não" });
-                } } />
-            </div>
+              <ContainerTratamento className={ fl_tratado.value === true ? "" : "d-none" }>
+                <Row>
+                  <Col md="6" className="form-group">
+                    <label htmlFor="edi_qtdTratamento">Quantidade aplicada? (g) <code>*</code></label>
 
-            <ContainerTratamento className={ fl_tratado.value === true ? "" : "d-none" }>
-              <Row>
-                <Col md="6" className="form-group">
-                  <label htmlFor="edi_qtdTratamento">Quantidade aplicada? (g) <code>*</code></label>
+                    <input
+                      id="edi_qtdTratamento"
+                      type="number"
+                      step="0.01"
+                      min={ 0.01 }
+                      className="form-control"
+                      value={ qtdTratamento }
+                      onChange={ e => setQtdTratamento( e.target.value === "" ? 0 : parseFloat( e.target.value ) ) } />
+                  </Col>
+                  
+                  <Col md="6" className="form-group">
+                    <label htmlFor="tecnicaTratamento">Técnica? <code>*</code></label>
 
-                  <input
-                    id="edi_qtdTratamento"
-                    type="number"
-                    step="0.01"
-                    min={ 0.01 }
-                    className="form-control"
-                    value={ qtdTratamento }
-                    onChange={ e => setQtdTratamento( e.target.value === "" ? 0 : parseFloat( e.target.value ) ) } />
-                </Col>
-                
-                <Col md="6" className="form-group">
-                  <label htmlFor="tecnicaTratamento">Técnica? <code>*</code></label>
-
-                  <Select
-                    id="tecnicaTratamento"
-                    options={ optionsTecnicaTratamento }
-                    value={ tecnicaTratamento }
-                    styles={ selectDefault }
-                    onChange={ option => setTecnicaTratamento( option ) } />
-                </Col>
-              </Row>
-            </ContainerTratamento>
-
+                    <Select
+                      id="tecnicaTratamento"
+                      options={ optionsTecnicaTratamento }
+                      value={ tecnicaTratamento }
+                      styles={ selectDefault }
+                      onChange={ option => setTecnicaTratamento( option ) } />
+                  </Col>
+                </Row>
+              </ContainerTratamento>
+            </Tratamento>
             <div className="form-group">
               <label htmlFor="fl_foco">Com foco? <code>*</code></label>
 
@@ -374,7 +376,7 @@ const InspecionarRecipiente = ( {
                 onChange={ option => setFl_foco( option ) } />
             </div>
 
-            <ContainerUnidade className={ ( fl_foco.value && ( objetivo === 'LI+T' || objetivo === 'T' ) ) ? "active" : "" } >
+            <ContainerUnidade className={ ( fl_foco.value && ( objetivo === 'LI+T' || objetivo === 'LI' ) ) ? "active" : "" } >
               <Separator />
 
               <h4>

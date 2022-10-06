@@ -29,6 +29,8 @@ function ModalConfirmar({ tableSelected, ...props }) {
     props.deletarVistoria( tableSelected, props.trabalhoDiario.id );
     $('#modal-deletar-vistoria').modal('hide');
     props.showNotifyToast( "Vistoria(s) deletada(s) com sucesso", "success" )
+    //espera 1s para recarregar a pagina
+    setTimeout(() => { document.location.reload( true );}, 1000)
   }
 
   return(

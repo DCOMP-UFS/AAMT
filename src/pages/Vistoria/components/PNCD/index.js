@@ -60,8 +60,9 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
 
     props.setSequenceInspection( seq );
     setSequenciaVistoria( seq );
-  }, [ optionPendencia, optionVisita, props ] );
-
+  }, [ ] );
+  //optionPendencia, optionVisita, props
+  
   useEffect( () => {
     if( handleSave )
       setTimeout( () => { window.location = window.location.origin + '/vistoria'; }, 300 );

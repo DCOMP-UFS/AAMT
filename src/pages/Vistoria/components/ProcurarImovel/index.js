@@ -40,7 +40,7 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEd
     var filtragem = props.vistorias.filter((vistoria) => vistoria.trabalhoDiario_id == trabalhoDiario_id)
     setVistoriasFiltradas(filtragem)
 
-    props.setQuarteiraoSelect({ value: 0, label: rota[0].numero, id: rota[0].id });
+    props.setQuarteiraoSelect({ value: -1, label: 'Todos', id: -1 });
   }, []);
 
   useEffect(() => {
@@ -83,6 +83,8 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEd
 
       setImoveis( im );
     }
+    if(!isPaginaEdicao)
+      props.setImovelSelected( {} );
   }, [ selectQuarteirao ]);
 
   function handleImovel( i ) {

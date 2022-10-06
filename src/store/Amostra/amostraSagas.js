@@ -8,7 +8,7 @@ export function* getAmostrasByLab( action ) {
     const { data, status } = yield call( servico.getAmostrasByLabRequest, action.payload );
 
     if( status === 200 ) {
-      yield put( AppConfigActions.showNotifyToast( "Amostras lidas com sucesso!", "success" ));
+      yield put( AmostraActions.setAmostras( data ) );
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar amostras: " + status, "error" ) );
     }

@@ -24,7 +24,7 @@ export const HomeSupervisor = ( { ...props } ) => {
 
   useEffect( () => {
     //props.getAmostrasRequest(1);
-    props.getAmostrasByLab( null );
+    //props.getAmostrasByLab( props.usuario.laboratorio.laboratorio_id );
     //props.changeSidebar( "dashboard_municipío" );
   } );
 

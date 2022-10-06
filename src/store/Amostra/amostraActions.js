@@ -12,11 +12,11 @@ export const ActionTypes = {
  * @param {*} laboratorio_cnpj
  * @returns 
  */
-export const getAmostrasByLab = laboratorio_cnpj => {
+export const getAmostrasByLab = laboratorio_id => {
   return{
     type: ActionTypes.GET_AMOSTRAS_BY_LAB,
     payload: {
-      laboratorio_cnpj
+      laboratorio_id
     }
   }
 }

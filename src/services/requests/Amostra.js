@@ -8,8 +8,8 @@ export const getAmostrasRequest = data => {
 }
 
 export const getAmostrasByLabRequest = data => {
-  const { laboratorio_cnpj } = data;
-  return api.get(`/amostras/laboratorio/${laboratorio_cnpj}`, {
+  const { laboratorio_id } = data;
+  return api.get(`/amostras/laboratorio/${laboratorio_id}`, {
     ...headerAuthorization()
   });
 }

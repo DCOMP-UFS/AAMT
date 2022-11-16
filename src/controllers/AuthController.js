@@ -30,68 +30,74 @@ function generateToken( params = {} ) {
  */
 authenticate = async ( req, res ) => {
   const { usuario, senha } = req.body;
-
-  const user = await Usuario.findOne( { 
-    where: {
-      usuario,
-      ativo: 1
-    },
-    include: { 
-      association: 'atuacoes',
-      attributes: { exclude: [ 'createdAt', 'updatedAt', 'usuario_id' ] } 
-    }
-  } );
-  
-  if(!user) 
-    return res.status( 400 ).send( { 
-      status: 'error',
-      mensage: 'Usuário ou senha incorreta'
+  try {
+    const user = await Usuario.findOne( { 
+      where: {
+        usuario,
+        ativo: 1
+      },
+      include: { 
+        association: 'atuacoes',
+        attributes: { exclude: [ 'createdAt', 'updatedAt', 'usuario_id' ] } 
+      }
     } );
-  
-  if( !bcrypt.compareSync( senha, user.senha ) )
-    return res.status( 400 ).send( { 
-      status: 'error',
-      mensage: 'Usuário ou senha incorreta',
-      error: 'Usuário ou senha incorreta' 
+    
+    if(!user) 
+      return res.status( 400 ).send( { 
+        status: 'error',
+        mensage: 'Usuário ou senha incorreta'
+      } );
+    
+    if( !bcrypt.compareSync( senha, user.senha ) )
+      return res.status( 400 ).send( { 
+        status: 'error',
+        mensage: 'Usuário ou senha incorreta',
+        error: 'Usuário ou senha incorreta' 
+      } );
+
+    user.senha = undefined;
+
+    // Consultando as funções que usuário pode acessar de acordo com a atuação
+    let permissoes = await getPermissionByOperation( user.atuacoes );
+
+    // Consultando o direito a permissões variáveis do usuário
+    let permissoesVariaveis = await getPermissoesVariaveis( user.id );
+
+    // Filtrando as permissões já existentes
+    permissoesVariaveis = permissoesVariaveis.filter( pv => { 
+      const fl_existe = permissoes.findIndex( p => p == pv );
+
+      return fl_existe == -1;
     } );
 
-  user.senha = undefined;
+    permissoes = [ ...permissoes, ...permissoesVariaveis ];
 
-  // Consultando as funções que usuário pode acessar de acordo com a atuação
-  let permissoes = await getPermissionByOperation( user.atuacoes );
+    // Consultando os locais do usuário de acordo com sua atuação
+    const locais = await getLocationByOperation( user.atuacoes );
 
-  // Consultando o direito a permissões variáveis do usuário
-  let permissoesVariaveis = await getPermissoesVariaveis( user.id );
-
-  // Filtrando as permissões já existentes
-  permissoesVariaveis = permissoesVariaveis.filter( pv => { 
-    const fl_existe = permissoes.findIndex( p => p == pv );
-
-    return fl_existe == -1;
-  } );
-
-  permissoes = [ ...permissoes, ...permissoesVariaveis ];
-
-  // Consultando os locais do usuário de acordo com sua atuação
-  const locais = await getLocationByOperation( user.atuacoes );
-
-  res.send( {
-    user: {
-      id: user.id,
-      nome: user.nome,
-      cpf: user.cpf,
-      rg: user.rg,
-      email: user.email,
-      usuario: user.usuario,
-      ativo: user.ativo,
-      ...locais,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-      atuacoes: user.atuacoes,
-      permissoes
-    },
-    token: generateToken( { id: user.id } )
-  } );
+    res.send( {
+      user: {
+        id: user.id,
+        nome: user.nome,
+        cpf: user.cpf,
+        rg: user.rg,
+        email: user.email,
+        usuario: user.usuario,
+        ativo: user.ativo,
+        ...locais,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+        atuacoes: user.atuacoes,
+        permissoes
+      },
+      token: generateToken( { id: user.id } )
+    } );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
 }
 
 router.post( '/authenticate', authenticate );

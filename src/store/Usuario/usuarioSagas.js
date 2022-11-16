@@ -21,8 +21,22 @@ export function* authenticate(action) {
       }
 
     }
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Usuário ou senha inválidos", "error" ) );
+  } catch (err) {
+
+    if(err.response){
+      const { status } = err.response.data
+
+      if(status === "error")
+        yield put( AppConfigActions.showNotifyToast( "Usuário ou senha inválidos", "error" ) );
+      
+      else if(status === "unexpected error"){
+        //Provavel erro de logica na API
+        yield put( AppConfigActions.showNotifyToast( "Falha no login, entre em contato com o suporte", "error" ) );
+      }
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Falha no login, favor verifique sua conexão com a internet", "error" ) );
   }
 }
 
@@ -36,8 +50,17 @@ export function* getUsuarios(action) {
       yield put( UsuarioActions.getUsuariosFailure() );
     }
 
-  } catch (error) {
+  } catch (err) {
     yield put( UsuarioActions.getUsuariosFailure() );
+
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar usuários, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar usuários, favor verifique sua conexão com a internet", "error" ) );
   }
 }
 
@@ -51,8 +74,15 @@ export function* getUsersByRegional( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha consultar os usuários: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar usuários, favor verifique sua conexão com a internet", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar usuários, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar usuários, favor verifique sua conexão com a internet", "error" ) );
   }
 }
 
@@ -66,8 +96,15 @@ export function* getUsuarioById(action) {
       yield put( AppConfigActions.showNotifyToast( "Falha consultar o usuário: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar usuário, favor verifique sua conexão com a internet", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar usuário, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar usuário, favor verifique sua conexão com a internet", "error" ) );
   }
 }
 
@@ -81,8 +118,15 @@ export function* getUsersByCity(action) {
       yield put( AppConfigActions.showNotifyToast( "Falha consultar os usuários: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar usuários, favor verifique sua conexão com a internet", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar usuários, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar usuários, favor verifique sua conexão com a internet", "error" ) );
   }
 }
 
@@ -143,16 +187,16 @@ export function* updateUsuario( action ) {
         if(sameCpf) repetidos = repetidos+"CPF " 
         if(sameEmail) repetidos = repetidos+"Email "
 
-        yield put( AppConfigActions.showNotifyToast("Falha ao atualizar Usuário, já existe(m) funcionário(s) com este(s): "+repetidos, "error" ) );
+        yield put( AppConfigActions.showNotifyToast("Erro ao atualizar Usuário, já existe(m) funcionário(s) com este(s): "+repetidos, "error" ) );
       }
       else{
         //Provavel erro de logica na API
-        yield put( AppConfigActions.showNotifyToast( "Falha ao atualizar Usuário, entre em contato com o suporte", "error" ) );
+        yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar Usuário, entre em contato com o suporte", "error" ) );
       }
     }
     //Se chegou aqui, significa que não houve resposta da API
     else
-      yield put( AppConfigActions.showNotifyToast( "Falha ao atualizar Usuário, favor verifique sua conexão com a internet", "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar Usuário, favor verifique sua conexão com a internet", "error" ) );
   }
 }
 

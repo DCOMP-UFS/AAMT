@@ -13,8 +13,15 @@ export function* getLocalidades(action) {
       yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as localidades, favor verifique a conexão", "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os municípios, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as localidades, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as localidades, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -28,8 +35,15 @@ export function* getLocationById(action) {
       yield put( AppConfigActions.showNotifyToast( "Erro ao consultar a localidade: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar a localidade, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar a localidade, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar a localidade, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -43,8 +57,15 @@ export function* getLocationByCity(action) {
       yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as localidades: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as localidades, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as localidades, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as localidades, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -69,7 +90,7 @@ export function* createLocation( action ) {
         yield put( AppConfigActions.showNotifyToast( "Erro ao criar a localidade, entre em contato com o suporte", "error" ) );
     }
     else
-      yield put( AppConfigActions.showNotifyToast( "Erro ao criar a localidade, favor verifique sua conexão com a internet", "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Erro ao criar a localidade, favor verifique a conexão", "error" ) );
   }
 }
 

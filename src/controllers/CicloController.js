@@ -14,29 +14,36 @@ const allowFunction = require('../util/allowFunction');
  * @params {Integer} regionalSaude_id
  */
 getCiclosPorRegional = async ( req, res ) => {
-  const { regionalSaude_id } = req.params;
+  try{
+    const { regionalSaude_id } = req.params;
 
-  const allow = await allowFunction( req.userId, 'definir_ciclo' );
-  if( !allow ) 
-    return res.status( 403 ).json( { error: 'Acesso negado' } );
+    const allow = await allowFunction( req.userId, 'definir_ciclo' );
+    if( !allow ) 
+      return res.status( 403 ).json( { error: 'Acesso negado' } );
 
-  const ciclos = await Ciclo.findAll( {
-    where: {
-      regional_saude_id: regionalSaude_id
-    },
-    include: [
-      {
-        association: 'regional',
-        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
-      }
-    ],
-    order: [ 
-      [ 'ano', 'desc' ], 
-      [ 'sequencia', 'asc' ]
-    ]
-  } );
+    const ciclos = await Ciclo.findAll( {
+      where: {
+        regional_saude_id: regionalSaude_id
+      },
+      include: [
+        {
+          association: 'regional',
+          attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+        }
+      ],
+      order: [ 
+        [ 'ano', 'desc' ], 
+        [ 'sequencia', 'asc' ]
+      ]
+    } );
 
-  return res.json( ciclos );
+    return res.json( ciclos );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
 }
 
 /**
@@ -44,26 +51,33 @@ getCiclosPorRegional = async ( req, res ) => {
  * @params {Integer} id
  */
 getCiclo = async ( req, res ) => {
-  const { id } = req.params;
+  try{
+    const { id } = req.params;
 
-  const ciclo = await Ciclo.findByPk( id, {
-    include: {
-      association: 'atividades',
-      attributes:{ exclude: [ 'createdAt', 'updatedAd' ] },
-      where: {
-        responsabilidade: 1
-      },
-      include: [
-        { association: 'metodologia', attributes:{ exclude: [ 'createdAt', 'updatedAd' ] } },
-        { association: 'objetivo', attributes:{ exclude: [ 'createdAt', 'updatedAd' ] } }
-      ]
-    }
-  } );
+    const ciclo = await Ciclo.findByPk( id, {
+      include: {
+        association: 'atividades',
+        attributes:{ exclude: [ 'createdAt', 'updatedAd' ] },
+        where: {
+          responsabilidade: 1
+        },
+        include: [
+          { association: 'metodologia', attributes:{ exclude: [ 'createdAt', 'updatedAd' ] } },
+          { association: 'objetivo', attributes:{ exclude: [ 'createdAt', 'updatedAd' ] } }
+        ]
+      }
+    } );
 
-  if( !ciclo )
-    return res.status( 400 ).json( { error: 'Ciclo não existe' } );
+    if( !ciclo )
+      return res.status( 400 ).json( { error: 'Ciclo não existe' } );
 
-  return res.json( ciclo );
+    return res.json( ciclo );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
 }
 
 /**
@@ -71,25 +85,32 @@ getCiclo = async ( req, res ) => {
  * @params {Integer} regionalSaude_id
  */
 getCicloAberto = async ( req, res ) => {
-  const { regionalSaude_id }  = req.params;
-  const [ m, d, Y ]           = new Date().toLocaleDateString( 'en-US' ).split( '/' );
-  const current_date          = `${ Y }-${ m }-${ d }`;
+  try{
+    const { regionalSaude_id }  = req.params;
+    const [ m, d, Y ]           = new Date().toLocaleDateString( 'en-US' ).split( '/' );
+    const current_date          = `${ Y }-${ m }-${ d }`;
 
-  const ciclos = await Ciclo.findOne( {
-    where: Sequelize.and(
-      { regional_saude_id: regionalSaude_id } ,
-      Sequelize.where(
-        Sequelize.fn( 'date', Sequelize.col( 'data_inicio' ) ),
-        '<=', current_date
-      ),
-      Sequelize.where(
-        Sequelize.fn( 'date', Sequelize.col( 'data_fim' ) ),
-        '>=', current_date
+    const ciclos = await Ciclo.findOne( {
+      where: Sequelize.and(
+        { regional_saude_id: regionalSaude_id } ,
+        Sequelize.where(
+          Sequelize.fn( 'date', Sequelize.col( 'data_inicio' ) ),
+          '<=', current_date
+        ),
+        Sequelize.where(
+          Sequelize.fn( 'date', Sequelize.col( 'data_fim' ) ),
+          '>=', current_date
+        )
       )
-    )
-  } );
+    } );
 
-  return res.json( ciclos );
+    return res.json( ciclos );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
 }
 
 /**
@@ -98,19 +119,26 @@ getCicloAberto = async ( req, res ) => {
  * @params {Integer} regionalSaude_id
  */
 getCiclosPorAno = async ( req, res ) => {
-  const { ano, regionalSaude_id } = req.params;
+  try{
+    const { ano, regionalSaude_id } = req.params;
 
-  const ciclos = await Ciclo.findAll( {
-    where: {
-      regional_saude_id: regionalSaude_id,
-      ano
-    },
-    include: {
-      association: 'atividades'
-    }
-  } );
+    const ciclos = await Ciclo.findAll( {
+      where: {
+        regional_saude_id: regionalSaude_id,
+        ano
+      },
+      include: {
+        association: 'atividades'
+      }
+    } );
 
-  return res.json( ciclos );
+    return res.json( ciclos );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
 }
 
 /**
@@ -118,149 +146,178 @@ getCiclosPorAno = async ( req, res ) => {
  * @params {Integer} regionalSaude_id
  */
 getCiclosPermitidos = async ( req, res ) => {
-  const { regionalSaude_id }  = req.params;
-  let current_date            = new Date();
+  try{
+    const { regionalSaude_id }  = req.params;
+    let current_date            = new Date();
 
-  current_date.setHours( 0, 0, 0, 0 );
+    current_date.setHours( 0, 0, 0, 0 );
 
-  const ciclos = await Ciclo.findAll( {
-    where: {
-      regional_saude_id: regionalSaude_id,
-      dataFim: {
-        [Sequelize.Op.gt]: current_date
+    const ciclos = await Ciclo.findAll( {
+      where: {
+        regional_saude_id: regionalSaude_id,
+        dataFim: {
+          [Sequelize.Op.gt]: current_date
+        }
       }
-    }
-  } );
+    } );
 
-  return res.json( ciclos );
+    return res.json( ciclos );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
 }
 
 store = async ( req, res ) => {
-  const { ano, sequencia, dataInicio, dataFim, regionalSaude_id, atividades } = req.body;
+  try{
+    const { ano, sequencia, dataInicio, dataFim, regionalSaude_id, atividades } = req.body;
 
-  const allow = await allowFunction( req.userId, 'definir_ciclo' );
-  if( !allow )
-    return res.status(403).json({ error: 'Acesso negado' });
+    const allow = await allowFunction( req.userId, 'definir_ciclo' );
+    if( !allow )
+      return res.status(403).json({ error: 'Acesso negado' });
 
-  const ciclo = await Ciclo.create({
-    ano,
-    sequencia,
-    dataInicio,
-    dataFim,
-    regional_saude_id: regionalSaude_id
-  });
+    const ciclo = await Ciclo.create({
+      ano,
+      sequencia,
+      dataInicio,
+      dataFim,
+      regional_saude_id: regionalSaude_id
+    });
 
-  if( atividades ) {
-    for (const atividade of atividades) {
-      const { abrangencia, metodologia_id, objetivo_id, objetivoAtividade, flTodosImoveis } = atividade;
-      const municipios = await Municipio.findAll({
-        where: {
-          regional_saude_id: regionalSaude_id
-        }
-      });
-
-      for (const municipio of municipios) {
-        const { id: municipio_id } = municipio.dataValues;
-
-        await Atividade.create({
-          abrangencia, 
-          objetivoAtividade, 
-          flTodosImoveis,
-          situacao: 1,
-          responsabilidade: 1,
-          ciclo_id: ciclo.id,
-          municipio_id,
-          metodologia_id, 
-          objetivo_id
+    if( atividades ) {
+      for (const atividade of atividades) {
+        const { abrangencia, metodologia_id, objetivo_id, objetivoAtividade, flTodosImoveis } = atividade;
+        const municipios = await Municipio.findAll({
+          where: {
+            regional_saude_id: regionalSaude_id
+          }
         });
+
+        for (const municipio of municipios) {
+          const { id: municipio_id } = municipio.dataValues;
+
+          await Atividade.create({
+            abrangencia, 
+            objetivoAtividade, 
+            flTodosImoveis,
+            situacao: 1,
+            responsabilidade: 1,
+            ciclo_id: ciclo.id,
+            municipio_id,
+            metodologia_id, 
+            objetivo_id
+          });
+        }
       }
     }
-  }
 
-  return res.status(201).json( ciclo );
+    return res.status(201).json( ciclo );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
 }
 
 update = async ( req, res ) => {
-  const { id } = req.params
-  const current_date = new Date();
+  try{
+    const { id } = req.params
+    const current_date = new Date();
 
-  const allow = await allowFunction( req.userId, 'definir_ciclo' );
-  if( !allow )
-    return res.status(403).json({ error: 'Acesso negado' });
+    const allow = await allowFunction( req.userId, 'definir_ciclo' );
+    if( !allow )
+      return res.status(403).json({ error: 'Acesso negado' });
 
-  let ciclo = await Ciclo.findByPk( id );
-  if( !ciclo )
-    return res.status(400).json({ error: 'Ciclo não existe' });
+    let ciclo = await Ciclo.findByPk( id );
+    if( !ciclo )
+      return res.status(400).json({ error: 'Ciclo não existe' });
 
-  if( ciclo.dataInicio < current_date && ciclo.dataFim > current_date )
-    return res.status(400).json({ error: 'Não é possível alterar ciclo em aberto!' });
+    if( ciclo.dataInicio < current_date && ciclo.dataFim > current_date )
+      return res.status(400).json({ error: 'Não é possível alterar ciclo em aberto!' });
 
-  req.body.id = undefined;
-  req.body.createdAt = undefined;
-  req.body.updatedAt = undefined;
+    req.body.id = undefined;
+    req.body.createdAt = undefined;
+    req.body.updatedAt = undefined;
 
-  const { isRejected } = await Ciclo.update(
-    req.body,
-    {
-      where: {
-        id
+    const { isRejected } = await Ciclo.update(
+      req.body,
+      {
+        where: {
+          id
+        }
       }
+    );
+
+    if( isRejected ){
+      return res.status(400).json({ error: 'Não foi possível atualizar o ciclo' });
     }
-  );
 
-  if( isRejected ){
-    return res.status(400).json({ error: 'Não foi possível atualizar o ciclo' });
+    ciclo = await Ciclo.findByPk( id );
+
+    return res.json(ciclo);
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
   }
-
-  ciclo = await Ciclo.findByPk( id );
-
-  return res.json(ciclo);
 }
 
 destroy = async ( req, res ) => {
-  const { id } = req.params;
-  const current_date = new Date();
+  try{
+    const { id } = req.params;
+    const current_date = new Date();
 
-  const allow = await allowFunction( req.userId, 'definir_ciclo' );
-  if( !allow )
-    return res.status(403).json({ error: 'Acesso negado' });
+    const allow = await allowFunction( req.userId, 'definir_ciclo' );
+    if( !allow )
+      return res.status(403).json({ error: 'Acesso negado' });
 
-  await Atividade.destroy({
-    where: {
-      ciclo_id: id
-    }
-  });
+    await Atividade.destroy({
+      where: {
+        ciclo_id: id
+      }
+    });
 
-  const deleted = await Ciclo.destroy({
-    where: {
-      id,
-      [Sequelize.Op.or]: [
-        {
-          dataInicio: {
-            [Sequelize.Op.gt]: current_date
+    const deleted = await Ciclo.destroy({
+      where: {
+        id,
+        [Sequelize.Op.or]: [
+          {
+            dataInicio: {
+              [Sequelize.Op.gt]: current_date
+            }
+          },
+          {
+            dataFim: {
+              [Sequelize.Op.lt]: current_date
+            }
           }
-        },
-        {
-          dataFim: {
-            [Sequelize.Op.lt]: current_date
-          }
-        }
-      ]
-    }
-  });
+        ]
+      }
+    });
 
-  if( deleted ) 
-    return res.json({ message: "Ciclo deletado" });
+    if( deleted ) 
+      return res.json({ message: "Ciclo deletado" });
 
-  return res.status(200).json({ message: "Não é permitido excluír ciclo aberto!" });
+    return res.status(400).json({ message: "Não é permitido excluír ciclo aberto, em andamento ou encerrado!" });
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
 }
 
 destroyMultiple = async ( req, res ) => {
-  const { id } = req.params;
-
-  const allow = await allowFunction(req.userId, 'definir_ciclo');
-  if (!allow) return res.status(403).json({ error: 'Acesso negado' });
   try{
+    const { id } = req.params;
+
+    const allow = await allowFunction(req.userId, 'definir_ciclo');
+    if (!allow) return res.status(403).json({ error: 'Acesso negado' });
+  
     const ciclo = await Ciclo.findByPk(id);
 
     if (!ciclo) {
@@ -283,15 +340,15 @@ destroyMultiple = async ( req, res ) => {
       const today = new Date();
       const dataInicio = new Date(cl.dataInicio);
       const dataFim = new Date(cl.dataFim);
-      if (today >= dataInicio) {
+      if (today > dataFim) {
         return res
           .status(400)
           .json({
-            error: `O ciclo de sequencia ${cl.sequencia} não pode ser excluído pois já foi encerrado`,
+            error: `O ciclo de sequencia ${cl.sequencia} não pode ser excluído, pois já foi encerrado`,
           });
       }
       if (today >= dataInicio) {
-        return res.status(400).json({ error: `O ciclo de sequencia ${cl.sequencia} não pode ser excluído pois está em andamento` })
+        return res.status(400).json({ error: `O ciclo de sequencia ${cl.sequencia} não pode ser excluído, pois está em andamento` })
       }
     }
 
@@ -315,9 +372,11 @@ destroyMultiple = async ( req, res ) => {
     if (ciclosExcluidos)
       return res.json({ ids: ciclosASeremExcluidos });
 
-  }catch(e){
-    //console.log(e)
-    return res.status(400).json({ error: `Não foi possivel excluir o(s) ciclos(s).Ocorreu algum problema no banco ou na API` })
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
   }
 }
 

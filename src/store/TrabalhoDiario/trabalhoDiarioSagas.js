@@ -14,8 +14,15 @@ export function* getTrabalhosUsuario( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar os trabalhos do usuário: " + status, "error" ) );
     }
 
-  } catch ( error ) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os trabalhos do usuário, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os trabalhos do usuário, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os trabalhos do usuário, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -29,8 +36,15 @@ export function* getByUser( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar os boletins diários: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os boletins diários, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os boletins diários, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os boletins diários, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -45,8 +59,15 @@ export function* getDailyWorkById( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar o trabalho diário: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar o trabalho diário, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar o trabalho diário, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar o trabalho diário, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -57,11 +78,18 @@ export function* getTrabalhosEquipeAndUsuario( action ) {
     if( status === 200 ) {
       yield put( TrabalhoDiarioActions.setTrabalhos( data.data ) );
     }else {
-      yield put( AppConfigActions.showNotifyToast( "Falha ao consultar os trabalhos do usuário: " + status, "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Falha ao consultar os trabalhos do usuário na equipe: " + status, "error" ) );
     }
 
-  } catch ( error ) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os trabalhos do usuário, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os trabalhos do usuário na equipe, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os trabalhos do usuário na equipe, favor verifique a conexão", "error" ) );
   }
 }
 

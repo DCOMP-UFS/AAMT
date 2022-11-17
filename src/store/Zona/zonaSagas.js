@@ -13,8 +13,15 @@ export function* getZoneByCity(action) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar as zonas do município: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as zonas do município, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as zonas do município, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as zonas do município, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -28,8 +35,15 @@ export function* getZoneByLocality(action) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar as zonas da localidade: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as zonas da localidade, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as zonas da localidade, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as zonas da localidade, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -54,7 +68,7 @@ export function* createZone( action ) {
           yield put( AppConfigActions.showNotifyToast( "Erro ao criar a zona, entre em contato com o suporte", "error" ) );
       }
       else
-        yield put( AppConfigActions.showNotifyToast( "Erro ao criar a zona, favor verifique sua conexão com a internet", "error" ) );
+        yield put( AppConfigActions.showNotifyToast( "Erro ao criar a zona, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -75,10 +89,10 @@ export function* updateZone( action ) {
       if(alreadyExist)
         yield put( AppConfigActions.showNotifyToast( error, "error" ) );
       else
-      yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar a zona, entre em contato com o suporte", "error" ) );
+        yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar a zona, entre em contato com o suporte", "error" ) );
     }
     else
-      yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar a zona, favor verifique sua conexão com a internet", "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar a zona, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -92,8 +106,15 @@ export function* getZoneById(action) {
       yield put( AppConfigActions.showNotifyToast( "Erro ao consultar a zona: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar a zona, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar a zona, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar a zona, favor verifique a conexão", "error" ) );
   }
 }
 

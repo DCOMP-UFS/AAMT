@@ -18,86 +18,17 @@ const Usuario = require('../models/Usuario');
 const allowFunction = require('../util/allowFunction');
 
 index = async ( req, res ) => {
-  const { ciclo_id, municipio_id } = req.params;
+  try{
+    const { ciclo_id, municipio_id } = req.params;
 
-  const municipio = await Municipio.findByPk( municipio_id );
-  if( !municipio )
-    return res.status(400).json({ message: "Município não existe" });
+    const municipio = await Municipio.findByPk( municipio_id );
+    if( !municipio )
+      return res.status(400).json({ message: "Município não existe" });
 
-  const atividades = await Atividade.findAll({
-    where: {
-      municipio_id,
-      ciclo_id
-    },
-    include: [
-      {
-        association: 'metodologia',
-        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
-      },
-      {
-        association: 'objetivo',
-        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
-      }
-    ]
-  });
-
-  return res.json( atividades );
-}
-
-getById = async ( req, res ) => {
-  const { id } = req.params;
-
-  const atividade = await Atividade.findByPk( id, {
-    include: [
-      {
-        association: 'metodologia',
-        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
-      },
-      {
-        association: 'objetivo',
-        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
-      }
-    ]
-  });
-  
-  return res.json( atividade );
-}
-
-getActivitiesOfCity = async ( req, res ) => {
-  const { regionalSaude_id } = req.params;
-
-  let current_date = new Date();
-  current_date.setHours(0,0,0,0);
-
-  const ciclo = await Ciclo.findOne({
-    where: {
-      regional_saude_id: regionalSaude_id,
-      [Op.and]: [
-        {
-          dataInicio: {
-            [Op.lte]: current_date
-          }
-        },
-        {
-          dataFim: {
-            [Op.gte]: current_date
-          }
-        }
-      ]
-    }
-  });
-
-  if( !ciclo )
-    return res.status(200).json({ message: "Não há nenhum ciclo em aberto cadastrado" });
-
-  const municipios = await Municipio.findAll({
-    where: {
-      regional_saude_id: regionalSaude_id
-    },
-    include: {
-      association: 'atividades',
+    const atividades = await Atividade.findAll({
       where: {
-        ciclo_id: ciclo.id
+        municipio_id,
+        ciclo_id
       },
       include: [
         {
@@ -109,10 +40,100 @@ getActivitiesOfCity = async ( req, res ) => {
           attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
         }
       ]
-    }
-  });
+    });
 
-  return res.json( municipios );
+    return res.json( atividades );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
+}
+
+getById = async ( req, res ) => {
+  try{
+    const { id } = req.params;
+
+    const atividade = await Atividade.findByPk( id, {
+      include: [
+        {
+          association: 'metodologia',
+          attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+        },
+        {
+          association: 'objetivo',
+          attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+        }
+      ]
+    });
+    
+    return res.json( atividade );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
+}
+
+getActivitiesOfCity = async ( req, res ) => {
+  try{
+    const { regionalSaude_id } = req.params;
+
+    let current_date = new Date();
+    current_date.setHours(0,0,0,0);
+
+    const ciclo = await Ciclo.findOne({
+      where: {
+        regional_saude_id: regionalSaude_id,
+        [Op.and]: [
+          {
+            dataInicio: {
+              [Op.lte]: current_date
+            }
+          },
+          {
+            dataFim: {
+              [Op.gte]: current_date
+            }
+          }
+        ]
+      }
+    });
+
+    if( !ciclo )
+      return res.status(200).json({ message: "Não há nenhum ciclo em aberto cadastrado" });
+
+    const municipios = await Municipio.findAll({
+      where: {
+        regional_saude_id: regionalSaude_id
+      },
+      include: {
+        association: 'atividades',
+        where: {
+          ciclo_id: ciclo.id
+        },
+        include: [
+          {
+            association: 'metodologia',
+            attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+          },
+          {
+            association: 'objetivo',
+            attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+          }
+        ]
+      }
+    });
+
+    return res.json( municipios );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
 }
 
 // Esta rota não contém quarteirões e estratos associados
@@ -202,432 +223,467 @@ getAllUserActivities = async ( req, res ) => {
 
 
 getUserActivities = async ( req, res ) => {
-  const { usuario_id } = req.params;
+  try{
+    const { usuario_id } = req.params;
 
-  const usuario = await Usuario.findByPk( usuario_id, {
-    include: {
-      association: "atuacoes"
-    }
-  });
-  if( !usuario )
-    return res.status(400).json({ error: "Usuário não existe" });
-
-  let regionalSaude_id = -1;
-  const escopo = usuario.atuacoes[0].escopo;
-
-  if( escopo === 1 ) { // Regional
-    regionalSaude_id = usuario.atuacoes[0].local_id;
-  } else if( escopo === 2 ) { // Municipal
-    const regional = await Municipio.findByPk( usuario.atuacoes[0].local_id, {
-      include: { association: "regional" }
+    const usuario = await Usuario.findByPk( usuario_id, {
+      include: {
+        association: "atuacoes"
+      }
     });
-    
-    regionalSaude_id = regional.id;
-  } else { // Laboratório
+    if( !usuario )
+      return res.status(400).json({ error: "Usuário não existe" });
 
-  }
+    let regionalSaude_id = -1;
+    const escopo = usuario.atuacoes[0].escopo;
 
-  // Pegando o ciclo em aberto
-  let current_date = new Date();
-  current_date.setHours(0,0,0,0);
+    if( escopo === 1 ) { // Regional
+      regionalSaude_id = usuario.atuacoes[0].local_id;
+    } else if( escopo === 2 ) { // Municipal
+      const regional = await Municipio.findByPk( usuario.atuacoes[0].local_id, {
+        include: { association: "regional" }
+      });
+      
+      regionalSaude_id = regional.id;
+    } else { // Laboratório
 
-  const ciclo = await Ciclo.findOne({
-    where: {
-      regional_saude_id: regionalSaude_id,
-      [Op.and]: [
-        {
-          dataInicio: {
-            [Op.lt]: current_date
-          }
-        },
-        {
-          dataFim: {
-            [Op.gt]: current_date
-          }
-        }
-      ]
     }
-  });
 
-  if( !ciclo ) {
-    return res.json([]);
-  }
+    // Pegando o ciclo em aberto
+    let current_date = new Date();
+    current_date.setHours(0,0,0,0);
 
-  let atividades = await Atividade.findAll({
-    where: {
-      ciclo_id: ciclo.id
-    },
-    include: [
-      {
-        association: "equipes",
-        include: [
+    const ciclo = await Ciclo.findOne({
+      where: {
+        regional_saude_id: regionalSaude_id,
+        [Op.and]: [
           {
-            association: "membros",
-            attributes: [ "tipo_perfil" ],
-            include: { 
-              association: "usuario",
-              attributes: [ "id", "nome", "usuario" ], 
+            dataInicio: {
+              [Op.lt]: current_date
             }
           },
           {
-            association: "quarteiroes"
+            dataFim: {
+              [Op.gt]: current_date
+            }
           }
         ]
-      },
-      {
-        association: "estratos",
-        include: { association: "quarteiroes", attributes: [ "id", "numero" ] },
-        attributes: [ 'id' ]
-      },
-      {
-        association: 'metodologia',
-        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
-      },
-      {
-        association: 'objetivo',
-        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
       }
-    ]
-  });
-
-  atividades = atividades.filter( a => {
-    const atividade = a.dataValues;
-    let isActivity = false;
-    
-    atividade.equipes.forEach( e => {
-      e.membros.forEach( m => {
-        const usuario = m.dataValues.usuario.dataValues;
-        if( usuario.id === parseInt( usuario_id ) )
-          isActivity = true;
-      });
     });
 
-    return isActivity;
-  });
+    if( !ciclo ) {
+      return res.json([]);
+    }
 
-  return res.json( atividades );
+    let atividades = await Atividade.findAll({
+      where: {
+        ciclo_id: ciclo.id
+      },
+      include: [
+        {
+          association: "equipes",
+          include: [
+            {
+              association: "membros",
+              attributes: [ "tipo_perfil" ],
+              include: { 
+                association: "usuario",
+                attributes: [ "id", "nome", "usuario" ], 
+              }
+            },
+            {
+              association: "quarteiroes"
+            }
+          ]
+        },
+        {
+          association: "estratos",
+          include: { association: "quarteiroes", attributes: [ "id", "numero" ] },
+          attributes: [ 'id' ]
+        },
+        {
+          association: 'metodologia',
+          attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+        },
+        {
+          association: 'objetivo',
+          attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+        }
+      ]
+    });
+
+    atividades = atividades.filter( a => {
+      const atividade = a.dataValues;
+      let isActivity = false;
+      
+      atividade.equipes.forEach( e => {
+        e.membros.forEach( m => {
+          const usuario = m.dataValues.usuario.dataValues;
+          if( usuario.id === parseInt( usuario_id ) )
+            isActivity = true;
+        });
+      });
+
+      return isActivity;
+    });
+
+    return res.json( atividades );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
 }
 
 getLocations = async ( req, res ) => {
-  const { abrangencia_id, municipio_id } = req.params;
-  const { ativo } = req.query;
-  let locais = [];
-
-  switch ( abrangencia_id ) {
-    case "1": //Localidade/bairro
-      locais = await Localidade.findAll({
-        where: {
-          municipio_id
-        }
-      }).then( localidades => {
-        return localidades.map( localidade => ({ id: localidade.id, nome: localidade.nome, tipo: "localidade" }));
-      });
-      break;
-    case "2"://Zona
-      locais = await Zona.findAll({
-        where: {
-          municipio_id
-        }
-      }).then( zonas => {
-        return zonas.map( zona => ({ id: zona.id, nome: zona.nome, tipo: "zona" }));
-      });
-      break;
-  
-    default://Quarteirão
-      locais = await Quarteirao.findAll({
-        where: {
-          ...(ativo ? {
-            ativo: ativo === 'sim' ? 1 : 0
-          } : {})
-        },
-        include: {
-          association: "localidade",
-          where: {
-            municipio_id,
-          }
-        }
-      }).then( quarteiroes => {
-        return quarteiroes.map( quarteirao => ({ id: quarteirao.id, nome: quarteirao.numero, tipo: "quarteirao" }));
-      });
-      break;
-  }
-
-  return res.json( locais );
-}
-
-store = async ( req, res ) => {
-  const { 
-    abrangencia, 
-    objetivoAtividade, 
-    flTodosImoveis,
-    responsabilidade,
-    ciclo_id,
-    municipio_id,
-    metodologia_id, 
-    objetivo_id
-  } = req.body;
-
-  const allow = await allowFunction( req.userId, 'manter_atividade', 'manter_atividade_municipio' );
-  if( !allow )
-    return res.status(403).json({ error: 'Acesso negado' });
-
-  const ciclo = await Ciclo.findByPk( ciclo_id );
-  if( !ciclo )
-    return res.status(400).json({ error: "Ciclo não existe" });
-
-  let current_date = new Date();
-  current_date.setHours(0,0,0,0);
-  if( current_date > ciclo.dataFim )
-    return res.status(400).json({ error: "Não é permitido cadastrar atividade em ciclos finalizados" });
-
-  const atividade = await Atividade.create({
-    abrangencia, 
-    objetivoAtividade, 
-    flTodosImoveis,
-    situacao: 1,
-    responsabilidade,
-    ciclo_id,
-    municipio_id,
-    metodologia_id, 
-    objetivo_id
-  });
-
-  return res.status(201).json( atividade );
-}
-
-plain = async ( req, res ) => {
-  const { id } = req.params;
-  const { estratos, equipes, abrangencia_id } = req.body;
-
-  const allow = await allowFunction( req.userId, "manter_atividade_municipio" );
-  if( !allow )
-    return res.status(403).json({ error: 'Acesso negado' });
-
-  const atividade = await Atividade.findByPk( id );
-  if( !atividade )
-    return res.status(400).json({ message: "Atividade não existe" });
-
-  estratos.forEach( async e => {
-    const est = await Estrato.create({
-      atividade_id: id
-    });
+  try{
+    const { abrangencia_id, municipio_id } = req.params;
+    const { ativo } = req.query;
+    let locais = [];
 
     switch ( abrangencia_id ) {
-      case 1: // Localidade
-        e.locais.forEach( async l => {
-          await Quarteirao.findAll({
-            include: {
-              association: 'localidade',
-              where: {
-                id: l.id
-              }
-            }
-          }).then( quarteiroes => {
-            quarteiroes.forEach( async q => {
-              // Vinculando os quarteirões aos estratos
-              await SituacaoQuarteirao.create({
-                situacaoQuarteiraoId: 1,
-                estrato_id: est.id,
-                quarteirao_id: q.id
-              });
-            });
-          });
+      case "1": //Localidade/bairro
+        locais = await Localidade.findAll({
+          where: {
+            municipio_id
+          }
+        }).then( localidades => {
+          return localidades.map( localidade => ({ id: localidade.id, nome: localidade.nome, tipo: "localidade" }));
         });
-      
         break;
-      case 2: // Zona
-        e.locais.forEach( async l => {
-          await Quarteirao.findAll({
-            include: {
-              association: 'zona',
-              where: {
-                id: l.id
-              }
-            }
-          }).then( quarteiroes => {
-            quarteiroes.forEach( async q => {
-              await SituacaoQuarteirao.create({
-                situacaoQuarteiraoId: 1,
-                estrato_id: est.id,
-                quarteirao_id: q.id
-              });
-            });
-          });
+      case "2"://Zona
+        locais = await Zona.findAll({
+          where: {
+            municipio_id
+          }
+        }).then( zonas => {
+          return zonas.map( zona => ({ id: zona.id, nome: zona.nome, tipo: "zona" }));
         });
         break;
     
-      default: // Quarteirão
-        e.locais.forEach( async l => {
-          await SituacaoQuarteirao.create({
-            situacaoQuarteiraoId: 1,
-            estrato_id: est.id,
-            quarteirao_id: l.id
-          });
+      default://Quarteirão
+        locais = await Quarteirao.findAll({
+          where: {
+            ...(ativo ? {
+              ativo: ativo === 'sim' ? 1 : 0
+            } : {})
+          },
+          include: {
+            association: "localidade",
+            where: {
+              municipio_id,
+            }
+          }
+        }).then( quarteiroes => {
+          return quarteiroes.map( quarteirao => ({ id: quarteirao.id, nome: quarteirao.numero, tipo: "quarteirao" }));
         });
         break;
     }
-  });
 
-  equipes.forEach( async equipe => {
-    const e = await Equipe.create({
-      atividade_id: id
+    return res.json( locais );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
+}
+
+store = async ( req, res ) => {
+  try{
+    const { 
+      abrangencia, 
+      objetivoAtividade, 
+      flTodosImoveis,
+      responsabilidade,
+      ciclo_id,
+      municipio_id,
+      metodologia_id, 
+      objetivo_id
+    } = req.body;
+
+    const allow = await allowFunction( req.userId, 'manter_atividade', 'manter_atividade_municipio' );
+    if( !allow )
+      return res.status(403).json({ error: 'Acesso negado' });
+
+    const ciclo = await Ciclo.findByPk( ciclo_id );
+    if( !ciclo )
+      return res.status(400).json({ error: "Ciclo não existe" });
+
+    let current_date = new Date();
+    current_date.setHours(0,0,0,0);
+    if( current_date > ciclo.dataFim )
+      return res.status(400).json({ error: "Não é permitido cadastrar atividade em ciclos finalizados" });
+
+    const atividade = await Atividade.create({
+      abrangencia, 
+      objetivoAtividade, 
+      flTodosImoveis,
+      situacao: 1,
+      responsabilidade,
+      ciclo_id,
+      municipio_id,
+      metodologia_id, 
+      objetivo_id
     });
-  
-    // Vinculando os quarteirões de responsabilidade da equipe
-    equipe.locais.forEach( async l => {
+
+    return res.status(201).json( atividade );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
+}
+
+plain = async ( req, res ) => {
+  try{
+    const { id } = req.params;
+    const { estratos, equipes, abrangencia_id } = req.body;
+
+    const allow = await allowFunction( req.userId, "manter_atividade_municipio" );
+    if( !allow )
+      return res.status(403).json({ error: 'Acesso negado' });
+
+    const atividade = await Atividade.findByPk( id );
+    if( !atividade )
+      return res.status(400).json({ message: "Atividade não existe" });
+
+    estratos.forEach( async e => {
+      const est = await Estrato.create({
+        atividade_id: id
+      });
+
       switch ( abrangencia_id ) {
-        case 1:// Localidade
-          await Quarteirao.findAll({
-            include: {
-              association: 'localidade',
-              where: {
-                id: l.id
+        case 1: // Localidade
+          e.locais.forEach( async l => {
+            await Quarteirao.findAll({
+              include: {
+                association: 'localidade',
+                where: {
+                  id: l.id
+                }
               }
-            }
-          }).then( quarteiroes => {
-            quarteiroes.forEach( async q => {
-              await EquipeQuarteirao.create({
-                equipe_id: e.id,
-                quarteirao_id: q.id
+            }).then( quarteiroes => {
+              quarteiroes.forEach( async q => {
+                // Vinculando os quarteirões aos estratos
+                await SituacaoQuarteirao.create({
+                  situacaoQuarteiraoId: 1,
+                  estrato_id: est.id,
+                  quarteirao_id: q.id
+                });
               });
             });
           });
+        
           break;
-  
-        case 2:// Zona
-          await Quarteirao.findAll({
-            include: {
-              association: 'zona',
-              where: {
-                id: l.id
+        case 2: // Zona
+          e.locais.forEach( async l => {
+            await Quarteirao.findAll({
+              include: {
+                association: 'zona',
+                where: {
+                  id: l.id
+                }
               }
-            }
-          }).then( quarteiroes => {
-            quarteiroes.forEach( async q => {
-              await EquipeQuarteirao.create({
-                equipe_id: e.id,
-                quarteirao_id: q.id
+            }).then( quarteiroes => {
+              quarteiroes.forEach( async q => {
+                await SituacaoQuarteirao.create({
+                  situacaoQuarteiraoId: 1,
+                  estrato_id: est.id,
+                  quarteirao_id: q.id
+                });
               });
             });
           });
           break;
       
-        default:// Quarteirão
-          await EquipeQuarteirao.create({
-            equipe_id: e.id,
-            quarteirao_id: l.id
+        default: // Quarteirão
+          e.locais.forEach( async l => {
+            await SituacaoQuarteirao.create({
+              situacaoQuarteiraoId: 1,
+              estrato_id: est.id,
+              quarteirao_id: l.id
+            });
           });
           break;
       }
     });
 
-    equipe.membros.forEach( async membro => {
-      let tipoPerfil_id = 4;// Agente
-      if( membro.id === equipe.supervisor.id ) {
-        tipoPerfil_id = 3;
-      }
+    equipes.forEach( async equipe => {
+      const e = await Equipe.create({
+        atividade_id: id
+      });
+    
+      // Vinculando os quarteirões de responsabilidade da equipe
+      equipe.locais.forEach( async l => {
+        switch ( abrangencia_id ) {
+          case 1:// Localidade
+            await Quarteirao.findAll({
+              include: {
+                association: 'localidade',
+                where: {
+                  id: l.id
+                }
+              }
+            }).then( quarteiroes => {
+              quarteiroes.forEach( async q => {
+                await EquipeQuarteirao.create({
+                  equipe_id: e.id,
+                  quarteirao_id: q.id
+                });
+              });
+            });
+            break;
+    
+          case 2:// Zona
+            await Quarteirao.findAll({
+              include: {
+                association: 'zona',
+                where: {
+                  id: l.id
+                }
+              }
+            }).then( quarteiroes => {
+              quarteiroes.forEach( async q => {
+                await EquipeQuarteirao.create({
+                  equipe_id: e.id,
+                  quarteirao_id: q.id
+                });
+              });
+            });
+            break;
+        
+          default:// Quarteirão
+            await EquipeQuarteirao.create({
+              equipe_id: e.id,
+              quarteirao_id: l.id
+            });
+            break;
+        }
+      });
 
-      await Membro.create({
-        tipoPerfil: tipoPerfil_id,
-        equipe_id: e.id,
-        usuario_id: membro.id
+      equipe.membros.forEach( async membro => {
+        let tipoPerfil_id = 4;// Agente
+        if( membro.id === equipe.supervisor.id ) {
+          tipoPerfil_id = 3;
+        }
+
+        await Membro.create({
+          tipoPerfil: tipoPerfil_id,
+          equipe_id: e.id,
+          usuario_id: membro.id
+        });
       });
     });
-  });
 
-  atividade.situacao = 2;
-  await atividade.save();
+    atividade.situacao = 2;
+    await atividade.save();
 
-  return res.json( atividade );
+    return res.json( atividade );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
 }
 
 getResponsibilityActivities = async ( req, res ) => {
-  const { user_id, cycle_id } = req.params;
+  try{
+    const { user_id, cycle_id } = req.params;
 
-  const allow = await allowFunction( req.userId, 'definir_trabalho_diario' );
-  if( !allow )
-    return res.status( 403 ).json( { error: 'Acesso negado' } );
+    const allow = await allowFunction( req.userId, 'definir_trabalho_diario' );
+    if( !allow )
+      return res.status( 403 ).json( { error: 'Acesso negado' } );
 
-  if( parseInt( user_id ) !== req.userId )
-    return res.status( 403 ).json( { error: 'Acesso negado' } );
+    if( parseInt( user_id ) !== req.userId )
+      return res.status( 403 ).json( { error: 'Acesso negado' } );
 
-  const supervisor = await Usuario.findByPk( user_id, {
-    include: {
-      association: "atuacoes"
-    }
-  } );
-  if( !supervisor )
-    return res.status( 400 ).json( { error: "Usuário não existe" } );
+    const supervisor = await Usuario.findByPk( user_id, {
+      include: {
+        association: "atuacoes"
+      }
+    } );
+    if( !supervisor )
+      return res.status( 400 ).json( { error: "Usuário não existe" } );
 
-  if( supervisor.atuacoes[ 0 ].escopo !== 2 )
-    return res.json( [] );
+    if( supervisor.atuacoes[ 0 ].escopo !== 2 )
+      return res.json( [] );
 
-  const activities = await Atividade.findAll( {
-    where: {
-      ciclo_id: cycle_id,
-      municipio_id: supervisor.atuacoes[ 0 ].local_id
-    },
-    attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-    include: [
-      {
-        association: 'metodologia',
-        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+    const activities = await Atividade.findAll( {
+      where: {
+        ciclo_id: cycle_id,
+        municipio_id: supervisor.atuacoes[ 0 ].local_id
       },
-      {
-        association: 'objetivo',
-        attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
-      },
-      {
-        association: 'equipes',
-        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-        include: [
-          {
-            association: 'membros',
-            attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-            include: {
-              association: 'usuario',
-              attributes: { exclude: [ 'createdAt', 'updatedAt' ] } 
-            }
-          },
-          {
-            association: 'quarteiroes',
-            include: {
-              association: 'lados',
+      attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+      include: [
+        {
+          association: 'metodologia',
+          attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+        },
+        {
+          association: 'objetivo',
+          attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+        },
+        {
+          association: 'equipes',
+          attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+          include: [
+            {
+              association: 'membros',
               attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
               include: {
-                association: 'rua',
+                association: 'usuario',
+                attributes: { exclude: [ 'createdAt', 'updatedAt' ] } 
+              }
+            },
+            {
+              association: 'quarteiroes',
+              include: {
+                association: 'lados',
                 attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+                include: {
+                  association: 'rua',
+                  attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+                }
               }
             }
-          }
-        ]
-      }
-    ]
-  } );
-
-  const responsabilityActivities = [];
-
-  activities.forEach(( activity ) => {
-    let act = activity;
-
-    let teams = activity.equipes.filter( team => {
-      let fl_team = false;
-      
-      team.membros.forEach( member => {
-        if( member.usuario_id === supervisor.id && member.tipoPerfil === 3 )
-          fl_team = true;
-      } );
-
-      return fl_team;
+          ]
+        }
+      ]
     } );
 
-    act.dataValues.equipes = teams;
+    const responsabilityActivities = [];
 
-    if( teams.length > 0 )
-      responsabilityActivities.push( act );
-  } );
+    activities.forEach(( activity ) => {
+      let act = activity;
 
-  return res.json( responsabilityActivities );
+      let teams = activity.equipes.filter( team => {
+        let fl_team = false;
+        
+        team.membros.forEach( member => {
+          if( member.usuario_id === supervisor.id && member.tipoPerfil === 3 )
+            fl_team = true;
+        } );
+
+        return fl_team;
+      } );
+
+      act.dataValues.equipes = teams;
+
+      if( teams.length > 0 )
+        responsabilityActivities.push( act );
+    } );
+
+    return res.json( responsabilityActivities );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
 }
 
 const router = express.Router();

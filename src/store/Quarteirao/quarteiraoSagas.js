@@ -18,8 +18,15 @@ export function* getQuarteiroes( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar quarteirões: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar quarteirões, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar quarteirões, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar quarteirões, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -33,8 +40,15 @@ export function* getLadosQuarteirao( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar as ruas do quarteirão: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas do quarteirão, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas do quarteirão, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas do quarteirão, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -65,7 +79,7 @@ function* setQuarteirao( action ) {
         yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar quarteirão, entre em contato com o suporte", "error" ) );
     }
     else
-      yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar quarteirão, favor verifique sua conexão com a internet", "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar quarteirão, favor verifique sua conexão", "error" ) );
   }
     
 }
@@ -98,7 +112,7 @@ export function* addQuarteirao( action ) {
         yield put( AppConfigActions.showNotifyToast( "Erro ao criar quarteirão, entre em contato com o suporte", "error" ) );
     }
     else
-      yield put( AppConfigActions.showNotifyToast( "Erro ao criar quarteirão, favor verifique sua conexão com a internet", "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Erro ao criar quarteirão, favor verifique sua conexão", "error" ) );
   }
 }
 
@@ -119,8 +133,15 @@ function* excluirLado( action ) {
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao excluir lado do quarteirão: " + status, "error" ) );
     }
-  } catch( e ) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao excluir lado do quarteirão, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao excluir lado do quarteirão, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao excluir lado do quarteirão, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -135,10 +156,17 @@ function* getQuarteiraoPorId( action ) {
     if( status === 200 ) {
       yield put( QuarteiraoActions.setQuarteirao( data ) );
     }else {
-      yield put( AppConfigActions.showNotifyToast( "Falha ao ao consultar quarteirão: " + status, "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Falha ao consultar quarteirão: " + status, "error" ) );
     }
-  } catch( e ) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar quarteirão, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar quarteirão, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar quarteirão, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -156,8 +184,15 @@ export function* excluirImovel( action ) {
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao excluir imóvel: " + status, "error" ) );
     }
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao excluir imóvel, favor verifique sua conexão com a internet", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao excluir imóvel, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao excluir imóvel, favor verifique a conexão", "error" ) );
   }
 }
 

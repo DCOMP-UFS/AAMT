@@ -14,8 +14,15 @@ export function* planejarRota(action) {
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao planejar rota: " + status, "error" ) );
     }
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao planejar rota, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao planejar rota, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao planejar rota, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -28,8 +35,15 @@ export function* getRotasPlanejadas(action) {
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar rotas planejadas: " + status, "error" ) );
     }
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar rotas planejadas, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar rotas planejadas, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro consultar rotas planejadas, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -47,8 +61,15 @@ export function* getRotasPlanejadas(action) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao validar trabalho diário: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao validar trabalho diário, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao validar trabalho diário, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro validar trabalho diário, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -62,8 +83,15 @@ export function* getRoute(action) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar a rota: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar a rota, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar a rota, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar a rota, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -77,8 +105,15 @@ export function* isStarted(action) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao checkar o status da rota: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar a rota, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao checkar o status da rota, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao checkar o status da rota, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -99,9 +134,18 @@ export function* startRoute(action) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao iniciar rota: " + status, "error" ) );
     }
 
-  } catch (error) {
+  } catch (err) {
+
     yield put( RotaActions.setAuxIniciado(false) );
-    yield put( AppConfigActions.showNotifyToast( "Erro ao iniciar a rota, favor verifique a conexão", "error" ) );
+
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao iniciar rota, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao iniciar rota, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -132,12 +176,19 @@ export function* closeRoute(action) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao encerrar rota: " + status, "error" ) );
     }
 
-  } catch( error ) {
-    if( error.response.data.tipo === 'codigo_amostra_duplicado' ) {
-      yield put( AppConfigActions.showNotifyToast( error.response.data.message, "error" ) );
-    } else {
-      yield put( AppConfigActions.showNotifyToast( "Erro ao encerrar a rota, favor verifique a conexão", "error" ) );
+  } catch( err ) {
+
+    yield put( RotaActions.setAuxFinalizado(false) );
+
+    if(err.response){
+      if( err.response.data.tipo === 'codigo_amostra_duplicado' ) {
+        yield put( AppConfigActions.showNotifyToast( err.response.data.message, "error" ) );
+      } else {
+        yield put( AppConfigActions.showNotifyToast( "Erro ao encerrar a rota, favor verifique a conexão", "error" ) );
+      }
     }
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao iniciar rota, favor verifique a conexão", "error" ) );
   }
 }
 

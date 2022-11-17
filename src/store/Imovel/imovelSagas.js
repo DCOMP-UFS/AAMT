@@ -17,8 +17,15 @@ export function* getImoveis( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar imóveis: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar imóveis, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar imóveis, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar imóveis, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -38,8 +45,15 @@ export function* addImovel( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao adicionar imóvel: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao adicionar imóvel, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao adicionar imóvel, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao adicionar imóvel, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -58,8 +72,15 @@ export function* editarImovel( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao atualizar imóvel: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar imóvel, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar imóvel, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar imóvel, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -75,11 +96,18 @@ export function* deletarImovel( action ) {
       yield put( ImovelActions.setImoveisByImovelId( action.payload.imovel_id ) );
       yield put( AppConfigActions.showNotifyToast( data.message, "success" ) );
     }else {
-      yield put( AppConfigActions.showNotifyToast( "Falha ao atualizar imóvel: " + status, "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Falha ao excluir imóvel: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar imóvel, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao excluir o imóvel, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao excluir o imóvel, favor verifique a conexão", "error" ) );
   }
 }
 

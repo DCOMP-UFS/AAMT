@@ -13,8 +13,15 @@ export function* getBoletimSemanal( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar boletim semanal: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar boletim semanal, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar boletim semanal, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar boletim semanal, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -28,8 +35,15 @@ export function* getBoletimDiarioEquipe( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar boletim diário da equipe: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar boletim diário da equipe, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar boletim diário da equipe, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar boletim diário da equipe, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -43,8 +57,15 @@ export function* getBoletimAtividadeEquipe( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar boletim da atividade por equipe: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar boletim da atividade por equipe, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar boletim da atividade por equipe, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar boletim da atividade por equipe, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -58,8 +79,15 @@ export function* getBoletimAtividade( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar boletim de acompanhamento da atividade: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar boletim de acompanhamento da atividade, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar boletim de acompanhamento da atividade, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar boletim de acompanhamento da atividade, favor verifique a conexão", "error" ) );
   }
 }
 

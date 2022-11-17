@@ -13,8 +13,15 @@ export function* getResponsabilityActivities( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar as atividades: " + status, "error" ) );
     }
 
-  } catch ( error ) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as atividades, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar atividades, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar atividades, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -28,8 +35,15 @@ export function* getRotaEquipe( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar a rota da equipe: " + status, "error" ) );
     }
 
-  } catch ( error ) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar a rota da equipe, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar rota da equipe, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar rota da equipe, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -43,8 +57,15 @@ export function* getActivitiesOfCity(action) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar as atividades: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as atividades, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar atividades, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar atividades, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -58,8 +79,15 @@ export function* getActivitieById( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar atividade: " + status, "error" ) );
     }
 
-  } catch ( error ) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar atividade, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar atividade, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar atividade, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -72,8 +100,15 @@ export function* getActivitiesByCity( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar as atividades: " + status, "error" ) );
     }
 
-  } catch ( error ) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as atividades, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar atividades, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar atividades, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -86,8 +121,15 @@ export function* getLocations( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar locais: " + status, "error" ) );
     }
 
-  } catch ( error ) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar locais, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar locais, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar locais, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -101,8 +143,15 @@ export function* createActive( action ) {
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao criar atividade: " + status, "error" ) );
     }
-  } catch ( error ) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao criar atividade, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao criar atividade, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao criar atividade, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -113,10 +162,17 @@ export function* planActivity( action ) {
     if( status === 200 ) {
       window.location = window.location.origin.toString() + '/atividadesMunicipal';
     }else {
-      yield put( AppConfigActions.showNotifyToast( "Falha ao criar atividade: " + status, "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Falha ao salvar planejamento: " + status, "error" ) );
     }
-  } catch ( error ) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao salvar planejamento", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao salvar planejamento, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao salvar planejamento, favor verifique a conexão", "error" ) );
   }
 }
 

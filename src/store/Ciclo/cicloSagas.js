@@ -13,8 +13,15 @@ export function* getCicloAberto( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar o ciclo em aberto: " + status, "error" ) );
     }
 
-  } catch ( error ) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar o ciclo em aberto, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar o ciclo em aberto, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar o ciclo em aberto, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -28,8 +35,15 @@ export function* getCycle(action) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar ciclo: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar ciclo, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar o ciclo, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar o ciclo, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -43,8 +57,15 @@ export function* getCyclesForYear(action) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar os ciclos: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os ciclos, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os ciclos, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os ciclos, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -58,8 +79,15 @@ export function* getCycles(action) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar os ciclos: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os ciclos, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os ciclos, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os ciclos, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -73,8 +101,15 @@ export function* getAllowedCycles(action) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar os ciclos: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os ciclos, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os ciclos, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar os ciclos, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -88,8 +123,15 @@ export function* getOpenCycle(action) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar o ciclo em aberto: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar o ciclo em aberto, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar o ciclo em aberto, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar o ciclo em aberto, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -105,8 +147,15 @@ export function* createCycle( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao criar ciclo: " + status, "error" ) );
       yield put( AppConfigActions.showNotifyToast( "Atenção! Não é permitido duplicidade de ciclo", "warning" ) );
     }
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao criar um novo ciclo, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao criar o ciclo, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao criar o ciclo, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -122,9 +171,18 @@ export function* updateCycle( action ) {
       yield put( CicloActions.changeFlUpdate( false ) );
       yield put( AppConfigActions.showNotifyToast( "Falha ao editar ciclo: " + status, "error" ) );
     }
-  } catch (error) {
+  } catch (err) {
+
     yield put( CicloActions.changeFlUpdate( false ) );
-    yield put( AppConfigActions.showNotifyToast( "Erro ao editar ciclo! Verifique a internet caso problema persista, consulte a equipe de TI", "error" ) );
+
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao editar o ciclo, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao editar o ciclo, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -140,9 +198,18 @@ export function* destroyCycle( action ) {
       yield put( CicloActions.changeFlDestroyed( false ) );
       yield put( AppConfigActions.showNotifyToast( "Falha ao excluir ciclo: " + status, "error" ) );
     }
-  } catch (error) {
+  } catch (err) {
+
     yield put( CicloActions.changeFlDestroyed( false ) );
-    yield put( AppConfigActions.showNotifyToast( "Erro ao excluir ciclo! Verifique a internet caso problema persista, consulte a equipe de TI", "error" ) );
+
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao excluir o ciclo, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao excluir o ciclo, favor verifique a conexão", "error" ) );
   }
 }
 

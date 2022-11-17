@@ -25,8 +25,15 @@ export function* getRuaPorCep( action ) {
       yield put( AppConfigActions.showNotifyToast( "Não foi possível consultar a rua pelo cep: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Não foi possível consultar a rua pelo cep.", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar a rua pelo cep, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar a rua pelo cep, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -41,8 +48,15 @@ export function* getStreetByLocality(action) {
       yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas da localidade/bairro: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas da localidade/bairro, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas da localidade/bairro, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas da localidade/bairro, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -59,11 +73,18 @@ export function* streetAlreadyExist(action) {
         yield put( AppConfigActions.showNotifyToast( "Já exise uma rua com este cep", "error" ))
 
     }else {
-      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas da localidade/bairro: " + status, "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Falha ao verificar existência da rua: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas da localidade/bairro, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao verificar existência da rua, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao verificar existência da rua, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -80,6 +101,7 @@ export function* createStreet( action ) {
   } catch (err) {
 
     yield put(RuaActions.createStreetFail())
+
     if(err.response){
       const {sameName, sameCEP} = err.response.data
 
@@ -91,7 +113,7 @@ export function* createStreet( action ) {
         yield put( AppConfigActions.showNotifyToast( "Erro ao criar a rua, entre em contato com o suporte", "error" ) );
     }
     else{
-      yield put( AppConfigActions.showNotifyToast( "Erro ao criar a rua, favor verifique sua conexão com a internet", "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Erro ao criar a rua, favor verifique a conexão", "error" ) );
     }
   }
 }
@@ -120,7 +142,7 @@ export function* updateStreet( action ) {
         yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar a rua, entre em contato com o suporte", "error" ) );
     }
     else{
-      yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar a rua, favor verifique sua conexão com a internet", "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar a rua, favor verifique a conexão", "error" ) );
     }
   }
 }
@@ -149,7 +171,7 @@ export function* deleteStreet( action ) {
     }
     //Não conseguiu entrar em contato com api
     else
-      yield put( AppConfigActions.showNotifyToast( "Erro deletar rua, favor verifique sua conexão com a internet", "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Erro ao deletar rua, favor verifique sua conexão", "error" ) );
   }
 }
 

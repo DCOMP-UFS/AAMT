@@ -12,9 +12,15 @@ export function* getAmostrasByLab( action ) {
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar amostras: " + status, "error" ) );
     }
-
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar amostras, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar amostras, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar amostras, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -28,8 +34,15 @@ export function* getAmostras( action ) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar amostras: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar amostras, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar amostras, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar amostras, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -42,9 +55,15 @@ export function* enviarAmostras( action ) {
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao enviar amostras para o laboratório: " + status, "error" ) );
     }
-
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao enviar amostras para o laboratório", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao enviar amostras para o laboratório, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao enviar amostras para o laboratório, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -57,9 +76,15 @@ export function* registrarExame( action ) {
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao registrar exame: " + status, "error" ) );
     }
-
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao registar exame", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao registar exame, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao registar exame, favor verifique a conexão", "error" ) );
   }
 }
 

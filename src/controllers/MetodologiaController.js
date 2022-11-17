@@ -10,18 +10,25 @@ const allowFunction = require( '../util/allowFunction' );
  * @returns {array}
  */
 index = async ( req, res ) => {
-  const metodologias = await Metodologia.findAll( {
-    include: {
-      association: 'objetivos'
-    }
-  } );
+  try{
+    const metodologias = await Metodologia.findAll( {
+      include: {
+        association: 'objetivos'
+      }
+    } );
 
-  const allow = await allowFunction( req.userId, 'manter_atividade', 'manter_atividade_municipio' );
+    const allow = await allowFunction( req.userId, 'manter_atividade', 'manter_atividade_municipio' );
 
-  if( !allow ) 
-    return res.status( 403 ).json( { error: 'Acesso negado' } );
+    if( !allow ) 
+      return res.status( 403 ).json( { error: 'Acesso negado' } );
 
-  return res.json( metodologias );
+    return res.json( metodologias );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
 }
 
 const router = express.Router();

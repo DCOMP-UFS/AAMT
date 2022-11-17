@@ -13,8 +13,15 @@ export function* getRegionalHealthByState(action) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar as regionais de saúde do estado: " + status, "error" ) );
     }
 
-  } catch (error) {
-    yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as regionais de saúde do estado, favor verifique a conexão", "error" ) );
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as regionais de saúde do estado, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as regionais de saúde do estado, favor verifique a conexão", "error" ) );
   }
 }
 

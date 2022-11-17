@@ -12,135 +12,149 @@ const { Op } = require("sequelize");
 const allowFunction = require('../util/allowFunction');
 
 index = async ( req, res ) => {
-  const { id } = req.params;
+  try{
+    const { id } = req.params;
 
-  const quarteirao = await Quarteirao.findByPk( id, {
-    include: [
-      { 
-        association: 'zona', 
-        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-      },
-      { 
-        association: 'localidade', 
-        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-      },
-      { 
-        association: 'lados',
-        attributes: { exclude: [ 'rua_id', 'createdAt', 'updatedAt' ] },
-        order: [[ 'numero', 'asc' ]],
-        include: [
-          {
-            association: 'rua',
-            attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
-          },
-          {
-            association: 'imoveis',
-            attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-            order: [[ 'numero', 'asc' ]],
-          }
-        ]
+    const quarteirao = await Quarteirao.findByPk( id, {
+      include: [
+        { 
+          association: 'zona', 
+          attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+        },
+        { 
+          association: 'localidade', 
+          attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+        },
+        { 
+          association: 'lados',
+          attributes: { exclude: [ 'rua_id', 'createdAt', 'updatedAt' ] },
+          order: [[ 'numero', 'asc' ]],
+          include: [
+            {
+              association: 'rua',
+              attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+            },
+            {
+              association: 'imoveis',
+              attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+              order: [[ 'numero', 'asc' ]],
+            }
+          ]
+        }
+      ],
+      attributes: {
+        exclude: [ 'zona_id' ]
       }
-    ],
-    attributes: {
-      exclude: [ 'zona_id' ]
+    });
+
+    if( !quarteirao ) 
+      return res.status(400).json({ error: "Quarteirão não existe" });
+
+    var result = {
+      ativo: -1,
+      createdAt: "",
+      id: -1,
+      lados:[],
+      localidade: null,
+      localidade_id:-1,
+      numero:-1,
+      quarteirao_id:null,
+      updatedAt:"",
+      zona:null
     }
-  });
 
-  if( !quarteirao ) 
-    return res.status(400).json({ error: "Quarteirão não existe" });
+    result.ativo         = quarteirao.ativo
+    result.createdAt     = quarteirao.createdAt
+    result.id            = quarteirao.id
+    result.lados         = quarteirao.lados
+    result.localidade    = quarteirao.localidade
+    result.localidade_id = quarteirao.localidade_id
+    result.numero        = quarteirao.numero
+    result.quarteirao_id = quarteirao.quarteirao_id
+    result.updatedAt     = quarteirao.updatedAt
+    result.zona          = quarteirao.zona
 
-  var result = {
-    ativo: -1,
-    createdAt: "",
-    id: -1,
-    lados:[],
-    localidade: null,
-    localidade_id:-1,
-    numero:-1,
-    quarteirao_id:null,
-    updatedAt:"",
-    zona:null
-  }
+    //Filtrar todos os lados inativos
+    result.lados = result.lados.filter( l => l.ativo == true)
 
-  result.ativo         = quarteirao.ativo
-  result.createdAt     = quarteirao.createdAt
-  result.id            = quarteirao.id
-  result.lados         = quarteirao.lados
-  result.localidade    = quarteirao.localidade
-  result.localidade_id = quarteirao.localidade_id
-  result.numero        = quarteirao.numero
-  result.quarteirao_id = quarteirao.quarteirao_id
-  result.updatedAt     = quarteirao.updatedAt
-  result.zona          = quarteirao.zona
-
-  //Filtrar todos os lados inativos
-  result.lados = result.lados.filter( l => l.ativo == true)
-
-  //Array que ira armazena os lados com a lista de imoveis filtrados
-  //Apenas serão pegos os imoveis ativos
-  var lados= []
-  
-  result.lados.forEach(l => {
-    var lado = {
-      ativo: l.ativo,
-      id: l.id,
-      numero: l.numero,
-      quarteirao_id: l.quarteirao_id,
-      rua: l.rua
-    }
-    var imoveis = []
-    l.imoveis.forEach( i => {
-      if(i.ativo)
-        imoveis.push(i)
+    //Array que ira armazena os lados com a lista de imoveis filtrados
+    //Apenas serão pegos os imoveis ativos
+    var lados= []
+    
+    result.lados.forEach(l => {
+      var lado = {
+        ativo: l.ativo,
+        id: l.id,
+        numero: l.numero,
+        quarteirao_id: l.quarteirao_id,
+        rua: l.rua
+      }
+      var imoveis = []
+      l.imoveis.forEach( i => {
+        if(i.ativo)
+          imoveis.push(i)
+      })
+      lado.imoveis = imoveis;
+      lados.push(lado)
     })
-    lado.imoveis = imoveis;
-    lados.push(lado)
-  })
-  
-  result.lados = lados
-  return res.json( result );
+    
+    result.lados = lados
+    return res.json( result );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
 }
 
 getBlockByCity = async (req, res) => {
-  const { municipio_id }  = req.params;
-  const whereAtivo        = req.query.ativo == '1' || req.query.ativo == '0' ? 
-    { ativo: parseInt( req.query.ativo ) } : 
-    {};
+  try{
+    const { municipio_id }  = req.params;
+    const whereAtivo        = req.query.ativo == '1' || req.query.ativo == '0' ? 
+      { ativo: parseInt( req.query.ativo ) } : 
+      {};
 
-  const municipio = await Municipio.findOne({
-    where: {
-      id: municipio_id
-    },
-    include: {
-      association: 'localidades',
-      attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+    const municipio = await Municipio.findOne({
+      where: {
+        id: municipio_id
+      },
       include: {
-        where: whereAtivo,
-        association: 'quarteiroes',
-        include: [
-          {
-            association: 'localidade',
-            attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-          },
-          {
-            association: 'zona',
-            attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
-          }
-        ]
+        association: 'localidades',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+        include: {
+          where: whereAtivo,
+          association: 'quarteiroes',
+          include: [
+            {
+              association: 'localidade',
+              attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+            },
+            {
+              association: 'zona',
+              attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+            }
+          ]
+        }
       }
+    });
+
+    if( !municipio ) {
+      return res.status(400).json({ error: "Município não existe" });
     }
-  });
 
-  if( !municipio ) {
-    return res.status(400).json({ error: "Município não existe" });
+    let quarteirao = [];
+    municipio.localidades.forEach( localidade => {
+      quarteirao = [ ...localidade.quarteiroes, ...quarteirao ];
+    });
+
+    return res.json( quarteirao );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
   }
-
-  let quarteirao = [];
-  municipio.localidades.forEach( localidade => {
-    quarteirao = [ ...localidade.quarteiroes, ...quarteirao ];
-  });
-
-  return res.json( quarteirao );
 }
 
 const createSide = async (numero, quarteirao_id, rua_id) => {
@@ -185,14 +199,14 @@ const updateSide = async ( id, numero, quarteirao_id, rua_id ) => {
 }
 
 store = async ( req, res ) => {
-  const { numero, localidade_id, zona_id, quarteirao_id, lados } = req.body;
-  const userId = req.userId;
-
-  if(!numero) return res.status(400).json({ erro: "Informe o nuemro da quarteirão" });
-  if(!localidade_id) return res.status(400).json({ erro: "Informe o id de localidade do quarteirão" });
-  if(!lados) return res.status(400).json({ erro: "Informe a lados do quarteirão" });
-
   try{
+    const { numero, localidade_id, zona_id, quarteirao_id, lados } = req.body;
+    const userId = req.userId;
+
+    if(!numero) return res.status(400).json({ erro: "Informe o nuemro da quarteirão" });
+    if(!localidade_id) return res.status(400).json({ erro: "Informe o id de localidade do quarteirão" });
+    if(!lados) return res.status(400).json({ erro: "Informe a lados do quarteirão" });
+
     const allow = await allowFunction( userId, 'manter_quarteirao' );
     if( !allow ) {
       return res.status(403).json({ error: 'Acesso negado' });
@@ -279,25 +293,26 @@ store = async ( req, res ) => {
     });
 
     return res.status(201).json( quarteiraoFind );
-  } catch(e){
-    return res.status(400).json({
-      error: "Não foi possível cadastrar este quarteirão, falha na API ou no Banco"
-    });
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
   }
 }
 
 update = async ( req, res ) => {
-  const { numero, zona_id, ativo, quarteirao_id, lados, localidade_id } = req.body;
-  const { id } = req.params;
-
-  const userId = req.userId;
-
-  if(!numero) return res.status(400).json({ erro: "Informe o numero da quarteirão" });
-  if(ativo == null) return res.status(400).json({ erro: "Informe se o quarteirão é ativo ou não" });
-  if(!localidade_id) return res.status(400).json({ erro: "Informe o id de localidade do quarteirão" });
-  if(!lados) return res.status(400).json({ erro: "Informe a lados do quarteirão, mesmo que seja uma lista vazia" });
-
   try{
+    const { numero, zona_id, ativo, quarteirao_id, lados, localidade_id } = req.body;
+    const { id } = req.params;
+
+    const userId = req.userId;
+
+    if(!numero) return res.status(400).json({ erro: "Informe o numero da quarteirão" });
+    if(ativo == null) return res.status(400).json({ erro: "Informe se o quarteirão é ativo ou não" });
+    if(!localidade_id) return res.status(400).json({ erro: "Informe o id de localidade do quarteirão" });
+    if(!lados) return res.status(400).json({ erro: "Informe os lados do quarteirão, mesmo que seja uma lista vazia" });
+
     const allow = await allowFunction( userId, 'manter_quarteirao' );
     if( !allow ) {
       return res.status(403).json({ error: 'Acesso negado' });
@@ -416,48 +431,57 @@ update = async ( req, res ) => {
     });
 
     return res.json( quarteiraoFind );
-  } catch(e){
-    console.log(e)
-    return res.status(400).json({ error: 'Não foi possível atualizar o quarteirão,falha na API ou no banco' });
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
   }
 }
 
 disabled = async ( req, res ) => {
-  const { id } = req.params;
+  try{
+    const { id } = req.params;
 
-  const userId = req.userId;
+    const userId = req.userId;
 
-  const allow = await allowFunction( userId, 'manter_quarteirao' );
-  if( !allow )
-    return res.status(403).json({ error: 'Acesso negado' });
+    const allow = await allowFunction( userId, 'manter_quarteirao' );
+    if( !allow )
+      return res.status(403).json({ error: 'Acesso negado' });
 
-  const quarteirao = await Quarteirao.findByPk( id );
-  if( !quarteirao )
-    return res.status( 400 ).json({ error: 'Quarteirão não existe!' });
-  
-  const { isRejected } = await Quarteirao.update(
-    {
-      ativo: 0,
-    },{
-      where: {
-        id
+    const quarteirao = await Quarteirao.findByPk( id );
+    if( !quarteirao )
+      return res.status( 400 ).json({ error: 'Quarteirão não existe!' });
+    
+    const { isRejected } = await Quarteirao.update(
+      {
+        ativo: 0,
+      },{
+        where: {
+          id
+        }
       }
-    }
-  );
+    );
 
-  if( isRejected )
-    return res.status(400).json({ error: 'Não foi possível atualizar o quarteirão' });
+    if( isRejected )
+      return res.status(400).json({ error: 'Não foi possível atualizar o quarteirão' });
 
-  const quarteiraoFind = await Quarteirao.findByPk( id, {
-    include: [
-      { association: 'zona', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } },
-    ],
-    attributes: {
-      exclude: [ 'zona_id' ]
-    }
-  });
+    const quarteiraoFind = await Quarteirao.findByPk( id, {
+      include: [
+        { association: 'zona', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } },
+      ],
+      attributes: {
+        exclude: [ 'zona_id' ]
+      }
+    });
 
-  return res.json( quarteiraoFind );
+    return res.json( quarteiraoFind );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
 }
 
 /**
@@ -467,24 +491,31 @@ disabled = async ( req, res ) => {
  * @return array lados
  */
 getLadosQuarteirao = async ( req, res ) => {
-  const { id } = req.params;
+  try{
+    const { id } = req.params;
 
-  // Checando se o ID existe
-  const quarteirao = await Quarteirao.findByPk( id );
+    // Checando se o ID existe
+    const quarteirao = await Quarteirao.findByPk( id );
 
-  if( !quarteirao )
-    return res.status( 400 ).json({ error: 'Quarteirão não existe' });
+    if( !quarteirao )
+      return res.status( 400 ).json({ error: 'Quarteirão não existe' });
 
-  const lados = await Lado.findAll({
-    where: {
-      quarteirao_id: id
-    },
-    include: {
-      association: 'rua'
-    }
-  });
+    const lados = await Lado.findAll({
+      where: {
+        quarteirao_id: id
+      },
+      include: {
+        association: 'rua'
+      }
+    });
 
-  res.json( lados );
+    res.json( lados );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
 }
 
 /**
@@ -494,90 +525,97 @@ getLadosQuarteirao = async ( req, res ) => {
  * @return array lados
  */
  excluirLadoPorId = async ( req, res ) => {
-  const { excluirLadoId }       = req.params;
-  const { addImovelLadoId, isUltimoLado }     = req.body;
+  try{
+    const { excluirLadoId }       = req.params;
+    const { addImovelLadoId, isUltimoLado }     = req.body;
 
-  // Checando se o ID existe
-  const excluirLado = await Lado.findByPk( excluirLadoId, {include: {association: 'quarteirao'}} );
+    // Checando se o ID existe
+    const excluirLado = await Lado.findByPk( excluirLadoId, {include: {association: 'quarteirao'}} );
 
-  //Significa que o usuario além de excluir o lado,
-  //deseja excluir todos os imoveis do lado
-  if(addImovelLadoId == -1){
-    if( !excluirLado )
-      return res.status( 400 ).json( { error: 'Não é possível excluir o lado, ja que ele não existe' } );
-    
-    //Encontrar o id dos imoveis que não possuem nenhuma vistorias
-    //e que pertencem ao lado que será inativado
-    let sql = `SELECT i.id FROM imoveis as i 
-            LEFT OUTER JOIN vistorias as v ON i.id = v.imovel_id
-            WHERE i.lado_id = $1 AND v.imovel_id is NULL`
+    //Significa que o usuario além de excluir o lado,
+    //deseja excluir todos os imoveis do lado
+    if(addImovelLadoId == -1){
+      if( !excluirLado )
+        return res.status( 400 ).json( { error: 'Não é possível excluir o lado, ja que ele não existe' } );
+      
+      //Encontrar o id dos imoveis que não possuem nenhuma vistorias
+      //e que pertencem ao lado que será inativado
+      let sql = `SELECT i.id FROM imoveis as i 
+              LEFT OUTER JOIN vistorias as v ON i.id = v.imovel_id
+              WHERE i.lado_id = $1 AND v.imovel_id is NULL`
 
-    const result = await Imovel.sequelize.query( sql, 
+      const result = await Imovel.sequelize.query( sql, 
+        {
+          bind: [ excluirLado.id ],
+          logging: console.log,
+        }
+      );
+      let idImoveis = []
+      result[ 1 ].rows.forEach( i => idImoveis.push(i.id))
+
+      //Deleta todos os imoveis do lado que não tem vistorias
+      if(idImoveis.length > 0){
+        await Imovel.destroy({
+          where:{ id: { [Op.in]: idImoveis} }
+        })
+      }
+
+      //Desativa os imoveis restantes
+      sql = `UPDATE imoveis SET ativo = false WHERE lado_id = $1`;
+      await Imovel.sequelize.query( sql, 
+        {
+          bind: [ excluirLado.id ],
+          logging: console.log,
+        }
+      );
+    }
+    //Siginifica que o imoveis do lado que será inativado serão
+    //transferidos para outro lado
+    else{
+      const addLado     = await Lado.findByPk( addImovelLadoId );
+
+      if( !excluirLado && !addLado )
+        return res.status( 400 ).json( { error: 'Não é possível excluir o lado, um dos lados não existe' } );
+
+      if( excluirLado.quarteirao_id !== addLado.quarteirao_id )
+        return res.status( 400 ).json( { error: 'Não é permitido adicionar imóveis a um quarteirão diferente' } );
+
+      //Tranferir todos os imoveis do lado que será inativado para
+      //o outro lado
+      let sql = `UPDATE imoveis SET lado_id = $1 WHERE lado_id = $2`;
+      await Lado.sequelize.query( sql, 
+        {
+          bind: [ addLado.id, excluirLado.id ],
+          logging: console.log,
+        }
+      );
+    }
+
+    //Inativa o lado
+    let sql = `UPDATE lados SET ativo = false WHERE id = $1`;
+    await Lado.sequelize.query( sql, 
       {
         bind: [ excluirLado.id ],
         logging: console.log,
       }
     );
-    let idImoveis = []
-    result[ 1 ].rows.forEach( i => idImoveis.push(i.id))
-
-    //Deleta todos os imoveis do lado que não tem vistorias
-    if(idImoveis.length > 0){
-      await Imovel.destroy({
-        where:{ id: { [Op.in]: idImoveis} }
+    
+    //Caso o ultimo lado for inativado
+    if(isUltimoLado){
+      sql = `UPDATE quarteiroes SET ativo = 0 WHERE id = $1`;
+      await Quarteirao.sequelize.query( sql, {
+        bind: [ excluirLado.quarteirao_id ],
+        logging: console.log,
       })
     }
 
-    //Desativa os imoveis restantes
-    sql = `UPDATE imoveis SET ativo = false WHERE lado_id = $1`;
-    await Imovel.sequelize.query( sql, 
-      {
-        bind: [ excluirLado.id ],
-        logging: console.log,
-      }
-    );
+    return res.json( { mensage: 'Lado removido com sucesso' } );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
   }
-  //Siginifica que o imoveis do lado que será inativado serão
-  //transferidos para outro lado
-  else{
-    const addLado     = await Lado.findByPk( addImovelLadoId );
-
-    if( !excluirLado && !addLado )
-      return res.status( 400 ).json( { error: 'Não é possível excluir o lado, um dos lados não existe' } );
-
-    if( excluirLado.quarteirao_id !== addLado.quarteirao_id )
-      return res.status( 400 ).json( { error: 'Não é permitido adicionar imóveis a um quarteirão diferente' } );
-
-    //Tranferir todos os imoveis do lado que será inativado para
-    //o outro lado
-    let sql = `UPDATE imoveis SET lado_id = $1 WHERE lado_id = $2`;
-    await Lado.sequelize.query( sql, 
-      {
-        bind: [ addLado.id, excluirLado.id ],
-        logging: console.log,
-      }
-    );
-  }
-
-  //Inativa o lado
-  let sql = `UPDATE lados SET ativo = false WHERE id = $1`;
-  await Lado.sequelize.query( sql, 
-    {
-      bind: [ excluirLado.id ],
-      logging: console.log,
-    }
-  );
-  
-  //Caso o ultimo lado for inativado
-  if(isUltimoLado){
-    sql = `UPDATE quarteiroes SET ativo = 0 WHERE id = $1`;
-    await Quarteirao.sequelize.query( sql, {
-      bind: [ excluirLado.quarteirao_id ],
-      logging: console.log,
-    })
-  }
-
-  return res.json( { mensage: 'Lado removido com sucesso' } );
 
 }
 

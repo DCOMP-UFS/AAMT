@@ -8,48 +8,69 @@ const { Op } = require("sequelize");
 const allowFunction = require('../util/allowFunction');
 
 index = async ( req, res ) => {
-  const regioes = await Regiao.findAll();
+  try{
+    const regioes = await Regiao.findAll();
 
-  return res.json( regioes );
+    return res.json( regioes );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
 }
 
 getById = async ( req, res ) => {
-  const { id } = req.params;
+  try{
+    const { id } = req.params;
 
-  const regiao = await Regiao.findByPk( id, {
-    include: {
-      association: 'pais'
-    },
-    attributes: {
-      include: 'id',
-      exclude: 'pais_id'
+    const regiao = await Regiao.findByPk( id, {
+      include: {
+        association: 'pais'
+      },
+      attributes: {
+        include: 'id',
+        exclude: 'pais_id'
+      }
+    });
+
+    if( !regiao ) {
+      return res.status(400).json({ error: "Região não existe" });
     }
-  });
 
-  if( !regiao ) {
-    return res.status(400).json({ error: "Região não existe" });
+    return res.json( regiao );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
   }
-
-  return res.json( regiao );
 }
 
 getRegionsByNation = async ( req, res ) => {
-  const { pais_id } = req.params;
+  try{
+    const { pais_id } = req.params;
 
-  const pais = Pais.findByPk( pais_id );
+    const pais = Pais.findByPk( pais_id );
 
-  if( !pais ) {
-    return res.status(400).json({ error: "País não existe" });
+    if( !pais ) {
+      return res.status(400).json({ error: "País não existe" });
+    }
+
+    const regioes = await Regiao.findAll({
+      where: {
+        pais_id
+      },
+      order: [[ 'nome', 'asc' ]]
+    });
+
+    return res.json( regioes );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
   }
-
-  const regioes = await Regiao.findAll({
-    where: {
-      pais_id
-    },
-    order: [[ 'nome', 'asc' ]]
-  });
-
-  return res.json( regioes );
 }
 
 // destroy = async ( req, res ) => {
@@ -72,34 +93,41 @@ getRegionsByNation = async ( req, res ) => {
 // }
 
 store = async (req, res) => {
-  const { nome, sigla, pais_id } = req.body;
-  const userId = req.userId;
+  try{
+    const { nome, sigla, pais_id } = req.body;
+    const userId = req.userId;
 
-  const allow = await allowFunction( req.userId, 'manter_regiao' );
-  if( !allow ) {
-    return res.status(403).json({ error: 'Acesso negado' });
-  }
-
-  const isUnique = await Regiao.findOne({
-    where: {
-      [Op.or]: [
-        {nome},
-        {sigla}
-      ]
+    const allow = await allowFunction( req.userId, 'manter_regiao' );
+    if( !allow ) {
+      return res.status(403).json({ error: 'Acesso negado' });
     }
-  });
-  
-  if( isUnique ) {
-    return res.status(400).json({ error: 'Nome ou sigla da região já existe' });
-  }
-   
-  const regiao = await Regiao.create({ 
-    nome,
-    sigla,
-    pais_id
-  });
 
-  return res.status(201).json( regiao );
+    const isUnique = await Regiao.findOne({
+      where: {
+        [Op.or]: [
+          {nome},
+          {sigla}
+        ]
+      }
+    });
+    
+    if( isUnique ) {
+      return res.status(400).json({ error: 'Nome ou sigla da região já existe' });
+    }
+    
+    const regiao = await Regiao.create({ 
+      nome,
+      sigla,
+      pais_id
+    });
+
+    return res.status(201).json( regiao );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
 }
 
 const router = express.Router();

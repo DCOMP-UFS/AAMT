@@ -6,36 +6,43 @@ const { Op } = require("sequelize");
 const Lado = require('../models/Lado');
 
 getStreetByLocality = async ( req, res ) => {
-  const { localidade_id } = req.params;
+  try{
+    const { localidade_id } = req.params;
 
-  if( !localidade_id ) {
-    return res.status(404).json({ erro: "Localidade não existe1" });
-  }
+    if( !localidade_id ) {
+      return res.status(404).json({ erro: "Localidade não existe1" });
+    }
 
-  const localidade = await Localidade.findByPk( localidade_id );
+    const localidade = await Localidade.findByPk( localidade_id );
 
-  if( !localidade ) {
-    return res.status(400).json({ error: "Localidade não existe" });
-  }
+    if( !localidade ) {
+      return res.status(400).json({ error: "Localidade não existe" });
+    }
 
-  const ruas = await Rua.findAll({
-    where: {
-      localidade_id,
-      ativo:true
-    },
-    include: {
-      association: 'localidade',
+    const ruas = await Rua.findAll({
+      where: {
+        localidade_id,
+        ativo:true
+      },
+      include: {
+        association: 'localidade',
+        attributes: {
+          exclude: [ 'createdAt', 'updatedAt' ]
+        }
+      },
       attributes: {
-        exclude: [ 'createdAt', 'updatedAt' ]
-      }
-    },
-    attributes: {
-      exclude: [ 'localidade_id' ]
-    },
-    order: [[ 'nome', 'asc' ]]
-  });
+        exclude: [ 'localidade_id' ]
+      },
+      order: [[ 'nome', 'asc' ]]
+    });
 
-  return res.json( ruas );
+    return res.json( ruas );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
 }
 
 store = async ( req, res ) => {
@@ -77,8 +84,11 @@ store = async ( req, res ) => {
   
     return res.status(201).json( result );
 
-  } catch(e) {
-    return res.status(400).json({ error: 'Não foi possivel criar nova rua, falha no banco'});
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
   }
 }
 
@@ -150,8 +160,11 @@ update = async ( req, res ) => {
 
     return res.json( rua );
 
-  }catch(e){
-    return res.status(400).json({ error: 'Não foi possível atualizar a rua, falha no banco' });
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
   }
 }
 
@@ -199,10 +212,11 @@ destroy = async ( req, res ) => {
         numQuarteiroes
       });
     }
-  }
-  catch (e) {
-    console.log(e)
-    return res.status(400).json({ error: "Ocorreu algum problema na API ou no banco" });
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
   }
 },
 
@@ -217,8 +231,11 @@ streetExist = async ( req, res ) => {
     const {sameName, sameCEP} = await ruaExistente(id,nome,cep,localidade_id)
     return res.json({sameName, sameCEP});
 
-  }catch(e){
-    return res.status(400).json({ error: `Não foi possivel fazer a verificação dos dados da nova rua` });
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
   }
 }
 

@@ -8,50 +8,71 @@ const { Op } = require("sequelize");
 const allowFunction = require('../util/allowFunction');
 
 index = async ( req, res ) => {
-  const regionais = await RegionalSaude.findAll({
-    order: [[ 'nome', 'asc' ]]
-  });
+  try{
+    const regionais = await RegionalSaude.findAll({
+      order: [[ 'nome', 'asc' ]]
+    });
 
-  return res.json( regionais );
+    return res.json( regionais );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
 }
 
 getById = async ( req, res ) => {
-  const { id } = req.params;
+  try{
+    const { id } = req.params;
 
-  const regional = await RegionalSaude.findByPk( id, {
-    include: {
-      association: 'estado'
-    },
-    attributes: {
-      exclude: 'estado_id',
-      include: 'id'
+    const regional = await RegionalSaude.findByPk( id, {
+      include: {
+        association: 'estado'
+      },
+      attributes: {
+        exclude: 'estado_id',
+        include: 'id'
+      }
+    });
+
+    if( !regional ) {
+      return res.status(400).json({ error: "Regional não existe" });
     }
-  });
 
-  if( !regional ) {
-    return res.status(400).json({ error: "Regional não existe" });
+    return res.json( regional );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
   }
-
-  return res.json( regional );
 }
 
 getRegionalHealthByState = async ( req, res ) => {
-  const { estado_id } = req.params;
+  try{
+    const { estado_id } = req.params;
 
-  const estado = Estado.findByPk( estado_id );
+    const estado = Estado.findByPk( estado_id );
 
-  if( !estado ) {
-    return res.status(400).json({ error: "Estado não existe" });
+    if( !estado ) {
+      return res.status(400).json({ error: "Estado não existe" });
+    }
+
+    const regionais = await RegionalSaude.findAll({
+      where: {
+        estado_id
+      },
+      order: [[ 'nome', 'asc' ]]
+    });
+
+    return res.json( regionais );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
   }
-
-  const regionais = await RegionalSaude.findAll({
-    where: {
-      estado_id
-    },
-    order: [[ 'nome', 'asc' ]]
-  });
-
-  return res.json( regionais );
 }
 
 
@@ -75,21 +96,28 @@ getRegionalHealthByState = async ( req, res ) => {
 // }
 
 store = async (req, res) => {
-  const { nome, endereco, estado_id } = req.body;
-  const userId = req.userId;
+  try{
+    const { nome, endereco, estado_id } = req.body;
+    const userId = req.userId;
 
-  const allow = await allowFunction( req.userId, 'manter_regional_saude' );
-  if( !allow ) {
-    return res.status(403).json({ error: 'Acesso negado' });
+    const allow = await allowFunction( req.userId, 'manter_regional_saude' );
+    if( !allow ) {
+      return res.status(403).json({ error: 'Acesso negado' });
+    }
+    
+    const regional = await RegionalSaude.create({ 
+      nome,
+      endereco,
+      estado_id
+    });
+
+    return res.status(201).json( regional );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
   }
-   
-  const regional = await RegionalSaude.create({ 
-    nome,
-    endereco,
-    estado_id
-  });
-
-  return res.status(201).json( regional );
 }
 
 const router = express.Router();

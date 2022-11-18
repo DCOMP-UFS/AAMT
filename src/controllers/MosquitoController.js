@@ -6,11 +6,18 @@ const Mosquito        = require( '../models/Mosquito' );
  * Consulta todos os mosquitos cadastrados na base e retorna na consulta.
  */
 getTodos = async ( req, res ) => {
-  const mosquitos = await Mosquito.findAll({
-    order: [[ 'nome', 'asc' ]]
-  });
+  try{
+    const mosquitos = await Mosquito.findAll({
+      order: [[ 'nome', 'asc' ]]
+    });
 
-  return res.json( mosquitos );
+    return res.json( mosquitos );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
 }
 
 const router = express.Router();

@@ -13,6 +13,7 @@ const Equipe = require('../models/Equipe');
 const EquipeQuarteirao = require('../models/EquipeQuarteirao');
 const Membro = require('../models/Membro');
 const Usuario = require('../models/Usuario');
+const TrabalhoDiario = require('../models/TrabalhoDiario')
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
@@ -686,6 +687,107 @@ getResponsibilityActivities = async ( req, res ) => {
   }
 }
 
+//Finalizar uma atividade cujo o flTodosImoveis == false
+finish = async ( req, res ) => {
+  try{
+    const { id } = req.params;
+
+    const allow = await allowFunction( req.userId, 'definir_trabalho_diario' );
+    if( !allow )
+      return res.status( 403 ).json( { error: 'Acesso negado' } );
+    
+    const atividade = await Atividade.findByPk( id );
+    if( !atividade )
+      return res.status(400).json({ message: "Atividade não existe" });
+
+    if(atividade.flTodosImoveis)
+      return res.status(400).json({ message: "Essa rota não permite encerrar uma atividade que deve trabalhar com todos os imóveis" });
+    
+    const isTrabalhoPendente = await isTrabalhoDiarioPendenteHoje(id)
+    if( isTrabalhoPendente ){
+      return res.status(400).json({ 
+        finishDenied:true,
+        message: "Não foi possivel encerrar a atividade, existe ao menos um trabalho diario que deve ser finalizado hoje"  
+      });
+    }
+
+    const { isRejected } = await Atividade.update(
+      {
+        situacao: 3,
+      },{
+        where: {
+          id
+        }
+      }
+    );
+
+    if( isRejected ){
+      return res.status(400).json({ 
+        message: "Não é possivel encerrar a atividade, houve problema ao atualizar a situação da atividade pra encerrado"  
+      });
+    }
+
+    return res.json({ message: "Atividade encerrada com sucesso" })
+
+
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
+}
+
+/**
+ * Função recebe o id de uma atividade e verifica se existe algum trabalho diario na data atual
+ * que não foi finalizado. Retorna true caso exista pelo menos 1 trabalho pendente e false caso contrario
+ * 
+ * */
+ async function isTrabalhoDiarioPendenteHoje(atividade_id ) {
+
+  let data_atual = new Date();
+  data_atual.setHours(0,0,0,0)
+
+  const trabalhosDiariosPendentesHoje = await TrabalhoDiario.sequelize.query(
+    'SELECT ' +
+      'td.id as "id", ' +
+      'td.data as "data", ' +
+      'td.hora_fim as "hora_fim", ' +
+      'td.equipe_id as "equipe_id", ' +
+      'td.supervisor_id as "supervisor_id", ' +
+      'td.usuario_id as "agente_id" ' +
+    'FROM ' +
+      'trabalhos_diarios as td ' +
+      'JOIN equipes as e ON( e.id = td.equipe_id ) ' +
+      'JOIN atividades as a ON( a.id = e.atividade_id ) ' +
+    'WHERE ' +
+      'a.id = $1 ' +
+      'AND td.data = $2 '+
+      'AND td.hora_fim IS NULL '+ 
+    'ORDER BY '+
+      'td.data', 
+    {
+      bind: [ atividade_id, data_atual ],
+      logging: console.log,
+    }
+  );
+
+  /* const trabalhos = trabalhosDiariosPendentesHoje[ 1 ].rows.map( i => ({
+    id: i.id,
+    data: i.data,
+    hora_fim: i.hora_fim,
+    equipe_id: i.equipe_id,
+    supervisor_id: i.supervisor_id,
+    agente_id: i.agente_id
+  }));
+ */
+
+  if(trabalhosDiariosPendentesHoje[ 1 ].rows.length == 0) return false
+
+  return true
+
+}
+
 const router = express.Router();
 router.use(authMiddleware);
 
@@ -698,5 +800,6 @@ router.get('/locais/:abrangencia_id/abrangencia/:municipio_id/municipios', getLo
 router.post('/', store);
 router.post('/planejar/:id', plain);
 router.get('/supervisor/:user_id/responsavel/:cycle_id/ciclos', getResponsibilityActivities);
+router.put('/encerrar/:id', finish);
 
 module.exports = app => app.use('/atividades', router);

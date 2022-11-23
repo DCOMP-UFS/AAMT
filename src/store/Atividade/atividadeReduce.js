@@ -16,6 +16,7 @@ const INITIAL_STATE = {
   updated: null,
   locais: [],
   estratos: [],
+  finished: null,
 }
 
 export default function Atividade(state = INITIAL_STATE, action) {
@@ -101,6 +102,24 @@ export default function Atividade(state = INITIAL_STATE, action) {
       };
     }
 
+    case ActionTypes.RESET_TOGGLE_LADO: {
+      let rota_equipe       = state.rota_equipe;
+
+      for(var indexQuarteirao = 0; indexQuarteirao < rota_equipe.length; indexQuarteirao++){
+        var quarteirao = rota_equipe[ indexQuarteirao ]
+        for(var indexLado = 0; indexLado < quarteirao.lados.length; indexLado++){
+          rota_equipe[ indexQuarteirao ].lados[ indexLado ].selected = false;
+        }
+      }
+      //rota_equipe[ indexQuarteirao ].lados[ indexLado ].selected = !selected;
+
+      return {
+        ...state,
+        rota_equipe,
+        reload: !state.reload
+      };
+    }
+
     case ActionTypes.CHECAR_ROTA: {
       let rota_equipe = state.rota_equipe;
       const equipes = state.equipes,
@@ -115,6 +134,7 @@ export default function Atividade(state = INITIAL_STATE, action) {
 
           if( indexEquipe > -1 && indexMembro > -1 && lado.situacao === 4 ) {
             if( equipes[ indexEquipe ].membros[ indexMembro ].usuario_id === lado.usuario_id ) {
+              //tentar false mais tarde
               l.selected = true;
             } else {
               l.selected = false;
@@ -278,6 +298,27 @@ export default function Atividade(state = INITIAL_STATE, action) {
         ...state,
         atividades,
         created: true
+      }
+    }
+
+    case ActionTypes.FINISH_ACTIVITY_SUCCESS: {
+      return {
+        ...state,
+        finished: true
+      }
+    }
+
+    case ActionTypes.FINISH_ACTIVITY_FAIL: {
+      return {
+        ...state,
+        finished: false
+      }
+    }
+
+    case ActionTypes.FINISH_ACTIVITY_RESET: {
+      return {
+        ...state,
+        finished: null
       }
     }
 

@@ -108,15 +108,33 @@ export const PlanejarRota = ( {
   }
 
   const validarRota = () => {
-    let fl_um_selecionado = false; // se for false o supervisor não selecionou nenhum quarteirão.
 
-    rota_equipe.forEach( quarteirao => {
-      quarteirao.lados.forEach( lado => {
-        if( lado.selected ) fl_um_selecionado = true;
+    let valido = true
+    let msg = ''
+
+    //Atividade atualmente selecionada
+    const ativ = atividades[indexAtividade]
+
+    //A atividade  foi encerrada, logo não é possivel planejar nova rota
+    if(ativ.situacao === 3){
+      valido = false
+      msg = 'A atividade ja foi encerrada, não sendo mais possível fazer o seu planejamento'
+    }
+    else{
+       //verifica se o supervisor selecionou ao menos um lado de um quarteirão
+      valido = false
+      rota_equipe.forEach( quarteirao => {
+        quarteirao.lados.forEach( lado => {
+          if( lado.selected )
+            valido = true;    
+        });
       });
-    });
 
-    return fl_um_selecionado ? [ true, '' ] : [ false, 'Selecione ao menos uma rua para rota do agente!' ];
+      if(!valido) 
+        msg = 'Selecione ao menos uma rua para rota do agente!'
+    }
+
+    return [ valido, msg ];
   }
 
   const submit = () => {
@@ -256,6 +274,7 @@ const mapStateToProps = (state) => ({
   indexEquipe       : state.atividade.indexEquipe,
   fl_rota_planejada : state.rota.fl_rota_planejada,
   rota_equipe       : state.atividade.rota_equipe,
+  atividades        : state.atividade.atividades
 });
 
 const mapDispatchToProps = {

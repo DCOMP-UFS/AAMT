@@ -176,6 +176,38 @@ export function* planActivity( action ) {
   }
 }
 
+export function* finishActivity( action ) {
+  try {
+    const { status} = yield call(service.finishActivityRequest , action.payload);
+
+    if( status === 200 ) {
+      yield put( AtividadeActions.finishActivitySuccess() );
+      yield put( AppConfigActions.showNotifyToast( "Atividade encerrada com sucesso", "success" ) );
+    }
+    else {
+      yield put( AtividadeActions.finishActivityFail());
+      yield put( AppConfigActions.showNotifyToast( "Falha ao excluir ciclo: " + status, "error" ) );
+    }
+  } catch (err) {
+
+    yield put( AtividadeActions.finishActivityFail());
+
+    if(err.response){
+      const { finishDenied } = err.response.data
+
+      if(finishDenied)
+        yield put( AppConfigActions.showNotifyToast( "Erro ao encerrar a atividade, hoje existe ao menos um trabalho diario que não foi finalizado", "error" ) );
+      else{
+        //Provavel erro de logica na API
+        yield put( AppConfigActions.showNotifyToast( "Error ao encerrar a atividade, entre em contato com o suporte", "error" ) );
+      }   
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao encerrar a atividade, favor verifique a conexão", "error" ) );
+  }
+}
+
 function* watchGetResponsabilityActivities() {
   yield takeLatest( AtividadeActions.ActionTypes.GET_RESPONSABILITY_ACTIVITIES_REQUEST, getResponsabilityActivities );
 }
@@ -208,6 +240,10 @@ function* watchPlanActivity() {
   yield takeLatest( AtividadeActions.ActionTypes.PLAN_ACTIVITY_REQUEST, planActivity );
 }
 
+function* watchFinishActivity() {
+  yield takeLatest( AtividadeActions.ActionTypes.FINISH_ACTIVITY_REQUEST, finishActivity );
+}
+
 export function* atividadeSaga() {
   yield all( [
     watchGetResponsabilityActivities(),
@@ -218,5 +254,6 @@ export function* atividadeSaga() {
     watchGetLocations(),
     watchCreateActive(),
     watchPlanActivity(),
+    watchFinishActivity()
   ] );
 }

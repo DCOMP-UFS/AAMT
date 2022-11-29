@@ -101,6 +101,12 @@ export const GlobalStyle = createGlobalStyle`
     box-shadow: none!important;
   }
 
+  .expansion_error {
+    border: 1px solid #fc2403;
+    border-radius: 0.1875rem!important;
+    box-shadow: none!important;
+  }
+
   .table-rounded-none {
     box-shadow: none!important;
   }

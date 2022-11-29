@@ -72,11 +72,12 @@ export function* registrarExame( action ) {
     const { status } = yield call( servico.registrarExameRequest, action.payload );
 
     if( status === 200 ) {
-      document.location.reload();
+      yield put( AmostraActions.registrarExameSuccess() );
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao registrar exame: " + status, "error" ) );
     }
   } catch (err) {
+    yield put( AmostraActions.registrarExameFail() );
     if(err.response){
       //Provavel erro de logica na API
       yield put( AppConfigActions.showNotifyToast( "Erro ao registar exame, entre em contato com o suporte", "error" ) );

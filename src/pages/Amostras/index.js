@@ -75,10 +75,10 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
   const handleCloseModalExaminar = () => {setOpenModalExaminar(false)}
 
   const options = {
-    //Não permite que amostras com situação positiva ou negativa 
+    //Não permite que amostras com situação positiva, negativa ou encaminhada
     //sejam selecionados para serem encaminhadas
     isRowSelectable: (dataIndex) => {
-      return (rows[dataIndex][5] != "Positiva" && rows[dataIndex][5] != "Negativa")
+      return (rows[dataIndex][5] != "Positiva" && rows[dataIndex][5] != "Negativa" && rows[dataIndex][5] != "Encaminhada")
     },
     customToolbarSelect: () => {
       return (

@@ -4,6 +4,9 @@ export const ActionTypes = {
   SET_AMOSTRAS: "SET_AMOSTRAS",
   ENVIAR_AMOSTRAS_REQUEST: "ENVIAR_AMOSTRAS_REQUEST",
   REGISTRAR_EXAME_REQUEST: "REGISTRAR_EXAME_REQUEST",
+  REGISTRAR_EXAME_SUCCESS: "REGISTRAR_EXAME_SUCCESS",
+  REGISTRAR_EXAME_FAIL: "REGISTRAR_EXAME_FAIL",
+  REGISTRAR_EXAME_RESET: "REGISTRAR_EXAME_RESET",
   SET_AMOSTRA: "SET_AMOSTRA"
 }
 
@@ -73,6 +76,24 @@ export const registrarExameRequest = exame => {
     payload: {
       exame
     }
+  }
+}
+
+export const registrarExameSuccess = () => {
+  return {
+    type: ActionTypes.REGISTRAR_EXAME_SUCCESS,
+  }
+}
+
+export const registrarExameFail = () => {
+  return {
+    type: ActionTypes.REGISTRAR_EXAME_FAIL,
+  }
+}
+
+export const registrarExameReset = () => {
+  return {
+    type: ActionTypes.REGISTRAR_EXAME_RESET,
   }
 }
 

@@ -8,9 +8,11 @@ import Modal, { ModalBody, ModalFooter } from '../../../../components/Modal';
 import ButtonNewObject from '../../../../components/ButtonNewObject';
 import IconButton from '@material-ui/core/IconButton';
 import { FaTrash } from 'react-icons/fa';
+import SelectWrap from '../../../../components/SelectWrap';
+import LoadginGif from '../../../../assets/loading.gif'
 
 // ACTIONS
-import { registrarExameRequest } from '../../../../store/Amostra/amostraActions';
+import { registrarExameRequest, registrarExameReset } from '../../../../store/Amostra/amostraActions';
 import { getMosquitosRequest } from '../../../../store/Mosquito/mosquitoActions';
 import { showNotifyToast } from '../../../../store/AppConfig/appConfigActions';
 
@@ -29,12 +31,16 @@ export const ModalExaminar = ({ mosquitos, amostra, isOpen, handleClose, ...prop
   const [ reload, setReload ] = useState( false );
   const [ codAmostra, setCodAmostra ] = useState( '' );
   const [ reloadAllModal, setReloadAllModal ] = useState( false );
+  const [ listaExemplaresSemMosquito, setListaExemplaresSemMosquito ] = useState( [] );
+  const [ flLoading, setFlLoading ] = useState( false );
 
   //Effect usado toda vez que o modal é aberto
   //Recarrega todas as informações do exame
   useEffect(() => {
-   if(isOpen)
+   if(isOpen){
+    setListaExemplaresSemMosquito([])
     setReloadAllModal(!reloadAllModal)
+   }
    
    //Seta isOpen como false, para que quando o modal
    //for aberto novamente, o useEffect seja acionado
@@ -55,6 +61,7 @@ export const ModalExaminar = ({ mosquitos, amostra, isOpen, handleClose, ...prop
 
   // Calculando o código da amostra
   useEffect(() => {
+
     if( Object.entries( amostra ).length > 0 ) {
       const seqAmostra      = amostra.sequencia,
             seqDeposito     = amostra.deposito.sequencia,
@@ -72,7 +79,7 @@ export const ModalExaminar = ({ mosquitos, amostra, isOpen, handleClose, ...prop
         setSampleSituation( {} );
 
       if( amostra.exemplares.length > 0 ) {
-        let ex = examination;
+        let ex = [];
         amostra.exemplares.forEach( exemplar => {
           const index = ex.findIndex( e => e.gnat.value === exemplar.mosquito_id );
 
@@ -106,6 +113,15 @@ export const ModalExaminar = ({ mosquitos, amostra, isOpen, handleClose, ...prop
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amostra, gnatOptions, sampleSituationOptions, reloadAllModal])
+
+  useEffect(() => {
+    if( props.exameSalvo ) {
+      props.showNotifyToast("Amostrar examinada com sucesso", "success")
+      setTimeout(() => { document.location.reload( true );}, 2000)
+    }
+    setFlLoading(false)
+    props.registrarExameReset()
+  }, [ props.exameSalvo ]);
 
   const addExamination = () => {
     let e = examination;
@@ -182,54 +198,74 @@ export const ModalExaminar = ({ mosquitos, amostra, isOpen, handleClose, ...prop
 
   const submit = e => {
     e.preventDefault();
-    if(existeMosquitosIguais()){
-      props.showNotifyToast( "Não pode inserir dois ou mais mosquitos do mesmo tipo", "warning" );
-    }
-    else{
-      const exemplary = examination.reduce(( exem, ex ) => {
-        const e = [
-          {
-            "amostra_id": amostra.id,
-            "quantidade": ex.eggs,
-            "fase": 1, // Ovo - Eggs
-            "mosquito_id": ex.gnat.value
-          },
-          {
-            "amostra_id": amostra.id,
-            "quantidade": ex.pulps,
-            "fase": 2, // Pulpa - Pulps
-            "mosquito_id": ex.gnat.value
-          },
-          {
-            "amostra_id": amostra.id,
-            "quantidade": ex.pulpExuvia,
-            "fase": 3, // Exúvia de Pulpa - Pulp Exuvia
-            "mosquito_id": ex.gnat.value
-          },
-          {
-            "amostra_id": amostra.id,
-            "quantidade": ex.maggots,
-            "fase": 4, // Larva - Maggots
-            "mosquito_id": ex.gnat.value
-          },
-          {
-            "amostra_id": amostra.id,
-            "quantidade": ex.adults,
-            "fase": 5, // Adulto - adults
-            "mosquito_id": ex.gnat.value
-          }
-        ];
-
-        return ([ ...exem, ...e ]);
-      }, [] );
-
+    if(sampleSituation.label == 'Não'){
       const data = {
         "id": amostra.id,
         "situacaoAmostra": sampleSituation.value,
-        "exemplares": exemplary
+        "exemplares": []
       };
 
+      setFlLoading(true)
       props.registrarExameRequest( data );
+    }
+    else{
+      let indexExemplaresSemMosquito = exemplaresSemMosquito()
+
+      if(examination.length == 0)
+        props.showNotifyToast( "Por favor adicione ao menos um exame", "warning" );
+      else if(indexExemplaresSemMosquito.length > 0){
+        props.showNotifyToast( "Existem exemplares onde o tipo de mosquito não foi definido", "error" );
+      }
+      else if(existeMosquitosIguais()){
+        props.showNotifyToast( "Não pode inserir dois ou mais mosquitos do mesmo tipo", "warning" );
+      }
+      else{
+        const exemplary = examination.reduce(( exem, ex ) => {
+          const e = [
+            {
+              "amostra_id": amostra.id,
+              "quantidade": ex.eggs,
+              "fase": 1, // Ovo - Eggs
+              "mosquito_id": ex.gnat.value
+            },
+            {
+              "amostra_id": amostra.id,
+              "quantidade": ex.pulps,
+              "fase": 2, // Pulpa - Pulps
+              "mosquito_id": ex.gnat.value
+            },
+            {
+              "amostra_id": amostra.id,
+              "quantidade": ex.pulpExuvia,
+              "fase": 3, // Exúvia de Pulpa - Pulp Exuvia
+              "mosquito_id": ex.gnat.value
+            },
+            {
+              "amostra_id": amostra.id,
+              "quantidade": ex.maggots,
+              "fase": 4, // Larva - Maggots
+              "mosquito_id": ex.gnat.value
+            },
+            {
+              "amostra_id": amostra.id,
+              "quantidade": ex.adults,
+              "fase": 5, // Adulto - adults
+              "mosquito_id": ex.gnat.value
+            }
+          ];
+
+          return ([ ...exem, ...e ]);
+        }, [] );
+
+        const data = {
+          "id": amostra.id,
+          "situacaoAmostra": sampleSituation.value,
+          "exemplares": exemplary
+        };
+
+        setFlLoading(true)
+        props.registrarExameRequest( data );
+      }
     }
   }
 
@@ -248,14 +284,52 @@ export const ModalExaminar = ({ mosquitos, amostra, isOpen, handleClose, ...prop
     return false
   }
 
+  //Retornan uma lista de index de todos os exames que
+  //estam sem um tipo de mosquito definido
+  function exemplaresSemMosquito() {
+
+    let listaIndexExemplaresSemMosquitos = []
+    for(var i = 0; i < examination.length; i++){
+      //siginifica que neste exame o tipo de mosquito não foi selecionado
+      if(examination[i].gnat.value == -1)
+        listaIndexExemplaresSemMosquitos.push(i)
+    }
+    setListaExemplaresSemMosquito(listaIndexExemplaresSemMosquitos)
+
+    return listaIndexExemplaresSemMosquitos
+  }
+
+  //Define estilo do acordion que contem o exame com index informado
+  function definirClasseAcordion(index){
+    let estilo = ''
+
+    //significa que o exame é valido, pois o tipo do mosquito foi informado
+    //o estilo do acordion será o padrão
+    if(listaExemplaresSemMosquito.find(indexExemplar => indexExemplar == index) == undefined)
+      estilo = "expansion"
+    else{
+      //significa que o exame não teve o seu mosquito informado, o que o torna invalido
+      //o estilo do acordion terá uma borda vermelha indicando o error
+      estilo = "expansion-error"
+    }
+
+    //Caso a situação do exemplar seja 'não'(Não foi encontrado nenhum traço de mosquito na amostra)
+    //Os exames que foram adicionados anteriomente serão ocultados para o usuario atraves da adição
+    //da classe "d-none" no estilo
+    if(sampleSituation.label == 'Não' )
+      estilo = estilo + " d-none"
+    
+    return estilo
+  }
+
   return (
     <Modal id={ props.id } title={ `Examinar amostra cód. ${ codAmostra }`}>
       <Container>
         <form onSubmit={ submit }>
           <ModalBody>
             <FormGroup>
-              <label htmlFor="situacaoAmostra">Positivo para aedes aegypti?<code>*</code></label>
-              <Select
+              <label htmlFor="situacaoAmostra">Positivo para algum mosquito?<code>*</code></label>
+              <SelectWrap
                 id="situacaoAmostra"
                 styles={ selectDefault }
                 options={ sampleSituationOptions }
@@ -266,7 +340,7 @@ export const ModalExaminar = ({ mosquitos, amostra, isOpen, handleClose, ...prop
             </FormGroup>
               {
                 examination.map( ( exa, index ) => (
-                  <Accordion key={ index } className="expansion">
+                  <Accordion key={ index } className={ definirClasseAcordion(index) }>
                     <AccordionSummary
                       expandIcon={ <ExpandMoreIcon /> }
                       aria-controls={ "panel-side-content-" + 0 }
@@ -385,14 +459,31 @@ export const ModalExaminar = ({ mosquitos, amostra, isOpen, handleClose, ...prop
             <div>
               <ButtonNewObject
                 title="Adicionar Exame"
+                className={sampleSituation.label == 'Sim' ? "" : "d-none"}
                 onClick={ () => addExamination() }
                 disabled={ examination.length == mosquitos.length ? true : false }
               />
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button className="secondary" data-dismiss="modal">Cancelar</Button>
-            <Button className="info" type="submit">Salvar</Button>
+            <Button className="secondary" data-dismiss="modal" disabled={ flLoading }>Cancelar</Button>
+            <Button className="info" type="submit" disabled={ flLoading }>
+            {
+            flLoading ?
+              (
+                <>
+                  <img
+                    src={ LoadginGif }
+                    width="25"
+                    style={{ marginRight: 10 }}
+                    alt="Carregando"
+                  />
+                  Salvando...
+                </>
+              ) :
+              "Salvar"
+          }
+            </Button>
           </ModalFooter>
         </form>
       </Container>
@@ -403,12 +494,14 @@ export const ModalExaminar = ({ mosquitos, amostra, isOpen, handleClose, ...prop
 const mapStateToProps = state => ( {
   amostra   : state.amostra.amostra,
   mosquitos : state.nw_mosquito.mosquitos,
+  exameSalvo: state.amostra.exameSalvo,
 } );
 
 const mapDispatchToProps = {
   registrarExameRequest,
   getMosquitosRequest,
   showNotifyToast,
+  registrarExameReset
 }
 
 export default connect(

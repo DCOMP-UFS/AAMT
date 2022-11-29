@@ -24,7 +24,7 @@ function ModalEncerrarAtividade( { atividadeId, ...props } ) {
       props.finishActivityReset();
       $('#'+props.id).modal('hide');
       setTimeout(() => { document.location.reload( true );}, 1500)
-    }else if( props.destroyed === false ) {
+    }else if( props.finished === false ) {
       setFlLoading( false );
       props.finishActivityReset();
     }

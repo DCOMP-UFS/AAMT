@@ -3,7 +3,8 @@ import { ActionTypes } from './amostraActions';
 const INITIAL_STATE = {
   amostra: {},
   amostras: [],
-  reload: false
+  reload: false,
+  exameSalvo: null,
 }
 
 export default function Amostra(state = INITIAL_STATE, action) {
@@ -19,6 +20,24 @@ export default function Amostra(state = INITIAL_STATE, action) {
       return {
         ...state,
         amostra: action.payload.amostra
+      };
+    
+    case ActionTypes.REGISTRAR_EXAME_SUCCESS:
+      return {
+        ...state,
+        exameSalvo: true
+      };
+    
+    case ActionTypes.REGISTRAR_EXAME_FAIL:
+      return {
+        ...state,
+        exameSalvo: false
+      };
+    
+    case ActionTypes.REGISTRAR_EXAME_RESET:
+      return {
+        ...state,
+        exameSalvo: null
       };
 
     default:

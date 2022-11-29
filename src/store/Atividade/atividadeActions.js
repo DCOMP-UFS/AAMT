@@ -24,7 +24,12 @@ export const ActionTypes = {
   ADD_EQUIPE                            : "ADD_EQUIPE",
   REMOVE_ESTRATO                        : "REMOVE_ESTRATO",
   REMOVE_EQUIPE                         : "REMOVE_EQUIPE",
-  PLAN_ACTIVITY_REQUEST                 : "PLAN_ACTIVITY_REQUEST"
+  PLAN_ACTIVITY_REQUEST                 : "PLAN_ACTIVITY_REQUEST",
+  RESET_TOGGLE_LADO                     : "RESET_TOGGLE_LADO",
+  FINISH_ACTIVITY_REQUEST               : "FINISH_ACTIVITY_REQUEST",
+  FINISH_ACTIVITY_SUCCESS               : "FINISH_ACTIVITY_SUCCESS",
+  FINISH_ACTIVITY_FAIL                  : "FINISH_ACTIVITY_FAIL",
+  FINISH_ACTIVITY_RESET                 : "FINISH_ACTIVITY_RESET"
 }
 
 /**
@@ -127,6 +132,16 @@ export const toggleLado = ( indexQuarteirao, indexLado ) => {
       indexQuarteirao,
       indexLado
     }
+  }
+}
+
+/**
+ * Solicita ao reduce que resete todos os lados da rota como uncheck
+ * @returns
+ */
+ export const resetToggleLado = ( ) => {
+  return {
+    type: ActionTypes.RESET_TOGGLE_LADO
   }
 }
 
@@ -341,5 +356,32 @@ export const planActivityRequest = (id, estratos, equipes, abrangencia_id) => {
       equipes,
       abrangencia_id
     }
+  }
+}
+
+export const finishActivityRequest = (id) => {
+  return {
+    type: ActionTypes.FINISH_ACTIVITY_REQUEST,
+    payload: {
+      id
+    }
+  }
+}
+
+export const finishActivitySuccess = ( ) => {
+  return {
+    type: ActionTypes.FINISH_ACTIVITY_SUCCESS,
+  }
+}
+
+export const finishActivityFail = ( ) => {
+  return {
+    type: ActionTypes.FINISH_ACTIVITY_FAIL
+  }
+}
+
+export const finishActivityReset = ( ) => {
+  return {
+    type: ActionTypes.FINISH_ACTIVITY_RESET
   }
 }

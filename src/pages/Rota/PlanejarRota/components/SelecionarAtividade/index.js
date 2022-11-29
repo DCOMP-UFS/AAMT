@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import PopDescription from '../../../../../components/PopDescription';
 import { Row, Col } from 'react-bootstrap';
 import { responsabilidadeAtividadeEnum as responsabilidadeEnum, abrangenciaEnum } from '../../../../../config/enumerate';
+import  ModalEncerrarAtividade  from '../ModalEncerrarAtividade';
+import { Button } from '../../../../../styles/global';
+import $ from 'jquery';
 
 // ACTIONS
 import { setEquipes, setIndexAtividade } from '../../../../../store/Atividade/atividadeActions';
@@ -11,9 +14,34 @@ import { setEquipes, setIndexAtividade } from '../../../../../store/Atividade/at
 import { Container, AtividadeCard } from './styles';
 
 export const SelecionarAtividade = ({ indexAtividade, atividades, ...props }) => {
+
+  const [ idAtividadeEncerrar, setIdAtividadeEncerrar ] = useState( -1 );
+
   const handleAtividade = ( equipes, index ) => {
     props.setEquipes( equipes );
     props.setIndexAtividade( index );
+  }
+
+  //Abre o modal "ModalEncerrarAtividade"
+  //tambem seta o id da atividade que será encerrada
+  function abrirModalEncerrarAtividade(id) {
+    console.log(atividades)
+    setIdAtividadeEncerrar(id)
+    $('#modal-encerrar-atividade').modal('show');
+  }
+
+  function permitirEncerramneto(atividade){
+    //A atividade ja está encerrada
+    if(atividade.situacao == 3)
+      return false
+    
+    //flTodosImoveis indica se a atividade deve vistoriar todos os imoveis ou não
+    //caso seja falso, significa que o supervisor pode encerrar a atividade quando achar
+    //que um numero suficiente de imoveis foram vistoriados
+    if(!atividade.flTodosImoveis)
+      return true
+    
+    return false
   }
 
   return (
@@ -32,23 +60,34 @@ export const SelecionarAtividade = ({ indexAtividade, atividades, ...props }) =>
         {
           atividades.map( ( atividade, index ) => {
             return (
-              <Col md="4" sm="6" xs="12">
+              <Col md="6" sm="6" xs="12">
                 <AtividadeCard
                   key={ atividade.id }
                   className={ indexAtividade === index ? 'active' : '' }
                   onClick={ () => handleAtividade( atividade.equipes, index ) }
                 >
-                  <div className="ca-header">
-                    <h4 className="ca-title">{ atividade.metodologia.sigla }</h4>
-                    <span className="ca-sub-title">{ atividade.objetivo.sigla }</span>
-                  </div>
+                  <Row>
+                    <Col>
+                      <div className="ca-header">
+                        <h4 className="ca-title">{ atividade.metodologia.sigla }</h4>
+                        <span className="ca-sub-title">{ atividade.objetivo.sigla }</span>
+                      </div>
+                    </Col>
+                    <Col>
+                      <div className={atividade.situacao == 3 ? "ca-header" : "d-none"}>
+                        <h2>
+                          <code>Encerrado</code>
+                        </h2>
+                      </div>
+                    </Col>
+                  </Row>
                   <hr/>
                   <div className="ca-info">
-                    <div className="ca-label font-weight-bold">Trabalhar todos imóveis</div>
+                    <div className="ca-label font-weight-bold">Trabalhar todos imóveis:</div>
                     <div className="ca-value">{ atividade.flTodosImoveis ? 'Sim' : 'Não' }</div>
                   </div>
                   <div className="ca-info">
-                    <div className="ca-label font-weight-bold">Abrangência</div>
+                    <div className="ca-label font-weight-bold">Abrangência:</div>
                     <div className="ca-value">
                       {
                         abrangenciaEnum.find( a => a.id === atividade.abrangencia ).label
@@ -56,7 +95,7 @@ export const SelecionarAtividade = ({ indexAtividade, atividades, ...props }) =>
                     </div>
                   </div>
                   <div className="ca-info">
-                    <div className="ca-label font-weight-bold">Responsabilidade</div>
+                    <div className="ca-label font-weight-bold">Responsabilidade:</div>
                     <div className="ca-value">
                       {
                         responsabilidadeEnum.find( r => r.id === atividade.responsabilidade ).label
@@ -66,6 +105,15 @@ export const SelecionarAtividade = ({ indexAtividade, atividades, ...props }) =>
                   <div className="ca-row-info">
                     <div className="ca-label font-weight-bold">Objetivo da Atividade</div>
                     <div className="ca-value">{ atividade.objetivoAtividade }</div>
+                  </div>
+                  <div className={permitirEncerramneto(atividade) ? "ca-row-info" : "d-none"}>
+                      <Button
+                          className="bg-info text-white"
+                          onClick={ () =>  abrirModalEncerrarAtividade(atividade.id)}
+                      >
+                        Encerrar
+                      </Button>
+                      <ModalEncerrarAtividade id="modal-encerrar-atividade" atividadeId = {idAtividadeEncerrar}/>
                   </div>
                 </AtividadeCard>
               </Col>

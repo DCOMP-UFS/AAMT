@@ -83,3 +83,11 @@ export const getRotaEquipeRequest = data => {
     ...headerAuthorization()
   });
 }
+
+export const finishActivityRequest = data => {
+  const { id } = data;
+
+  return api.put(`/atividades/encerrar/${ id }`, {}, {
+    ...headerAuthorization()
+  });
+}

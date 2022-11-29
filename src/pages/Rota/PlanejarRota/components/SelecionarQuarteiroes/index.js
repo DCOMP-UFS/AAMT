@@ -8,10 +8,11 @@ import Loading from '../../../../../components/Loading';
 import { situacaoLadoEnum } from '../../../../../config/enumerate.js';
 
 // ACTIONS
-import { toggleLado, getRotaEquipeRequest, setFl_loading, checarRota } from '../../../../../store/Atividade/atividadeActions';
+import { toggleLado, getRotaEquipeRequest, setFl_loading, checarRota, resetToggleLado } from '../../../../../store/Atividade/atividadeActions';
 
 // STYLES
 import { Container, Block, Usuario, Avatar, StreetCard } from './styles';
+import { PersonPinSharp } from '@material-ui/icons';
 
 /**
  * Componente de step da página de planejamento de rotas.
@@ -36,6 +37,8 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
     if( indexEquipe !== -1 ) {
       props.setFl_loading( true );
       props.getRotaEquipeRequest( equipes[ indexEquipe ].id );
+      //const equipeId = equipes[ indexEquipe ].id
+      //const membroId = equipes[ indexEquipe ].membros[ indexMembro ].id
     }
   }, [ indexEquipe, indexAtividade ] );
 
@@ -44,8 +47,10 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
    * as rotas que já estão planejadas.
    */
   useEffect( () => {
-    if( indexMembro > -1 )
+    if( indexMembro > -1 ){
+      //props.resetToggleLado();
       props.checarRota();
+    }
   }, [ indexMembro ] );
 
   return (
@@ -67,6 +72,11 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
               content="Selecione os quarteirões que o agente irá trabalhar."
             />
           </h4>
+          {/*
+            <p className="text-description">
+              <code>Agente já possui rota planejada para hoje!</code>
+            </p>
+          */} 
         </Col>
       </Row>
       <Row id="list-quarteirao" style={ { paddingBottom: '30px', minHeight: '500px', maxHeight: '500px', overflow: 'auto' } }>
@@ -77,13 +87,14 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
           indexEquipe={ indexEquipe }
           indexMembro={ indexMembro }
           toggleLado={ props.toggleLado }
+          atividade= {props.atividades[indexAtividade]}
         />
       </Row>
     </Container>
   )
 }
 
-const ExibirQuarteiroes = ( { rota_equipe, fl_loading, indexEquipe, indexMembro, equipes, toggleLado, ...props } ) => {
+const ExibirQuarteiroes = ( { rota_equipe, fl_loading, indexEquipe, indexMembro, equipes, toggleLado, atividade, ...props } ) => {
   if( fl_loading ) {
     return <Loading element="#list-quarteirao" />;
   } else if( rota_equipe.length == 0 ) {
@@ -115,7 +126,7 @@ const ExibirQuarteiroes = ( { rota_equipe, fl_loading, indexEquipe, indexMembro,
                   <li
                     key={ "lado_" + lado.id }
                     className={
-                      lado.situacao === 3 ? 'disabled' :
+                      lado.situacao === 3 || atividade.situacao === 3 ? 'disabled' :
                       lado.situacao === 4 && !fl_usuario_selecionado ? 'disabled' :
                       ''
                     }
@@ -169,14 +180,16 @@ const mapStateToProps = state => ( {
   indexMembro    : state.atividade.indexMembro,
   reload         : state.atividade.reload,
   fl_loading     : state.atividade.fl_loading,
-  indexAtividade : state.atividade.indexAtividade
+  indexAtividade : state.atividade.indexAtividade,
+  atividades     : state.atividade.atividades
 } );
 
 const mapDispatchToProps = {
   toggleLado,
   getRotaEquipeRequest,
   setFl_loading,
-  checarRota
+  checarRota,
+  resetToggleLado
 }
 
 export default connect(

@@ -16,6 +16,7 @@ import UsuariosMunEditar from './pages/usuariosMunicipal/EditarUsuario';
 
 // Gerir Amostras
 import Amostras from './pages/Amostras';
+import AmostrasLab from './pages/AmostrasLab';
 
 // Quarteirões
 import Quarteiroes from './pages/Quarteiroes';
@@ -124,6 +125,7 @@ const Routes = props => {
 
         {/* Amostras */}
         <PrivateRoute path="/amostras" component={ Amostras } tipoPerfil={ perfil } />
+        <PrivateRoute path="/amostrasLab" component={ AmostrasLab } tipoPerfil={ perfil } />
 
         {/* Atividades do Município */}
         <PrivateRoute exact path="/atividadesMunicipal" component={ AtividadesMunConsultar } tipoPerfil={ perfil } />

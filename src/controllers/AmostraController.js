@@ -10,6 +10,7 @@ const Exemplar        = require('../models/Exemplar');
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
+const { json } = require('sequelize');
 
 const router = express.Router();
 router.use(authMiddleware);
@@ -194,14 +195,19 @@ sendSample = async ( req, res ) => {
   try{
     const { amostras, laboratorio_id } = req.body;
 
-    const allow = await allowFunction( req.userId, 'definir_trabalho_diario' );
+    const allow = await allowFunction( req.userId, 'visualizar_amostra' );
     if( !allow )
       return res.status(403).json({ error: 'Acesso negado' });
+
+    
+    const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split( '/' );
+    const dataAtual = `${ Y }-${ m }-${ d }`;
 
     const updated = await Amostra.update(
       { 
         laboratorio_id: parseInt( laboratorio_id ),
-        situacaoAmostra: 2 
+        situacaoAmostra: 2 ,
+        dataEncaminhamento: dataAtual
       }, 
       {
         where: {
@@ -211,7 +217,7 @@ sendSample = async ( req, res ) => {
     );
 
     res.json({
-      mensage: "Amostras Atualizadas com sucesso",
+      mensage: "Amostras encaminhadas com sucesso",
       data: {
         status: 200
       }
@@ -228,17 +234,22 @@ insertExamination = async ( req, res ) => {
   try{
     const { id, situacaoAmostra, exemplares } = req.body;
 
-    const allow = await allowFunction( req.userId, 'definir_trabalho_diario' );
+    const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split( '/' );
+    const dataAtual = `${ Y }-${ m }-${ d }`;
+
+    const allow = await allowFunction( req.userId, 'visualizar_amostra' );
     if( !allow )
       return res.status( 403 ).json({ error: 'Acesso negado' });
 
     // Alterando a situação da amostra, 3 - Positiva, 4 - Negativa.
+    // Colocando a data do exame como a data atual
     const simple = await Amostra.findByPk( id );
 
     if( !simple )
       return res.status( 500 ).json({ mensage: 'Não foi possível processar sua requisição' });
 
     simple.situacaoAmostra = situacaoAmostra;
+    simple.dataExaminado = dataAtual
     await simple.save();
 
     // Inserindo Exemplares do exame.
@@ -267,12 +278,72 @@ getSamplesByLab = async ( req, res ) => {
   try{
     const { laboratorio_id } = req.params;
 
-    const amostras = await Amostra.findAll( {
-      where: { laboratorio_id: parseInt(laboratorio_id) },
-      attributes: { exclude: [ 'cnpj' ] },
-    } );
+    const amostras = await Amostra.sequelize.query(
+      'SELECT ' +
+        'a.id as "id", ' +
+        'a.data_encaminhamento as "dataEncaminhamento", ' +
+        'a.data_examinado as "dataExaminado", ' +
+        'a.codigo as "codigo", ' +
+        'a.situacao_amostra as "situacaoAmostra", ' +
+        'ativ.id as "ativ_id", ' +
+        'ativ.metodologia_id as "ativ_metodologia", ' +
+        'metod.sigla as "metodo_sigla", ' +
+        'obj.sigla as "objetivo_sigla", ' +
+        'ativ.objetivo_id as "ativ_objetivo" ' +
+      'FROM ' +
+        'amostras as a ' +
+        'JOIN depositos as dep ON( a.deposito_id = dep.id ) ' +
+        'JOIN vistorias as vist ON( dep.vistoria_id = vist.id ) ' +
+        'JOIN trabalhos_diarios as td ON( vist.trabalho_diario_id = td.id ) ' +
+        'JOIN equipes as equip ON( td.equipe_id = equip.id ) ' +
+        'JOIN atividades as ativ ON( equip.atividade_id = ativ.id ) ' +
+        'JOIN metodologias as metod ON( ativ.metodologia_id = metod.id ) ' +
+        'JOIN objetivos as obj ON( ativ.objetivo_id = obj.id ) ' +
+      'WHERE ' +
+        'a.laboratorio_id = $1 ' +
+      'ORDER BY '+
+        'a.data_encaminhamento', 
+      {
+        bind: [ parseInt(laboratorio_id) ],
+        logging: console.log,
+      }
+    )
+
+    var todosExemplares = []
     
-    res.json( amostras );
+    for( var i = 0; i < amostras[ 1 ].rows.length; i++){
+      const amostra = amostras[ 1 ].rows[i]
+      const exemplaresAmostra = await Exemplar.findAll({
+        attributes: { exclude: [ 'amostra_id','createdAt', 'updatedAt' ] },
+        where: {
+          amostra_id: amostra.id
+        }
+      });
+
+      exemplaresAmostra == undefined ? todosExemplares.push([]) : todosExemplares.push(exemplaresAmostra)
+    }
+    
+    const result = amostras[ 1 ].rows.map( (i,index) => ({
+      id: i.id,
+      codigo: i.codigo,
+      situacaoAmostra: i.situacaoAmostra,
+      dataEncaminhamento: i.dataEncaminhamento,
+      dataExaminado: i.dataExaminado,
+      atividade: {
+        id: i.ativ_id,
+        metodologia: {
+          id: i.ativ_metodologia,
+          sigla: i.metodo_sigla
+        },
+        objetivo: {
+          id: i.ativ_objetivo,
+          sigla: i.objetivo_sigla
+        }
+      },
+      exemplares: todosExemplares[index]
+    }));
+    
+    res.json( result );
   } catch (error) {
     return res.status( 400 ).send( { 
       status: 'unexpected error',

@@ -110,7 +110,7 @@ export const ModalExaminarAmostra = ({ mosquitos, amostra, isOpen, handleClose, 
 
   useEffect(() => {
     if( props.exameSalvo ) {
-      props.showNotifyToast("Amostrar examinada com sucesso", "success")
+      props.showNotifyToast("Amostra examinada com sucesso", "success")
       setTimeout(() => { document.location.reload( true );}, 2000)
     }
     setFlLoading(false)

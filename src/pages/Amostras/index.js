@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import Table from '../../components/Table';
-import { FaVial } from 'react-icons/fa';
+import { FaVial, FaSearch, FaTruck } from 'react-icons/fa';
 import { Row } from 'react-bootstrap';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
@@ -40,19 +40,21 @@ const columns = [
       sortCompare: ordenadorData
     }
   },
+  {
+    name: "Codigo Atividade",
+    label: "Cód. Atividade",
+    options: {
+      filter: false,
+      setCellProps: () => ({ style: { paddingLeft: "30px"}}),
+    }
+  },
   "Atividade",
   {
     name: "objetivo",
     label: "Objetivo",
     options: {
-      filter: false
-    }
-  },
-  {
-    name: "ciclo",
-    label: "Ciclo",
-    options: {
-      filter: false
+      filter: false,
+      setCellProps: () => ({ style: { paddingLeft: "35px"}}),
     }
   },
   "Situação",
@@ -71,6 +73,7 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
   const [ laboratoriosOptions, setLaboratoriosOptions ] = useState( [] );
   const [ laboratorioSelect, setLaboratorioSelect ] = useState( { value: null, label: '' } );
   const [ openModalExaminar, setOpenModalExaminar] = useState(false)
+  const [ labAmostra, setLabAmostra] = useState({ value: null, label: '' })
 
   const handleCloseModalExaminar = () => {setOpenModalExaminar(false)}
 
@@ -133,17 +136,33 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
       return [
         amostra.codigo,
         `${ data[ 2 ] }/${ data[ 1 ] }/${ data[ 0 ] }`,
+        trabalhoDiario.id,
         metodologia.sigla,
         objetivo.sigla,
-        `${ ciclo.ano }.${ ciclo.sequencia }`,
         situacaoAmostra,
         <Tooltip
           className="bg-warning text-white"
-          title="Examinar"
+          title= {(() => {
+              if (amostra.situacaoAmostra == 1) 
+                return "Examinar"
+              else if(amostra.situacaoAmostra == 2) 
+                return "Onde foi encaminhado?"
+              else
+                return "Visualizar exame"
+            })()}
           onClick={ () => handlerSample( index ) }
         >
           <IconButton aria-label="Examinar">
-            <FaVial />
+            {(() => {
+              if (amostra.situacaoAmostra == 1) 
+                return <FaVial />
+              else if(amostra.situacaoAmostra == 2) 
+                return <FaTruck/>
+              else
+                return <FaSearch/> 
+            })()}
+      
+            
           </IconButton>
         </Tooltip>,
       ]
@@ -153,9 +172,19 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
   }, [ amostras ] );
 
   const handlerSample = index => {
-    props.setAmostra( amostras[ index ] );
-    setOpenModalExaminar(true)
-    $( '#modal-examinar' ).modal( 'show' );
+    //O amostra foi encaminhada e não pode ser examinada pelo supervisor
+    //Será exibido um modal com as informações do laboratorio encaminhado
+    if(amostras[ index ].situacaoAmostra == 2){
+      const lab = laboratoriosOptions.find( lab => lab.value = amostras[ index ].laboratorio_id)
+      setLabAmostra(lab)
+      $( '#modal-laboratorio-enviado' ).modal( 'show' );
+  
+    }
+    else{
+      props.setAmostra( amostras[ index ] );
+      setOpenModalExaminar(true)
+      $( '#modal-examinar' ).modal( 'show' );
+    }
   }
 
   const enviarAmostras = e => {
@@ -209,6 +238,22 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
                 </ModalFooter>
               </form>
             </Modal>
+
+            <Modal id="modal-laboratorio-enviado" title="Informações Laboratório">
+              
+              <ModalBody>
+                <FormGroup>
+                  <label htmlFor="laboratorio">Laboratório</label>
+                    <input
+                      value={ labAmostra.label }
+                      type="text"
+                      className="form-control"
+                      disabled={true}
+                    />         
+                </FormGroup>
+              </ModalBody>
+            </Modal>
+
           </article>
         </Row>
       </section>
@@ -228,7 +273,7 @@ const mapDispatchToProps = {
   getAmostrasByLab,
   getLaboratoriosRequest,
   enviarAmostrasRequest,
-  setAmostra
+  setAmostra,
 }
 
 export default connect(

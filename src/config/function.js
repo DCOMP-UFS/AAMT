@@ -119,8 +119,23 @@ export const getDateIso = (dataBR) => {
 //receber 2 strings data no formato "dd/mm/aaaa hh:mm:ss"
 export const ordenadorDataHora = (order) => {
   return (a, b) => {
-    const dateA = getDateIso(a.data).getTime();
-    const dateB = getDateIso(b.data).getTime();
+    
+    var dateA = null
+    var dateB = null
+
+    //Menor data possivel
+    let minDate = new Date(-8640000000000000);
+
+    if(a.data == null)
+      dateA = minDate.getTime()
+    else
+      dateA = getDateIso(a.data).getTime();
+
+    if(b.data == null)
+      dateB = minDate.getTime()
+    else
+      dateB = getDateIso(b.data).getTime();
+    
     return (dateA - dateB ) * (order === "asc" ? 1 : -1);
   };
 }
@@ -128,8 +143,23 @@ export const ordenadorDataHora = (order) => {
 //receber 2 strings data no formato "dd/mm/aaaa"
 export const ordenadorData = (order) => {
   return (a, b) => {
-    const dateA = getDateIso(a.data).getTime();
-    const dateB = getDateIso(b.data).getTime();
+
+    var dateA = null
+    var dateB = null
+
+    //Menor data possivel
+    let minDate = new Date(-8640000000000000);
+
+    if(a.data == null)
+      dateA = minDate.getTime()
+    else
+      dateA = getDateIso(a.data).getTime();
+
+    if(b.data == null)
+      dateB = minDate.getTime()
+    else
+      dateB = getDateIso(b.data).getTime();
+    
     return (dateA - dateB ) * (order === "asc" ? 1 : -1);
   };
 }

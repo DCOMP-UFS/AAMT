@@ -25,6 +25,14 @@ const Sidebar = ( { menu, roles, usuario, navToggle, ...props } ) => {
    */
   const getMenusPermitidos = ( menus, roles ) => {
     const perfil        = usuario.atuacoes[ 0 ].tipoPerfil;
+
+    //Caso o usuario logado seja laboratoria, será exibida uma pagina de amostra
+    //especifica, caso contrario será exibida a pagina padrão para o supervisor
+    if(perfil == 5)
+      menus.visualizar_amostra = [itensMenu.amostraLab]
+    else
+      menus.visualizar_amostra = [itensMenu.amostra]
+
     let menusPermitidos = roles.map( role => menus[ role ] );
     let listaMenus      = [];
     let relatorios      = [];

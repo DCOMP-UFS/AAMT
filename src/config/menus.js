@@ -71,6 +71,7 @@ export const itens = {
   usuario: criarLink( "usuario", "Usuários", false, FA.FaUsers, "/usuariosRegional", "cadastroBasico" ),
   municipio: criarLink( "municipio", "Municípios", false, FA.FaCity, "/municipios", "cadastroBasico" ),
   amostra: criarLink( "amostra", "Amostras", false, FA.FaVial, "/amostras", "operacional" ),
+  amostraLab: criarLink( "amostraLab", "Amostras", false, FA.FaVial, "/amostrasLab", "operacional" ),
   atividadeMunicipio: criarNav( "atividade_municipio", "Atividades", false, IoIosPaper, [
     criarSubmenu( "atm_consultar", false, "Consultar", "/atividadesMunicipal/" ),
     criarSubmenu( "atm_cadastrar", false, "Cadastrar", "/atividadesMunicipal/cadastrar" ),

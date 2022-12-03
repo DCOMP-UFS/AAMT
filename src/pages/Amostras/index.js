@@ -7,7 +7,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import Modal, { ModalBody, ModalFooter } from '../../components/Modal';
 import Select from 'react-select';
-import ModalExaminar from './components/ModalExaminar';
+import ModalExaminarAmostra from '../../components/ModalExaminarAmostra';
 import $ from 'jquery';
 
 // ACTIONS
@@ -186,7 +186,8 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
               options={ options }
             />
 
-            <ModalExaminar id="modal-examinar" isOpen={openModalExaminar} handleClose={handleCloseModalExaminar}/>
+            <ModalExaminarAmostra id="modal-examinar" isOpen={openModalExaminar} handleClose={handleCloseModalExaminar}/>
+
             <Modal id="modal-encaminhar" title="Encaminhar amostras">
               <form onSubmit={ e => enviarAmostras( e ) }>
                 <ModalBody>

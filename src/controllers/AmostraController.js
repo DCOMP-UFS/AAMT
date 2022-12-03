@@ -130,52 +130,80 @@ getSampleBySurpervision = async ( req, res ) => {
     //logo será retornado uma lista vazia de amostras
     if(equipes.length == 0)
       return res.json( [] );
-
-    let amostras = await Amostra.findAll( {
-      attributes: { exclude: [ 'cnpj' ] },
-      include: [
-        {
-          association: 'deposito',
-          include: {
-            association: 'vistoria',
-            include: {
-              association: 'trabalhoDiario',
-              include: {
-                association: 'equipe'
-              }
-            }
-          }
-        },
-        {
-          association: 'exemplares'
-        }
-      ]
-    } );
-
-    var result = []
-    // Tratando resultados
-    amostras.forEach(async ( amostra, index ) => {
-      let a = amostra.dataValues;
-      amostras[ index ].dataValues.trabalhoDiario = a.deposito.dataValues.vistoria.dataValues.trabalhoDiario.dataValues;
-
-      //Verifica se a amostra em questão foi feita por alguma equipe liderada pelo supervisor que fez a requisição
-      let isAmostraSupervisor = equipes.includes(amostras[index].dataValues.trabalhoDiario.equipe.dataValues.id)
-
-      if(isAmostraSupervisor){
-
-        //Busca a atividade da amostra com sua informações
-        var ativ = atividades.find( atividade => atividade.id === amostras[ index ].dataValues.trabalhoDiario.equipe.dataValues.atividade_id );
-
-        a.deposito.dataValues.vistoria.dataValues.trabalhoDiario = undefined;
-        amostras[ index ].dataValues.vistoria = a.deposito.dataValues.vistoria.dataValues;
-        a.deposito.dataValues.vistoria = undefined;
-        amostras[ index ].dataValues.deposito = a.deposito.dataValues;
-        amostras[ index ].dataValues.ciclo = ciclo;
-        amostras[ index ].dataValues.atividade = ativ
-
-        result.push( amostras[ index ])
+    
+    const amostras = await Amostra.sequelize.query(
+      'SELECT ' +
+        'a.id as "id", ' +
+        'a.data_encaminhamento as "dataEncaminhamento", ' +
+        'a.data_examinado as "dataExaminado", ' +
+        'a.codigo as "codigo", ' +
+        'a.situacao_amostra as "situacaoAmostra", ' +
+        'a.laboratorio_id as "laboratorio_id", ' +
+        'td.id as "td_id", ' +
+        'td.data as "td_data", ' +
+        'ativ.id as "ativ_id", ' +
+        'ativ.metodologia_id as "ativ_metodologia", ' +
+        'metod.sigla as "metodo_sigla", ' +
+        'obj.sigla as "objetivo_sigla", ' +
+        'ativ.objetivo_id as "ativ_objetivo" ' +
+      'FROM ' +
+        'amostras as a ' +
+        'JOIN depositos as dep ON( a.deposito_id = dep.id ) ' +
+        'JOIN vistorias as vist ON( dep.vistoria_id = vist.id ) ' +
+        'JOIN trabalhos_diarios as td ON( vist.trabalho_diario_id = td.id ) ' +
+        'JOIN equipes as equip ON( td.equipe_id = equip.id ) ' +
+        'JOIN atividades as ativ ON( equip.atividade_id = ativ.id ) ' +
+        'JOIN metodologias as metod ON( ativ.metodologia_id = metod.id ) ' +
+        'JOIN objetivos as obj ON( ativ.objetivo_id = obj.id ) ' +
+      'WHERE ' +
+        'equip.id = ANY($equipes_ids) '+
+      'ORDER BY '+
+        'td.data', 
+      {
+        bind:{ equipes_ids: equipes },
+        logging: console.log,
       }
-    });
+    )
+
+    var todosExemplares = []
+    
+    for( var i = 0; i < amostras[ 1 ].rows.length; i++){
+      const amostra = amostras[ 1 ].rows[i]
+      const exemplaresAmostra = await Exemplar.findAll({
+        attributes: { exclude: [ 'amostra_id','createdAt', 'updatedAt' ] },
+        where: {
+          amostra_id: amostra.id
+        }
+      });
+
+      exemplaresAmostra == undefined ? todosExemplares.push([]) : todosExemplares.push(exemplaresAmostra)
+    }
+    
+    const result = amostras[ 1 ].rows.map( (i,index) => ({
+      id: i.id,
+      codigo: i.codigo,
+      situacaoAmostra: i.situacaoAmostra,
+      dataEncaminhamento: i.dataEncaminhamento,
+      dataExaminado: i.dataExaminado,
+      laboratorio_id: i.laboratorio_id,
+      trabalhoDiario:{
+        id: i.td_id,
+        data: i.td_data
+      },
+      atividade: {
+        id: i.ativ_id,
+        metodologia: {
+          id: i.ativ_metodologia,
+          sigla: i.metodo_sigla
+        },
+        objetivo: {
+          id: i.ativ_objetivo,
+          sigla: i.objetivo_sigla
+        }
+      },
+      exemplares: todosExemplares[index],
+      ciclo: ciclo
+    }));
 
     return res.json( result );
   } catch (error) {

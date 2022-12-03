@@ -12,7 +12,7 @@ export const ActionTypes = {
 
 /**
  * 
- * @param {*} laboratorio_cnpj
+ * @param {*} laboratorio_id
  * @returns 
  */
 export const getAmostrasByLab = laboratorio_id => {

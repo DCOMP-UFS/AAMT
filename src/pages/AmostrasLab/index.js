@@ -5,7 +5,7 @@ import { FaSearch, FaVial } from 'react-icons/fa';
 import { Row } from 'react-bootstrap';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
-import ModalExaminar from './components/ModalExaminar';
+import ModalExaminarAmostra from '../../components/ModalExaminarAmostra';
 import $ from 'jquery';
 
 // ACTIONS
@@ -28,8 +28,16 @@ const columns = [
     }
   },
   {
-    name: "createdAt",
-    label: "Coletada Em",
+    name: "dataEncaminhamento",
+    label: "Recebido Em",
+    options: {
+      filter: false,
+      sortCompare: ordenadorData
+    }
+  },
+  {
+    name: "dataExame",
+    label: "Examinado Em",
     options: {
       filter: false,
       sortCompare: ordenadorData
@@ -63,7 +71,7 @@ export const AmostrasLab = ({ laboratorios, amostras, usuario, ...props }) => {
     //Não permite que amostras com situação positiva, negativa ou encaminhada
     //sejam selecionados para serem encaminhadas
     isRowSelectable: (dataIndex) => {
-      return (rows[dataIndex][4] != "Positiva" && rows[dataIndex][4] != "Negativa" && rows[dataIndex][4] != "Encaminhada")
+      return false
     },
   };
 
@@ -77,10 +85,10 @@ export const AmostrasLab = ({ laboratorios, amostras, usuario, ...props }) => {
     let r = rows;
 
     r = amostras.map( ( amostra, index ) => {
-      const trabalhoDiario  = amostra.trabalhoDiario;
-      const metodologia     = amostra.atividade.metodologia;
-      const objetivo        = amostra.atividade.objetivo;
-      const data            = trabalhoDiario.data.split( '-' );
+      const metodologia            = amostra.atividade.metodologia;
+      const objetivo               = amostra.atividade.objetivo;
+      const dataEncaminhamento     = amostra.dataEncaminhamento.split( '-' );
+      const dataExame              = amostra.dataExaminado ? amostra.dataExaminado.split( '-' ) : null
 
       let situacaoAmostra = '';
       if( amostra.situacaoAmostra === 1 )
@@ -94,13 +102,14 @@ export const AmostrasLab = ({ laboratorios, amostras, usuario, ...props }) => {
 
       return [
         amostra.codigo,
-        `${ data[ 2 ] }/${ data[ 1 ] }/${ data[ 0 ] }`,
+        `${dataEncaminhamento[ 2 ] }/${ dataEncaminhamento[ 1 ] }/${ dataEncaminhamento[ 0 ] }`,
+        dataExame == null ? dataExame : `${dataExame[ 2 ] }/${ dataExame[ 1 ] }/${ dataExame[ 0 ] }`,
         metodologia.sigla,
         objetivo.sigla,
         situacaoAmostra,
         <Tooltip
           className="bg-warning text-white"
-          title="Examinar"
+          title= { amostra.situacaoAmostra === 2 ? "Examinar" : "Visualizar Exame"}
           onClick={ () => handlerSample( index ) }
         >
           <IconButton aria-label="Examinar">
@@ -140,7 +149,7 @@ export const AmostrasLab = ({ laboratorios, amostras, usuario, ...props }) => {
               options={ options }
             />
 
-            <ModalExaminar id="modal-examinar" isOpen={openModalExaminar} handleClose={handleCloseModalExaminar}/>
+            <ModalExaminarAmostra id="modal-examinar" isOpen={openModalExaminar} handleClose={handleCloseModalExaminar}/>
             
           </article>
         </Row>

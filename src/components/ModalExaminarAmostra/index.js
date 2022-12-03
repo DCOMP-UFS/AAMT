@@ -4,23 +4,23 @@ import { connect } from 'react-redux';
 import { Accordion, AccordionSummary, AccordionDetails } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Row, Col } from 'react-bootstrap';
-import Modal, { ModalBody, ModalFooter } from '../../../../components/Modal';
-import ButtonNewObject from '../../../../components/ButtonNewObject';
+import Modal, { ModalBody, ModalFooter } from '../Modal';
+import ButtonNewObject from '../ButtonNewObject';
 import IconButton from '@material-ui/core/IconButton';
 import { FaTrash } from 'react-icons/fa';
-import SelectWrap from '../../../../components/SelectWrap';
-import LoadginGif from '../../../../assets/loading.gif'
+import SelectWrap from '../SelectWrap';
+import LoadginGif from '../../assets/loading.gif'
 
 // ACTIONS
-import { registrarExameRequest, registrarExameReset } from '../../../../store/Amostra/amostraActions';
-import { getMosquitosRequest } from '../../../../store/Mosquito/mosquitoActions';
-import { showNotifyToast } from '../../../../store/AppConfig/appConfigActions';
+import { registrarExameRequest, registrarExameReset } from '../../store/Amostra/amostraActions';
+import { getMosquitosRequest } from '../../store/Mosquito/mosquitoActions';
+import { showNotifyToast } from '../../store/AppConfig/appConfigActions';
 
 // STYLES
-import { Button, FormGroup, selectDefault } from '../../../../styles/global';
+import { Button, FormGroup, selectDefault } from '../../styles/global';
 import { PanelTitle, Container } from './styles';
 
-export const ModalExaminar = ({ mosquitos, amostra, isOpen, handleClose, ...props }) => {
+export const ModalExaminarAmostra = ({ mosquitos, amostra, isOpen, handleClose, ...props }) => {
   const [ sampleSituationOptions, setsampleSituationOptions ] = useState( [
     { value: 3, label: 'Sim' },
     { value: 4, label: 'Não' }
@@ -61,15 +61,9 @@ export const ModalExaminar = ({ mosquitos, amostra, isOpen, handleClose, ...prop
 
   // Calculando o código da amostra
   useEffect(() => {
-
     if( Object.entries( amostra ).length > 0 ) {
-      const seqAmostra      = amostra.sequencia,
-            seqDeposito     = amostra.deposito.sequencia,
-            seqVistoria     = amostra.vistoria.sequencia,
-            trabalhoDiario  = amostra.trabalhoDiario,
-            data            = trabalhoDiario.data.split( '-' );
 
-      setCodAmostra( `${ data[ 2 ] + data[ 1 ] + data[ 0 ] }.1.${ seqVistoria }.${ seqDeposito }.${ seqAmostra }` );
+      setCodAmostra( amostra.codigo );
 
       // Preenchendo os dados da amostra caso já exista exame cadastrado
       const option = sampleSituationOptions.find( option => option.value === amostra.situacaoAmostra );
@@ -323,10 +317,21 @@ export const ModalExaminar = ({ mosquitos, amostra, isOpen, handleClose, ...prop
   }
 
   return (
-    <Modal id={ props.id } title={ `Examinar amostra cód. ${ codAmostra }`}>
+    <Modal id={ props.id } title={ 
+      amostra.situacaoAmostra == 3 || amostra.situacaoAmostra == 4 ?
+      `Exame da amostra cód. ${ codAmostra }` :  `Examinar amostra cód. ${ codAmostra }`
+      }>
       <Container>
         <form onSubmit={ submit }>
           <ModalBody>
+            <div className={amostra.situacaoAmostra == 3 || amostra.situacaoAmostra == 4 ? "d-none" : ""}>
+              <p className="text-description">
+                <code>OBS1</code>: Os campos com <code>*</code> são obrigatórios
+              </p>
+              <p className="text-description">
+                <code>OBS2</code>: O exame após cadastrado não poderá ser mais alterado
+              </p>
+              </div>
             <FormGroup>
               <label htmlFor="situacaoAmostra">Positivo para algum mosquito?<code>*</code></label>
               <SelectWrap
@@ -336,6 +341,7 @@ export const ModalExaminar = ({ mosquitos, amostra, isOpen, handleClose, ...prop
                 value={ sampleSituation }
                 onChange={ e => setSampleSituation( e ) }
                 required
+                isDisabled={amostra.situacaoAmostra == 3 || amostra.situacaoAmostra == 4}
               />
             </FormGroup>
               {
@@ -363,6 +369,7 @@ export const ModalExaminar = ({ mosquitos, amostra, isOpen, handleClose, ...prop
                                 options={ gnatOptions }
                                 onChange={ e => changeGnat( e, index ) }
                                 required
+                                isDisabled={amostra.situacaoAmostra == 3 || amostra.situacaoAmostra == 4}
                               />
                             </FormGroup>
                           </Col>
@@ -378,6 +385,7 @@ export const ModalExaminar = ({ mosquitos, amostra, isOpen, handleClose, ...prop
                                 onChange={ e => { changeEggs( parseInt( e.target.value == '' ? 0 : e.target.value ), index ) } }
                                 min={ 0 }
                                 required
+                                disabled={amostra.situacaoAmostra == 3 || amostra.situacaoAmostra == 4}
                               />
                             </FormGroup>
                           </Col>
@@ -391,6 +399,7 @@ export const ModalExaminar = ({ mosquitos, amostra, isOpen, handleClose, ...prop
                                 onChange={ e => { changePulps( parseInt( e.target.value == '' ? 0 : e.target.value ), index ) } }
                                 min={ 0 }
                                 required
+                                disabled={amostra.situacaoAmostra == 3 || amostra.situacaoAmostra == 4}
                               />
                             </FormGroup>
                           </Col>
@@ -406,6 +415,7 @@ export const ModalExaminar = ({ mosquitos, amostra, isOpen, handleClose, ...prop
                                 onChange={ e => { changePulpExuvia( parseInt( e.target.value == '' ? 0 : e.target.value ), index ) } }
                                 min={ 0 }
                                 required
+                                disabled={amostra.situacaoAmostra == 3 || amostra.situacaoAmostra == 4}
                               />
                             </FormGroup>
                           </Col>
@@ -419,6 +429,7 @@ export const ModalExaminar = ({ mosquitos, amostra, isOpen, handleClose, ...prop
                                 onChange={ e => { changeMaggots( parseInt( e.target.value == '' ? 0 : e.target.value ), index ) } }
                                 min={ 0 }
                                 required
+                                disabled={amostra.situacaoAmostra == 3 || amostra.situacaoAmostra == 4}
                               />
                             </FormGroup>
                           </Col>
@@ -434,6 +445,7 @@ export const ModalExaminar = ({ mosquitos, amostra, isOpen, handleClose, ...prop
                                 onChange={ e => { changeAdults( parseInt( e.target.value == '' ? 0 : e.target.value ), index ) } }
                                 min={ 0 }
                                 required
+                                disabled={amostra.situacaoAmostra == 3 || amostra.situacaoAmostra == 4}
                               />
                             </FormGroup>
                           </Col>
@@ -442,7 +454,7 @@ export const ModalExaminar = ({ mosquitos, amostra, isOpen, handleClose, ...prop
                           <Col md="12" className="text-right">
                             <IconButton
                               title="Remover"
-                              className="text-danger"
+                              className={ amostra.situacaoAmostra == 3 || amostra.situacaoAmostra == 4 ? 'd-none' : "text-danger" }
                               aria-label="cart"
                               onClick={ () => removerExame( index ) }
                             >
@@ -459,30 +471,38 @@ export const ModalExaminar = ({ mosquitos, amostra, isOpen, handleClose, ...prop
             <div>
               <ButtonNewObject
                 title="Adicionar Exame"
-                className={sampleSituation.label == 'Sim' ? "" : "d-none"}
+                className={ amostra.situacaoAmostra == 3 || amostra.situacaoAmostra == 4 || sampleSituation.label == 'Não' ? "d-none" : ""  }
                 onClick={ () => addExamination() }
                 disabled={ examination.length == mosquitos.length ? true : false }
               />
             </div>
           </ModalBody>
-          <ModalFooter>
-            <Button className="secondary" data-dismiss="modal" disabled={ flLoading }>Cancelar</Button>
-            <Button className="info" type="submit" disabled={ flLoading }>
-            {
-            flLoading ?
-              (
-                <>
-                  <img
-                    src={ LoadginGif }
-                    width="25"
-                    style={{ marginRight: 10 }}
-                    alt="Carregando"
-                  />
-                  Salvando...
-                </>
-              ) :
-              "Salvar"
-          }
+          <ModalFooter >
+            <Button 
+              className={ amostra.situacaoAmostra == 3 || amostra.situacaoAmostra == 4 ? 'd-none' : "secondary" }
+              data-dismiss="modal" 
+              disabled={ flLoading }>
+                Cancelar
+            </Button>
+            <Button 
+              className={ amostra.situacaoAmostra == 3 || amostra.situacaoAmostra == 4 ? 'd-none' : "info"} 
+              type="submit" 
+              disabled={ flLoading }>
+                {
+                flLoading ?
+                  (
+                    <>
+                      <img
+                        src={ LoadginGif }
+                        width="25"
+                        style={{ marginRight: 10 }}
+                        alt="Carregando"
+                      />
+                      Salvando...
+                    </>
+                  ) :
+                  "Salvar"
+                }
             </Button>
           </ModalFooter>
         </form>
@@ -507,4 +527,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)( ModalExaminar )
+)( ModalExaminarAmostra )

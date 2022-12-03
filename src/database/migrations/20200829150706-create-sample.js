@@ -14,6 +14,14 @@ module.exports = {
           type: Sequelize.INTEGER,
           allowNull: false,
         },
+        data_encaminhamento: {
+          type: Sequelize.DATE,
+          allowNull: true,
+        },
+        data_examinado: {
+          type: Sequelize.DATE,
+          allowNull: true,
+        },
         deposito_id: {
           type: Sequelize.INTEGER,
           allowNull: false,

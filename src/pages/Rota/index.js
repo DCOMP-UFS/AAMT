@@ -11,6 +11,7 @@ import Table from '../../components/Table';
 import ProgressBar from '../../components/ProgressBar';
 import { tipoImovelEnum } from '../../config/enumerate';
 import $ from 'jquery';
+import Select from 'react-select';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -20,18 +21,19 @@ import { connect } from 'react-redux';
 import { changeSidebar } from '../../store/Sidebar/sidebarActions';
 import { showNotifyToast } from '../../store/AppConfig/appConfigActions';
 import { resetShowNotStarted, clearInspection } from '../../store/VistoriaCache/vistoriaCacheActions';
-import { clearRotaCache } from '../../store/RotaCache/rotaCacheActions';
+import { clearTrabalhoRotaCache, setTrabalhoRotaCache } from '../../store/RotaCache/rotaCacheActions';
 import {
   isFinalizadoRequest,
   setIsFinalizado,
   getRouteRequest,
   isStartedRequest,
-  resetOpenModal
+  resetOpenModal,
 } from '../../store/Rota/rotaActions';
 
 // STYLES
-import { Button } from '../../styles/global';
+import { Button, selectDefault } from '../../styles/global';
 import { PageIcon, PageHeader, PagePopUp, InfoBox } from '../../styles/util';
+import { set } from 'date-fns';
 
 dotenv.config();
 
@@ -103,9 +105,21 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
     longitude:  -47.9292,
     zoom:       2
   } );
-  const [ qtdTipoImovel, setQtdTipoImovel ]             = useState( [ 0, 0, 0, 0 ] );
-  const [ imoveis, setImoveis ]                         = useState( [] );
-  const [ rows, setRows ]                               = useState( [] );
+  const [ qtdTipoImovel, setQtdTipoImovel ]                       = useState( [ 0, 0, 0, 0 ] );
+  const [ imoveis, setImoveis ]                                   = useState( [] );
+  const [ rows, setRows ]                                         = useState( [] );
+
+  //Contem todas as rotas que ainda não foram iniciadas e seu respectivos dados do trabalho diario
+  const [ trabalhosRotasFiltrados, setTrabalhosRotasFiltrados ]   = useState( [] );
+
+  //Armazena o index de cada elemento do array 'trabalhosRotasFiltrados' e o respectivo codigo da atividade
+  //do trabalho diario
+  const [ codigoAtividadeOptions, setCodigoAtividadeOptions ]   = useState( [{ value: null, label: '' }] );
+  const [ codigoAtividade, setCodigoAtividade ]   = useState( {} );
+
+  const [ entrouPagina, setEntrouPagina] = useState ( true )
+  const [ openModalIniciarRota, setOpenModalIniciarRota] = useState ( false )
+
   const options                                         = {
     selectableRows: 'none'
   };
@@ -115,12 +129,24 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
   //O estado abaixo armazena a lista de vistorias filtradas
   const [ vistoriasFiltradas, setVistoriasFiltradas ]  = useState( [] );
 
+  //Use effect que serve para resetar
+  //a pagina toda que que é acessada
+  useEffect( () => {
+    if(entrouPagina){
+      setEntrouPagina(false)
+      props.clearTrabalhoRotaCache()
+    }
+  } )
+
   useEffect( () => {
     const initHome = () => {
       const [ d, m, Y ]  = new Date().toLocaleDateString().split( '/' );
       const current_date = `${ Y }-${ m }-${ d }`;
       
       props.changeSidebar( "rota" );
+
+      //Irá busca todos as rotas e seus repectivos trabalhos diarios agendados para hoje
+      //Será armazenado no state "todosTrabalhosRotas" no rotaCacheReduce
       props.getRouteRequest( usuario.id, current_date );
       //props.clearInspection()
     }
@@ -128,32 +154,29 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
     initHome();
   }, [] );
 
-  useEffect(() => {
-    if( props.showNotStarted ) {
-      if( !trabalhoDiario.id ) props.showNotifyToast( "Você não possui uma rota planejada para hoje!", "warning" );
-      if( !trabalhoDiario.horaInicio ) props.showNotifyToast( "Você deve iniciar a rota antes de registrar as vistorias!", "warning" );
+  useEffect( () => {
+    const trabalhosRotasFilter = props.todosTrabalhosRotas.filter( elem => elem.trabalhoDiario.horaInicio == null)
 
-      setTimeout( () => { props.resetShowNotStarted() }, 500 );
-    }
-  }, [ props.showNotStarted, trabalhoDiario.horaInicio, trabalhoDiario.id ] );
+    setCodigoAtividadeOptions( trabalhosRotasFilter.map( (elem,index) => ( { value: index, label: elem.trabalhoDiario.atividade.id } )) )
+
+    setTrabalhosRotasFiltrados(trabalhosRotasFilter)
+    //setIsCarregandoPagina(false)
+  }, [props.todosTrabalhosRotas] );
 
   useEffect( () => {
-    if( fl_iniciada ) // consultando os dados da rota, a rota back end já faz verificação se está iniciado ou n.
-      window.location = window.location.origin.toString() + '/vistoria';
-  }, [ fl_iniciada ] );
-
-  useEffect( () => {
-    if( openModal && trabalhoDiario.id ) {
-      $('#modal-iniciar-rota').modal( 'show' );
-      props.resetOpenModal();
+    if(codigoAtividade.value != null){
+      const trabalhoDiario = trabalhosRotasFiltrados[codigoAtividade.value].trabalhoDiario
+      const rota = trabalhosRotasFiltrados[codigoAtividade.value].rota
+      props.setTrabalhoRotaCache(trabalhoDiario,rota)
     }
-  }, [ openModal, trabalhoDiario.id ] );
+  }, [codigoAtividade] );
+
 
   /**
    * Este effect verifica se existe algum trabalho diário valido em cache
    * caso tenha, seta a data, caso não limpa o cache.
    */
-  useEffect( () => {
+ /*  useEffect( () => {
     if( Object.entries( trabalhoDiario ).length > 0 ) {
       let date = trabalhoDiario.data.split( 'T' )[ 0 ].split( '-' );
 
@@ -161,7 +184,7 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
     } else {
       props.clearInspection(null);
     }
-  }, [ trabalhoDiario ] );
+  }, [ trabalhoDiario ] ); */
 
   useEffect( () => {
     if( rota.length > 0 ) {
@@ -222,30 +245,16 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
   }, [ imoveis ] );
 
   /**
-   * Este effect monitora a variável isFinalizado, caso ela seja true
-   * significa que o trabalho diário salvo em cache já está finalizado na base
-   * de dados e não deve ser permitido cadastrar novas vistorias
+   * Verica se o codigo da atividade que contem a rota
+   * foi selecionado pelo usuario
    */
-   useEffect(() => {
-    const checkFinalizado = () => {
-      if( props.isFinalizado ) {
-        const [ d, m, Y ]  = new Date().toLocaleDateString().split( '/' );
-        const current_date = `${ Y }-${ m }-${ d }`;
-        
-        props.clearRotaCache();
-        props.setIsFinalizado( undefined );
-        props.getRouteRequest( usuario.id, current_date );
-      }
+  const checkRota = () => {
+    if(codigoAtividade.value != null){
+      setOpenModalIniciarRota(true)
+      {$('#modal-iniciar-rota').modal( 'show' )}
     }
-
-    checkFinalizado();
-  }, [ props.isFinalizado ] );
-
-  /**
-   * Verica se o trabalho diário foi startado.
-   */
-  function checkRota() {
-    props.isStartedRequest( trabalhoDiario.id );
+    else
+      props.showNotifyToast('Por favor selecione o codigo da atividade!', 'warning')
   }
   
   /**
@@ -253,14 +262,18 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
    * de notificação ao usuário
    * @returns {Component}
    */
-  const informacoesRota = () => {    
-    if( typeof trabalhoDiario.id === 'undefined' ) {
+  const informacoesRota = () => {   
+    
+    const [ d, m, Y ]  = new Date().toLocaleDateString().split( '/' );
+    const current_date = `${ d }/${ m }/${ Y }`;
+
+    if( props.todosTrabalhosRotas.length == 0 ) {
       return (
-        <label className="m-0">Você não possui nenhuma rota em aberto!</label>
+        <label className="m-0">Você não possui nenhuma rota em aberto para hoje ({current_date})</label>
       );
-    } else if ( trabalhoDiario.horaInicio ) {
+    } else if ( trabalhosRotasFiltrados.length == 0 ) {
       return (
-        <label className="m-0">Você possui uma rota iniciada, realize as vistorias e finalize a rota antes de iniciar uma nova rota!</label>
+        <label className="m-0">Você já iniciou todas as rotas de hoje ({current_date}). Por favor dirija-se para a página de Vistorias para finaliza-las!</label>
       );
     } else {
       return (
@@ -268,7 +281,7 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
           <Col className="d-flex justify-content-between align-items-center">
             <label className="m-0">
               <mark className="bg-warning mr-2">Atenção</mark>
-              { `Você possui uma rota planejada em aberto, ${ trabalhoDiario_date }!`}
+              { `Você possui ${trabalhosRotasFiltrados.length}  rota(s) planejada(s) em aberto para hoje (${ current_date })!`}
             </label>
             <Button
               type="button"
@@ -284,6 +297,29 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
     }
   }
 
+  const cardAtividade = () => {
+
+    if(props.todosTrabalhosRotas.length != 0 && trabalhosRotasFiltrados.length != 0){
+      return (
+        <article className="col-12">
+          <div className="card">
+            <label htmlFor="codigoAtividade">Selecione o codigo da atividade<code>*</code></label>
+                <Select
+                  id="codigoAtividade"
+                  styles={ selectDefault }
+                  options={ codigoAtividadeOptions }
+                  value={ codigoAtividade }
+                  onChange={ e => setCodigoAtividade( e ) }
+                  required
+                />
+          </div>
+        </article>
+      )
+    }
+    else
+        return <div></div>  
+  }
+
   return (
     <>
       <PageHeader>
@@ -294,7 +330,11 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
       </PageHeader>
 
       <section className="card-list">
-        <ModalIniciarTrabalho id="modal-iniciar-rota" />
+        <ModalIniciarTrabalho 
+          id="modal-iniciar-rota" 
+          isOpen={ openModalIniciarRota } 
+          handleClose = { () => {setOpenModalIniciarRota(false)} }
+          />
         <Row>
           <PagePopUp className="w-100 col-12">
             <div className="card">
@@ -304,8 +344,10 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
             </div>
           </PagePopUp>
         </Row>
-
         <Row>
+          {
+          cardAtividade()
+          }
           <article className="col-12">
             <ProgressBar className="bg-success" percentage={ vistoriasFiltradas.length } total={ imoveis.length } />
           </article>
@@ -393,14 +435,11 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
 }
 
 const mapStateToProps = state => ( {
-  usuario:        state.appConfig.usuario,
-  trabalhoDiario: state.rotaCache.trabalhoDiario,
-  rota:           state.rotaCache.rota,
-  fl_iniciada:    state.rota.fl_iniciada,
-  openModal:      state.rota.openModal,
-  showNotStarted: state.vistoriaCache.showNotStarted,
-  vistoriasCache: state.vistoriaCache.vistorias,
-  isFinalizado:   state.rota.isFinalizado,
+  usuario:              state.appConfig.usuario,
+  trabalhoDiario:       state.rotaCache.trabalhoDiario,
+  rota:                 state.rotaCache.rota,
+  vistoriasCache:       state.vistoriaCache.vistorias,
+  todosTrabalhosRotas:  state.rotaCache.todosTrabalhosRotas,
 } );
 
 const mapDispatchToProps = dispatch =>
@@ -412,9 +451,10 @@ const mapDispatchToProps = dispatch =>
     resetShowNotStarted,
     resetOpenModal,
     clearInspection,
-    clearRotaCache,
+    clearTrabalhoRotaCache,
     isFinalizadoRequest,
     setIsFinalizado,
+    setTrabalhoRotaCache,
   }, dispatch );
 
 export default connect(

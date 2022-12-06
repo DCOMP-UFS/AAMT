@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col } from 'react-bootstrap';
+import $ from 'jquery';
 
 import { Button } from '../../styles/global';
 import ButtonSaveModal from '../../components/ButtonSaveModal';
@@ -9,8 +10,9 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { startRouteRequest, setAuxIniciado } from '../../store/Rota/rotaActions';
+import { startRouteRequest, setRotaIniciada } from '../../store/Rota/rotaActions';
 import { showNotifyToast } from '../../store/AppConfig/appConfigActions';
+import { clearTrabalhoRotaCache } from '../../store/RotaCache/rotaCacheActions';
 
 // import { Container } from './styles';
 // COMPONENTS
@@ -31,10 +33,20 @@ const getDate = () => {
   return today;
 }
 
-const ModalIniciarTrabalho = ( { trabalhoDiario, atividade, ...props } ) => {
+const ModalIniciarTrabalho = ( { trabalhoDiario, atividade, isOpen, handleClose, ...props } ) => {
   const [ horaInicio, setHoraInicio ] = useState("");
   const [ dataRota, setDataRota ] = useState('');
   const [ flLoading, setFlLoading ] = useState( false );
+
+  //Effect para limpar os campos todas fez que o
+  //modal for aberto
+  useEffect(() => {
+    if( isOpen ) {
+      setHoraInicio("");
+      setFlLoading(false)
+      handleClose()
+    }
+  }, [ isOpen ]);
 
   useEffect(() => {
     if( trabalhoDiario.data ) {
@@ -42,17 +54,27 @@ const ModalIniciarTrabalho = ( { trabalhoDiario, atividade, ...props } ) => {
     }
   }, [ trabalhoDiario ]);
 
-  //Effect que verifica se as rotas foram iniciadas
+  //Effect que verifica se a rota foi iniciada
   //responsavel por desativar o carregamento do botão Inicar
   useEffect(() => {
-    setFlLoading (false)
-    props.setAuxIniciado( undefined );
-  }, [ props.auxIniciado ]);
+    if(props.rotaIniciada){
+      setFlLoading (false)
+      props.setRotaIniciada( undefined );
+      props.showNotifyToast( "Rota foi iniciada com sucesso!", "success" )
+      props.clearTrabalhoRotaCache()
+      setTimeout(() => { document.location.reload( true );}, 1200)
+      $(`#${props.id}`).modal( 'hide' )
+    }
+    else{
+      setFlLoading (false)
+      props.setRotaIniciada( undefined );
+    }
+  }, [ props.rotaIniciada ]);
 
   function handleSubmit( e ) {
     e.preventDefault();
     setFlLoading(true)
-    props.startRouteRequest( trabalhoDiario.id, horaInicio );
+    props.startRouteRequest( trabalhoDiario.id, horaInicio );  
   }
 
   return (
@@ -124,11 +146,15 @@ const ModalIniciarTrabalho = ( { trabalhoDiario, atividade, ...props } ) => {
 const mapStateToProps = state => ({
   atividade: state.atividade,
   trabalhoDiario: state.rotaCache.trabalhoDiario,
-  auxIniciado: state.rota.auxIniciado,
+  rotaIniciada: state.rota.rotaIniciada,
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators( { startRouteRequest,showNotifyToast,setAuxIniciado }, dispatch );
+  bindActionCreators( { 
+    startRouteRequest,
+    showNotifyToast,
+    setRotaIniciada,
+    clearTrabalhoRotaCache }, dispatch );
 
 export default connect(
   mapStateToProps,

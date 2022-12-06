@@ -6,7 +6,8 @@ const INITIAL_STATE = {
   trabalhoDiario: {
     data: ""
   },
-  rota: []
+  rota: [],
+  todosTrabalhosRotas:[]
 }
 
 export default function RotaCache( state = INITIAL_STATE, action ) {
@@ -30,19 +31,25 @@ export default function RotaCache( state = INITIAL_STATE, action ) {
     }
 
     case ActionTypes.GET_ROUTE_SUCCESS: {
-      const { data }      = action.payload;
-      let trabalhoDiario  = INITIAL_STATE.trabalhoDiario;
-      let rota            = INITIAL_STATE.rota;
+      const { data }          = action.payload;
+      let trabalhoDiario      = INITIAL_STATE.trabalhoDiario;
+      let rota                = INITIAL_STATE.rota;
+      let todosTrabalhosRotas = INITIAL_STATE.todosTrabalhosRotas
 
-      if( typeof data.trabalhoDiario !== 'undefined' ) {
+      if( data.length > 0 ) {
+        todosTrabalhosRotas = data
+      }
+
+     /*  if( data.trabalhoDiario !== 'undefined' ) {
         trabalhoDiario  = data.trabalhoDiario;
         rota            = data.rota;
-      }
+      } */
 
       return {
         ...state,
         trabalhoDiario,
-        rota
+        rota,
+        todosTrabalhosRotas
       }
     }
 
@@ -54,10 +61,19 @@ export default function RotaCache( state = INITIAL_STATE, action ) {
       }
     }
 
-    case ActionTypes.CLEAR_ROTA_CACHE: {
+    case ActionTypes.CLEAR_TRABALHO_ROTA_CACHE: {
       return {
         ...state,
-        ...INITIAL_STATE,
+        trabalhoDiario:INITIAL_STATE.trabalhoDiario,
+        rota:INITIAL_STATE.rota
+      }
+    }
+
+    case ActionTypes.SET_TRABALHO_ROTA_CACHE: {
+      return {
+        ...state,
+        rota: action.payload.rota,
+        trabalhoDiario: action.payload.trabalhoDiario,
       }
     }
 

@@ -15,7 +15,7 @@ const INITIAL_STATE = {
    * o estado isFinalizado
   */
   auxFinalizado: undefined,
-  auxIniciado: undefined  
+  rotaIniciada: undefined  
 }
 
 export default function Rota(state = INITIAL_STATE, action) {
@@ -92,10 +92,10 @@ export default function Rota(state = INITIAL_STATE, action) {
         ...state,
         auxFinalizado: action.payload.auxFinalizado,
       };
-    case ActionTypes.SET_AUX_INICIADO:
+    case ActionTypes.SET_ROTA_INICIADA:
       return {
         ...state,
-        auxIniciado: action.payload.auxFinalizado,
+        rotaIniciada: action.payload.rotaIniciada,
       };
 
     default:

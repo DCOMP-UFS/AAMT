@@ -15,7 +15,7 @@ export const ActionTypes = {
   SALVAR_ROTA: "SALVAR_ROTA",
   RESETAR_OPENMODAL: "RESETAR_OPENMODAL",
   SET_AUX_FINALIZADO: "SET_AUX_FINALIZADO,",
-  SET_AUX_INICIADO: "SET_AUX_INICIADO"
+  SET_ROTA_INICIADA: "SET_ROTA_INICIADA"
 }
 
 /**
@@ -208,18 +208,24 @@ export const setAuxFinalizado = auxFinalizado => {
 }
 
 /**
- * Solicita ao reduce que altere a variável auxIniciado
- * auxInicado é um estado auxiliar para quando o trabalho
- * diario for iniciado, com o intuito de não interferir como
- * a variavel fl_iniciada
- * @param {boolean} AuxFinalizado 
- * @returns 
+ * Após a requisição para iniciar uma rota, essa action
+ * é chamada para indica ser o processo foi bem sucedido
+ * ou não.
+ * 
+ * Ela recebe um boolean ' rotaIniciada' que pode receber 3 valores:
+ * 
+ * true  - Requisição foi bem sucedisa
+ * false - Requisição não ocorreu ou houve alguma falha.
+ * undefined || null - Estado padrão, significa que nenhum requisição foi feita
+ *
+ * @param {Bollean} fl_carregando_rota
+ * @returns
  */
-export const setAuxIniciado = auxIniciado => {
+export const setRotaIniciada = rotaIniciada => {
   return {
-    type    : ActionTypes.SET_AUX_INICIADO,
+    type    : ActionTypes.SET_ROTA_INICIADA,
     payload : {
-      auxIniciado
+      rotaIniciada
     }
   }
 }

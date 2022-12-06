@@ -73,9 +73,9 @@ export function* getRotasPlanejadas(action) {
   }
 }
 
-export function* getRoute(action) {
+export function* getRoutes(action) {
   try {
-    const { data, status } = yield call( service.getRouteRequest, action.payload );
+    const { data, status } = yield call( service.getRoutesRequest, action.payload );
 
     if( status === 200 ) {
       yield put( RotaCacheActions.getRoute( data ) );
@@ -127,16 +127,16 @@ export function* startRoute(action) {
       //Linha abaixo foi comentada porque não é necessario limpar as vistorias de um trabalho que acabou de começar, ou seja, não possui vistorias ainda
       //yield put( VistoriaCacheActions.clearInspection(null) );
 
-      yield put( RotaActions.setAuxIniciado(true) );
-      window.location = window.location.origin.toString() + '/vistoria';
+      yield put( RotaActions.setRotaIniciada(true) );
+      //window.location = window.location.origin.toString() + '/vistoria';
     }else {
-      yield put( RotaActions.setAuxIniciado(false) );
+      yield put( RotaActions.setRotaIniciada(false) );
       yield put( AppConfigActions.showNotifyToast( "Falha ao iniciar rota: " + status, "error" ) );
     }
 
   } catch (err) {
 
-    yield put( RotaActions.setAuxIniciado(false) );
+    yield put( RotaActions.setRotaIniciada(false) );
 
     if(err.response){
       //Provavel erro de logica na API
@@ -206,7 +206,7 @@ function* watchIsFinalizado() {
 }
 
 function* watchGetRoute() {
-  yield takeLatest( RotaActions.ActionTypes.GET_ROUTE_REQUEST, getRoute );
+  yield takeLatest( RotaActions.ActionTypes.GET_ROUTE_REQUEST, getRoutes );
 }
 
 function* watchIsStarted() {

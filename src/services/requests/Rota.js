@@ -7,6 +7,13 @@ export const getRouteRequest = data => {
   });
 }
 
+export const getRoutesRequest = data => {
+  const { usuario_id, dia } = data;
+  return api.get(`/rotas/todas/${ usuario_id }/usuarios/${ dia }/data`, {
+    ...headerAuthorization()
+  });
+}
+
 export const getRotasPlanejadasRequest = data => {
   const { usuario_id, ciclo_id } = data;
   return api.get(`/rotas/planejadas/${ ciclo_id }/ciclo/${ usuario_id }/supervisor`, {

@@ -6,8 +6,10 @@ export const ActionTypes = {
   SET_ROTAS_PLANEJADAS        : "SET_ROTAS_PLANEJADAS",
   IS_FINALIZADO_REQUEST       : "IS_FINALIZADO_REQUEST",
   SET_IS_FINALIZADO           : "SET_IS_FINALIZADO",
-  GET_ROUTE_REQUEST: "GET_ROUTE_REQUEST",
-  GET_ROUTE_SUCCESS: "GET_ROUTE_SUCCESS",
+  GET_ROUTES_REQUEST: "GET_ROUTE_REQUEST",
+  GET_ROUTES_SUCCESS: "GET_ROUTES_SUCCESS",
+  GET_ROUTES_FAIL:    "GET_ROUTES_FAIL",
+  GET_ROUTES_RESET:   "GET_ROUTES_RESET",
   CHECK_ROTA_INICIADA_REQUEST: "CHECK_ROTA_INICIADA_REQUEST",
   CHECK_ROTA_INICIADA_SUCCESS: "CHECK_ROTA_INICIADA_SUCCESS",
   INICIAR_ROTA_REQUEST: "INICIAR_ROTA_REQUEST",
@@ -131,9 +133,9 @@ export const saveRoute = ( rota, horaInicio ) => {
   }
 }
 
-export const getRouteRequest = ( usuario_id, dia ) => {
+export const getRoutesRequest = ( usuario_id, dia ) => {
   return {
-    type: ActionTypes.GET_ROUTE_REQUEST,
+    type: ActionTypes.GET_ROUTES_REQUEST,
     payload: {
       usuario_id,
       dia
@@ -141,12 +143,21 @@ export const getRouteRequest = ( usuario_id, dia ) => {
   }
 }
 
-export const getRoute = data => {
+export const getRoutesSuccess = () => {
   return {
-    type: ActionTypes.GET_ROUTE_SUCCESS,
-    payload: {
-      data
-    }
+    type: ActionTypes.GET_ROUTES_SUCCESS,
+  }
+}
+
+export const getRoutesFail = () => {
+  return {
+    type: ActionTypes.GET_ROUTES_FAIL,
+  }
+}
+
+export const getRoutesReset = () => {
+  return {
+    type: ActionTypes.GET_ROUTES_RESET,
   }
 }
 

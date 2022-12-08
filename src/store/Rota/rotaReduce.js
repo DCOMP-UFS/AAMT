@@ -15,7 +15,8 @@ const INITIAL_STATE = {
    * o estado isFinalizado
   */
   auxFinalizado: undefined,
-  rotaIniciada: undefined  
+  rotaIniciada: undefined,
+  fl_rotas_encontradas: undefined,
 }
 
 export default function Rota(state = INITIAL_STATE, action) {
@@ -62,23 +63,26 @@ export default function Rota(state = INITIAL_STATE, action) {
       }
     }
 
-    case ActionTypes.GET_ROUTE_SUCCESS: {
-      const { data } = action.payload;
-      let trabalhoDiario = INITIAL_STATE.trabalhoDiario;
-      let rota = INITIAL_STATE.rota;
-
-      if( typeof data.trabalhoDiario !== 'undefined' ) {
-        trabalhoDiario = data.trabalhoDiario;
-        rota = data.rota;
-      }
-
-
+    case ActionTypes.GET_ROUTES_SUCCESS: {
       return {
         ...state,
-        trabalhoDiario,
-        rota
+        fl_rotas_encontradas:true
       }
     }
+
+    case ActionTypes.GET_ROUTES_FAIL: {
+       return {
+         ...state,
+         fl_rotas_encontradas:false
+       }
+     }
+    
+     case ActionTypes.GET_ROUTES_RESET: {
+      return {
+        ...state,
+        fl_rotas_encontradas:undefined
+      }
+    } 
 
     case ActionTypes.CHECK_ROTA_INICIADA_SUCCESS: {
       return {

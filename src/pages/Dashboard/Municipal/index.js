@@ -9,7 +9,7 @@ import $ from 'jquery';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
-import { getRouteRequest } from '../../../store/Rota/rotaActions';
+import { getRoutesRequest } from '../../../store/Rota/rotaActions';
 import { setAcabouDeLogar } from '../../../store/AppConfig/appConfigActions';
 
 // STYLES
@@ -33,7 +33,7 @@ export const HomeSupervisor = ({ ...props }) => {
     if(props.acabouDeLogar){
       const [ d, m, Y ]  = new Date().toLocaleDateString().split( '/' );
       const current_date = `${ Y }-${ m }-${ d }`;
-      props.getRouteRequest( props.usuario.id, current_date );
+      props.getRoutesRequest( props.usuario.id, current_date );
     }
     props.setAcabouDeLogar(false)
   }, [props.acabouDeLogar]);
@@ -87,7 +87,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   changeSidebar,
   setAcabouDeLogar,
-  getRouteRequest,
+  getRoutesRequest,
 }
 
 export default connect(

@@ -10,7 +10,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { closeRouteRequest, getRouteRequest, setAuxFinalizado } from '../../store/Rota/rotaActions';
+import { closeRouteRequest, setAuxFinalizado } from '../../store/Rota/rotaActions';
 import { showNotifyToast } from '../../store/AppConfig/appConfigActions';
 
 // import { Container } from './styles';
@@ -48,8 +48,11 @@ function ModalFinalizarTrabalho({ usuario, vistoriasCache, trabalhoDiario, ativi
   //Effect que verifica se as rotas foram finalizadas
   //responsavel por desativar o carregamento do botão Encerrar
   useEffect(() => {
-    if(props.auxFinalizado)
+    if(props.auxFinalizado){
+      props.showNotifyToast( "Rota finalizada e vistorias registradas com sucesso!", "success" )
+      setTimeout(() => { document.location.reload( true );}, 1000)
       $( "#"+props.id ).modal( 'hide' );
+    }
     setFlLoading (false)
     props.setAuxFinalizado( undefined );
   }, [ props.auxFinalizado ]);
@@ -155,7 +158,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ closeRouteRequest, getRouteRequest, showNotifyToast, setAuxFinalizado }, dispatch);
+  bindActionCreators({ closeRouteRequest, showNotifyToast, setAuxFinalizado }, dispatch);
 
 export default connect(
   mapStateToProps,

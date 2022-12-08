@@ -54,7 +54,6 @@ getRoute = async ( req, res ) => {
       where: {
         usuario_id: usuario.id,
         data:       `${ data }`,
-        horaFim:    null
       },
 
       include: {
@@ -144,6 +143,141 @@ getRoute = async ( req, res ) => {
       rota
     } );
   } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
+}
+
+//Busca todas as rotas do usuario em uma determinada data
+getAllRoutes = async ( req, res ) => {
+  try{
+    const { usuario_id, data } = req.params;
+    const userId = req.userId;
+
+    // Iniciando validação
+    const userRequest = await Usuario.findByPk( userId, {
+      include: {
+        association: "atuacoes"
+      }
+    } );
+
+    let fl_agente = false;
+    userRequest.atuacoes.forEach( at => {
+      if( at.tipoPerfil === 4 )
+        fl_agente = true;
+    });
+
+    if( fl_agente && parseInt( usuario_id ) !== userRequest.id )
+      return res.status( 400 ).json( { error: "Acesso negado" } );
+
+    const usuario = await Usuario.findByPk( usuario_id );
+
+    if( !usuario )
+      return res.status( 400 ).json( { error: "Usuário não existe" } );
+
+    const trabalhos_diarios = await TrabalhoDiario.findAll( {
+      where: {
+        usuario_id: usuario.id,
+        data:       `${ data }`,
+        horaFim:    null
+      },
+
+      include: {
+        association: 'equipe',
+        include: { 
+          association: 'atividade',
+          include: [
+            {
+              association: 'metodologia',
+              attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+            },
+            {
+              association: 'objetivo',
+              attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+            },
+          ]
+        }
+      }
+    } );
+
+    if( !trabalhos_diarios )
+      return res.json( {} );
+
+    var result = []
+      
+    for( const td of trabalhos_diarios) {
+      var imoveisId = await imoveisVistoriados(td, td.equipe.id)
+
+      let rota = await Quarteirao.findAll( {
+        include: {
+          association: 'lados',
+          include: [
+            {
+              association: 'imoveis',
+              where:{
+                ativo:true,
+                id: {
+                  [Op.notIn]: imoveisId
+                },
+              }
+            },
+            {
+              association: 'rota',
+              where: {
+                id: td.id
+              }
+            },
+            { association: 'rua' }
+          ]
+        }
+      } );
+
+      const sequencia_usuario = await Atuacao.findOne( {
+        where: {
+          usuario_id,
+          local_id: td.equipe.atividade.municipio_id
+        }
+      } ).then( at => at.sequencia_usuario );
+
+      const codigo_municipio = await Municipio.findOne({
+        where: {
+          id: td.equipe.atividade.municipio_id
+        }
+      } ).then( mun => mun.codigo );
+
+      rota = rota.filter( r => r.lados.length > 0 );
+      
+      let equipe = {
+        id: td.equipe.id,
+        atividade_id: td.equipe.atividade_id
+      };
+
+      let trabalhoDiario = {
+        id:             td.id,
+        sequencia:      td.sequencia,
+        data:           td.data,
+        horaInicio:     td.horaInicio,
+        horaFim:        td.horaFim,
+        usuario_id:     td.usuario_id,
+        sequencia_usuario,
+        supervisor_id:  td.supervisor_id,
+        equipe_id:      td.supervisor_id,
+        equipe:         equipe,
+        atividade:      td.equipe.atividade,
+        codigo_municipio,
+      };
+
+      result.push({
+        trabalhoDiario,
+        rota})
+
+    }
+    
+    return res.json( result );
+  } catch (error) {
+    console.log(error)
     return res.status( 400 ).send( { 
       status: 'unexpected error',
       mensage: 'Algum problema inesperado ocorreu nesta rota da api',
@@ -1083,6 +1217,7 @@ const router = express.Router();
 router.use(authMiddleware);
 
 router.get( '/:usuario_id/usuarios/:data/data', getRoute );
+router.get( '/todas/:usuario_id/usuarios/:data/data', getAllRoutes );
 router.get( '/planejamento/:usuario_id/usuarios', getPlain );
 router.post( '/planejamento', planejarRota );
 router.post( '/iniciar', startRoute );

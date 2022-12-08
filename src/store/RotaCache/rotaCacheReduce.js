@@ -7,7 +7,7 @@ const INITIAL_STATE = {
     data: ""
   },
   rota: [],
-  todosTrabalhosRotas:[]
+  todosTrabalhosRotas:[], // lista que contem todos os trabalhos diarios da data atual junto com suas repectivas rotas
 }
 
 export default function RotaCache( state = INITIAL_STATE, action ) {
@@ -32,8 +32,6 @@ export default function RotaCache( state = INITIAL_STATE, action ) {
 
     case ActionTypes.GET_ROUTE_SUCCESS: {
       const { data }          = action.payload;
-      let trabalhoDiario      = INITIAL_STATE.trabalhoDiario;
-      let rota                = INITIAL_STATE.rota;
       let todosTrabalhosRotas = INITIAL_STATE.todosTrabalhosRotas
 
       if( data.length > 0 ) {
@@ -47,8 +45,6 @@ export default function RotaCache( state = INITIAL_STATE, action ) {
 
       return {
         ...state,
-        trabalhoDiario,
-        rota,
         todosTrabalhosRotas
       }
     }

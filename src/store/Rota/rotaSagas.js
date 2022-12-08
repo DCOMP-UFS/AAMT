@@ -73,17 +73,23 @@ export function* getRotasPlanejadas(action) {
   }
 }
 
+//Busca todas as rotas do usuarios que foram passadas hoje
 export function* getRoutes(action) {
   try {
     const { data, status } = yield call( service.getRoutesRequest, action.payload );
 
     if( status === 200 ) {
       yield put( RotaCacheActions.getRoute( data ) );
+      yield put( RotaActions.getRoutesSuccess() );
     }else {
+      yield put( RotaActions.getRoutesFail() );
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar a rota: " + status, "error" ) );
     }
 
   } catch (err) {
+
+    yield put( RotaActions.getRoutesFail() );
+
     if(err.response){
       //Provavel erro de logica na API
       yield put( AppConfigActions.showNotifyToast( "Erro ao consultar a rota, entre em contato com o suporte", "error" ) );
@@ -159,10 +165,9 @@ export function* closeRoute(action) {
         const current_date = `${Y}-${m}-${d}`;
         const { data } = yield call( service.getRouteRequest, { usuario_id: action.payload.usuario_id, dia: current_date } );
 
-        yield put( RotaCacheActions.getRoute( data ) );
+        //yield put( RotaCacheActions.getRoute( data ) );
         yield put( VistoriaCacheActions.clearInspection(action.payload.trabalhoDiario_id) );
         yield put( RotaActions.setAuxFinalizado(true) );
-        yield put( AppConfigActions.showNotifyToast( "Rota finalizada e vistorias registradas com sucesso!", "success" ) );
 
         //linha abaixo foi comentado porque o redirecionamento não permitia a limpeza da barra de progressão de vistorias
 
@@ -206,7 +211,7 @@ function* watchIsFinalizado() {
 }
 
 function* watchGetRoute() {
-  yield takeLatest( RotaActions.ActionTypes.GET_ROUTE_REQUEST, getRoutes );
+  yield takeLatest( RotaActions.ActionTypes.GET_ROUTES_REQUEST, getRoutes );
 }
 
 function* watchIsStarted() {

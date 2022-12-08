@@ -12,6 +12,8 @@ import ReactMapGL, { Marker } from 'react-map-gl';
 import img_home_icon from '../../assets/home-icon.png';
 import img_home_icon_green from '../../assets/home-icon-green.png';
 import $ from 'jquery';
+import Select from 'react-select';
+import LoadingPage from '../../components/LoadingPage';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -19,14 +21,14 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../store/Sidebar/sidebarActions';
-import { getRouteRequest } from '../../store/Rota/rotaActions';
+import { getRoutesRequest, isFinalizadoRequest, getRoutesReset } from '../../store/Rota/rotaActions';
 import { resetHandleSave, routeNotStarted } from '../../store/VistoriaCache/vistoriaCacheActions';
 import { changeTableSelected } from '../../store/SupportInfo/supportInfoActions';
-import { isFinalizadoRequest } from '../../store/Rota/rotaActions';
-import {showNotifyToast} from '../../store/AppConfig/appConfigActions'
+import { showNotifyToast } from '../../store/AppConfig/appConfigActions'
+import { setTrabalhoRotaCache, clearTrabalhoRotaCache } from '../../store/RotaCache/rotaCacheActions';
 
 // STYLES
-import { Button } from '../../styles/global';
+import { Button, selectDefault } from '../../styles/global';
 import { PageIcon, PageHeader, PagePopUp } from '../../styles/util';
 import { Container } from './styles';
 
@@ -135,6 +137,13 @@ const Vistoria = ( { vistoriasCache, usuario, trabalhoDiario, rota, showNotStart
   //por isso é necessario coletar as vistorias do trabalho diario do usuario que está logado agora.
   //O estado abaixo armazena a lista de vistorias filtradas
   const [ vistoriasFiltradas, setVistoriasFiltradas ]  = useState( [] );
+  
+  const [ trabalhosRotasFiltrados, setTrabalhosRotasFiltrados ]   = useState( [] );
+
+  const [ codigoAtividadeOptions, setCodigoAtividadeOptions ]   = useState( [{ value: null, label: '' }] );
+  const [ codigoAtividade, setCodigoAtividade ]   = useState( {} );
+
+  const [ isPageLoading, setIsPageLoading ] = useState(true)
 
   const options = {
     customToolbar: () => {
@@ -149,6 +158,12 @@ const Vistoria = ( { vistoriasCache, usuario, trabalhoDiario, rota, showNotStart
                   "/vistoria/cadastrar"
                 );
               }
+              else if(trabalhosRotasFiltrados.length == 0){
+                props.showNotifyToast("Não existe uma rota para adicionar vistorias",'warning')
+              }
+              else if(codigoAtividade.value == null){
+                props.showNotifyToast("Por favor selecione o codigo da atividade que contem a rota",'warning')
+              }
               else{
                 props.showNotifyToast("Todos os imoveis ja foram vistoriados",'warning')
               }
@@ -157,7 +172,6 @@ const Vistoria = ( { vistoriasCache, usuario, trabalhoDiario, rota, showNotStart
       );
     },
     customToolbarSelect: ( { data } ) => {
-      console.log(data)
       props.changeTableSelected( 'tableVistoria', data );
       return (
         <ButtonDelete
@@ -175,49 +189,70 @@ const Vistoria = ( { vistoriasCache, usuario, trabalhoDiario, rota, showNotStart
     },
   };
 
-  /**
-   * Este effect é acionado assim que o componente e montado e verifica se existe
-   * algum trabalho diário iniciado e, se sim, se a rota de trabalho já foi 
-   * finalizada na base
-   */
   useEffect( () => {
-    const initVistoria = () => {
-      if( trabalhoDiario.id ) {
-        props.isFinalizadoRequest( trabalhoDiario.id );
-      }
-    }
+    props.changeSidebar( "vistoria" );
 
-    initVistoria();
+    const [ d, m, Y ]  = new Date().toLocaleDateString().split('/');
+    const current_date = `${ Y }-${ m }-${ d }`;
+
+    props.getRoutesRequest( usuario.id, current_date );
+    props.resetHandleSave();
   }, [] );
 
-  /**
-   * Este effect monitora a variável isFinalizado, caso ela seja true
-   * significa que o trabalho diário salvo em cache já está finalizado na base
-   * de dados e não deve ser permitido cadastrar novas vistorias
-   */
+  //Esse useEffect faz com que a pagina fique carregando até que a requisição
+  //feita no useEffect acima (atraves do 'props.getRouteRequest') seja finalizada
   useEffect( () => {
-    const checkFinalizado = () => {
-      if( props.isFinalizado ) {
-        window.location = window.location.origin + '/rota';
+    if(props.fl_rotas_encontradas != undefined){
+      setIsPageLoading(false)
+      props.getRoutesReset()
+    }
+  }, [ props.fl_rotas_encontradas ] );
+  
+  useEffect( () => {
+
+    //Busca os trabalhos diarios que faltam ser finalizados
+    const trabalhosRotasFilter = props.todosTrabalhosRotas.filter( 
+      elem => elem.trabalhoDiario.horaInicio != null && elem.trabalhoDiario.horaFim == null
+    )
+
+    setCodigoAtividadeOptions( trabalhosRotasFilter.map( (elem,index) => ( { value: index, label: elem.trabalhoDiario.atividade.id } )) )
+
+    //Caso exista um trabalho diario armazenado no cache
+    if(trabalhoDiario.id){
+      // verifica se o trabalho diario do cache ainda pertence à lista de trabalhos que devem ser finalizados hoje
+      const index = trabalhosRotasFilter.findIndex( elem => ( elem.trabalhoDiario.id == trabalhoDiario.id ) )
+
+      if(index != -1){
+        const codigoOption = { value: index, label: trabalhosRotasFilter[index].trabalhoDiario.atividade.id  }
+        setCodigoAtividade(codigoOption)
+      }
+      else{
+        setCodigoAtividade({value: null, label: ' ' })
+        //limpa o trabalho diario do cache e a sua respectiva rota
+        props.clearTrabalhoRotaCache()
       }
     }
 
-    checkFinalizado();
-  }, [ props.isFinalizado ] );
+    setTrabalhosRotasFiltrados(trabalhosRotasFilter)
 
-  /**
-   * Este effect monitora a variável showNotStarted que verifica se a rota de 
-   * trabalho foi iniciada
-   */
+  }, [props.todosTrabalhosRotas] );
+
   useEffect( () => {
-    if( showNotStarted )
-      setTimeout( () => { window.location = window.location.origin + '/rota'; }, 300 );
-  }, [ showNotStarted ] );
+    if(codigoAtividade.value != null){
+      const trabalhoDiario = trabalhosRotasFiltrados[codigoAtividade.value].trabalhoDiario
+      const rota = trabalhosRotasFiltrados[codigoAtividade.value].rota
+      props.setTrabalhoRotaCache(trabalhoDiario,rota)
+    }
+  }, [codigoAtividade] );
 
   useEffect( () => {
     const createRows = () => {
       let vists = []
-      let filtragem = vistoriasCache.filter((vistoria) => vistoria.trabalhoDiario_id == trabalhoDiario.id)
+      let filtragem = []
+
+      if(trabalhoDiario.id)
+        filtragem = vistoriasCache.filter((vistoria) => vistoria.trabalhoDiario_id == trabalhoDiario.id)
+
       setVistoriasFiltradas(filtragem)
       
       //Apenas as vistorias do trabalho diario atual são mostradas
@@ -240,23 +275,7 @@ const Vistoria = ( { vistoriasCache, usuario, trabalhoDiario, rota, showNotStart
     }
 
     createRows();
-  }, [ vistoriasCache, props.reload ] );
-
-  useEffect(() => {
-    if( !trabalhoDiario.id ) {
-      props.routeNotStarted();
-    } else if( !trabalhoDiario.horaInicio ) {
-      props.routeNotStarted();
-    }
-
-    props.changeSidebar( "vistoria" );
-
-    const [ d, m, Y ]  = new Date().toLocaleDateString().split('/');
-    const current_date = `${ Y }-${ m }-${ d }`;
-
-    props.getRouteRequest( usuario.id, current_date );
-    props.resetHandleSave();
-  }, [ trabalhoDiario.horaInicio, trabalhoDiario.id, usuario.id ] );
+  }, [ vistoriasCache, props.reload, trabalhoDiario ] );
 
   // pegando a lista de imóveis planejados para trabalho
   useEffect( () => {
@@ -280,23 +299,31 @@ const Vistoria = ( { vistoriasCache, usuario, trabalhoDiario, rota, showNotStart
       } );
       setImoveis( imo );
     }
+    else
+      setImoveis( [] );
   }, [ rota ] );
 
   function openModalFinalizarRota() {
-    let ultimoHorario = ""
-    //Procura o horario da ultima vistoria
-    rows.forEach( l => {
-      if(l[8] > ultimoHorario)
-        ultimoHorario = l[8]
-    } )
-    if(ultimoHorario != "")
-      setUltimoHorarioVistoria(ultimoHorario)
-    else
-      setUltimoHorarioVistoria(null)
-      
-    $('#modal-finalizar-rota').modal( 'show' );
+    if(codigoAtividade.value == null)
+      props.showNotifyToast("Por favor selecione o codigo da atividade que contem a rota","warning")
+    else{
+      let ultimoHorario = ""
+      //Procura o horario da ultima vistoria
+      rows.forEach( l => {
+        if(l[8] > ultimoHorario)
+          ultimoHorario = l[8]
+      } )
+      if(ultimoHorario != "")
+        setUltimoHorarioVistoria(ultimoHorario)
+      else
+        setUltimoHorarioVistoria(null)
+        
+      $('#modal-finalizar-rota').modal( 'show' );
+    }
   }
-
+  if(isPageLoading){
+    return(<LoadingPage/>)
+  }
   return (
     <Container>
       <PageHeader>
@@ -310,24 +337,56 @@ const Vistoria = ( { vistoriasCache, usuario, trabalhoDiario, rota, showNotStart
         <Row>
           <PagePopUp className="w-100 col-12">
             <div className="card">
-              <Row>
-                <Col className="d-flex align-items-center">
-                  <Button
-                    type      ="button"
-                    className ="success btn-small mr-2"
-                    onClick   ={ openModalFinalizarRota }
-                  >
-                    <FaCheckDouble className="btn-icon" />
-                    Encerrar Rota
-                  </Button>
+              {( () => 
+                {
+                  if(trabalhosRotasFiltrados.length == 0){
+                    return (
+                      <Row>
+                        <Col className="d-flex align-items-center">
+                          <label className="m-0">
+                            Sem rotas para serem finalizadas. Por favor dirija-se para a página de Rota e verifique se existem rotas para serem iniciadas
+                          </label>
+                        </Col>
+                      </Row>
+                    )
+                  }
+                  return (
+                    <Row>
+                      <Col className="d-flex align-items-center">
+                        <Button
+                          type      ="button"
+                          className ="success btn-small mr-2"
+                          onClick   ={ openModalFinalizarRota }
+                        >
+                          <FaCheckDouble className="btn-icon" />
+                          Encerrar Rota
+                        </Button>
 
-                  <label className="m-0">
-                    Após finalizar a rota não será mais possível modificar os dados das vistorias!
-                  </label>
-                </Col>
-              </Row>
+                        <label className="m-0">
+                          Após finalizar a rota não será mais possível modificar os dados das vistorias!
+                        </label>
+                      </Col>
+                    </Row>
+                  )
+              }) ()}
             </div>
           </PagePopUp>
+
+          <article className={trabalhosRotasFiltrados.length == 0 ? "d-none" : "col-12"}>
+            <div className="card">
+            < label htmlFor="codigoAtividade">Selecione o codigo da atividade<code>*</code></label>
+              <div style={{width:"25%"}}>
+                <Select
+                  id="codigoAtividade"
+                  styles={ selectDefault }
+                  options={ codigoAtividadeOptions }
+                  value={ codigoAtividade }
+                  onChange={ e => setCodigoAtividade( e ) }
+                  required
+                />
+              </div>
+            </div>
+          </article>
 
           <article className="col-12">
             <ProgressBar className="bg-success" percentage={ vistoriasFiltradas.length } total={ imoveis.length } />
@@ -402,17 +461,23 @@ const mapStateToProps = state => ( {
   showNotStarted: state.vistoriaCache.showNotStarted,
   reload        : state.vistoriaCache.reload,
   isFinalizado  : state.rota.isFinalizado,
+  todosTrabalhosRotas:  state.rotaCache.todosTrabalhosRotas,
+  manterTrabalhoRota: state.rotaCache.manterTrabalhoRota,
+  fl_rotas_encontradas: state.rota.fl_rotas_encontradas
 } );
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators( {
   changeSidebar,
-  getRouteRequest,
+  getRoutesRequest,
   resetHandleSave,
   routeNotStarted,
   changeTableSelected,
   isFinalizadoRequest,
-  showNotifyToast
+  showNotifyToast,
+  setTrabalhoRotaCache,
+  clearTrabalhoRotaCache,
+  getRoutesReset,
 }, dispatch );
 
 export default connect(

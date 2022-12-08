@@ -12,6 +12,7 @@ import ProgressBar from '../../components/ProgressBar';
 import { tipoImovelEnum } from '../../config/enumerate';
 import $ from 'jquery';
 import Select from 'react-select';
+import LoadingPage from '../../components/LoadingPage';
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -25,9 +26,10 @@ import { clearTrabalhoRotaCache, setTrabalhoRotaCache } from '../../store/RotaCa
 import {
   isFinalizadoRequest,
   setIsFinalizado,
-  getRouteRequest,
+  getRoutesRequest,
   isStartedRequest,
   resetOpenModal,
+  getRoutesReset
 } from '../../store/Rota/rotaActions';
 
 // STYLES
@@ -120,6 +122,8 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
   const [ entrouPagina, setEntrouPagina] = useState ( true )
   const [ openModalIniciarRota, setOpenModalIniciarRota] = useState ( false )
 
+  const [ isPageLoading, setIsPageLoading ] = useState(true)
+
   const options                                         = {
     selectableRows: 'none'
   };
@@ -147,12 +151,21 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
 
       //Irá busca todos as rotas e seus repectivos trabalhos diarios agendados para hoje
       //Será armazenado no state "todosTrabalhosRotas" no rotaCacheReduce
-      props.getRouteRequest( usuario.id, current_date );
+      props.getRoutesRequest( usuario.id, current_date );
       //props.clearInspection()
     }
 
     initHome();
   }, [] );
+
+  //Esse useEffect faz com que a pagina fique carregando até que a requisição
+  //feita no useEffect acima (atraves do 'props.getRouteRequest') seja finalizada
+  useEffect( () => {
+    if(props.fl_rotas_encontradas != undefined){
+      setIsPageLoading(false)
+      props.getRoutesReset()
+    }
+  }, [ props.fl_rotas_encontradas ] );
 
   useEffect( () => {
     const trabalhosRotasFilter = props.todosTrabalhosRotas.filter( elem => elem.trabalhoDiario.horaInicio == null)
@@ -160,7 +173,7 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
     setCodigoAtividadeOptions( trabalhosRotasFilter.map( (elem,index) => ( { value: index, label: elem.trabalhoDiario.atividade.id } )) )
 
     setTrabalhosRotasFiltrados(trabalhosRotasFilter)
-    //setIsCarregandoPagina(false)
+
   }, [props.todosTrabalhosRotas] );
 
   useEffect( () => {
@@ -207,11 +220,17 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
       } );
       setImoveis( imo );
     }
+    else
+      setImoveis( [] );
+
   }, [ rota ] );
 
   useEffect( () => {
     function createRows() {
-      let filtragem = vistoriasCache.filter((vistoria) => vistoria.trabalhoDiario_id == trabalhoDiario.id)
+      let filtragem = []
+      if(trabalhoDiario.id)
+        filtragem = vistoriasCache.filter((vistoria) => vistoria.trabalhoDiario_id == trabalhoDiario.id)
+        
       setVistoriasFiltradas(filtragem)
       
       let qtdTipo = [ 0, 0, 0, 0 ];
@@ -318,6 +337,10 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
     }
     else
         return <div></div>  
+  }
+
+  if(isPageLoading){
+    return(<LoadingPage/>)
   }
 
   return (
@@ -440,12 +463,13 @@ const mapStateToProps = state => ( {
   rota:                 state.rotaCache.rota,
   vistoriasCache:       state.vistoriaCache.vistorias,
   todosTrabalhosRotas:  state.rotaCache.todosTrabalhosRotas,
+  fl_rotas_encontradas: state.rota.fl_rotas_encontradas
 } );
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators( {
     changeSidebar,
-    getRouteRequest,
+    getRoutesRequest,
     isStartedRequest,
     showNotifyToast,
     resetShowNotStarted,
@@ -455,6 +479,7 @@ const mapDispatchToProps = dispatch =>
     isFinalizadoRequest,
     setIsFinalizado,
     setTrabalhoRotaCache,
+    getRoutesReset,
   }, dispatch );
 
 export default connect(

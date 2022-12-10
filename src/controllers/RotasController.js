@@ -277,7 +277,6 @@ getAllRoutes = async ( req, res ) => {
     
     return res.json( result );
   } catch (error) {
-    console.log(error)
     return res.status( 400 ).send( { 
       status: 'unexpected error',
       mensage: 'Algum problema inesperado ocorreu nesta rota da api',
@@ -349,6 +348,66 @@ planejarRota = async ( req, res ) => {
       equipe_id,
       sequencia: td.length > 0 ? td[ 0 ].sequencia + 1 : 1        
     } );
+
+    const rota = lados.map( lado_id => ( {
+      lado_id,
+      trabalho_diario_id: trabalho_diario.id
+    } ) );
+
+    Rota.bulkCreate( rota );
+
+    return res.json( trabalho_diario );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
+}
+
+/**
+ * Esta função alterar as rotas de um trabalho diário na base para um determinado
+ * agente
+ * 
+ * @param {Integer} trabalho_diario_id o trabalho diario que terá sua rota alterada
+ * @body {Array} lados lados dos novos quarteirões planejado para o usuário
+ */
+alterarRota = async ( req, res ) => {
+  try{
+    const { trabalhoDiario_id } = req.params
+    const { lados,} = req.body;
+    const userId = req.userId;
+
+    // Iniciando validação
+    const usuario_req = await Usuario.findByPk( userId );
+
+    const allow = await allowFunction( usuario_req.id, 'definir_trabalho_diario' );
+    if( !allow )
+      return res.status( 403 ).json( { error: 'Acesso negado' } );
+
+    // en-GB: d/m/Y
+    const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split( '/' );
+    const current_date = `${ Y }-${ m }-${ d }`;
+
+    const trabalho_diario = await TrabalhoDiario.findOne({
+      where: { 
+          id: trabalhoDiario_id,
+          data: {[Op.eq]: current_date} 
+        } 
+    })
+
+    if(!trabalho_diario)
+      return res.status( 400 ).json( { error: 'A rota do trabalho diario informado não pode ser alterado. Ou ele não existe ou a data do trabalho não é a mesma que a data de hoje' } );
+    
+    if(trabalho_diario.horaInicio != null){
+      return res.status( 400 ).json( { error: 'Não é possível alterar uma rota de um trabalho que já foi iniciado' } );
+    }
+
+    const deleteRostasAntigas = await Rota.destroy({
+      where: {
+        trabalho_diario_id: trabalho_diario.id
+      }
+    })
 
     const rota = lados.map( lado_id => ( {
       lado_id,
@@ -1226,5 +1285,7 @@ router.get( '/check/:trabalhoDiario_id/trabalhoDiario', isStarted );
 router.get( '/abertas/:equipe_id/equipes', getOpenRouteByTeam );
 router.get( '/planejadas/:ciclo_id/ciclo/:usuario_id/supervisor', consultarRotasPlanejadas );
 router.get( '/isFinalizado/:trabalhoDiario_id/trabalhoDiario', isFinalizado );
+router.put( '/alterar/:trabalhoDiario_id/trabalhoDiario', alterarRota )
+
 
 module.exports = app => app.use( '/rotas', router );

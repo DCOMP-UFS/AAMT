@@ -17,7 +17,8 @@ export const ActionTypes = {
   SALVAR_ROTA: "SALVAR_ROTA",
   RESETAR_OPENMODAL: "RESETAR_OPENMODAL",
   SET_AUX_FINALIZADO: "SET_AUX_FINALIZADO,",
-  SET_ROTA_INICIADA: "SET_ROTA_INICIADA"
+  SET_ROTA_INICIADA: "SET_ROTA_INICIADA",
+  PUT_ROTA_REQUEST: "PUT_ROTA_REQUEST"
 }
 
 /**
@@ -34,6 +35,20 @@ export const planejarRotaRequest = rota => {
     type: ActionTypes.PLANEJAR_ROTA_REQUEST,
     payload: {
       rota
+    }
+  }
+}
+
+/**
+ * Alterar a rota do trabalho diario com id "trabalhoDiario_id".
+ * Lados contem a nova rota que será salva no banco
+**/
+export const alterarRotaRequest = (trabalhoDiario_id, lados) => {
+  return {
+    type: ActionTypes.PUT_ROTA_REQUEST,
+    payload: {
+      trabalhoDiario_id, 
+      lados
     }
   }
 }

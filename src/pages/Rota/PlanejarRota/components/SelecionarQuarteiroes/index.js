@@ -28,6 +28,7 @@ import { PersonPinSharp } from '@material-ui/icons';
  * @returns 
  */
 export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, rota_equipe, equipes, indexAtividade, ...props } ) => {
+
   /**
    * Este effect é acionado assi mque o componente é montado.
    * Sua responsabilidade é ativar o componente de loading e solicitar
@@ -72,11 +73,42 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
               content="Selecione os quarteirões que o agente irá trabalhar."
             />
           </h4>
-          {/*
-            <p className="text-description">
-              <code>Agente já possui rota planejada para hoje!</code>
-            </p>
-          */} 
+          { 
+            (() => {
+              if(indexEquipe > -1 && indexMembro > -1 && equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje.id){
+                if(equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje.horaInicio == null ){
+                  return (
+                    <div style={{width:"65%"}}>
+                      <div className="card">
+                        <label className="m-0">
+                
+                          <b style={{color:"red"}}>Atenção:</b> Agente ja possui rota para hoje, mas ainda é possivel alterá-la.
+                          
+                      
+                        </label>
+                      </div>
+                    </div>
+                  )
+                }
+                else {
+                  return (
+                    <div style={{width:"65%"}}>
+                      <div className="card">
+                        <label className="m-0">
+                
+                          <b style={{color:"red"}}>Atenção:</b> Agente ja possui rota para hoje, não sendo possível mais alterá-la por já ter sido iniciada.
+                          
+                      
+                        </label>
+                      </div>
+                    </div>
+                  )
+                }
+              }
+              else  
+                return (<div></div>)
+             }) ()
+          } 
         </Col>
       </Row>
       <Row id="list-quarteirao" style={ { paddingBottom: '30px', minHeight: '500px', maxHeight: '500px', overflow: 'auto' } }>
@@ -95,6 +127,14 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
 }
 
 const ExibirQuarteiroes = ( { rota_equipe, fl_loading, indexEquipe, indexMembro, equipes, toggleLado, atividade, ...props } ) => {
+  
+  var disableAll = false
+
+  //Se verdadeiro, significa que o agente selecionado ja iniciou o trabalho diario de hoje,
+  //não podendo receber outro
+  if(indexEquipe > -1 && indexMembro > -1 && equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje.horaInicio)
+    disableAll = true
+
   if( fl_loading ) {
     return <Loading element="#list-quarteirao" />;
   } else if( rota_equipe.length == 0 ) {
@@ -126,6 +166,7 @@ const ExibirQuarteiroes = ( { rota_equipe, fl_loading, indexEquipe, indexMembro,
                   <li
                     key={ "lado_" + lado.id }
                     className={
+                      disableAll ? 'disabled' :
                       lado.situacao === 3 || atividade.situacao === 3 ? 'disabled' :
                       lado.situacao === 4 && !fl_usuario_selecionado ? 'disabled' :
                       ''

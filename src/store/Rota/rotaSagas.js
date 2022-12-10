@@ -26,6 +26,27 @@ export function* planejarRota(action) {
   }
 }
 
+export function* alterarRota(action) {
+  try {
+    const { status } = yield call( service.alterarRotaRequest, action.payload );
+
+    if( status === 200 ) {
+      yield put( RotaActions.setRotaPlanejada( true ) );
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Falha ao alterar rota: " + status, "error" ) );
+    }
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao alterar rota, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao alterar rota, favor verifique a conexão", "error" ) );
+  }
+}
+
 export function* getRotasPlanejadas(action) {
   try {
     const { data, status } = yield call( service.getRotasPlanejadasRequest, action.payload );
@@ -73,7 +94,7 @@ export function* getRotasPlanejadas(action) {
   }
 }
 
-//Busca todas as rotas do usuarios que foram passadas hoje
+//Busca todas as rotas do usuarios que foram passadas na data informada
 export function* getRoutes(action) {
   try {
     const { data, status } = yield call( service.getRoutesRequest, action.payload );
@@ -202,6 +223,10 @@ function* watchPlanejarRota() {
   yield takeLatest( RotaActions.ActionTypes.PLANEJAR_ROTA_REQUEST, planejarRota );
 }
 
+function* watchAlterarRoute() {
+  yield takeLatest( RotaActions.ActionTypes.PUT_ROTA_REQUEST, alterarRota );
+}
+
 function* watchGetRotasPlanejadas() {
   yield takeLatest( RotaActions.ActionTypes.GET_ROTAS_PLANEJADAS_REQUEST, getRotasPlanejadas );
 }
@@ -235,5 +260,6 @@ export function* rotaSaga() {
     watchIsStarted(),
     watchStartRoute(),
     watchCloseRoute(),
+    watchAlterarRoute(),
   ] );
 }

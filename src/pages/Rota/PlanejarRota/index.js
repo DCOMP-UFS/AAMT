@@ -6,11 +6,12 @@ import SelecionarAtividade from './components/SelecionarAtividade';
 import SelecionarAgente from './components/SelecionarAgente';
 import SelecionarQuarteiroes from './components/SelecionarQuarteiroes';
 import MapaRotas from './components/MapaRotas';
+import LoadginGif from '../../../assets/loading.gif';
 
 // ACTIONS
 import { getOpenCycleRequest } from '../../../store/Ciclo/cicloActions';
 import { getResponsabilityActivitiesRequest, setIndexEquipe, setIndexMembro } from '../../../store/Atividade/atividadeActions';
-import { planejarRotaRequest, setCarregandoRota, getRotasPlanejadasRequest, setRotaPlanejada } from '../../../store/Rota/rotaActions';
+import { planejarRotaRequest, alterarRotaRequest, setCarregandoRota, getRotasPlanejadasRequest, setRotaPlanejada } from '../../../store/Rota/rotaActions';
 import { showNotifyToast } from '../../../store/AppConfig/appConfigActions';
 import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
 
@@ -39,6 +40,7 @@ export const PlanejarRota = ( {
     { valid: false, name: 'Planejar Rota', slug: 'planejar_rota', content: <SelecionarQuarteiroes /> }
   ]);
   const [ indexStep, setIndexStep ] = useState( 0 );
+  const [ isLoading, setIsLoading ] = useState( false );
 
   useEffect( () => {
     props.changeSidebar( "planejar_rota" );
@@ -62,6 +64,7 @@ export const PlanejarRota = ( {
       props.setIndexEquipe( -1 );
       props.setIndexMembro( -1 );
     }
+    setIsLoading(false)
     props.setRotaPlanejada( null )
   }, [ fl_rota_planejada ])
 
@@ -138,24 +141,41 @@ export const PlanejarRota = ( {
   }
 
   const submit = () => {
-    const supervisor_id = usuario.id,
-          equipe = equipes[ indexEquipe ],
-          usuario_id = equipe.membros[ indexMembro ].usuario_id,
-          equipe_id = equipe.id;
+    //Significa que o agente selecionado ja possui uma rota planejada para hoje,
+    //sendo que que ela ja foi iniciada
+    if(equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje.horaInicio)
+      props.showNotifyToast( 'Não é possivel alterar um rota que ja foi iniciada', "warning" );
+    else{
+      const supervisor_id = usuario.id,
+            equipe = equipes[ indexEquipe ],
+            usuario_id = equipe.membros[ indexMembro ].usuario_id,
+            equipe_id = equipe.id,
+            trabalhoDiario_id = equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje.id;
 
-    let lados = [];
-    rota_equipe.forEach( quarteirao => {
-      quarteirao.lados.forEach( lado => {
-        if( lado.selected ) lados.push( lado.id );
+      let lados = [];
+      rota_equipe.forEach( quarteirao => {
+        quarteirao.lados.forEach( lado => {
+          if( lado.selected ) lados.push( lado.id );
+        });
       });
-    });
 
-    props.planejarRotaRequest({
-      supervisor_id,
-      usuario_id,
-      equipe_id,
-      lados
-    });
+      //Faz com que o botão "Salvar/Alterar" fique com visual de carregamento
+      setIsLoading(true)
+
+      //Significa que o agente selecionado tem uma rota para hoje,
+      //mas ela ainda não foi iniciada e portanto pode ser alterada
+      if( trabalhoDiario_id){
+        props.alterarRotaRequest( trabalhoDiario_id, lados )
+      }
+      else{
+        props.planejarRotaRequest({
+          supervisor_id,
+          usuario_id,
+          equipe_id,
+          lados
+        });
+      }
+    } 
   }
 
   const consultarRotas = () => {
@@ -242,9 +262,35 @@ export const PlanejarRota = ( {
                             type="submit"
                             className="info"
                             onClick={ next }
+                            disabled={isLoading}
                           >
-                            {
-                              indexStep === steps.length - 1 ? 'Salvar' : 'Avançar'
+                            { (() => {
+                              if(indexStep === steps.length - 1){
+                                
+                                if(isLoading){
+                                  return (
+                                    <>
+                                      <img
+                                        src={ LoadginGif }
+                                        width="25"
+                                        style={{ marginRight: 10 }}
+                                        alt="Carregando"
+                                      />
+                                      Processando...
+                                    </>
+                                  )
+                                }
+                                //Se true, significa que o agente selecionado ja possui um trabalho diario para hoje
+                                //e o supervisor deseja altera-la
+                                else if(equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje.id != null)
+                                  return 'Alterar'
+                                else
+                                  return 'Salvar'
+                              }
+                              else
+                                return 'Avançar'
+                            }) ()
+                             
                             }
                           </Button>
                         </StepControl>
@@ -287,7 +333,8 @@ const mapDispatchToProps = {
   setCarregandoRota,
   getRotasPlanejadasRequest,
   changeSidebar,
-  setRotaPlanejada
+  setRotaPlanejada,
+  alterarRotaRequest
 }
 
 export default connect(

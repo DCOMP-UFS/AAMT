@@ -8,7 +8,7 @@ import { Button } from '../../../../../styles/global';
 import $ from 'jquery';
 
 // ACTIONS
-import { setEquipes, setIndexAtividade } from '../../../../../store/Atividade/atividadeActions';
+import { setEquipes, setIndexAtividade, setIndexEquipe, setIndexMembro } from '../../../../../store/Atividade/atividadeActions';
 
 // STYLES
 import { Container, AtividadeCard } from './styles';
@@ -20,12 +20,13 @@ export const SelecionarAtividade = ({ indexAtividade, atividades, ...props }) =>
   const handleAtividade = ( equipes, index ) => {
     props.setEquipes( equipes );
     props.setIndexAtividade( index );
+    props.setIndexEquipe( -1 )
+    props.setIndexMembro( -1 )
   }
 
   //Abre o modal "ModalEncerrarAtividade"
   //tambem seta o id da atividade que será encerrada
   function abrirModalEncerrarAtividade(id) {
-    console.log(atividades)
     setIdAtividadeEncerrar(id)
     $('#modal-encerrar-atividade').modal('show');
   }
@@ -83,6 +84,10 @@ export const SelecionarAtividade = ({ indexAtividade, atividades, ...props }) =>
                   </Row>
                   <hr/>
                   <div className="ca-info">
+                    <div className="ca-label font-weight-bold">Código:</div>
+                    <div className="ca-value">{ atividade.id }</div>
+                  </div>
+                  <div className="ca-info">
                     <div className="ca-label font-weight-bold">Trabalhar todos imóveis:</div>
                     <div className="ca-value">{ atividade.flTodosImoveis ? 'Sim' : 'Não' }</div>
                   </div>
@@ -132,7 +137,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   setEquipes,
-  setIndexAtividade
+  setIndexAtividade,
+  setIndexEquipe,
+  setIndexMembro,
 }
 
 export default connect(

@@ -55,6 +55,15 @@ export const planejarRotaRequest = data => {
   });
 }
 
+export const alterarRotaRequest = data => {
+  const { trabalhoDiario_id, lados } = data;
+
+  return api.put(`rotas/alterar/${ trabalhoDiario_id }/trabalhoDiario`, { lados },
+  {
+    ...headerAuthorization()
+  });
+}
+
 /**
  * Verifica junto a API se o trabalhoDiario_id está finalizado
  * @param {Object} data 

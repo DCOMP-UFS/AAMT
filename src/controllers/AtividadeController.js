@@ -656,14 +656,18 @@ getResponsibilityActivities = async ( req, res ) => {
       ]
     } );
 
+    const [ m, d, Y ]           = new Date().toLocaleDateString( 'en-US' ).split( '/' );
+    const current_date          = `${ Y }-${ m }-${ d }`;
+
     const responsabilityActivities = [];
 
-    activities.forEach(( activity ) => {
+    //Filtrando as equipes não lideradas pelo supervisor com o id informado na requisição
+    for ( var activity of activities) {
       let act = activity;
 
       let teams = activity.equipes.filter( team => {
         let fl_team = false;
-        
+
         team.membros.forEach( member => {
           if( member.usuario_id === supervisor.id && member.tipoPerfil === 3 )
             fl_team = true;
@@ -673,10 +677,43 @@ getResponsibilityActivities = async ( req, res ) => {
       } );
 
       act.dataValues.equipes = teams;
+   
+      if( teams.length > 0 ){
 
-      if( teams.length > 0 )
+        //Para cada membro de cada equipe, será verificado se o membro possui uma trabalho diario
+        //agendado para hoje
+        for(var i = 0; i < teams.length; i++) {
+
+          const equipe_id = teams[i].dataValues.id
+
+          for(var j = 0; j < teams[i].dataValues.membros.length; j++) {
+          
+            const usuario_id = teams[i].dataValues.membros[j].dataValues.usuario_id
+            
+            var trabalhoDiarioHoje = await TrabalhoDiario.findOne( {
+              where: {
+                equipe_id,
+                usuario_id,
+                data: current_date
+              },
+              attributes: { exclude: [ 
+                'createdAt', 
+                'updatedAt',
+                'supervisor_id',
+                'usuario_id',
+                'equipe_id',
+               ] }
+            } )
+
+            if(!trabalhoDiarioHoje)
+              trabalhoDiarioHoje = {}
+
+            act.dataValues.equipes[i].dataValues.membros[j].dataValues.trabalhoDiarioHoje = trabalhoDiarioHoje
+          }
+        }
         responsabilityActivities.push( act );
-    } );
+      }
+    };
 
     return res.json( responsabilityActivities );
   } catch (error) {

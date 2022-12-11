@@ -48,7 +48,10 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
 
 
   useEffect( () => {
-    const m = props.membros.map( m => ( {
+    //retirar os usuarios que são coordenadores municipais da lista de seleção
+    const filter = props.membros.filter( membro => membro.atuacoes[0].tipoPerfil != 2  )
+
+    const m = filter.map( m => ( {
       id: m.id,
       nome: m.nome,
       checked: false
@@ -155,7 +158,11 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
   }
 
   function clearInput() {
-    const m = props.membros.map( m => ( {
+
+    //retirar os usuarios que são coordenadores municipais da lista de seleção
+    const filter = props.membros.filter( membro => membro.atuacoes[0].tipoPerfil != 2  )
+
+    const m = filter.map( m => ( {
       id      : m.id,
       nome    : m.nome,
       checked : false

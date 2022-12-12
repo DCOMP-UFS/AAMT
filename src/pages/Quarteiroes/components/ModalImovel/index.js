@@ -19,6 +19,7 @@ import { connect } from 'react-redux';
 // ACTIONS
 import { setUpdated } from '../../../../store/Quarteirao/quarteiraoActions';
 import { addImovelRequest, editarImovelRequest, clearCreate, clearUpdate } from '../../../../store/Imovel/imovelActions';
+import { showNotifyToast } from "../../../../store/AppConfig/appConfigActions";
 
 // STYLES
 import { ContainerArrow } from '../../../../styles/util';
@@ -99,7 +100,6 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
         } )
       );
       setLado( {} );
-      setOptionLado( [] );
       setFlLocValido( true );
       setLocalizacao( "" );
       setFlOpen( false );
@@ -240,18 +240,35 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
     });
 
     if( acao === 'cadastrar' ) {
-      props.addImovelRequest({
-        numero,
-        sequencia,
-        responsavel: removeMultipleSpaces(responsavel),
-        complemento: removeMultipleSpaces(complemento),
-        tipoImovel: tipoImovel.value,
-        lado_id: lado.value,
-        lng,
-        lat,
-      });
+      var corner = lados.find( l => l.id == im.lado_id)
+      const numeroRepetido = corner.imoveis.findIndex( imovel => imovel.numero == im.numero)
+
+      if(numeroRepetido != -1)
+        props.showNotifyToast("O número informado já pertence a outro imóvel deste lado",'warning')
+      else{
+        props.addImovelRequest({
+          numero,
+          sequencia,
+          responsavel: removeMultipleSpaces(responsavel),
+          complemento: removeMultipleSpaces(complemento),
+          tipoImovel: tipoImovel.value,
+          lado_id: lado.value,
+          lng,
+          lat,
+        });
+      }
     } else {
-      props.editarImovelRequest( im );
+      var corner = lados.find( l => l.id == im.lado_id)
+
+      //retira o imovel que será alterado, evitando que se compare consigo mesmo
+      var filtrarImoveis = corner.imoveis.filter(imovel => imovel.id != im.id)
+
+      const numeroRepetido = filtrarImoveis.findIndex( imovel => imovel.numero == im.numero)
+
+      if(numeroRepetido != -1)
+        props.showNotifyToast("O número informado já pertence a outro imóvel deste lado",'warning')
+      else
+        props.editarImovelRequest( im );
     }
   }
 
@@ -496,6 +513,7 @@ const mapDispatchToProps = dispatch =>
     editarImovelRequest,
     setUpdated,
     clearUpdate,
+    showNotifyToast,
   }, dispatch );
 
 export default connect(

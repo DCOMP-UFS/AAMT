@@ -48,12 +48,13 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, isOpen, handl
     zoom: 2
   });
   const [ marcador, setMarcador ]                 = useState( {} );
+  const [ flRecoverInputs, setFlRecoverInputs ]   = useState( true );
 
   useEffect(() => {
     if(isOpen){
       if( Object.entries( imovel ).length > 0 ){
-        setClss([]);
-        setFlLocValido(true)
+        limparCampos()
+        setFlRecoverInputs(!flRecoverInputs)
       }
       else
         limparCampos()
@@ -91,7 +92,7 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, isOpen, handl
     } else {
       limparCampos();
     }
-  }, [ imovel ]);
+  }, [ imovel, flRecoverInputs ]);
 
   /**
    * Esse effect analisa se o imóvel foi criado, se sim limpa os dados e fecha o

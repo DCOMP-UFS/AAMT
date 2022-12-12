@@ -47,8 +47,16 @@ export function* addImovel( action ) {
 
   } catch (err) {
     if(err.response){
-      //Provavel erro de logica na API
-      yield put( AppConfigActions.showNotifyToast( "Erro ao adicionar imóvel, entre em contato com o suporte", "error" ) );
+
+      const {numeroRepetido, error} = err.response.data
+
+      if(numeroRepetido)
+        yield put( AppConfigActions.showNotifyToast( "O número do imovel informado já é usado por outro imovél do logradouro", "error" ) );
+      
+      else{
+        //Provavel erro de logica na API
+        yield put( AppConfigActions.showNotifyToast( "Erro ao adicionar imóvel, entre em contato com o suporte", "error" ) );
+      }
       
     }
     //Se chegou aqui, significa que não houve resposta da API
@@ -68,14 +76,23 @@ export function* editarImovel( action ) {
     if( status === 200 ) {
       yield put( ImovelActions.setUpdatedTrue() );
       yield put( AppConfigActions.showNotifyToast( "Imóvel atualizado com sucesso!", "success" ) );
+      setTimeout(() => { document.location.reload( true );}, 1000)
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao atualizar imóvel: " + status, "error" ) );
     }
 
   } catch (err) {
     if(err.response){
-      //Provavel erro de logica na API
-      yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar imóvel, entre em contato com o suporte", "error" ) );
+
+      const {numeroRepetido, error} = err.response.data
+
+      if(numeroRepetido)
+        yield put( AppConfigActions.showNotifyToast( "O número do imovel informado já é usado por outro imovél do logradouro", "error" ) );
+
+      else{
+        //Provavel erro de logica na API
+        yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar imóvel, entre em contato com o suporte", "error" ) );
+      }
       
     }
     //Se chegou aqui, significa que não houve resposta da API

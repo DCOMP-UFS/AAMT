@@ -5,6 +5,7 @@ const Lado            = require(  '../models/Lado' );
 const Quarteirao      = require(  '../models/Quarteirao' );
 const Rua             = require(  '../models/Rua' );
 const Vistoria = require('../models/Vistoria');
+const { Op } = require("sequelize");
 
 getImoveisMunicipio = async ( req, res ) => {
   try{
@@ -88,6 +89,20 @@ store = async ( req, res ) => {
     if( !lado )
       return res.status( 400 ).json( { error: "Lado do quarteirão não encontrado" } );
 
+    const numeroRepetido = await Imovel.findOne({
+      where: {
+        lado_id,
+        numero,
+        ativo:true
+      }
+    })
+
+    if(numeroRepetido)
+      return res.status( 400 ).json( { 
+        error: "Já existe um imovel com este numero no logradouro informado",
+        numeroRepetido:true
+      } );
+    
     const imovel = await Imovel.create({
       numero,
       sequencia,
@@ -123,7 +138,7 @@ store = async ( req, res ) => {
 
 update = async ( req, res ) => {
   try{
-    const { lado_id } = req.body;
+    const { lado_id, numero } = req.body;
     const { id } = req.params;
 
     let imovel = await Imovel.findByPk( id );
@@ -137,6 +152,21 @@ update = async ( req, res ) => {
         return res.status(400).json({ error: "Lado do quarteirão não encontrado" });
       }
     }
+
+    const numeroRepetido = await Imovel.findOne({
+      where: {
+        id:{[Op.ne]: id},
+        lado_id,
+        numero,
+        ativo:true
+      }
+    })
+
+    if(numeroRepetido)
+      return res.status( 400 ).json( { 
+        error: "Já existe um imovel com este numero no logradouro informado",
+        numeroRepetido:true
+      } );
     
     const { isRejected } = await Imovel.update(
       req.body,

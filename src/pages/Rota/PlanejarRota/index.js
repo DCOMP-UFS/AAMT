@@ -41,6 +41,7 @@ export const PlanejarRota = ( {
   ]);
   const [ indexStep, setIndexStep ] = useState( 0 );
   const [ isLoading, setIsLoading ] = useState( false );
+  const [ flGetActivitiesAgain, setFlGetActivitiesAgain ] = useState( false );
 
   useEffect( () => {
     props.changeSidebar( "planejar_rota" );
@@ -54,7 +55,7 @@ export const PlanejarRota = ( {
     if( Object.entries( ciclo ).length > 0 ) {
       props.getResponsabilityActivitiesRequest(usuario.id, ciclo.id);
     }
-  }, [ ciclo ]);
+  }, [ ciclo, flGetActivitiesAgain ]);
 
   useEffect(() => {
     if( fl_rota_planejada ) {
@@ -63,6 +64,7 @@ export const PlanejarRota = ( {
       setIndexStep( 0 );
       props.setIndexEquipe( -1 );
       props.setIndexMembro( -1 );
+      setFlGetActivitiesAgain(!flGetActivitiesAgain)
     }
     setIsLoading(false)
     props.setRotaPlanejada( null )

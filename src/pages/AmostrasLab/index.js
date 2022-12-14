@@ -68,11 +68,7 @@ export const AmostrasLab = ({ laboratorios, amostras, usuario, ...props }) => {
   const handleCloseModalExaminar = () => {setOpenModalExaminar(false)}
 
   const options = {
-    //Não permite que amostras com situação positiva, negativa ou encaminhada
-    //sejam selecionados para serem encaminhadas
-    isRowSelectable: (dataIndex) => {
-      return false
-    },
+    selectableRows: 'none'
   };
 
   useEffect( () => {

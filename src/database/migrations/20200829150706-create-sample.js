@@ -15,11 +15,11 @@ module.exports = {
           allowNull: false,
         },
         data_encaminhamento: {
-          type: Sequelize.DATE,
+          type: Sequelize.DATEONLY,
           allowNull: true,
         },
         data_examinado: {
-          type: Sequelize.DATE,
+          type: Sequelize.DATEONLY,
           allowNull: true,
         },
         deposito_id: {

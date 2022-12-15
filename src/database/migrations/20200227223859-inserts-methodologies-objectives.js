@@ -10,19 +10,19 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date()
       },
-      {
+     /*  {
         metodologia_id: 2,
         objetivo_id: 1,
         created_at: new Date(),
         updated_at: new Date()
-      },
+      }, */
       {
         metodologia_id: 2,
         objetivo_id: 2,
         created_at: new Date(),
         updated_at: new Date()
       },
-      {
+      /* {
         metodologia_id: 2,
         objetivo_id: 3,
         created_at: new Date(),
@@ -45,7 +45,7 @@ module.exports = {
         objetivo_id: 6,
         created_at: new Date(),
         updated_at: new Date()
-      }
+      } */
     ]);
   },
 

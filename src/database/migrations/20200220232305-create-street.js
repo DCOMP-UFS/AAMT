@@ -18,10 +18,10 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: true,
         },
-        localidade_id: {
+        municipio_id: {
           type: Sequelize.INTEGER,
           allowNull: false,
-          references: { model: 'localidades', key: 'id' },
+          references: { model: 'municipios', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'RESTRICT'
         },

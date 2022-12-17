@@ -12,7 +12,7 @@ class Rua extends Model {
   }
 
   static associate( models ) {
-    this.belongsTo( models.Localidade, { foreignKey: 'localidade_id', as: 'localidade' } );
+    this.belongsTo( models.Localidade, { foreignKey: 'municipio_id', as: 'municipio' } );
     this.hasMany( models.Lado, { foreignKey: 'rua_id', as: 'lados' } );
   }
 }

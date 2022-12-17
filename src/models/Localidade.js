@@ -15,7 +15,6 @@ class Localidade extends Model {
     this.belongsTo( models.Municipio, { foreignKey: 'municipio_id', as: 'municipio' } );
     this.belongsTo( models.Categoria, { foreignKey: 'categoria_id', as: 'categoria' } );
     this.hasMany( models.Quarteirao, { foreignKey: 'localidade_id', as: 'quarteiroes' } );
-    this.hasMany( models.Rua, { foreignKey: 'localidade_id', as: 'ruas' } );
   }
 }
 

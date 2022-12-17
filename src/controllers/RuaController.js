@@ -2,36 +2,37 @@ const express = require('express');
 const authMiddleware = require('../middlewares/auth');
 const Rua = require('../models/Rua');
 const Localidade = require('../models/Localidade');
+const Municipio = require('../models/Municipio');
 const { Op } = require("sequelize");
 const Lado = require('../models/Lado');
 
-getStreetByLocality = async ( req, res ) => {
+getStreetByCity = async ( req, res ) => {
   try{
-    const { localidade_id } = req.params;
+    const { municipio_id } = req.params;
 
-    if( !localidade_id ) {
-      return res.status(404).json({ erro: "Localidade não existe1" });
+    if( !municipio_id ) {
+      return res.status(404).json({ erro: "Id do município não foi informado" });
     }
 
-    const localidade = await Localidade.findByPk( localidade_id );
+    const municipio = await Municipio.findByPk( municipio_id );
 
-    if( !localidade ) {
-      return res.status(400).json({ error: "Localidade não existe" });
+    if( !municipio ) {
+      return res.status(400).json({ error: "Município não existe" });
     }
 
     const ruas = await Rua.findAll({
       where: {
-        localidade_id,
+        municipio_id: municipio_id,
         ativo:true
       },
       include: {
-        association: 'localidade',
+        association: 'municipio',
         attributes: {
           exclude: [ 'createdAt', 'updatedAt' ]
         }
       },
       attributes: {
-        exclude: [ 'localidade_id' ]
+        exclude: [ 'municipio_id' ]
       },
       order: [[ 'nome', 'asc' ]]
     });
@@ -58,11 +59,10 @@ store = async ( req, res ) => {
     if( !localidade ) {
       return res.status(400).json({ error: "Localidade com id="+localidade_id+" não existe" });
     }
-    const {sameName, sameCEP} = await ruaExistente(null,nome,cep,localidade_id)
-    if(sameName || sameCEP){
+    const {sameCEP} = await ruaExistente(null,cep)
+    if(sameCEP){
       return res.status(400).json({
-        error:"Não foi possivel criar a rua, a regra de nome único na localidade e/ou cep único não foi respeitada",
-        sameName,
+        error:"Não foi possivel criar a rua, a regra de cep único não foi respeitada",
         sameCEP,
       });
     }
@@ -123,12 +123,11 @@ update = async ( req, res ) => {
       }
     }
   
-    const {sameName, sameCEP} = await ruaExistente(id,nome,cep,localidade_id)
+    const {sameCEP} = await ruaExistente(id,cep)
 
-    if(sameName || sameCEP){
+    if(sameCEP){
       return res.status(400).json({
-        error:"Não foi possivel atualizar a rua, a regra de nome e/ou de cep único não foi respeitada",
-        sameName,
+        error:"Não foi possivel atualizar a rua, a regra de cep único não foi respeitada",
         sameCEP,
       });
     }
@@ -221,15 +220,14 @@ destroy = async ( req, res ) => {
 },
 
 streetExist = async ( req, res ) => {
-  const {id, nome, cep, localidade_id,} = req.query
+  const {id, cep} = req.query
 
   try{
-    if(!nome) return res.status(400).json({ error: `Por favor informe o nome da rua` });
+  
     if(!cep) return res.status(400).json({ error: `Por favor informe o cep da rua` });
-    if(!localidade_id) return res.status(400).json({ error: `Por favor informe o id da localidade` });
 
-    const {sameName, sameCEP} = await ruaExistente(id,nome,cep,localidade_id)
-    return res.json({sameName, sameCEP});
+    const {sameCEP} = await ruaExistente(id,cep)
+    return res.json({sameCEP});
 
   } catch (error) {
     return res.status( 400 ).send( { 
@@ -239,39 +237,21 @@ streetExist = async ( req, res ) => {
   }
 }
 
-//verifica se ja existe uma rua ativa com determinado nome em uma localidade ou uma rua ativa com determinado cep
+//verifica se ja existe uma rua ativa com com determinado cep
 //No caso dessa função ser usada em uma rota de atualização dos dados da rua, é precisso irforma o id da
 //rua para evitar que ela se compare consigo mesma
-async function ruaExistente(id,nome,cep,localidade_id){
-  var sameName = null
+async function ruaExistente(id,cep){
   var sameCEP = null
 
-  var filtro1 = {nome: nome, ativo:true}
   var filtro2 = {cep: cep, ativo:true}
 
   if(id){
-    filtro1.id = {[Op.ne]: id}
     filtro2.id = {[Op.ne]: id}
   }
 
-  const ruaMesmoNome = await Rua.findOne({
-    include: {
-      association: 'localidade',
-      attributes: {
-        exclude: [ 'createdAt', 'updatedAt' ]
-      },
-      where: {
-        id: localidade_id,
-      },
-    },
-    where: {
-      ...filtro1
-    },
-  });
-
   const ruaMesmoCEP = await Rua.findOne({
     include: {
-      association: 'localidade',
+      association: 'municipio',
       attributes: {
         exclude: [ 'createdAt', 'updatedAt' ]
       },
@@ -281,10 +261,9 @@ async function ruaExistente(id,nome,cep,localidade_id){
     },
   });
 
-  ruaMesmoNome ? sameName = true : sameName = false
   ruaMesmoCEP  ? sameCEP  = true : sameCEP  = false
 
-  const result = {sameName,sameCEP}
+  const result = {sameCEP}
   return result
 }
 
@@ -292,7 +271,7 @@ const router = express.Router();
 router.use(authMiddleware);
 
 router.get('/existe', streetExist);
-router.get('/:localidade_id/localidades', getStreetByLocality);
+router.get('/:municipio_id/municipios', getStreetByCity);
 router.post('/', store);
 router.delete('/:id', destroy);
 router.put('/:id', update);

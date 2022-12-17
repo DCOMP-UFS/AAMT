@@ -28,6 +28,7 @@ const MaskedInput = props => {
                 className={className}
                 onChange={onChange}
                 mask={MaskTypes[type].mask}
+                disabled={disabled}
             />
             <input
                 className="input-required"

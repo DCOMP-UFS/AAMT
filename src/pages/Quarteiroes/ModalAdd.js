@@ -25,7 +25,7 @@ import { connect } from 'react-redux';
 import { addQuarteiraoRequest, setCreated } from '../../store/Quarteirao/quarteiraoActions';
 import { getLocationByCityRequest } from '../../store/Localidade/localidadeActions';
 import { getZoneByCityRequest } from '../../store/Zona/zonaActions';
-import { getStreetByLocalityRequest } from '../../store/Rua/ruaActions';
+import { getStreetByCityRequest } from '../../store/Rua/ruaActions';
 import { showNotifyToast } from '../../store/AppConfig/appConfigActions';
 
 // STYLES
@@ -65,6 +65,7 @@ function ModalAdd({ municipio_id, created, show, handleClose, ...props }) {
     props.setCreated( null );
     props.getLocationByCityRequest( municipio_id );
     props.getZoneByCityRequest( municipio_id );
+    props.getStreetByCityRequest( municipio_id );
   }, [] );
 
   /**
@@ -92,13 +93,13 @@ function ModalAdd({ municipio_id, created, show, handleClose, ...props }) {
    * para o novo quarteirão e consulta as ruas da localidade selecionada
    * no back-end para atualização do select de ruas
    */
-   useEffect( () => {
+   /* useEffect( () => {
     if( Object.entries( localidade ).length > 0 ) {
-      props.getStreetByLocalityRequest( localidade.value );
+      props.getStreetByCityRequest( localidade.value );
 
       setZona( {} );
     }
-  }, [ localidade ] );
+  }, [ localidade ] ); */
 
   /**
    * Este effect monitora o state created do reduce,
@@ -316,7 +317,7 @@ function ModalAdd({ municipio_id, created, show, handleClose, ...props }) {
                           <FaBorderAll />
                         </ListaIcon>
                         <span className="mr-2">
-                          Lado nº {l.numero} - Rua: {l.logradouro}
+                          Lado nº {l.numero} - {l.logradouro}
                         </span>
                       </div>
 
@@ -391,7 +392,7 @@ const mapDispatchToProps = dispatch =>
     addQuarteiraoRequest,
     getLocationByCityRequest,
     getZoneByCityRequest,
-    getStreetByLocalityRequest,
+    getStreetByCityRequest,
     showNotifyToast,
     setCreated,
   }, dispatch );

@@ -1,8 +1,8 @@
 export const ActionTypes = {
   GET_RUA_POR_CEP_REQUEST: "GET_RUA_POR_CEP_REQUEST",
   SET_RUA: "SET_RUA",
-  GET_STREET_BY_LOCALITY_REQUEST: "GET_STREET_BY_LOCALITY_REQUEST",
-  GET_STREET_BY_LOCALITY_SUCCESS: "GET_STREET_BY_LOCALITY_SUCCESS",
+  GET_STREET_BY_CITY_REQUEST: "GET_STREET_BY_CITY_REQUEST",
+  GET_STREET_BY_CITY_SUCCESS: "GET_STREET_BY_CITY_SUCCESS",
   CREATE_STREET_REQUEST: "CREATE_STREET_REQUEST",
   CREATE_STREET_SUCCESS: "CREATE_STREET_SUCCESS",
   CREATE_STREET_FAIL: "CREATE_STREET_FAIL",
@@ -49,18 +49,18 @@ export const setRua = rua => {
   }
 }
 
-export const getStreetByLocalityRequest = localidade_id => {
+export const getStreetByCityRequest = municipio_id => {
   return {
-    type: ActionTypes.GET_STREET_BY_LOCALITY_REQUEST,
+    type: ActionTypes.GET_STREET_BY_CITY_REQUEST,
     payload: {
-      localidade_id
+      municipio_id
     }
   }
 }
 
-export const getStreetByLocality = ruas => {
+export const getStreetByCitySuccess = ruas => {
   return {
-    type: ActionTypes.GET_STREET_BY_LOCALITY_SUCCESS,
+    type: ActionTypes.GET_STREET_BY_CITY_SUCCESS,
     payload: {
       ruas
     }
@@ -159,14 +159,12 @@ export const changeStreetSelect = index => {
   }
 }
 
-export const streetExistRequest = (id, nome, cep, localidade_id ) => {
+export const streetExistRequest = ( id,cep ) => {
   return {
     type: ActionTypes.STREET_EXIST_REQUEST,
     payload: {
       id,
-      nome,
       cep,
-      localidade_id
     }
   }
 }

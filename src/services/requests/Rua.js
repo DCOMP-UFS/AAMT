@@ -1,8 +1,8 @@
 import api, { headerAuthorization } from '../../services/api';
 
-export const getStreetByLocalityRequest = data => {
-  const { localidade_id } = data;
-  return api.get(`/ruas/${ localidade_id }/localidades`, {
+export const getStreetByCityRequest = data => {
+  const { municipio_id } = data;
+  return api.get(`/ruas/${ municipio_id }/municipios`, {
     ...headerAuthorization()
   });
 }
@@ -42,11 +42,11 @@ export const deleteStreetRequest = data => {
 
 /**
  * Usado como verificação antes que uma rua seja criada ou alterada
- * Retornar dois booleanos: sameCEP e sameName que indicam se foi encontrado ruas com
- * cep igual ao informado ou com nome e localidade igual ao informados
+ * Retornar um booleano: sameCEP (indica se ja existe uma rua com cep informado)
+ * cep igual ao informado ou com nome e municipio igual ao informados
 */
 export const streetExistRequest = data => {
-  const { id , nome, cep, localidade_id } = data;
+  const { id ,cep } = data;
 
   //Id é um parametro opcional, usado para desconsidera a rua que tem este id
   //O id é passado quando a rua esta tendo seus dados atualizados
@@ -54,9 +54,7 @@ export const streetExistRequest = data => {
     ...headerAuthorization(),
     params:{
       id:id , 
-      nome:nome, 
       cep:cep, 
-      localidade_id:localidade_id 
     }
   });
 }

@@ -21,7 +21,6 @@ import { connect } from 'react-redux';
 import { changeSidebar } from '../../store/Sidebar/sidebarActions';
 import { getLocationByIdRequest, updateLocationRequest, clearUpdate } from '../../store/Localidade/localidadeActions';
 import { getCategoryRequest } from '../../store/Categoria/categoriaActions';
-import { getStreetByLocalityRequest, changeStreetSelect } from '../../store/Rua/ruaActions';
 
 // STYLES
 import {
@@ -48,14 +47,11 @@ const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props 
   const [optionCategoria, setOptionCategoria]                       = useState([]);
   const [optionAtivo]                                               = useState([{ value: 1, label: 'Sim' }, { value: 0, label: 'Não' }]);
   const [isLoading, setIsLoading]                                   = useState(false);
-  const [showtModalAddStreet, setShowModalAddStreet]                = useState(false);
-  const [showtModalUpdateStreet, setShowModalUpdateStreet]          = useState(false);
 
   useEffect(() => {
     props.changeSidebar("localidade");
     getLocationByIdRequest(id);
     props.getCategoryRequest();
-    props.getStreetByLocalityRequest(id);
   }, []);
 
   useEffect(() => {
@@ -73,35 +69,13 @@ const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props 
     }
   }, [localidade]);
 
-  //Toda vez que a rua for atualizada, seus dados
-  //e a lista de ruas são recarregados
   useEffect(() => {
     setIsLoading(false);
     if (props.updatedLocalidade) {
       getLocationByIdRequest(id);
-      props.getStreetByLocalityRequest(id);
     }
     props.clearUpdate();
   }, [props.updatedLocalidade]);
-
-  //Toda vez que alguma rua é criada ou atualizada 
-  //a lista de ruas também é recarregada
-  useEffect(() => {
-    if( props.updatedStreet || props.createdStreet ) {
-      props.getStreetByLocalityRequest(id)
-    }
-  }, [ props.updatedStreet, props.createdStreet ]);
-
-  function openModalUpdate(index) {
-    setShowModalUpdateStreet(true)
-    props.changeStreetSelect(index);
-    $('#modal-editar-rua').modal('show');
-  }
-
-  function openModalDelete(index) {
-    props.changeStreetSelect(index);
-    $('#modal-excluir-rua').modal('show');
-  }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -211,7 +185,7 @@ const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props 
                   </form>
                 </Col>
 
-                <Col sm='6'>
+                {/* <Col sm='6'>
                   <h4 className="title">
                     Ruas
                     <ButtonNewObject
@@ -239,7 +213,7 @@ const EditarLocalidades = ({ localidade, ruas, getLocationByIdRequest, ...props 
                     handleClose={() => { setShowModalUpdateStreet(false) }}
                   />
                   <ModalDeleteStreet />
-                </Col>
+                </Col> */}
               </Row>
             </div>
           </article>
@@ -292,11 +266,8 @@ const mapStateToProps = state => ({
   municipio: state.appConfig.usuario.municipio,
   localidade: state.localidade.localidade,
   categorias: state.categoria.categorias,
-  ruas: state.rua.ruas,
   created: state.rua.created,
-  updatedStreet: state.rua.updated,
   updatedLocalidade: state.localidade.updated,
-  createdStreet: state.rua.created,
 });
 
 const mapDispatchToProps = dispatch =>
@@ -305,8 +276,6 @@ const mapDispatchToProps = dispatch =>
     getLocationByIdRequest,
     getCategoryRequest,
     updateLocationRequest,
-    getStreetByLocalityRequest,
-    changeStreetSelect,
     clearUpdate
   }, dispatch);
 

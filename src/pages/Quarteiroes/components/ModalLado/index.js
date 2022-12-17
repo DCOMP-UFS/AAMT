@@ -34,14 +34,14 @@ import { isBlank, isCepValid } from '../../../../config/function';
  * @param {Object} props demais propriedades para funcionamento do componente
  * @returns 
  */
-const ModalLado = ( { lado, acao, show, handleClose, ruas, addLado, localidade_id, ...props } ) => {
-  const [ rua, setRua ]                           = useState( {} );
-  const [ optionRua, setOptionRua ]               = useState( [] );
-  const [ cep, setCep ]                           = useState( "" );
-  const [ outra, setOutra ]                       = useState( "" );
-  const [ isValidOutra, setIsValidOutra ]         = useState( true );
-  const [ isValidCep, setIsValidCep ]             = useState( true );
-  const [ flLoading, setFlLoading ]               = useState( false );
+const ModalLado = ( { lado, acao, show, handleClose, ruas, addLado, localidade_id, municipio_id, ...props } ) => {
+  const [ rua, setRua ]                                                 = useState( {} );
+  const [ optionRua, setOptionRua ]                                     = useState( [] );
+  const [ cep, setCep ]                                                 = useState( "" );
+  const [ nomeNovoLogradouro, setNomeNovoLogradouro ]                   = useState( "" );
+  const [ isValidNomeNovoLogradouro, setIsValidNomeNovoLogradouro ]     = useState( true );
+  const [ isValidCep, setIsValidCep ]                                   = useState( true );
+  const [ flLoading, setFlLoading ]                                     = useState( false );
 
    /**
    *  Limpa os campos toda vez que o modal for aberto
@@ -69,19 +69,27 @@ const ModalLado = ( { lado, acao, show, handleClose, ruas, addLado, localidade_i
    */
   useEffect(() => {
     if( rua.value === null )
-      setOutra( props.rua.nome );
+      setNomeNovoLogradouro( props.rua.nome );
   }, [ props.rua ] );
 
   /**
    * Este effect monitora o estado local do componente rua.
-   * Toda vez que a rua é setada para um valor diferente de outra esta função
-   * limpa os dados dos campos cep e outra.
+   * Toda vez que a rua é setada para um valor diferente de "Outra" esta função
+   * limpa os dados dos campos nome e seta o cep para a rua selecionada.
+   * 
+   * Caso seja selecionado "Outra", tanto o cep quanto nomeNovoLogradouro são limpos
    */
   useEffect(() => {
     if( rua.value ) {
-      setOutra( "" );
+      setNomeNovoLogradouro( "" );
+      setCep( rua.cep );
+    }
+    else{
+      setNomeNovoLogradouro( "" );
       setCep( "" );
     }
+    setIsValidCep(true)
+    setIsValidNomeNovoLogradouro(true)
   }, [ rua ])
 
   /**
@@ -102,15 +110,18 @@ const ModalLado = ( { lado, acao, show, handleClose, ruas, addLado, localidade_i
 
     //quando se cai nessa condicional, a rua será adicionada no useEffect abaixo desse metodo
     if(rua.label == 'Outra'){
-      const nomeInvalido = isBlank(outra)
+      const nomeInvalido = isBlank(nomeNovoLogradouro)
       const cepInvalido = !isCepValid(cep)
 
-      nomeInvalido  ? setIsValidOutra(false) : setIsValidOutra(true)
+      nomeInvalido  ? setIsValidNomeNovoLogradouro(false) : setIsValidNomeNovoLogradouro(true)
       cepInvalido   ? setIsValidCep(false)   : setIsValidCep(true)
 
       if(!nomeInvalido && !cepInvalido){
+        const cepSemMascara = cep.replace(/[^0-9]/g, '')
         setFlLoading(true)
-        props.streetExistRequest(null , outra, cep, localidade_id)
+
+        //irá checkar se o cep informado já está sendo utilizado por outro logradouro cadastrado
+        props.streetExistRequest(null , cepSemMascara,)
       }
     }
     else{
@@ -118,7 +129,6 @@ const ModalLado = ( { lado, acao, show, handleClose, ruas, addLado, localidade_i
         rua_id        : rua.value,
         logradouro    : rua.label,
         cep           : rua.cep,
-        outro         : outra
       } );
 
       addLado( lado );
@@ -126,17 +136,18 @@ const ModalLado = ( { lado, acao, show, handleClose, ruas, addLado, localidade_i
   }
 
   //É disparado toda vez que o usuario quer adicionar no lado uma rua não cadastrada
-  //props.sameName é um bool que diz se o nome da nova rua ja é usado por outra rua na mesma localidade
   //props.sameCEP  é um bool que diz se o cep da nova rua  já é usado
   useEffect(() => {
     
     //Não pode aceitar null, por isso estou usando ==false
-    if(props.sameName == false && props.sameCEP == false){
+    if(props.sameCEP == false){
+
+      const cepSemMascara = cep.replace(/[^0-9]/g, '')
+
       const lado = new Lado( {
         rua_id        : rua.value,
-        logradouro    : outra,
-        cep           : cep,
-        outro         : outra
+        logradouro    : nomeNovoLogradouro,
+        cep           : cepSemMascara,
       } );
 
       addLado( lado );
@@ -144,19 +155,19 @@ const ModalLado = ( { lado, acao, show, handleClose, ruas, addLado, localidade_i
       // Limpando variáveis
       setRua( {} );
       setCep( "" );
-      setOutra( "" );
+      setNomeNovoLogradouro( "" );
     }
     setFlLoading(false)
     props.clearStreetExist();
 
-  }, [ props.sameName, props.sameCEP ])
+  }, [ props.sameCEP ])
 
   function limparTudo(){
     setRua( {} );
     setCep( "" );
-    setOutra( "" );
+    setNomeNovoLogradouro( "" );
     setIsValidCep(true)
-    setIsValidOutra(true)
+    setIsValidNomeNovoLogradouro(true)
   }
 
   return(
@@ -169,12 +180,15 @@ const ModalLado = ( { lado, acao, show, handleClose, ruas, addLado, localidade_i
       <form onSubmit={ handleSubmit }>
         <Modal.Body>
           <p className="text-description">
-              Atenção os campos com <code>*</code> são obrigatórios
+            <b>OBS1:</b> Os campos com <code>*</code> são obrigatórios
+          </p>
+          <p className="text-description">
+            <b>OBS2:</b> Digite "Outra" para cadastrar um novo logradouro
           </p>
           <Row>
             <Col md="12">
               <FormGroup>
-                <label htmlFor="l_rua">Rua <code>*</code></label>
+                <label htmlFor="l_rua">Logradouro <code>*</code></label>
                 <SelectWrap
                   id="l_rua"
                   value={ rua }
@@ -186,17 +200,18 @@ const ModalLado = ( { lado, acao, show, handleClose, ruas, addLado, localidade_i
               </FormGroup>
             </Col>
             
-            <Col sm="12" md="6" className={rua.value !== null ? "d-none" :""}>
+            <Col sm="12" md="6" className={ Object.keys(rua).length === 0 ? "d-none" :""}>
               <FormGroup className="mb-0">
                 <label htmlFor="l_cep">CEP<code>*</code></label>
                 <MaskedInput
-                  id        ="l_cep"
-                  type      ="cep"
-                  value     ={ cep }
-                  className ="form-control"
+                  id        = "l_cep"
+                  type      = "cep"
+                  value     = { cep }
+                  className = { rua.value !== null ? "form-control-disabled" : "form-control" }
                   onChange  ={ e => setCep( e.target.value ) }
                   //onBlur    ={ getRuaPorCep }
-                  required  ={ rua.value !== null ? false : true } 
+                  required = { rua.value !== null ? false : true }
+                  disabled = { rua.value !== null ? true : false }
                 />
                 {
                     !isValidCep ?
@@ -210,13 +225,13 @@ const ModalLado = ( { lado, acao, show, handleClose, ruas, addLado, localidade_i
                 <label htmlFor="l_outra">Nome<code>*</code></label>
                 <input
                   id="l_outra"
-                  value={ outra }
+                  value={ nomeNovoLogradouro }
                   className="form-control"
-                  onChange={ e => setOutra( e.target.value ) }
+                  onChange={ e => setNomeNovoLogradouro( e.target.value ) }
                   required={ rua.value !== null ? false : true }
                 />
                 {
-                    !isValidOutra ?
+                    !isValidNomeNovoLogradouro ?
                       <span class="form-label-invalid">Nome inválido</span> :
                       ''
                 }
@@ -252,7 +267,8 @@ const ModalLado = ( { lado, acao, show, handleClose, ruas, addLado, localidade_i
 const mapStateToProps = state => ( {
   rua: state.rua.rua,
   sameName: state.rua.sameName,
-  sameCEP: state.rua.sameCEP
+  sameCEP: state.rua.sameCEP,
+  municipio_id: state.appConfig.usuario.municipio.id,
 } );
 
 /**

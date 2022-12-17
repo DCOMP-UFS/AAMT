@@ -37,26 +37,26 @@ export function* getRuaPorCep( action ) {
   }
 }
 
-export function* getStreetByLocality(action) {
+export function* getStreetByCity(action) {
   try {
-    const { data, status } = yield call( servico.getStreetByLocalityRequest, action.payload );
+    const { data, status } = yield call( servico.getStreetByCityRequest, action.payload );
 
     if( status === 200 ) {
 
-      yield put( RuaActions.getStreetByLocality( data ) );
+      yield put( RuaActions. getStreetByCitySuccess( data ) );
     }else {
-      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas da localidade/bairro: " + status, "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas do município: " + status, "error" ) );
     }
 
   } catch (err) {
     if(err.response){
       //Provavel erro de logica na API
-      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas da localidade/bairro, entre em contato com o suporte", "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas do município, entre em contato com o suporte", "error" ) );
       
     }
     //Se chegou aqui, significa que não houve resposta da API
     else
-      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas da localidade/bairro, favor verifique a conexão", "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas do município, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -67,8 +67,6 @@ export function* streetAlreadyExist(action) {
     if( status === 200 ) {
       yield put( RuaActions.streetExistSuccess( data ) );
 
-      if( data.sameName ) 
-        yield put( AppConfigActions.showNotifyToast( "Já existe uma rua com este nome na localidade", "error" ))
       if( data.sameCEP )  
         yield put( AppConfigActions.showNotifyToast( "Já exise uma rua com este cep", "error" ))
 
@@ -179,8 +177,8 @@ function* watchGetRuaPorCep() {
   yield takeLatest( RuaActions.ActionTypes.GET_RUA_POR_CEP_REQUEST, getRuaPorCep );
 }
 
-function* watchGetStreetByLocality() {
-  yield takeLatest( RuaActions.ActionTypes.GET_STREET_BY_LOCALITY_REQUEST, getStreetByLocality );
+function* watchGetStreetByCity() {
+  yield takeLatest( RuaActions.ActionTypes.GET_STREET_BY_CITY_REQUEST, getStreetByCity );
 }
 
 function* watchCreateStreet() {
@@ -202,7 +200,7 @@ function* watchStreetAlreadyExist() {
 export function* ruaSaga() {
   yield all( [
     watchGetRuaPorCep(),
-    watchGetStreetByLocality(),
+    watchGetStreetByCity(),
     watchCreateStreet(),
     watchUpdateStreet(),
     watchDeleteStreet(),

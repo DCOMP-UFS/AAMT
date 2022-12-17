@@ -18,7 +18,7 @@ export default function Quarteirao( state = INITIAL_STATE, action ) {
         rua: action.payload.rua
       };
 
-    case ActionTypes.GET_STREET_BY_LOCALITY_SUCCESS: {
+    case ActionTypes.GET_STREET_BY_CITY_SUCCESS: {
       return {
         ...state,
         ruas: action.payload.ruas
@@ -103,7 +103,6 @@ export default function Quarteirao( state = INITIAL_STATE, action ) {
     case ActionTypes.STREET_EXIST_SUCCESS: {
       return {
         ...state,
-        sameName:action.payload.data.sameName,
         sameCEP:action.payload.data.sameCEP
       }
     }

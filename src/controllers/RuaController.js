@@ -47,17 +47,17 @@ getStreetByCity = async ( req, res ) => {
 }
 
 store = async ( req, res ) => {
-  const { nome, cep, localidade_id } = req.body;
+  const { nome, cep, municipio_id } = req.body;
 
   try{
 
     if(!nome) return res.status(400).json({ erro: "Informe o nome da rua" });
     if(!cep) return res.status(400).json({ erro: "Informe o cep da rua" });
-    if(!localidade_id) return res.status(400).json({ erro: "Informe a localidade da rua" });
+    if(!municipio_id) return res.status(400).json({ erro: "Informe o municipio da rua" });
     
-    const localidade = await Localidade.findByPk( localidade_id );
-    if( !localidade ) {
-      return res.status(400).json({ error: "Localidade com id="+localidade_id+" não existe" });
+    const municipio = await Municipio.findByPk( municipio_id );
+    if( !municipio ) {
+      return res.status(400).json({ error: "Municipio com id="+municipio_id+" não existe" });
     }
     const {sameCEP} = await ruaExistente(null,cep)
     if(sameCEP){
@@ -70,15 +70,18 @@ store = async ( req, res ) => {
     const rua = await Rua.create({
       nome,
       cep,
-      localidade_id
+      municipio_id
     })
    
     const result = await Rua.findByPk(rua.id, {
       include: {
-        association: 'localidade',
+        association: 'municipio',
         attributes: {
           exclude: [ 'createdAt', 'updatedAt' ]
         }
+      },
+      attributes: {
+        exclude: [ 'municipio_id' ]
       }
     });
   
@@ -93,7 +96,7 @@ store = async ( req, res ) => {
 }
 
 update = async ( req, res ) => {
-  const { nome, cep, localidade_id } = req.body;
+  const { nome, cep } = req.body;
   const { id } = req.params;
 
   try{
@@ -101,11 +104,10 @@ update = async ( req, res ) => {
     if(!id) return res.status(400).json({ erro: "Informe o id da rua" });
     if(!nome) return res.status(400).json({ erro: "Informe o nome da rua" });
     if(!cep) return res.status(400).json({ erro: "Informe o cep da rua" });
-    if(!localidade_id) return res.status(400).json({ erro: "Informe a localidade da rua" });
 
     let rua = await Rua.findByPk( id, {
       include: {
-        association: 'localidade',
+        association: 'municipio',
         attributes: {
           exclude: [ 'createdAt', 'updatedAt' ]
         }
@@ -114,13 +116,6 @@ update = async ( req, res ) => {
 
     if( !rua ) {
       return res.status(400).json({ error: "Rua não encontrada" });
-    }
-
-    if( localidade_id ) {
-      const localidade = await Localidade.findByPk( localidade_id );
-      if( !localidade ) {
-        return res.status(400).json({ error: "Localidade não encontrada" });
-      }
     }
   
     const {sameCEP} = await ruaExistente(id,cep)
@@ -147,13 +142,13 @@ update = async ( req, res ) => {
 
     rua = await Rua.findByPk( id, {
       include: {
-        association: 'localidade',
+        association: 'municipio',
         attributes: {
           exclude: [ 'createdAt', 'updatedAt' ]
         }
       },
       attributes: {
-        exclude: [ 'localidade_id' ]
+        exclude: [ 'municipio_id' ]
       }
     });
 

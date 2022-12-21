@@ -19,7 +19,7 @@ module.exports = {
           allowNull: false,
           references: { model: 'ruas', key: 'id' },
           onUpdate: 'CASCADE',
-          onDelete: 'RESTRICT'
+          onDelete: 'CASCADE'
         },
         quarteirao_id: {
           type: Sequelize.INTEGER,

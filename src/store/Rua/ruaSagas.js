@@ -37,26 +37,26 @@ export function* getRuaPorCep( action ) {
   }
 }
 
-export function* getStreetByLocality(action) {
+export function* getStreetByCity(action) {
   try {
-    const { data, status } = yield call( servico.getStreetByLocalityRequest, action.payload );
+    const { data, status } = yield call( servico.getStreetByCityRequest, action.payload );
 
     if( status === 200 ) {
 
-      yield put( RuaActions.getStreetByLocality( data ) );
+      yield put( RuaActions. getStreetByCitySuccess( data ) );
     }else {
-      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas da localidade/bairro: " + status, "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas do município: " + status, "error" ) );
     }
 
   } catch (err) {
     if(err.response){
       //Provavel erro de logica na API
-      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas da localidade/bairro, entre em contato com o suporte", "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas do município, entre em contato com o suporte", "error" ) );
       
     }
     //Se chegou aqui, significa que não houve resposta da API
     else
-      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas da localidade/bairro, favor verifique a conexão", "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar as ruas do município, favor verifique a conexão", "error" ) );
   }
 }
 
@@ -67,8 +67,6 @@ export function* streetAlreadyExist(action) {
     if( status === 200 ) {
       yield put( RuaActions.streetExistSuccess( data ) );
 
-      if( data.sameName ) 
-        yield put( AppConfigActions.showNotifyToast( "Já existe uma rua com este nome na localidade", "error" ))
       if( data.sameCEP )  
         yield put( AppConfigActions.showNotifyToast( "Já exise uma rua com este cep", "error" ))
 
@@ -93,27 +91,25 @@ export function* createStreet( action ) {
     const { data, status } = yield call( servico.createStreetRequest, action.payload );
 
     if( status === 201 ) {
-      yield put( RuaActions.createStreet( data ) );
-      yield put( AppConfigActions.showNotifyToast( "Rua criada com sucesso", "success" ) );
+      yield put( RuaActions.createStreetSuccess( data ) );
+      yield put( AppConfigActions.showNotifyToast( "Logradouro criado com sucesso", "success" ) );
     }else {
-      yield put( AppConfigActions.showNotifyToast( "Falha ao criar a rua: " + status, "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Falha ao criar o logradouro: " + status, "error" ) );
     }
   } catch (err) {
 
     yield put(RuaActions.createStreetFail())
 
     if(err.response){
-      const {sameName, sameCEP} = err.response.data
+      const {sameCEP} = err.response.data
 
-      if(sameName)
-        yield put( AppConfigActions.showNotifyToast( "Já existe uma rua com este nome na localidade", "error" ) );
       if(sameCEP)
-        yield put( AppConfigActions.showNotifyToast( "Já existe uma rua com este CEP", "error" ) );
-      if(!sameCEP && !sameName)
-        yield put( AppConfigActions.showNotifyToast( "Erro ao criar a rua, entre em contato com o suporte", "error" ) );
+        yield put( AppConfigActions.showNotifyToast( "Já existe um logradouro com este CEP", "error" ) );
+      else
+        yield put( AppConfigActions.showNotifyToast( "Erro ao criar o logradouro, entre em contato com o suporte", "error" ) );
     }
     else{
-      yield put( AppConfigActions.showNotifyToast( "Erro ao criar a rua, favor verifique a conexão", "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Erro ao criar o logradouro, favor verifique a conexão", "error" ) );
     }
   }
 }
@@ -123,26 +119,24 @@ export function* updateStreet( action ) {
     const { data, status } = yield call( servico.updateStreetRequest, action.payload );
 
     if( status === 200 ) {
-      yield put( RuaActions.updateStreet( data ) );
-      yield put( AppConfigActions.showNotifyToast( "Rua atualizada com sucesso", "success" ) );
+      yield put( RuaActions.updateStreetSuccess( data ) );
+      yield put( AppConfigActions.showNotifyToast( "Logradouro atualizado com sucesso", "success" ) );
     }else {
-      yield put( AppConfigActions.showNotifyToast( "Falha ao atualizada a rua: " + status, "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Falha ao atualizar o logradouro: " + status, "error" ) );
     }
   } catch (err) {
 
     yield put(RuaActions.updateStreetFail())
     if(err.response){
-      const {sameName, sameCEP} = err.response.data
+      const {sameCEP} = err.response.data
 
-      if(sameName)
-        yield put( AppConfigActions.showNotifyToast( "Já existe uma rua com este nome na localidade", "error" ) );
       if(sameCEP)
-        yield put( AppConfigActions.showNotifyToast( "Já existe uma rua com este CEP", "error" ) );
-      if(!sameCEP && !sameName)
-        yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar a rua, entre em contato com o suporte", "error" ) );
+        yield put( AppConfigActions.showNotifyToast( "Já existe um logradouro com este CEP", "error" ) );
+      else
+        yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar o logradouro, entre em contato com o suporte", "error" ) );
     }
     else{
-      yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar a rua, favor verifique a conexão", "error" ) );
+      yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar o logradouro, favor verifique a conexão", "error" ) );
     }
   }
 }
@@ -152,22 +146,26 @@ export function* deleteStreet( action ) {
     const { status } = yield call( servico.deleteStreetRequest, action.payload );
 
     if( status === 200 ) {
-      yield put( RuaActions.deleteStreet( action.payload.index ) );
-      yield put( AppConfigActions.showNotifyToast( "Rua excluída com sucesso", "success" ) );
+      yield put( RuaActions.deleteStreetSuccess( action.payload.index ) );
+      yield put( AppConfigActions.showNotifyToast( "Logradouro excluída com sucesso", "success" ) );
     }else {
+      yield put( RuaActions.deleteStreetFail() );
       yield put( AppConfigActions.showNotifyToast( "Falha ao excluir rua: " + status, "error" ) );
     }
   } catch (err) {
 
     if(err.response){
+
+      yield put( RuaActions.deleteStreetFail() );
+
       const {numQuarteiroes, error} = err.response.data
 
       //caso um quarteirão com esteja associado com a rua
       if(numQuarteiroes){
-        yield put( AppConfigActions.showNotifyToast( "Existem lados associados a esta rua que devem ser excluidos antes. Os números dos quarteirões que contem esses lados são: "+numQuarteiroes, "warning" ) );
+        yield put( AppConfigActions.showNotifyToast( "Existem lados associados a este logradouro que devem ser excluidos antes. Os números dos quarteirões que contem esses lados são: "+numQuarteiroes, "warning" ) );
       //provavel erro na api ou banco
       }else
-        yield put( AppConfigActions.showNotifyToast( "Erro ao deletar rua, entre em contato com o suporte", "error" ) );
+        yield put( AppConfigActions.showNotifyToast( "Erro ao deletar logradouro, entre em contato com o suporte", "error" ) );
     }
     //Não conseguiu entrar em contato com api
     else
@@ -179,8 +177,8 @@ function* watchGetRuaPorCep() {
   yield takeLatest( RuaActions.ActionTypes.GET_RUA_POR_CEP_REQUEST, getRuaPorCep );
 }
 
-function* watchGetStreetByLocality() {
-  yield takeLatest( RuaActions.ActionTypes.GET_STREET_BY_LOCALITY_REQUEST, getStreetByLocality );
+function* watchGetStreetByCity() {
+  yield takeLatest( RuaActions.ActionTypes.GET_STREET_BY_CITY_REQUEST, getStreetByCity );
 }
 
 function* watchCreateStreet() {
@@ -202,7 +200,7 @@ function* watchStreetAlreadyExist() {
 export function* ruaSaga() {
   yield all( [
     watchGetRuaPorCep(),
-    watchGetStreetByLocality(),
+    watchGetStreetByCity(),
     watchCreateStreet(),
     watchUpdateStreet(),
     watchDeleteStreet(),

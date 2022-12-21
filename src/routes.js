@@ -74,6 +74,9 @@ import UsuariosRegEditar from './pages/usuariosRegional/EditarUsuario';
 import Municipios from './pages/Municipios';
 import EditarMunicipio from './pages/Municipios/EditarMunicipio';
 
+// Ruas
+import Ruas from './pages/Ruas';
+
 // Rotas
 import Rota from './pages/Rota';
 import PlanejarRota from './pages/Rota/PlanejarRota';
@@ -159,6 +162,8 @@ const Routes = props => {
         <PrivateRoute exact path="/municipios" component={ Municipios } tipoPerfil={ perfil } />
         <PrivateRoute path="/municipios/:id" component={ EditarMunicipio } tipoPerfil={ perfil } />
 
+         {/* Ruas */}
+        <PrivateRoute exact path="/ruas" component={ Ruas } tipoPerfil={ perfil } />
         {/* Quarteirões */}
         <PrivateRoute exact path="/quarteiroes" component={ Quarteiroes } tipoPerfil={ perfil } />
         <PrivateRoute path="/quarteiroes/:id" component={ EditarQuarteirao } tipoPerfil={ perfil } />

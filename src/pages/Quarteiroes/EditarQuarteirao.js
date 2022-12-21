@@ -28,7 +28,7 @@ import { connect } from 'react-redux';
 import { changeSidebar } from '../../store/Sidebar/sidebarActions';
 import { getLocationByCityRequest } from '../../store/Localidade/localidadeActions';
 import { getZoneByLocalityRequest, getZoneByCityRequest } from '../../store/Zona/zonaActions';
-import { getStreetByLocalityRequest } from '../../store/Rua/ruaActions';
+import { getStreetByCityRequest } from '../../store/Rua/ruaActions';
 import {
   getQuarteiraoPorIdRequest,
   setImovelEditar,
@@ -76,6 +76,7 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
     props.changeSidebar( "quarteirao" );
     props.getQuarteiraoPorIdRequest( id );
     props.getLocationByCityRequest( municipio_id );
+    props.getStreetByCityRequest( municipio_id );
   }, []);
 
   useEffect(() => {
@@ -106,8 +107,6 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
   useEffect(() => {
     if( Object.entries( localidade ).length > 0 ) {
       props.getZoneByCityRequest( usuario.municipio.id );
-      props.getStreetByLocalityRequest( localidade.value );
-
       setZona( {} );
     }
   }, [ localidade ]);
@@ -369,14 +368,7 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
                           <label htmlFor="localidade">
                             Localidade
                           </label>
-                          <input
-                            id="localidade"
-                            value={localidadeOriginal.label}
-                            className="form-control"
-                            onChange={(e) => setNumero(e.target.value)}
-                            disabled={true}
-                          />
-                         {/*  <Select
+                          <Select
                             id="localidade"
                             value={localidade}
                             styles={selectDefault}
@@ -386,7 +378,7 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
                             }}
                             required
                             isDisabled={ativo.value === 1 ? false : true}
-                          /> */}
+                          />
                         </FormGroup>
                       </Col>
                       <Col sm="6">
@@ -462,7 +454,7 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
                                       <FaBorderAll />
                                     </ListaIcon>
                                     <span className="mr-2">
-                                      Lado nº {l.numero} - Rua: {l.logradouro}
+                                      Lado nº {l.numero} - {l.logradouro}
                                     </span>
                                   </div>
 
@@ -683,7 +675,7 @@ const mapDispatchToProps = (dispatch) =>
       getLocationByCityRequest,
       getZoneByLocalityRequest,
       getZoneByCityRequest,
-      getStreetByLocalityRequest,
+      getStreetByCityRequest,
       setImovelEditar,
       excluirImovelRequest,
       setQuarteiraoRequest,

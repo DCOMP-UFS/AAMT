@@ -5,8 +5,10 @@ const INITIAL_STATE = {
   rua: new Rua(),
   ruas: [],
   created: null,
+  updated: null,
+  deleted: null,
   indexSelect: null,
-  sameName:null, // indica se ja existe uma rua com mesmo nome na localidade
+  sameName:null, // inutil
   sameCEP:null   // indica se ja existe uma rua com mesmo cep
 }
 
@@ -57,13 +59,9 @@ export default function Quarteirao( state = INITIAL_STATE, action ) {
       let ruas = state.ruas;
       const rua = action.payload.rua;
 
-      const index = ruas.findIndex( r => r.id === rua.id );
-      ruas[index] = rua;
-
       return {
         ...state,
-        ruas,
-        updated: !state.updated
+        updated: true
       }
     }
 
@@ -82,14 +80,23 @@ export default function Quarteirao( state = INITIAL_STATE, action ) {
     }
 
     case ActionTypes.DELETE_STREET_SUCCESS: {
-      let ruas = state.ruas;
-
-      ruas.splice( action.payload.index, 1 );
-
       return {
         ...state,
-        ruas,
-        updated: !state.updated
+        deleted: true
+      }
+    }
+
+    case ActionTypes.DELETE_STREET_FAIL: {
+      return {
+        ...state,
+        deleted: false
+      }
+    }
+
+    case ActionTypes.CLEAR_DELETE_STREET: {
+      return {
+        ...state,
+        deleted: null
       }
     }
 

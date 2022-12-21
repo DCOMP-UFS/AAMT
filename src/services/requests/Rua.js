@@ -8,12 +8,12 @@ export const getStreetByCityRequest = data => {
 }
 
 export const createStreetRequest = data => {
-  const { nome, cep, localidade_id } = data;
+  const { nome, cep, municipio_id } = data;
 
   return api.post(`/ruas/`, {
     nome,
     cep,
-    localidade_id
+    municipio_id
   },
   {
     ...headerAuthorization()
@@ -21,11 +21,13 @@ export const createStreetRequest = data => {
 }
 
 export const updateStreetRequest = data => {
-  const { id, ...body } = data;
-  // Pegando somente o que o body contém.
-  const attr = Object.entries(body);
-
-  return api.put(`/ruas/${ id }`, { ...attr[0][1] }, {
+  const { id, nome, cep } = data;
+  
+  return api.put(`/ruas/${ id }`, {
+     nome,
+     cep 
+    }, 
+    {
     ...headerAuthorization()
   });
 }

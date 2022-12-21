@@ -70,6 +70,7 @@ export const itens = {
   ], "operacional" ),
   usuario: criarLink( "usuario", "Usuários", false, FA.FaUsers, "/usuariosRegional", "cadastroBasico" ),
   municipio: criarLink( "municipio", "Municípios", false, FA.FaCity, "/municipios", "cadastroBasico" ),
+  rua: criarLink( "rua", "Logradouros", false, FA.FaCity, "/ruas", "cadastroBasico" ),
   amostra: criarLink( "amostra", "Amostras", false, FA.FaVial, "/amostras", "operacional" ),
   amostraLab: criarLink( "amostraLab", "Amostras", false, FA.FaVial, "/amostrasLab", "operacional" ),
   atividadeMunicipio: criarNav( "atividade_municipio", "Atividades", false, IoIosPaper, [
@@ -115,6 +116,9 @@ export const menus = {
   ],
   manter_municipio: [
     itens.municipio,
+  ],
+  manter_rua: [
+    itens.rua,
   ],
   manter_usuario: [
     itens.usuario,

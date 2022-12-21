@@ -14,6 +14,8 @@ export const ActionTypes = {
   CLEAR_UPDATE_STREET : "CLEAR_UPDATE_STREET",
   DELETE_STREET_REQUEST: "DELETE_STREET_REQUEST",
   DELETE_STREET_SUCCESS: "DELETE_STREET_SUCCESS",
+  DELETE_STREET_FAIL : "DELETE_STREET_FAIL",
+  CLEAR_DELETE_STREET : "CLEAR_DELETE_STREET",
   STREET_EXIST_REQUEST: "STREET_EXIST_REQUEST",
   STREET_EXIST_SUCCESS: "STREET_EXIST_SUCCESS",
   CLEAR_STREET_EXIST: "CLEAR_STREET_EXIST"
@@ -67,68 +69,18 @@ export const getStreetByCitySuccess = ruas => {
   }
 }
 
-export const createStreetRequest = ( nome, cep, localidade_id ) => {
+export const createStreetRequest = ( nome, cep, municipio_id ) => {
   return {
     type: ActionTypes.CREATE_STREET_REQUEST,
     payload: {
       nome,
       cep,
-      localidade_id
+      municipio_id
     }
   }
 }
 
-export const updateStreetRequest = ( id, body ) => {
-  return {
-    type: ActionTypes.UPDATE_STREET_REQUEST,
-    payload: {
-      id,
-      body
-    }
-  }
-}
-
-export const deleteStreetRequest = ( id, index ) => {
-  return {
-    type: ActionTypes.DELETE_STREET_REQUEST,
-    payload: {
-      id,
-      index
-    }
-  }
-}
-
-export const deleteStreet = ( index ) => {
-  return {
-    type: ActionTypes.DELETE_STREET_SUCCESS,
-    payload: {
-      index
-    }
-  }
-}
-
-export const updateStreet = rua => {
-  return {
-    type: ActionTypes.UPDATE_STREET_SUCCESS,
-    payload: {
-      rua
-    }
-  }
-}
-
-export const updateStreetFail = () => {
-  return {
-    type: ActionTypes.UPDATE_STREET_FAIL,
-  }
-}
-
-export const clearUpdate = () => {
-  return {
-    type: ActionTypes.CLEAR_UPDATE_STREET
-  }
-}
-
-export const createStreet = rua => {
+export const createStreetSuccess = rua => {
   return {
     type: ActionTypes.CREATE_STREET_SUCCESS,
     payload: {
@@ -149,6 +101,68 @@ export const clearCreate = () => {
   }
 }
 
+export const updateStreetRequest = ( id, nome, cep ) => {
+  return {
+    type: ActionTypes.UPDATE_STREET_REQUEST,
+    payload: {
+      id,
+      nome, 
+      cep
+    }
+  }
+}
+
+export const deleteStreetRequest = ( id, index ) => {
+  return {
+    type: ActionTypes.DELETE_STREET_REQUEST,
+    payload: {
+      id,
+      index
+    }
+  }
+}
+
+export const deleteStreetSuccess = ( index ) => {
+  return {
+    type: ActionTypes.DELETE_STREET_SUCCESS,
+    payload: {
+      index
+    }
+  }
+}
+
+export const deleteStreetFail = ( ) => {
+  return {
+    type: ActionTypes.DELETE_STREET_FAIL,
+  }
+}
+
+export const clearDelete = ( ) => {
+  return {
+    type: ActionTypes.CLEAR_DELETE_STREET,
+  }
+}
+
+export const updateStreetSuccess = rua => {
+  return {
+    type: ActionTypes.UPDATE_STREET_SUCCESS,
+    payload: {
+      rua
+    }
+  }
+}
+
+export const updateStreetFail = () => {
+  return {
+    type: ActionTypes.UPDATE_STREET_FAIL,
+  }
+}
+
+export const clearUpdate = () => {
+  return {
+    type: ActionTypes.CLEAR_UPDATE_STREET
+  }
+}
 
 export const changeStreetSelect = index => {
   return {

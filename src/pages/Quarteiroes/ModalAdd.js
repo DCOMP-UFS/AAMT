@@ -108,8 +108,8 @@ function ModalAdd({ municipio_id, created, show, handleClose, ...props }) {
    */
   useEffect( () => {
     if( created ) {
+      props.getStreetByCityRequest( municipio_id );
       $('#modal-novo-quarteirao').modal( 'hide' );
-      //não precisa limpar os inputs por causa do useEffect logo abaixo
     }
     props.setCreated( null );
     setFlLoading(false)

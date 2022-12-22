@@ -215,7 +215,10 @@ const Vistoria = ( { vistoriasCache, usuario, trabalhoDiario, rota, showNotStart
       elem => elem.trabalhoDiario.horaInicio != null && elem.trabalhoDiario.horaFim == null
     )
 
-    setCodigoAtividadeOptions( trabalhosRotasFilter.map( (elem,index) => ( { value: index, label: elem.trabalhoDiario.atividade.id } )) )
+    setCodigoAtividadeOptions( trabalhosRotasFilter.map( (elem,index) => ( { 
+      value: index, 
+      label: elem.trabalhoDiario.atividade.id+" ( Metodologia - "+elem.trabalhoDiario.atividade.metodologia.sigla+" )" 
+    } )) )
 
     //Caso exista um trabalho diario armazenado no cache
     if(trabalhoDiario.id){
@@ -223,7 +226,10 @@ const Vistoria = ( { vistoriasCache, usuario, trabalhoDiario, rota, showNotStart
       const index = trabalhosRotasFilter.findIndex( elem => ( elem.trabalhoDiario.id == trabalhoDiario.id ) )
 
       if(index != -1){
-        const codigoOption = { value: index, label: trabalhosRotasFilter[index].trabalhoDiario.atividade.id  }
+        const codigoOption = { 
+          value: index, 
+          label: trabalhosRotasFilter[index].trabalhoDiario.atividade.id+" ( Metodologia - "+trabalhosRotasFilter[index].trabalhoDiario.atividade.metodologia.sigla+" )"  
+        }
         setCodigoAtividade(codigoOption)
       }
       else{
@@ -375,7 +381,7 @@ const Vistoria = ( { vistoriasCache, usuario, trabalhoDiario, rota, showNotStart
           <article className={trabalhosRotasFiltrados.length == 0 ? "d-none" : "col-12"}>
             <div className="card">
             < label htmlFor="codigoAtividade">Selecione o codigo da atividade<code>*</code></label>
-              <div style={{width:"25%"}}>
+              <div style={{width:"30%"}}>
                 <Select
                   id="codigoAtividade"
                   styles={ selectDefault }

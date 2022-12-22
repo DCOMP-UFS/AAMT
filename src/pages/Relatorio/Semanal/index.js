@@ -59,6 +59,10 @@ export const RelatorioSemanal = ({ atividades, ciclo, usuario, ...props }) => {
                   </div>
                   <div className="card2-body">
                     <div className="form-group">
+                      <label style={{ fontWeight: 'bold' }}>Código</label>
+                      <span>{ atividade.id }</span>
+                    </div>
+                    <div className="form-group">
                       <label style={{ fontWeight: 'bold' }}>Objetivo</label>
                       <span>{ atividade.objetivo.descricao }</span>
                     </div>

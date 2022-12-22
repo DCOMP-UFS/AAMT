@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
 import PopDescription from '../../../../../components/PopDescription';
 import Checkbox from '@material-ui/core/Checkbox';
+import Tooltip from '@material-ui/core/Tooltip';
 import { FaUser } from 'react-icons/fa';
 import Loading from '../../../../../components/Loading';
 import { situacaoLadoEnum } from '../../../../../config/enumerate.js';
@@ -176,32 +177,36 @@ const ExibirQuarteiroes = ( { rota_equipe, fl_loading, indexEquipe, indexMembro,
                         toggleLado( indexQuarteirao, indexLado )
                     }}
                   >
-                    {/* situacao_lado_id
-                    1 - Em aberto
-                    2 - Fazendo
-                    3 - Concluído
-                    4 - Planejado */}
-                    <StreetCard className={
-                      lado.situacao === 3 ? 'success' :
-                      lado.situacao === 4 ? 'warning' :
-                      ''
-                    }>
-                      <div className="body">
-                        <Checkbox
-                          color="primary"
-                          className="p-0 pr-2"
-                          inputProps={{ 'aria-label': 'primary checkbox' }}
-                          checked={ lado.selected ? lado.selected : false }
-                        />
-                        { lado.rua.nome }
-                      </div>
-                      <div className="footer">
-                        <span>{
-                          situacaoLadoEnum.find( sit => sit.id === lado.situacao ).label
-                        }</span>
-                        <span>{ `${ lado.vistorias }/${ lado.imoveis }` }</span>
-                      </div>
-                    </StreetCard>
+                    <Tooltip
+                      title= { lado.rua.nome }
+                    >
+                      {/* situacao_lado_id
+                      1 - Em aberto
+                      2 - Fazendo
+                      3 - Concluído
+                      4 - Planejado */}
+                      <StreetCard className={
+                        lado.situacao === 3 ? 'success' :
+                        lado.situacao === 4 ? 'warning' :
+                        ''
+                      }>
+                        <div className="body">
+                          <Checkbox
+                            color="primary"
+                            className="p-0 pr-2"
+                            inputProps={{ 'aria-label': 'primary checkbox' }}
+                            checked={ lado.selected ? lado.selected : false }
+                          />
+                          { lado.rua.nome }
+                        </div>
+                        <div className="footer">
+                          <span>{
+                            situacaoLadoEnum.find( sit => sit.id === lado.situacao ).label
+                          }</span>
+                          <span>{ `${ lado.vistorias }/${ lado.imoveis }` }</span>
+                        </div>
+                      </StreetCard>
+                    </Tooltip>
                   </li>
                 )
               })

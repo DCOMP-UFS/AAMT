@@ -163,17 +163,17 @@ const createSide = async (numero, quarteirao_id, rua_id) => {
   return lado;
 }
 
-const findOrCreateStreet = async ( nome, localidade_id, cep ) => {
+const findOrCreateStreet = async ( nome, municipio_id, cep ) => {
   const [ rua ] = await Rua.findOrCreate({
     where: {
       nome,
-      localidade_id,
+      municipio_id,
       ativo:true
     },
     defaults: { 
       nome,
       cep,
-      localidade_id
+      municipio_id
     }
   });
 
@@ -275,7 +275,7 @@ store = async ( req, res ) => {
         const rua = await Rua.create({
           nome: l.logradouro,
           cep: l.cep,
-          localidade_id: l.localidade_id
+          municipio_id: municipio_id
         });
 
         await createSide( l.numero, quarteirao.id, rua.id );
@@ -385,7 +385,7 @@ update = async ( req, res ) => {
           // Lado sem rua cadastrada
           const rua = await findOrCreateStreet(
             l.logradouro,
-            l.localidade_id,
+            municipio_id,
             l.cep
           );
           await updateSide(l.id, l.numero, id, rua.id);
@@ -399,7 +399,7 @@ update = async ( req, res ) => {
           // Lado sem rua cadastrada
           const rua = await findOrCreateStreet(
             l.logradouro,
-            l.localidade_id,
+            municipio_id,
             l.cep
           );
           await createSide(l.numero, id, rua.id);

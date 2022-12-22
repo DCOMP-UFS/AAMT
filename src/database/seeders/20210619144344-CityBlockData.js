@@ -8,7 +8,7 @@ module.exports = {
       {
         numero: faker.datatype.number({ max: 999, min: 1 }),
         ativo: 1,
-        localidade_id: 1, // PASTINHO
+        localidade_id: 8, // CENTRO - ARACAJU
         zona_id: null,
         quarteirao_id: null,
         created_at: new Date(),
@@ -17,7 +17,7 @@ module.exports = {
       {
         numero: faker.datatype.number({ max: 999, min: 1 }),
         ativo: 1,
-        localidade_id: 1, // PASTINHO
+        localidade_id: 8, // CENTRO - ARACAJU
         zona_id: null,
         quarteirao_id: null,
         created_at: new Date(),
@@ -26,7 +26,7 @@ module.exports = {
       {
         numero: faker.datatype.number({ max: 999, min: 1 }),
         ativo: 1,
-        localidade_id: 2, // TRIUNFO
+        localidade_id: 8, // CENTRO - ARACAJU
         zona_id: null,
         quarteirao_id: null,
         created_at: new Date(),
@@ -35,7 +35,7 @@ module.exports = {
       {
         numero: faker.datatype.number({ max: 999, min: 1 }),
         ativo: 1,
-        localidade_id: 2, // TRIUNFO
+        localidade_id: 8, // CENTRO - ARACAJU
         zona_id: null,
         quarteirao_id: null,
         created_at: new Date(),
@@ -44,7 +44,7 @@ module.exports = {
       {
         numero: faker.datatype.number({ max: 999, min: 1 }),
         ativo: 1,
-        localidade_id: 3, // FEIRINHA
+        localidade_id: 8, // CENTRO - ARACAJU
         zona_id: null,
         quarteirao_id: null,
         created_at: new Date(),
@@ -53,7 +53,7 @@ module.exports = {
       {
         numero: faker.datatype.number({ max: 999, min: 1 }),
         ativo: 1,
-        localidade_id: 3, // FEIRINHA
+        localidade_id: 8, // CENTRO - ARACAJU
         zona_id: null,
         quarteirao_id: null,
         created_at: new Date(),
@@ -62,7 +62,7 @@ module.exports = {
       {
         numero: faker.datatype.number({ max: 999, min: 1 }),
         ativo: 1,
-        localidade_id: 4, // MATA DO PERU
+        localidade_id: 42, // SÃO JOSÉ - ARACAJU
         zona_id: null,
         quarteirao_id: null,
         created_at: new Date(),
@@ -71,7 +71,7 @@ module.exports = {
       {
         numero: faker.datatype.number({ max: 999, min: 1 }),
         ativo: 1,
-        localidade_id: 4, // MATA DO PERU
+        localidade_id: 42, // SÃO JOSÉ - ARACAJU
         zona_id: null,
         quarteirao_id: null,
         created_at: new Date(),
@@ -80,7 +80,7 @@ module.exports = {
       {
         numero: faker.datatype.number({ max: 999, min: 1 }),
         ativo: 1,
-        localidade_id: 10, // SÃO CONRADO
+        localidade_id: 42, // SÃO JOSÉ - ARACAJU
         zona_id: null,
         quarteirao_id: null,
         created_at: new Date(),
@@ -89,7 +89,7 @@ module.exports = {
       {
         numero: faker.datatype.number({ max: 999, min: 1 }),
         ativo: 1,
-        localidade_id: 10, // SÃO CONRADO
+        localidade_id: 42, // SÃO JOSÉ - ARACAJU
         zona_id: null,
         quarteirao_id: null,
         created_at: new Date(),
@@ -98,7 +98,7 @@ module.exports = {
       {
         numero: faker.datatype.number({ max: 999, min: 1 }),
         ativo: 1,
-        localidade_id: 11, // FAROLÂNDIA
+        localidade_id: 42, // SÃO JOSÉ - ARACAJU
         zona_id: null,
         quarteirao_id: null,
         created_at: new Date(),
@@ -107,7 +107,7 @@ module.exports = {
       {
         numero: faker.datatype.number({ max: 999, min: 1 }),
         ativo: 1,
-        localidade_id: 11, // FAROLÂNDIA
+        localidade_id: 42, // SÃO JOSÉ - ARACAJU
         zona_id: null,
         quarteirao_id: null,
         created_at: new Date(),

@@ -1,0 +1,1003 @@
+49500001	Itabaiana/SE	Centro	Avenida Ivo de Carvalho - lado par
+49500004	Itabaiana/SE	Centro	Rua Quintino de Lacerda - até 696/697
+49500007	Itabaiana/SE	Centro	Rua Álvaro Fonseca de Oliveira - até 686/687
+49500010	Itabaiana/SE	Centro	Rua Manoel Domingos Pereira - lado par
+49500013	Itabaiana/SE	Centro	Rua Francisca Menezes Porto
+49500016	Itabaiana/SE	Centro	Rua Doutor Augusto Cesar Leite - até 148/149
+49500019	Itabaiana/SE	Centro	Rua Candido Barbosa de Jesus - até 196/197
+49500022	Itabaiana/SE	Centro	Avenida Nivalda Lima Figueiredo - até 471/472
+49500025	Itabaiana/SE	Centro	Rua Juca Monteiro - até 672 - lado par
+49500028	Itabaiana/SE	Centro	Rua Vinte e Oito de Agosto
+49500031	Itabaiana/SE	Centro	Rua Antonio Higino dos Santos - lado par
+49500034	Itabaiana/SE	Centro	Avenida Doutor Luiz Magalhães - até 650 - lado par
+49500037	Itabaiana/SE	Centro	Avenida Doutor Luiz Magalhães - até 661 - lado ímpar
+49500040	Itabaiana/SE	Centro	Rua Manoel Antonio de Oliveira - lado par
+49500043	Itabaiana/SE	Centro	Rua Itaporanga - até 120/121
+49500046	Itabaiana/SE	Centro	Rua Quintino Bocaiuva
+49500049	Itabaiana/SE	Centro	Rua General José Calazans
+49500052	Itabaiana/SE	Centro	Avenida Doutor Airton Mendonça Teles
+49500055	Itabaiana/SE	Centro	Vila Santo Antonio
+49500058	Itabaiana/SE	Centro	Rua Jackson de Figueiredo
+49500061	Itabaiana/SE	Centro	Rua José Alves de Lima
+49500064	Itabaiana/SE	Centro	Avenida Ivo de Carvalho - lado ímpar
+49500067	Itabaiana/SE	Centro	Rua Francisco Santos
+49500069	Itabaiana/SE	Centro	Rua Grumete Alcides Cavalcante
+49500070	Itabaiana/SE	Centro	Praça João Pessoa
+49500073	Itabaiana/SE	Centro	Rua Padre Vicente de Jesus
+49500076	Itabaiana/SE	Centro	Rua Sete de Setembro
+49500079	Itabaiana/SE	Centro	Rua Manoel Garangau
+49500082	Itabaiana/SE	Centro	Rua Coronel José Cavalcante
+49500085	Itabaiana/SE	Centro	Rua Benjamim Constant
+49500088	Itabaiana/SE	Centro	Rua Professor Hilário de Melo Rezende - até 459/460
+49500091	Itabaiana/SE	Centro	Rua José Ferreira Araujo - lado par
+49500094	Itabaiana/SE	Centro	Rua Santa Cruz - até 165/166
+49500097	Itabaiana/SE	Centro	Praça Etelvino Mendonça
+49500100	Itabaiana/SE	Centro	Avenida Manoel Francisco Teles - de 948 ao fim - lado par
+49500103	Itabaiana/SE	Centro	Avenida João Teixeira - até 493 - lado ímpar
+49500106	Itabaiana/SE	Centro	Avenida João Teixeira - até 492 - lado par
+49500109	Itabaiana/SE	Centro	Rua Campo do Brito
+49500112	Itabaiana/SE	Centro	Rua Cupertino Dórea
+49500115	Itabaiana/SE	Centro	Travessa Francisco Porto
+49500118	Itabaiana/SE	Centro	Rua São Paulo
+49500121	Itabaiana/SE	Centro	Rua Deputado Antonio Oliveira Mendonça
+49500124	Itabaiana/SE	Centro	Largo José do Prado Franco
+49500127	Itabaiana/SE	Centro	Rua Batista Itajaí
+49500130	Itabaiana/SE	Centro	Vila Rosário
+49500133	Itabaiana/SE	Centro	Rua Comendador Francisco José da Cunha
+49500136	Itabaiana/SE	Centro	Rua Antonio Joaquim da Silva
+49500139	Itabaiana/SE	Centro	Avenida Otoniel Dórea - lado par
+49500142	Itabaiana/SE	Centro	Avenida Otoniel Dórea - lado ímpar
+49500145	Itabaiana/SE	Centro	Avenida Engenheiro Carlos Reis - lado par
+49500148	Itabaiana/SE	Centro	Rua Professor Lima Junior - até 708/709
+49500151	Itabaiana/SE	Centro	Rua Antonio Dultra - de 660/661 ao fim
+49500154	Itabaiana/SE	Centro	Rua Boanerges de Almeida Pinheiro - de 951/952 ao fim
+49500157	Itabaiana/SE	Centro	Rua Odilon Azevedo
+49500160	Itabaiana/SE	Centro	Rua Maria Glória de Santana
+49500163	Itabaiana/SE	Centro	Rua Josefa Gomes de Santana
+49500166	Itabaiana/SE	Centro	Rua Pedro Alves dos Santos
+49500169	Itabaiana/SE	Centro	Rua Percílio Andrade - até 1076 - lado par
+49500172	Itabaiana/SE	Centro	Rua Euclides Paes Mendonça - até 649/650
+49500175	Itabaiana/SE	Centro	Largo Joaquim da Fonseca
+49500178	Itabaiana/SE	Centro	Travessa Artur Barbosa
+49500190	Itabaiana/SE	Centro	Rua Capitão Manoel Joaquim Mendes - até 655/656
+49500193	Itabaiana/SE	Centro	Rua Esperidião Noronha - até 999/1000
+49500196	Itabaiana/SE	Centro	Largo Santo Antonio
+49500199	Itabaiana/SE	Centro	Travessa José da Cunha Melo
+49500202	Itabaiana/SE	Centro	Travessa Manoel Vieira
+49500205	Itabaiana/SE	Centro	Rua Barão do Rio Branco
+49500208	Itabaiana/SE	Centro	Travessa Capitão Francisco Ferreira
+49500211	Itabaiana/SE	Centro	Calçadão Prefeito Luciano Bispo de Lima
+49500214	Itabaiana/SE	Centro	Rua Augusto Maynard
+49500217	Itabaiana/SE	Centro	Rua Treze de Maio
+49500220	Itabaiana/SE	Centro	Travessa Manoel Andrade
+49500223	Itabaiana/SE	Centro	Praça Fausto Cardoso
+49500226	Itabaiana/SE	Centro	Travessa Paulino Menezes
+49500229	Itabaiana/SE	Centro	Rua General Siqueira
+49500232	Itabaiana/SE	Centro	Rua Antonio Dultra - até 658/659
+49500235	Itabaiana/SE	Centro	Rua Capitão José Ferreira Neto - até 331/332
+49500238	Itabaiana/SE	Centro	Rua Boanerges de Almeida Pinheiro - até 949/950
+49500241	Itabaiana/SE	Centro	Rua Manoel Lapa - até 252/253
+49500244	Itabaiana/SE	Centro	Rua Percílio Andrade - de 1078 a 1792 - lado par
+49500247	Itabaiana/SE	Centro	Rua Tobias Barreto - até 552/553
+49500250	Itabaiana/SE	Centro	Travessa José Cornélio
+49500253	Itabaiana/SE	Centro	Rua Marechal Floriano Peixoto
+49500256	Itabaiana/SE	Centro	Rua General Valadão
+49500259	Itabaiana/SE	Centro	Rua Marechal Deodoro da Fonseca - até 672/673
+49500262	Itabaiana/SE	Centro	Travessa Laurinda Maria Mendonça
+49500265	Itabaiana/SE	Centro	Rua Monsenhor Constantino - até 1016/1017
+49500268	Itabaiana/SE	Centro	Rua Coronel Sebrão - até 476/477
+49500271	Itabaiana/SE	Centro	Travessa José Hermoge
+49500274	Itabaiana/SE	Centro	Rua José Mesquita da Silveira - até 819 - lado ímpar
+49500277	Itabaiana/SE	Centro	Rua José Mesquita da Silveira - até 460 - lado par
+49500280	Itabaiana/SE	Centro	Rua Padre Felismino
+49500283	Itabaiana/SE	Centro	Travessa Manoel Leite Sampaio
+49500286	Itabaiana/SE	Centro	Rua Miguel Teixeira - de 371 ao fim - lado ímpar
+49500289	Itabaiana/SE	Centro	Rua José Sizino de Almeida - até 969/970
+49500292	Itabaiana/SE	Centro	Travessa Antonio Tenório de Almeida
+49500295	Itabaiana/SE	Centro	Rua Gumercindo de Oliveira - lado ímpar
+49500298	Itabaiana/SE	Centro	Praça General João Pereira
+49500320	Itabaiana/SE	São Cristóvão	Rua Gumercindo de Oliveira - lado par
+49500323	Itabaiana/SE	São Cristóvão	Rua Percílio Andrade - de 1794 ao fim - lado par
+49500326	Itabaiana/SE	São Cristóvão	Rua Francisco Bragança - lado ímpar
+49500329	Itabaiana/SE	São Cristóvão	Rua Francisco Bragança - lado par
+49500332	Itabaiana/SE	São Cristóvão	Travessa Humberto Dias do Sacramento
+49500335	Itabaiana/SE	São Cristóvão	Rua Elízio Araújo
+49500338	Itabaiana/SE	São Cristóvão	Travessa Maria Cristina Rezende
+49500341	Itabaiana/SE	São Cristóvão	Rua Antonio Diniz Santana
+49500344	Itabaiana/SE	São Cristóvão	Rua Coronel José Ribeiro
+49500347	Itabaiana/SE	São Cristóvão	Rua Josefa Vieira dos Santos - até 857/858
+49500350	Itabaiana/SE	São Cristóvão	Travessa José Milton da Cunha
+49500353	Itabaiana/SE	São Cristóvão	Avenida Leandro Maciel
+49500356	Itabaiana/SE	São Cristóvão	Rua Coronel Sebrão - de 478/479 ao fim
+49500359	Itabaiana/SE	São Cristóvão	Rua Miguel Teixeira - de 372 ao fim - lado par
+49500362	Itabaiana/SE	São Cristóvão	Praça José Machado
+49500400	Itabaiana/SE	São Cristóvão	Rua José Mesquita da Silveira - de 821 a 1209 - lado ímpar
+49500403	Itabaiana/SE	São Cristóvão	Rua Saudalina Santana Ferreira
+49500406	Itabaiana/SE	São Cristóvão	Rua Manoel Alves Ferreira
+49500409	Itabaiana/SE	São Cristóvão	Rua Manoel Martins Ferreira
+49500412	Itabaiana/SE	São Cristóvão	Travessa Claudionor Araújo Carvalho
+49500415	Itabaiana/SE	São Cristóvão	Rua José Mesquita da Silveira - de 1211/1212 ao fim
+49500418	Itabaiana/SE	São Cristóvão	Rua Joana Perpetua Cunha
+49500421	Itabaiana/SE	São Cristóvão	Rua José Antonio dos Santos
+49500424	Itabaiana/SE	São Cristóvão	Rua Francisco Teles Andrade
+49500427	Itabaiana/SE	São Cristóvão	Travessa Francisco Santos
+49500430	Itabaiana/SE	São Cristóvão	Rua Ercília Costa de Oliveira
+49500433	Itabaiana/SE	São Cristóvão	Rua Beliziário Antônio de Andrade
+49500436	Itabaiana/SE	São Cristóvão	Travessa Josefa dos Santos Andrade
+49500439	Itabaiana/SE	São Cristóvão	Rua Maria Helena de Oliveira Peixoto
+49500442	Itabaiana/SE	São Cristóvão	Avenida Doutor José Milton Machado
+49500445	Itabaiana/SE	São Cristóvão	Travessa Antonio Marcos Nascimento
+49500448	Itabaiana/SE	São Cristóvão	Travessa José Libanio de Jesus
+49500451	Itabaiana/SE	São Cristóvão	Rua Tarcísio Alves dos Santos
+49500454	Itabaiana/SE	São Cristóvão	Rua Antonio Félix Barros
+49500457	Itabaiana/SE	São Cristóvão	Rua Josefa Adalula Noronha
+49500460	Itabaiana/SE	São Cristóvão	Rua Euclides Fiel dos Santos
+49500463	Itabaiana/SE	São Cristóvão	Praça Juviniano dos Santos
+49500466	Itabaiana/SE	São Cristóvão	Rua Maria Oliveira dos Santos
+49500469	Itabaiana/SE	São Cristóvão	Rua Projetada B (Lot Riviera)
+49500472	Itabaiana/SE	São Cristóvão	Rua Normando Tavares de Jesus - lado ímpar
+49500475	Itabaiana/SE	São Cristóvão	Rua Firmino José de Oliveira
+49500478	Itabaiana/SE	São Cristóvão	Avenida Maurício Andrade
+49500481	Itabaiana/SE	São Cristóvão	Rua João Belizário de Andrade
+49500534	Itabaiana/SE	São Cristóvão	Praça João Marcelo de Oliveira
+49500537	Itabaiana/SE	São Cristóvão	Praça Frei Fidelis
+49500540	Itabaiana/SE	São Cristóvão	Rua Germano Pereira Santos
+49500543	Itabaiana/SE	São Cristóvão	Avenida Padre Airton Gonçalves Lima
+49500546	Itabaiana/SE	São Cristóvão	Rua São Cristóvão
+49500549	Itabaiana/SE	São Cristóvão	Rua Inácio José Machado
+49500552	Itabaiana/SE	São Cristóvão	Rua José Wilson dos Reis
+49500555	Itabaiana/SE	São Cristóvão	Rua João dos Santos
+49500558	Itabaiana/SE	São Cristóvão	Rua Peto da Farmácia
+49500561	Itabaiana/SE	São Cristóvão	Rua João Retratista
+49500564	Itabaiana/SE	São Cristóvão	Rua José Francisco de Oliveira
+49500567	Itabaiana/SE	São Cristóvão	Rua Álvaro Andrade
+49500570	Itabaiana/SE	São Cristóvão	Rua Vicente Ferreira de Souza
+49500573	Itabaiana/SE	São Cristóvão	Rua Carlos Drumond de Andrade
+49500576	Itabaiana/SE	São Cristóvão	Rua José Otacílio Santos
+49500579	Itabaiana/SE	São Cristóvão	Rua João Alves de Souza
+49500582	Itabaiana/SE	São Cristóvão	Travessa Risoneide do Sacramento
+49500585	Itabaiana/SE	São Cristóvão	Rua Monsenhor Mário de Oliveira Reis
+49500588	Itabaiana/SE	São Cristóvão	Rua I (Cj Habitacional)
+49500591	Itabaiana/SE	São Cristóvão	Rua A (Cj Habitacional)
+49500594	Itabaiana/SE	São Cristóvão	Rua B (Cj Habitacional)
+49500597	Itabaiana/SE	São Cristóvão	Rua C (Cj Habitacional)
+49500600	Itabaiana/SE	São Cristóvão	Rua A (Cj M C Alves)
+49500603	Itabaiana/SE	São Cristóvão	Rua B (Cj M C Alves)
+49500606	Itabaiana/SE	São Cristóvão	Rua C (Cj M C Alves)
+49500609	Itabaiana/SE	São Cristóvão	Rua Vereador Vilobaldo José de Oliveira
+49500612	Itabaiana/SE	São Cristóvão	Travessa Vereador Vilobaldo José de Oliveira
+49500615	Itabaiana/SE	São Cristóvão	Rua Manoel Serafim de Santana
+49500618	Itabaiana/SE	São Cristóvão	Travessa Manoel Serafim de Santana
+49500621	Itabaiana/SE	São Cristóvão	Rua Adalberto Silva
+49500624	Itabaiana/SE	São Cristóvão	Travessa Adalberto Silva
+49500627	Itabaiana/SE	São Cristóvão	Rua D (Cj M P Mendonça)
+49500630	Itabaiana/SE	São Cristóvão	Rua José Braz Santos Oliveira
+49500633	Itabaiana/SE	São Cristóvão	Travessa José Braz Santos Oliveira
+49500636	Itabaiana/SE	São Cristóvão	Rua Ananias Antonio Machado
+49500639	Itabaiana/SE	São Cristóvão	Travessa Ananias Antônio Machado
+49500642	Itabaiana/SE	São Cristóvão	Rua P (Cj M P Mendonça)
+49500645	Itabaiana/SE	São Cristóvão	Rua G (Cj F T Mendonça)
+49500648	Itabaiana/SE	São Cristóvão	Rua S (Cj F T Mendonça)
+49500651	Itabaiana/SE	São Cristóvão	Rua F (Cj F T Mendonça)
+49500654	Itabaiana/SE	São Cristóvão	Rua H (Cj F T Mendonça)
+49500657	Itabaiana/SE	São Cristóvão	Rua R (Cj F T Mendonça)
+49500660	Itabaiana/SE	São Cristóvão	Rua E (Cj F T Mendonça)
+49500663	Itabaiana/SE	São Cristóvão	Rua B (Cj F T Mendonça)
+49500666	Itabaiana/SE	São Cristóvão	Travessa D (Cj F T Mendonça)
+49500669	Itabaiana/SE	São Cristóvão	Rua N (Cj F T Mendonça)
+49500672	Itabaiana/SE	São Cristóvão	Rua Roseilde Silvânia GomesMonteiro Silva
+49500675	Itabaiana/SE	São Cristóvão	Rua Maria Maurícia Machado
+49500678	Itabaiana/SE	São Cristóvão	Rua Pedro Teles de Mendonça
+49500681	Itabaiana/SE	São Cristóvão	Rua Hipólito José de Oliveira
+49500684	Itabaiana/SE	São Cristóvão	Rua A (Cj F T Mendonça)
+49500687	Itabaiana/SE	São Cristóvão	Travessa A (Cj F T Mendonça)
+49500690	Itabaiana/SE	São Cristóvão	Rua M (Cj F T Mendonça)
+49500693	Itabaiana/SE	São Cristóvão	Rua U (Cj M C Bispo)
+49500696	Itabaiana/SE	São Cristóvão	Rua G (Cj M C Bispo)
+49500699	Itabaiana/SE	São Cristóvão	Rua F (Cj M C Bispo)
+49500702	Itabaiana/SE	São Cristóvão	Rua E (Cj M C Bispo)
+49500705	Itabaiana/SE	São Cristóvão	Rua L (Cj M C Bispo)
+49500708	Itabaiana/SE	São Cristóvão	Rua D (Cj M C Bispo)
+49500711	Itabaiana/SE	São Cristóvão	Rua B (Cj M C Bispo)
+49500714	Itabaiana/SE	São Cristóvão	Rua C (Cj M C Bispo)
+49500717	Itabaiana/SE	São Cristóvão	Rua H (Cj M C Bispo)
+49500870	Itabaiana/SE	São Cristóvão	Rua Eudalio Gouveia
+49500873	Itabaiana/SE	São Cristóvão	Rua Brasiliano Antonio de Góis
+49500876	Itabaiana/SE	São Cristóvão	Rua Josefa Arinda de Oliveira
+49500879	Itabaiana/SE	São Cristóvão	Rua Manoel Fernandes Lima
+49500882	Itabaiana/SE	São Cristóvão	Rua José Hora de Oliveira
+49500885	Itabaiana/SE	São Cristóvão	Rua Alaíde Maria Machado
+49500970	Itabaiana/SE	Centro	Avenida Ivo de Carvalho, 336 	 AC Itabaiana
+49500971	Itabaiana/SE	Área Rural de Itabaiana	Área Rural 	 ACS Bom Jardim
+49500972	Itabaiana/SE	Centro	Rua Francisco Santos, 274 	 CDD Itabaiana
+49500990	Itabaiana/SE		Rua Principal, s/n 	 CPC Associação dos Moradores do Povoado Bom Jardim
+49501100	Itabaiana/SE	São Cristóvão	Rua José da Fonseca de Brito
+49501103	Itabaiana/SE	São Cristóvão	Travessa Anicéia Alves dos Santos
+49501106	Itabaiana/SE	São Cristóvão	Rua Josefa Maria dos Santos
+49501109	Itabaiana/SE	São Cristóvão	Rua Aprígio Fereira Passos
+49501112	Itabaiana/SE	São Cristóvão	Rua das Palmeiras
+49501115	Itabaiana/SE	São Cristóvão	Praça Santa Clara de Assis
+49501118	Itabaiana/SE	São Cristóvão	Travessa Antonio Sales do Nascimento
+49501121	Itabaiana/SE	São Cristóvão	Travessa Maria Betania Carvalho
+49501124	Itabaiana/SE	São Cristóvão	Rua Percílio Andrade - de 2093 ao fim - lado ímpar
+49501127	Itabaiana/SE	São Cristóvão	Rua José Wilton Santos
+49501130	Itabaiana/SE	São Cristóvão	Rua João Batista Corcínio
+49501133	Itabaiana/SE	São Cristóvão	Rua Um (M Formosa)
+49501136	Itabaiana/SE	São Cristóvão	Rua Dois (M Formosa)
+49501139	Itabaiana/SE	São Cristóvão	Rua José Abraão
+49501142	Itabaiana/SE	São Cristóvão	Rua Dayse da Silva Menezes
+49501145	Itabaiana/SE	São Cristóvão	Rua Diego da Silva Menezes
+49501148	Itabaiana/SE	São Cristóvão	Travessa Francisco Bragança
+49501151	Itabaiana/SE	São Cristóvão	Rua Vereador Pedro Teles Mendonça
+49501154	Itabaiana/SE	São Cristóvão	Rua José Francisco dos Santos
+49501360	Itabaiana/SE	Bananeiras	Rua Percílio Andrade - de 1835 a 2091 - lado ímpar
+49501365	Itabaiana/SE	Bananeiras	Rua Aluízio Lima dos Santos
+49501370	Itabaiana/SE	Bananeiras	Travessa Santos Cardoso
+49501375	Itabaiana/SE	Bananeiras	Rua Aluízio de Almeida e Silva
+49501380	Itabaiana/SE	Bananeiras	Travessa Vicente Santiago
+49501385	Itabaiana/SE	Bananeiras	Travessa Antonio Cardoso Andrade
+49501390	Itabaiana/SE	Bananeiras	Rua Jaconias Ferreira de Lima
+49501395	Itabaiana/SE	Bananeiras	Rua Cristóvão de Barros - lado par
+49501550	Itabaiana/SE	Bananeiras	Rua José Adalberto de Menezes
+49501555	Itabaiana/SE	Bananeiras	Rua José Gleidiomar de Santana
+49501560	Itabaiana/SE	Bananeiras	Rua Leandro Maciel
+49501565	Itabaiana/SE	Bananeiras	Travessa Raimunda Andrade
+49501570	Itabaiana/SE	Bananeiras	Rua José Alves de Oliveira
+49501575	Itabaiana/SE	Bananeiras	Travessa Francisco Alves de Oliveira
+49501580	Itabaiana/SE	Bananeiras	Travessa Francisco Bragança
+49501585	Itabaiana/SE	Bananeiras	Travessa José Alves de Oliveira
+49501590	Itabaiana/SE	Bananeiras	Rua Francisco Bragança - lado ímpar
+49501595	Itabaiana/SE	Bananeiras	Rua Joana da Anunciação Borges
+49501600	Itabaiana/SE	Bananeiras	Rua Francisco Alves de Oliveira
+49501605	Itabaiana/SE	Bananeiras	Rua José Antonio de Jesus
+49501610	Itabaiana/SE	Bananeiras	Travessa José Antônio de Jesus
+49501615	Itabaiana/SE	Bananeiras	Rua Cristóvão de Barros
+49501620	Itabaiana/SE	Bananeiras	Rua José Nunes de Mendonça
+49501625	Itabaiana/SE	Bananeiras	Travessa Francisco Oliveira
+49501630	Itabaiana/SE	Bananeiras	Rua Manoel Melquiades Silva
+49501635	Itabaiana/SE	Bananeiras	Rua José Francisco dos Santos
+49501830	Itabaiana/SE	Marcela	Rua Cícero José de Marcela
+49501833	Itabaiana/SE	Marcela	Rua Marizete Santos Costa
+49501836	Itabaiana/SE	Marcela	Rua Vice-Prefeito Josias da Silva Nunes - lado ímpar
+49501839	Itabaiana/SE	Marcela	Rua Quintino da Silva Nunes
+49501842	Itabaiana/SE	Marcela	Rua José Eraldo dos Santos
+49501851	Itabaiana/SE	Marcela	Rua Francisca Xavier Nunes
+49501854	Itabaiana/SE	Marcela	Rua José Vicente de Almeida
+49501857	Itabaiana/SE	Marcela	Rua José de Souza Dantas
+49501860	Itabaiana/SE	Marcela	Rua José Lima
+49501869	Itabaiana/SE	Marcela	Rua Felinto Tavares de Jesus - lado par
+49502001	Itabaiana/SE	Marcela	Rua Gentil Fonseca Lobo
+49502004	Itabaiana/SE	Marcela	Avenida Jhon Leno Cunha Mota
+49502007	Itabaiana/SE	Marcela	Rua Firmina Maria Pereira
+49502013	Itabaiana/SE	Marcela	Rua Agnaldo Oliveira de Jesus
+49502016	Itabaiana/SE	Marcela	Rua Maria Mendonça de Jesus
+49502019	Itabaiana/SE	Marcela	Rua Ademir Marinheiro da Silva
+49502031	Itabaiana/SE	Marcela	Rua Maria Alaíde de Jesus Cunha
+49502034	Itabaiana/SE	Marcela	Rua Manoel Francisco Cunha
+49502037	Itabaiana/SE	Marcela	Rua Renilson Francisco Cunha
+49502040	Itabaiana/SE	Marcela	Calçadão Antônio Pereira de Carvalho - lado par
+49502043	Itabaiana/SE	Marcela	Rua Maria de Lourdes Cunha
+49502046	Itabaiana/SE	Marcela	Rua Antônio Joaquim de Santana
+49502049	Itabaiana/SE	Marcela	Rua Maria Eunice de Jesus
+49502052	Itabaiana/SE	Marcela	Rua José Pereira de Jesus
+49502055	Itabaiana/SE	Marcela	Avenida José de Oliveira
+49502058	Itabaiana/SE	Marcela	Rua José Bispo de Mecenas
+49502061	Itabaiana/SE	Marcela	Rua Edinaldo Tavares Góis
+49502064	Itabaiana/SE	Marcela	Rua Maria Julieta Oliveira
+49502067	Itabaiana/SE	Marcela	Calçadão Marinete Tavares Feliciano - lado par
+49502070	Itabaiana/SE	Marcela	Rua Marcos Antônio Menezes
+49502094	Itabaiana/SE	Marcela	Rua Emilio Mota
+49502170	Itabaiana/SE	Marcela	Rua José Teles de Mendonça
+49502179	Itabaiana/SE	Marcela	Rua João Francisco dos Reis
+49502197	Itabaiana/SE	Marcela	Rua Michell Evangelista Pinto
+49502200	Itabaiana/SE	Marcela	Rua Pedro Antenor de Vasconcelos
+49502236	Itabaiana/SE	Marcela	Rua José Menezes da Cunha
+49502243	Itabaiana/SE	Marcela	Rua Brasiliana Francisca de Araújo
+49502246	Itabaiana/SE	Marcela	Rua Acindino Amaro de Araújo
+49502249	Itabaiana/SE	Marcela	Rua José Américo Santana
+49502252	Itabaiana/SE	Marcela	Rua Pedro Tavares de Jesus
+49502255	Itabaiana/SE	Marcela	Rua Silvestre Souza de Jesus
+49502258	Itabaiana/SE	Marcela	Rua João Batista Santana
+49502260	Itabaiana/SE	Marcela	Rua Francisco Cavalcanti de Nascimento
+49502261	Itabaiana/SE	Marcela	Rua Flávio Pereira dos Anjos
+49502264	Itabaiana/SE	Marcela	Rua Mirian Oliveira Melo
+49502267	Itabaiana/SE	Marcela	Rua João Costa Lima Neto
+49503000	Itabaiana/SE	Serrano	Rua Manoel Antonio de Oliveira - lado ímpar
+49503003	Itabaiana/SE	Serrano	Avenida Doutor Luiz Magalhães - de 652 a 1250 - lado par
+49503006	Itabaiana/SE	Serrano	Travessa Francisco Catarino da Fonseca
+49503009	Itabaiana/SE	Serrano	Rua Promotor Antonio Agustinho
+49503012	Itabaiana/SE	Serrano	Rua Monsenhor Eraldo Barbosa
+49503015	Itabaiana/SE	Serrano	Avenida Treze de Junho
+49503018	Itabaiana/SE	Serrano	Rua Itaporanga - de 122/123 ao fim
+49503021	Itabaiana/SE	Serrano	Travessa Morada Nobre
+49503024	Itabaiana/SE	Serrano	Rua Quintino Bocaiúva
+49503060	Itabaiana/SE	Serrano	Rua Pedro Alves de Menezes
+49503063	Itabaiana/SE	Serrano	Travessa Francisco Antonio dos Santos
+49503066	Itabaiana/SE	Serrano	Rua Professor Hilário de Melo Rezende - de 461/462 ao fim
+49503069	Itabaiana/SE	Serrano	Rua José Ferreira Araujo - lado ímpar
+49503072	Itabaiana/SE	Serrano	Travessa Doutor Renato Mazze Lucas
+49503075	Itabaiana/SE	Serrano	Rua Santa Cruz - de 167/168 ao fim
+49503078	Itabaiana/SE	Serrano	Avenida Manoel Francisco Teles - de 350 a 946 - lado par
+49503081	Itabaiana/SE	Serrano	Avenida Manoel Francisco Teles - de 387 a 887 - lado ímpar
+49503084	Itabaiana/SE	Serrano	Rua Anízio Amancio de Oliveira - de 330/331 ao fim
+49503087	Itabaiana/SE	Serrano	Rua Antonio Santana - lado ímpar
+49503090	Itabaiana/SE	Serrano	Travessa José Ferreira Costa
+49503093	Itabaiana/SE	Serrano	Rua Antonio Germano Oliveira
+49503096	Itabaiana/SE	Serrano	Travessa Bombina Nunes Silva
+49503099	Itabaiana/SE	Serrano	Rua Abdias Venancio Neto
+49503102	Itabaiana/SE	Serrano	Rua Cecília Vieira dos Santos
+49503105	Itabaiana/SE	Serrano	Rua Pedro Diniz Gonçalves
+49503108	Itabaiana/SE	Serrano	Avenida Doutor Pedro Garcia Moreno
+49503111	Itabaiana/SE	Serrano	Rua Maria Terezinha de Souza
+49503114	Itabaiana/SE	Serrano	Rua Serapião Antonio de Góis - lado ímpar
+49503117	Itabaiana/SE	Serrano	Rua Jailton Andrade Machado
+49503120	Itabaiana/SE	Serrano	Rua Maria Angelita Santana
+49503123	Itabaiana/SE	Serrano	Rua Abílio de Oliveira
+49503126	Itabaiana/SE	Serrano	Rua Vereador José Xavier Correia
+49503129	Itabaiana/SE	Serrano	Rua Onélia Oliveira Santos
+49503132	Itabaiana/SE	Serrano	Travessa Francisco Santana
+49503135	Itabaiana/SE	Serrano	Rua Manoel Messias dos Santos
+49503138	Itabaiana/SE	Serrano	Rua Genivaldo Rosa dos Santos
+49503141	Itabaiana/SE	Serrano	Rua Prefeito Vicente Machado de Menezes
+49503144	Itabaiana/SE	Serrano	Rua José Ferreira de Melo
+49503147	Itabaiana/SE	Serrano	Travessa Abílio de Oliveira
+49503150	Itabaiana/SE	Serrano	Travessa José Domingos Santana
+49503153	Itabaiana/SE	Serrano	Rua Quirino Pereira da Silva
+49503156	Itabaiana/SE	Serrano	Rua Maria Natália dos Santos
+49503159	Itabaiana/SE	Serrano	Rua José Filadelfo Araújo
+49503162	Itabaiana/SE	Serrano	Avenida Alípio Tavares de Menezes - lado ímpar
+49503165	Itabaiana/SE	Serrano	Rua Sebastião José de Góis
+49503168	Itabaiana/SE	Serrano	Rua Vitor Manoel de Jesus Vasconcelos
+49503171	Itabaiana/SE	Serrano	Travessa José Ferreira de Santana
+49503174	Itabaiana/SE	Serrano	Rua José Auto de Oliveira
+49503177	Itabaiana/SE	Serrano	Avenida Manoel Francisco Teles - até 385 - lado ímpar
+49503180	Itabaiana/SE	Serrano	Avenida Manoel Francisco Teles - até 348 - lado par
+49503183	Itabaiana/SE	Serrano	Praça Francisco Santiago
+49503186	Itabaiana/SE	Serrano	Rua Berilo Batista Leite
+49503220	Itabaiana/SE	Serrano	Rua Paulo Pereira Silva
+49503223	Itabaiana/SE	Serrano	Rua Maria Angélica da Conceição
+49503226	Itabaiana/SE	Serrano	Rua Felismino Pereira Andrade
+49503229	Itabaiana/SE	Serrano	Rua José Ferreira Lima
+49503232	Itabaiana/SE	Serrano	Rua João Francisco da Cunha
+49503235	Itabaiana/SE	Serrano	Rua Josué Passos
+49503238	Itabaiana/SE	Serrano	Rua Nivaldo da Cunha
+49503241	Itabaiana/SE	Serrano	Rua J Carlos
+49503244	Itabaiana/SE	Serrano	Rua Seis
+49503247	Itabaiana/SE	Serrano	Rua Marcelino Ribeiro Bispo
+49503250	Itabaiana/SE	Serrano	Rua Maria dos Anjos Bispo
+49503253	Itabaiana/SE	Serrano	Rua José da Paixão
+49503256	Itabaiana/SE	Serrano	Avenida Doutor Luiz Magalhães - de 1252 ao fim - lado par
+49503259	Itabaiana/SE	Serrano	Rua Tenysson Melo de Oliveira
+49503262	Itabaiana/SE	Serrano	Praça Jubal de Carvalho
+49503300	Itabaiana/SE	Anízio Amancio de Oliveira	Avenida Doutor Luiz Magalhães - de 663 a 961 - lado ímpar
+49503303	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Maria Mendonça Teles
+49503306	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Professor José Egnaldo Vieira Santos
+49503309	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Maria Oliveira Mendonça (Lot Chiara)
+49503312	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Vinte e Oito de Agosto
+49503315	Itabaiana/SE	Anízio Amancio de Oliveira	Avenida Rinaldo Mota Santos - até 1155 - lado ímpar
+49503318	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Juca Monteiro - de 674 a 898 - lado par
+49503321	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Maria Francisca Monteiro
+49503324	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Noel Tavares de Jesus
+49503327	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Carlos Andrade Carvalho
+49503387	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Josefa Carvalho
+49503390	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Juca Monteiro - até 899 - lado ímpar
+49503393	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Antonio Higino dos Santos - lado par
+49503396	Itabaiana/SE	Anízio Amancio de Oliveira	Avenida Nivalda Lima Figueiredo - de 473/474 ao fim
+49503399	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Candido Barbosa de Jesus - de 198/199 ao fim
+49503402	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Antonio Higino dos Santos - lado ímpar
+49503405	Itabaiana/SE	Anízio Amancio de Oliveira	Rua José Oliveira Machado
+49503408	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Doutor Augusto Cesar Leite - de 150/151 ao fim
+49503411	Itabaiana/SE	Anízio Amancio de Oliveira	Travessa Ivan Andrade
+49503414	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Álvaro Fonseca de Oliveira - de 688/689 ao fim
+49503417	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Manoel Domingos Pereira - lado ímpar
+49503420	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Pedro Barbosa de Jesus
+49503423	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Padre Felismino
+49503426	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Quintino de Lacerda - de 698/699 ao fim
+49503429	Itabaiana/SE	Anízio Amancio de Oliveira	Rua José Mesquita da Silveira - de 462 a 1210 - lado par
+49503432	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Miguel Teixeira - até 369/370
+49503435	Itabaiana/SE	Anízio Amancio de Oliveira	Estrada do Barrado
+49503438	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Egidio dos Santos
+49503441	Itabaiana/SE	Anízio Amancio de Oliveira	Rua José Ferreira Nascimento
+49503444	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Alan Kardec
+49503447	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Argentina
+49503453	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Maria Rosa Lapa Souza
+49503465	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Mário Dantas de Oliveira
+49503468	Itabaiana/SE	Anízio Amancio de Oliveira	Avenida Doutor Gileno Almeida Costa
+49503471	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Manoel Antônio de Farias
+49503474	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Manoel Alves de Andrade
+49503480	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Josefa Vieira dos Santos - de 859/860 ao fim
+49503483	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Antônio Caetano da Cunha
+49503486	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Portugal
+49503489	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Paraguai
+49503492	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Projetada
+49503495	Itabaiana/SE	Anízio Amancio de Oliveira	Rua José Dórea dos Santos
+49503498	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Antônio Carlos de Almeida Alves
+49503501	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Luiz Gonzaga de Carvalho
+49503504	Itabaiana/SE	Anízio Amancio de Oliveira	Rua José Carlos da Conceição
+49503507	Itabaiana/SE	Anízio Amancio de Oliveira	Rua José Paixão de Oliveira
+49503510	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Pedro Fagundes de Lima
+49503513	Itabaiana/SE	Anízio Amancio de Oliveira	Rua José Assis de Góis
+49503516	Itabaiana/SE	Anízio Amancio de Oliveira	Avenida Maurício Andrade
+49503519	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Normando Tavares de Jesus - lado par
+49503522	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Carlos Cordeiro
+49503525	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Maria Rosa de Oliveira
+49503528	Itabaiana/SE	Anízio Amancio de Oliveira	Rua José Costa Carvalho
+49503531	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Raimunda Santana
+49503537	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Construtor Antônio Costa Lima
+49503540	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Pedreiro Petrolino de Oliveira
+49503543	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Pedreiro Eliezer Mendonça Mota
+49503546	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Construtor Antônio Pereira de Andrade
+49503550	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Uruguai
+49503553	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Chile
+49503556	Itabaiana/SE	Anízio Amancio de Oliveira	Rua José Carlos Bispo
+49503559	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Everaldo Oliveira
+49503562	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Edson Oliveira
+49503565	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Wilson Almeida Santana
+49503568	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Maestro João de Matos
+49503571	Itabaiana/SE	Anízio Amancio de Oliveira	Rua José Máximo
+49503574	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Olavio Eduardo Barbosa
+49503577	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Francisco Menezes Santos
+49503580	Itabaiana/SE	Anízio Amancio de Oliveira	Rua José Wilson Santos
+49503583	Itabaiana/SE	Anízio Amancio de Oliveira	Travessa Judite Góis de Pliveira
+49503586	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Aurelina do Espírito Santo Oliveira
+49503589	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Eliana Rosa Lima
+49503592	Itabaiana/SE	Anízio Amancio de Oliveira	Avenida João Correia dos Santos
+49503595	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Júlia de Oliveira dos Santos
+49503598	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Maria Oliveira Mendonça
+49503601	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Maria Josefina Menezes
+49503604	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Cláudia Jeane Andrade Carneiro
+49503607	Itabaiana/SE	Anízio Amancio de Oliveira	Avenida Rinaldo Mota Santos - de 1157 ao fim - lado ímpar
+49503610	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Agenário Pereira de Carvalho
+49503613	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Pedreiro Paulo Batista de Menezes
+49503616	Itabaiana/SE	Anízio Amancio de Oliveira	Rua José Francisco de Góis
+49503619	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Marceneiro Antônio Almeida de Menezes
+49503620	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Osvaldo Queiroz Correia
+49503623	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Antônio Francisco da Cunha
+49503626	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Construtor Antônio Lauro Moura
+49503629	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Antônio da Mota Costa
+49503632	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Terezinha Valadares Barreto
+49503635	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Josepha Melo Novaes
+49503638	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Pedreiro José Dias de Menezes
+49503641	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Lindolfa Oliveira Góis
+49503644	Itabaiana/SE	Anízio Amancio de Oliveira	Rua José Ademar de Carvalho Sobrinho
+49503647	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Tarcisio Menezes Santos
+49503650	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Construtor José Oliveira
+49503653	Itabaiana/SE	Anízio Amancio de Oliveira	Rua José Gentil de Oliveira
+49503656	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Paulo Barreto Novaes
+49503659	Itabaiana/SE	Anízio Amancio de Oliveira	Avenida Antônio Valter dos Santos
+49503662	Itabaiana/SE	Anízio Amancio de Oliveira	Avenida Papa João Paulo II
+49503665	Itabaiana/SE	Anízio Amancio de Oliveira	Avenida Manoel de Oliveira Santos
+49503668	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Brasiliano Antônio de Góis
+49503671	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Jorge Americano Rêgo
+49503674	Itabaiana/SE	Anízio Amancio de Oliveira	Rua João Francisco Lobo
+49503677	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Teodorico Nunes Carvalho
+49503680	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Adhemar de Carvalho
+49503683	Itabaiana/SE	Anízio Amancio de Oliveira	Rua José Olyntho de Oliveira
+49503686	Itabaiana/SE	Anízio Amancio de Oliveira	Avenida José Aélio de Oliveira - lado ímpar
+49503689	Itabaiana/SE	Anízio Amancio de Oliveira	Avenida Padre Francisco da Silva Lobão
+49503692	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Antônio Melo
+49503695	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Maria da Conceição
+49503699	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Manoel das Neves Barreto
+49503702	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Samuel Pereira de almeida
+49503705	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Aurora Rosa de Góis
+49503708	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Escritor Sebrão Sobrinho
+49503711	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Luiz Americano Rego
+49503714	Itabaiana/SE	Anízio Amancio de Oliveira	Rua Antônio Joaquim da Silva
+49503717	Itabaiana/SE	Anízio Amancio de Oliveira	Avenida Francisco Alves de Carvalho Junior
+49504000	Itabaiana/SE	Marianga	Avenida Rinaldo Mota Santos - até 1200 - lado par
+49504003	Itabaiana/SE	Marianga	Rua Padre Felismino
+49504006	Itabaiana/SE	Marianga	Rua José Rufino de Santana
+49504009	Itabaiana/SE	Marianga	Rua Josefa Vieira dos Santos
+49504012	Itabaiana/SE	Marianga	Rua B (Lot Morumbi II)
+49504015	Itabaiana/SE	Marianga	Rua Iana Monteiro de Carvalho
+49504018	Itabaiana/SE	Marianga	Rua E (Lot Morumbi II)
+49504021	Itabaiana/SE	Marianga	Rua F (Lot Morumbi II)
+49504024	Itabaiana/SE	Marianga	Rua D (Lot Morumbi II)
+49504057	Itabaiana/SE	Marianga	Travessa Maria dos Santos
+49504060	Itabaiana/SE	Marianga	Rua Juca Monteiro - de 900/901 a 1249/1250
+49504063	Itabaiana/SE	Marianga	Rua Vinte e Oito de Agosto
+49504066	Itabaiana/SE	Marianga	Avenida Doutor Luiz Magalhães - de 963 a 1673 - lado ímpar
+49504069	Itabaiana/SE	Marianga	Rua Celina Andrade de Menezes
+49504072	Itabaiana/SE	Marianga	Rua José Costa Lima
+49504075	Itabaiana/SE	Marianga	Rua Renato Bispo de Lima
+49504078	Itabaiana/SE	Marianga	Rua Construtor Antonio Ferreira Santana
+49504081	Itabaiana/SE	Marianga	Rua Miguel Carvalho Peixoto
+49504084	Itabaiana/SE	Marianga	Travessa Willian Fonseca de Jesus
+49504087	Itabaiana/SE	Marianga	Rua Maria Tavares da Costa
+49504090	Itabaiana/SE	Marianga	Travessa Paulino Dias da Trindade
+49504093	Itabaiana/SE	Marianga	Rua Sebastião de Oliveira
+49504096	Itabaiana/SE	Marianga	Rua Tenisson Melo de Oliveira
+49504099	Itabaiana/SE	Marianga	Rua Juca Monteiro - de 1251/1252 a 1783/1784
+49504102	Itabaiana/SE	Marianga	Avenida Doutor Luiz Magalhães - de 1675 ao fim - lado ímpar
+49504105	Itabaiana/SE	Marianga	Rua Padre Sebastião Pedrosa Góis
+49504108	Itabaiana/SE	Marianga	Rua Melquiades José Mendonça
+49504111	Itabaiana/SE	Marianga	Rua Maria Lima - lado par
+49504114	Itabaiana/SE	Marianga	Rua José Francisco de Morais
+49504117	Itabaiana/SE	Marianga	Rua Alemar Batista de Andrade - até 298/299
+49504120	Itabaiana/SE	Marianga	Rua Antonio dos Reis - lado par
+49504160	Itabaiana/SE	Marianga	Avenida Saturnina de Oliveira
+49504163	Itabaiana/SE	Marianga	Rua Maria de Souza Carvalho
+49504220	Itabaiana/SE	Marianga	Avenida João Correia dos Santos
+49504223	Itabaiana/SE	Marianga	Rua José da Paixão de Oliveira
+49504226	Itabaiana/SE	Marianga	Rua Padre José Luiz dos Santos
+49504229	Itabaiana/SE	Marianga	Rua Roberto dos Santos Carvalho
+49504232	Itabaiana/SE	Marianga	Avenida Rinaldo Mota Santos - de 1202 ao fim - lado par
+49504235	Itabaiana/SE	Marianga	Avenida Rosalvo Alexandre de Lima
+49504238	Itabaiana/SE	Marianga	Rua Catarina Oliveira Souza
+49504241	Itabaiana/SE	Marianga	Avenida Maria José Santos
+49504244	Itabaiana/SE	Marianga	Travessa Genisson Tavares de Jesus
+49504247	Itabaiana/SE	Marianga	Rua Antônio Francisco de Jesus
+49504250	Itabaiana/SE	Marianga	Rua Maria do Carmo Tavares
+49504253	Itabaiana/SE	Marianga	Rua José Tavares de Jesus
+49504256	Itabaiana/SE	Marianga	Travessa Weverton André Cruz de Jesus
+49504310	Itabaiana/SE	Marianga	Avenida Construtor Manoel Cosme dos Santos
+49504313	Itabaiana/SE	Marianga	Travessa Anselmo Andrade
+49504316	Itabaiana/SE	Marianga	Travessa Keoma Oliveira dos Santos
+49504319	Itabaiana/SE	Marianga	Rua Ângelo Augusto Garcia Moreno
+49504322	Itabaiana/SE	Marianga	Travessa Eronildes José dos Santos
+49504325	Itabaiana/SE	Marianga	Rua Antônio Menezes Santos
+49504328	Itabaiana/SE	Marianga	Rua João Leite de Andrade
+49504331	Itabaiana/SE	Marianga	Travessa Lucas dos Santos Barbosa
+49504334	Itabaiana/SE	Marianga	Rua Bartolomeu de Carvalho Peixoto
+49504337	Itabaiana/SE	Marianga	Rua Eleandro do Nascimento Silva
+49504340	Itabaiana/SE	Marianga	Rua Osvaldo Queiroz Correia
+49504343	Itabaiana/SE	Marianga	Rua Antônio Francisco da Cunha
+49504346	Itabaiana/SE	Marianga	Rua Manoel da Cunha Melo
+49504349	Itabaiana/SE	Marianga	Rua Anatólio Garcia Moreno Sobrinho
+49504352	Itabaiana/SE	Marianga	Rua Maria Dulce de Melo
+49504355	Itabaiana/SE	Marianga	Avenida João Pereira de Andrade
+49504358	Itabaiana/SE	Marianga	Rua José Moisés Santana
+49504361	Itabaiana/SE	Marianga	Rua José Antônio Rodrigues Santos
+49504364	Itabaiana/SE	Marianga	Rua Doutor Luciano Alves dos Santos
+49504367	Itabaiana/SE	Marianga	Rua Artur Lourenço dos Reis
+49504370	Itabaiana/SE	Marianga	Rua Isaltina Oliveira da Silva
+49504373	Itabaiana/SE	Marianga	Rua Maria de Lourdes Aquino Santos
+49504376	Itabaiana/SE	Marianga	Rua José Luiz dos Santos
+49504379	Itabaiana/SE	Marianga	Rua Antônio Francisco dos Santos
+49504382	Itabaiana/SE	Marianga	Rua Maria Nunes Peixoto
+49504385	Itabaiana/SE	Marianga	Rua José Mota da Costa
+49504388	Itabaiana/SE	Marianga	Rua Fortunato Machado de Oliveira
+49504391	Itabaiana/SE	Marianga	Rua Tenente Ambrósio Ferreira Lima
+49504402	Itabaiana/SE	Marianga	Avenida José Aélio de Oliveira - lado par
+49504405	Itabaiana/SE	Marianga	Rua Olimpio Neri dos Santos
+49504450	Itabaiana/SE	Marianga	Rua A (Cond Zilda Arns)
+49504453	Itabaiana/SE	Marianga	Rua B (Cond Zilda Arns)
+49504456	Itabaiana/SE	Marianga	Rua C (Cond Zilda Arns)
+49504459	Itabaiana/SE	Marianga	Rua D (Cond Zilda Arns)
+49504462	Itabaiana/SE	Marianga	Rua E (Cond Zilda Arns)
+49505000	Itabaiana/SE	Miguel Teles de Mendonça	Avenida Alípio Tavares de Menezes - lado ímpar
+49505005	Itabaiana/SE	Miguel Teles de Mendonça	Rua Maria Lima - lado ímpar
+49505010	Itabaiana/SE	Miguel Teles de Mendonça	Rua Juca Monteiro - de 1785/1786 ao fim
+49505015	Itabaiana/SE	Miguel Teles de Mendonça	Rua José Francisco de Morais
+49505070	Itabaiana/SE	Miguel Teles de Mendonça	Rua Antonio dos Reis - lado ímpar
+49505075	Itabaiana/SE	Miguel Teles de Mendonça	Rua Crislaine dos Santos
+49505080	Itabaiana/SE	Miguel Teles de Mendonça	Rua Vereador João Cândido da Silva
+49505085	Itabaiana/SE	Miguel Teles de Mendonça	Travessa Josival Nunes dos Santos
+49505090	Itabaiana/SE	Miguel Teles de Mendonça	Rua Cariolando Lima
+49505095	Itabaiana/SE	Miguel Teles de Mendonça	Travessa Maria do Céu de Jesus
+49505100	Itabaiana/SE	Miguel Teles de Mendonça	Rua Alemar Batista de Andrade - de 300/301 ao fim
+49505103	Itabaiana/SE	Miguel Teles de Mendonça	Rua Josefa Maximina dos Santos
+49505310	Itabaiana/SE	Miguel Teles de Mendonça	Rua São João
+49505315	Itabaiana/SE	Miguel Teles de Mendonça	Rua São Pedro
+49505320	Itabaiana/SE	Miguel Teles de Mendonça	Travessa São Luiz
+49505325	Itabaiana/SE	Miguel Teles de Mendonça	Rua São José
+49505330	Itabaiana/SE	Miguel Teles de Mendonça	Avenida José Amâncio Bispo
+49505335	Itabaiana/SE	Miguel Teles de Mendonça	Travessa Terêncio Bispo
+49505340	Itabaiana/SE	Miguel Teles de Mendonça	Rua José Henrique da Silveira
+49505345	Itabaiana/SE	Miguel Teles de Mendonça	Rua Sérgio Batista dos Santos
+49505350	Itabaiana/SE	Miguel Teles de Mendonça	Rua São Jorge
+49505355	Itabaiana/SE	Miguel Teles de Mendonça	Travessa Santo Antônio
+49505360	Itabaiana/SE	Miguel Teles de Mendonça	Travessa Sérgio Batista dos Santos
+49505365	Itabaiana/SE	Miguel Teles de Mendonça	Rua Professora Clara Meirelles Teles
+49505370	Itabaiana/SE	Miguel Teles de Mendonça	Rua João Lima
+49505375	Itabaiana/SE	Miguel Teles de Mendonça	Rua Professora Edilvania da Conceição
+49505380	Itabaiana/SE	Miguel Teles de Mendonça	Rua Marinete Barbosa
+49505900	Itabaiana/SE	Miguel Teles de Mendonça	Avenida José Amâncio Bispo, 5419 	 Shopping Peixoto
+49506000	Itabaiana/SE	Rotary Club de Itabaiana	Avenida Engenheiro Carlos Reis - lado ímpar
+49506003	Itabaiana/SE	Rotary Club de Itabaiana	Rua Simão Dias Francês
+49506006	Itabaiana/SE	Rotary Club de Itabaiana	Largo Simão Dias Francês
+49506009	Itabaiana/SE	Rotary Club de Itabaiana	Travessa Antônio José dos Santos
+49506012	Itabaiana/SE	Rotary Club de Itabaiana	Rua Sebastião José de Góis
+49506015	Itabaiana/SE	Rotary Club de Itabaiana	Avenida Silvio Teixeira - lado par
+49506018	Itabaiana/SE	Rotary Club de Itabaiana	Avenida Walter Franco - até 548/549
+49506021	Itabaiana/SE	Rotary Club de Itabaiana	Avenida Manoel Antônio dos Santos - lado ímpar
+49506024	Itabaiana/SE	Rotary Club de Itabaiana	Rua José Luciano Siqueira
+49506027	Itabaiana/SE	Rotary Club de Itabaiana	Rua Antônio José da Costa
+49506030	Itabaiana/SE	Rotary Club de Itabaiana	Travessa Florival Oliveira
+49506033	Itabaiana/SE	Rotary Club de Itabaiana	Avenida Prefeito Jason Correia
+49506036	Itabaiana/SE	Rotary Club de Itabaiana	Avenida Vereador Olimpio Grande - lado par
+49506039	Itabaiana/SE	Rotary Club de Itabaiana	Rua José Paulo de Santana
+49506042	Itabaiana/SE	Rotary Club de Itabaiana	Rua Genário José dos Santos
+49506045	Itabaiana/SE	Rotary Club de Itabaiana	Rua José Vieira Lima - de 977/978 ao fim
+49506048	Itabaiana/SE	Rotary Club de Itabaiana	Travessa José Santana
+49506051	Itabaiana/SE	Rotary Club de Itabaiana	Travessa Josefa Joelita Fontes
+49506054	Itabaiana/SE	Rotary Club de Itabaiana	Avenida Pedro Teles Barbosa - lado ímpar
+49506057	Itabaiana/SE	Rotary Club de Itabaiana	Rua José Santana
+49506060	Itabaiana/SE	Rotary Club de Itabaiana	Travessa José Edson LIma
+49506090	Itabaiana/SE	Rotary Club de Itabaiana	Avenida Manoel Antônio dos Santos - lado par
+49506093	Itabaiana/SE	Rotary Club de Itabaiana	Avenida João Teixeira - de 494/495 ao fim
+49506096	Itabaiana/SE	Rotary Club de Itabaiana	Travessa Matapoã
+49506099	Itabaiana/SE	Rotary Club de Itabaiana	Rua Gilmar Santos Costa
+49506102	Itabaiana/SE	Rotary Club de Itabaiana	Travessa Antônio da Costa Carvalho
+49506105	Itabaiana/SE	Rotary Club de Itabaiana	Avenida Silvio Teixeira - lado ímpar
+49506108	Itabaiana/SE	Rotary Club de Itabaiana	Avenida Manoel Francisco Teles - de 889 ao fim - lado ímpar
+49506111	Itabaiana/SE	Rotary Club de Itabaiana	Travessa Marcondes de Albuquerque Negromonte
+49506150	Itabaiana/SE	Rotary Club de Itabaiana	Praça Escritor Sebrão Sobrinho
+49506153	Itabaiana/SE	Rotary Club de Itabaiana	Avenida Doutor Pedro Garcia Moreno
+49506156	Itabaiana/SE	Rotary Club de Itabaiana	Rua Manoel Teles de Mendonça
+49506159	Itabaiana/SE	Rotary Club de Itabaiana	Travessa José Vanderley da Cruz
+49506162	Itabaiana/SE	Rotary Club de Itabaiana	Rua José Francisco de Oliveira
+49506165	Itabaiana/SE	Rotary Club de Itabaiana	Rua Faustino José Machado
+49506168	Itabaiana/SE	Rotary Club de Itabaiana	Rua José Francisco de Menezes
+49506171	Itabaiana/SE	Rotary Club de Itabaiana	Travessa José Valdir Mendonça
+49506174	Itabaiana/SE	Rotary Club de Itabaiana	Rua José Valdir Mendonça
+49506177	Itabaiana/SE	Rotary Club de Itabaiana	Rua José Vieira Lima - até 975/976
+49506180	Itabaiana/SE	Rotary Club de Itabaiana	Travessa Amâncio José Santos
+49506183	Itabaiana/SE	Rotary Club de Itabaiana	Travessa Antônio Francisco de Oliveira Filho
+49506186	Itabaiana/SE	Rotary Club de Itabaiana	Rua São Luiz
+49506189	Itabaiana/SE	Rotary Club de Itabaiana	Rua Vera Cândida da Costa de Santana
+49506192	Itabaiana/SE	Rotary Club de Itabaiana	Rua Benedito Santana
+49506195	Itabaiana/SE	Rotary Club de Itabaiana	Rua Abdon Pinto Monteiro
+49506198	Itabaiana/SE	Rotary Club de Itabaiana	Travessa Marcelino José dos Santos
+49506201	Itabaiana/SE	Rotary Club de Itabaiana	Rua Heleno da Cunha Melo
+49506204	Itabaiana/SE	Rotary Club de Itabaiana	Travessa São Luiz
+49506207	Itabaiana/SE	Rotary Club de Itabaiana	Rua Antônio Pereira Junior
+49506210	Itabaiana/SE	Rotary Club de Itabaiana	Travessa Antônio Pereira Júnior II
+49506213	Itabaiana/SE	Rotary Club de Itabaiana	Travessa Antônio Pereira Júnior I
+49506216	Itabaiana/SE	Rotary Club de Itabaiana	Rua Isaac Antônio de Jesus
+49506219	Itabaiana/SE	Rotary Club de Itabaiana	Avenida Walter Franco - de 550/551 ao fim
+49506222	Itabaiana/SE	Rotary Club de Itabaiana	Rua Carlos Alberto Silveira Lima
+49506225	Itabaiana/SE	Rotary Club de Itabaiana	Travessa Antônio Lima
+49506228	Itabaiana/SE	Rotary Club de Itabaiana	Travessa Florival Mesquita da Silva
+49506231	Itabaiana/SE	Rotary Club de Itabaiana	Rua José Osvaldo Tavares
+49506234	Itabaiana/SE	Rotary Club de Itabaiana	Rua Juarez Noronha
+49506237	Itabaiana/SE	Rotary Club de Itabaiana	Travessa Josué Menezes
+49506240	Itabaiana/SE	Rotary Club de Itabaiana	Rua Anízio Amancio de Oliveira - até 328/329
+49506243	Itabaiana/SE	Rotary Club de Itabaiana	Rua Antonio Santana - lado par
+49506246	Itabaiana/SE	Rotary Club de Itabaiana	Travessa Francisco Noronha
+49506249	Itabaiana/SE	Rotary Club de Itabaiana	Travessa João Paes da Costa
+49506252	Itabaiana/SE	Rotary Club de Itabaiana	Rua João de Melo Rezende
+49506255	Itabaiana/SE	Rotary Club de Itabaiana	Rua Júlio Rezende
+49506258	Itabaiana/SE	Rotary Club de Itabaiana	Travessa Vesta Maria de Góis
+49506261	Itabaiana/SE	Rotary Club de Itabaiana	Rua Vesta Maria de Góis
+49506264	Itabaiana/SE	Rotary Club de Itabaiana	Rua Filomena Pereira de Andrade
+49506267	Itabaiana/SE	Rotary Club de Itabaiana	Rua Pedro Pereira
+49506273	Itabaiana/SE	Rotary Club de Itabaiana	Rua Paulo Vieira da Silva
+49506276	Itabaiana/SE	Rotary Club de Itabaiana	Rua Antônio Leite Sampaio
+49506279	Itabaiana/SE	Rotary Club de Itabaiana	Rua Antônio Teixeira Lobo
+49506282	Itabaiana/SE	Rotary Club de Itabaiana	Rua Agdo Oliveira Santos
+49506285	Itabaiana/SE	Rotary Club de Itabaiana	Praça José Francisco de Mendonça
+49506288	Itabaiana/SE	Rotary Club de Itabaiana	Rua João Andrade
+49506291	Itabaiana/SE	Rotary Club de Itabaiana	Rua Josefa Cipriano de Carvalho
+49506294	Itabaiana/SE	Rotary Club de Itabaiana	Rua Lourenço Alves dos Santos
+49506297	Itabaiana/SE	Rotary Club de Itabaiana	Rua Miguel Alves dos Santos
+49506300	Itabaiana/SE	Rotary Club de Itabaiana	Rua Amazilde Menezes Sampaio
+49506303	Itabaiana/SE	Rotary Club de Itabaiana	Rua Serapião Antonio de Góis - lado par
+49506306	Itabaiana/SE	Rotary Club de Itabaiana	Travessa Trinta e Sete
+49506340	Itabaiana/SE	Doutor José Milton Machado	Avenida Fulgencio José Machado - lado par
+49506343	Itabaiana/SE	Doutor José Milton Machado	Rua Martilizano dos Santos
+49506346	Itabaiana/SE	Doutor José Milton Machado	Rua Eduardo Albuquerque
+49506349	Itabaiana/SE	Doutor José Milton Machado	Rua Iracema Andrade
+49506352	Itabaiana/SE	Doutor José Milton Machado	Travessa Maria D L Almeida
+49506355	Itabaiana/SE	Doutor José Milton Machado	Rua Davi Nascimento Cunha
+49506358	Itabaiana/SE	Doutor José Milton Machado	Rua Lourival Frique do Prado
+49506361	Itabaiana/SE	Doutor José Milton Machado	Travessa Josefa da Anunciação Santos
+49506364	Itabaiana/SE	Doutor José Milton Machado	Rua Alaíde de Rezende Prado
+49506430	Itabaiana/SE	Doutor José Milton Machado	Rodovia João Paulo II - lado par
+49506433	Itabaiana/SE	Doutor José Milton Machado	Avenida Doutor Wellington Mendes
+49506436	Itabaiana/SE	Doutor José Milton Machado	Avenida Asa Branca
+49506439	Itabaiana/SE	Doutor José Milton Machado	Rua ABC do Sertão
+49506442	Itabaiana/SE	Doutor José Milton Machado	Rua Pagode Russo
+49506445	Itabaiana/SE	Doutor José Milton Machado	Rua Baião de Dois
+49506510	Itabaiana/SE	Doutor José Milton Machado	Rua Karolina com K
+49506513	Itabaiana/SE	Doutor José Milton Machado	Rua Juazeiro
+49506516	Itabaiana/SE	Doutor José Milton Machado	Rua Vaca Estrela Meu Boi Fubá
+49506519	Itabaiana/SE	Doutor José Milton Machado	Rua A Triste Partida
+49506522	Itabaiana/SE	Doutor José Milton Machado	Rua Acauã
+49506525	Itabaiana/SE	Doutor José Milton Machado	Rua Cintura Fina
+49506528	Itabaiana/SE	Doutor José Milton Machado	Rua Riacho do Navio
+49506600	Itabaiana/SE	Doutor José Milton Machado	Rua Assum Preto
+49506603	Itabaiana/SE	Doutor José Milton Machado	Rua Quero Chá
+49506606	Itabaiana/SE	Doutor José Milton Machado	Rua Toca Pai
+49506609	Itabaiana/SE	Doutor José Milton Machado	Rua A Volta da Asa Branca
+49506612	Itabaiana/SE	Doutor José Milton Machado	Rua Xote das Meninas
+49506615	Itabaiana/SE	Doutor José Milton Machado	Rua Raimundo Jacó
+49506618	Itabaiana/SE	Doutor José Milton Machado	Rua Fogo Pagô
+49506621	Itabaiana/SE	Doutor José Milton Machado	Rua Pau de Arara
+49506624	Itabaiana/SE	Doutor José Milton Machado	Rua Prece Pai Exu Novo
+49506627	Itabaiana/SE	Doutor José Milton Machado	Rua Respeita Januário
+49506630	Itabaiana/SE	Doutor José Milton Machado	Rua José Candido Bispo
+49506633	Itabaiana/SE	Doutor José Milton Machado	Rua No meu Pé de Serra
+49506636	Itabaiana/SE	Doutor José Milton Machado	Rua Poeta José Crispim de Souza
+49506639	Itabaiana/SE	Doutor José Milton Machado	Rua Hudson Matheus Almeida de Oliveira
+49506642	Itabaiana/SE	Doutor José Milton Machado	Avenida João Rodrigues da Silva
+49506645	Itabaiana/SE	Doutor José Milton Machado	Rua Plano Piloto
+49506710	Itabaiana/SE	Doutor José Milton Machado	Rua Deuzinha Tavares dos Santos
+49506713	Itabaiana/SE	Doutor José Milton Machado	Rua João Francisco de Oliveira
+49506716	Itabaiana/SE	Doutor José Milton Machado	Rua Arnaldo Silveira
+49506719	Itabaiana/SE	Doutor José Milton Machado	Rua Vereador Domingos Barreto
+49506722	Itabaiana/SE	Doutor José Milton Machado	Rua Josefa Alves dos Santos
+49506725	Itabaiana/SE	Doutor José Milton Machado	Rua Maria Santos de Oliveira
+49506728	Itabaiana/SE	Doutor José Milton Machado	Rua Ana Silva Leal
+49506731	Itabaiana/SE	Doutor José Milton Machado	Rua Josefa Cordélia de Góis
+49506734	Itabaiana/SE	Doutor José Milton Machado	Travessa Tarcisio Menezes Santos
+49506737	Itabaiana/SE	Doutor José Milton Machado	Rua Genário de Oliveira
+49506740	Itabaiana/SE	Doutor José Milton Machado	Rua Fernando Barbosa de Jesus
+49506743	Itabaiana/SE	Doutor José Milton Machado	Rua José Braz de Oliveira
+49506840	Itabaiana/SE	Doutor José Milton Machado	Rua Valdelina Teixeira de Oliveira
+49506843	Itabaiana/SE	Doutor José Milton Machado	Rua Eliotério Alves dos Santos
+49506846	Itabaiana/SE	Doutor José Milton Machado	Rua Givaldo Teixeira de Oliveira
+49506849	Itabaiana/SE	Doutor José Milton Machado	Rua Manoel dos Santos
+49506852	Itabaiana/SE	Doutor José Milton Machado	Travessa Manoel dos Santos
+49506855	Itabaiana/SE	Doutor José Milton Machado	Rua José Laércio dos Santos
+49506858	Itabaiana/SE	Doutor José Milton Machado	Rua Airton dos Santos
+49506861	Itabaiana/SE	Doutor José Milton Machado	Rua Manoel Pereira da Costa
+49506864	Itabaiana/SE	Doutor José Milton Machado	Rua João Batista Dias
+49506867	Itabaiana/SE	Doutor José Milton Machado	Rua João Batista Filho
+49506870	Itabaiana/SE	Doutor José Milton Machado	Travessa João Oliveira Santos
+49506873	Itabaiana/SE	Doutor José Milton Machado	Rua João Oliveira Santos
+49506876	Itabaiana/SE	Doutor José Milton Machado	Rua L Oliveira
+49507070	Itabaiana/SE	Doutor José Milton Machado	Rua Contorno
+49507073	Itabaiana/SE	Doutor José Milton Machado	Rua João Pereira da Silva
+49507076	Itabaiana/SE	Doutor José Milton Machado	Travessa Josefa Cordélia de Góis
+49507079	Itabaiana/SE	Doutor José Milton Machado	Travessa Mizael José da Lapa
+49507082	Itabaiana/SE	Doutor José Milton Machado	Rua Gentil Santana
+49507085	Itabaiana/SE	Doutor José Milton Machado	Travessa Manoel Almeida Teles
+49507088	Itabaiana/SE	Doutor José Milton Machado	Rua José Fernando Peixoto - lado ímpar
+49507091	Itabaiana/SE	Doutor José Milton Machado	Avenida Pedro Teles Barbosa - de 2434 a 2900 - lado par
+49507094	Itabaiana/SE	Doutor José Milton Machado	Avenida Pedro Teles Barbosa - de 2902 ao fim - lado par
+49507097	Itabaiana/SE	Doutor José Milton Machado	Rua Antônio Alves dos Santos
+49507440	Itabaiana/SE	Oviedo Teixeira	Avenida Fulgencio José Machado - lado ímpar
+49507445	Itabaiana/SE	Oviedo Teixeira	Travessa José Delfino da Silveira
+49507450	Itabaiana/SE	Oviedo Teixeira	Rua José Nicolau da Silveira
+49507455	Itabaiana/SE	Oviedo Teixeira	Travessa Joaquim Alves dos Santos
+49507460	Itabaiana/SE	Oviedo Teixeira	Avenida Luiz Gonzaga
+49507465	Itabaiana/SE	Oviedo Teixeira	Rua Eptácio José da Silva
+49507470	Itabaiana/SE	Oviedo Teixeira	Rua Marivalda Santos Santana
+49507475	Itabaiana/SE	Oviedo Teixeira	Rua Sandra Moura
+49507480	Itabaiana/SE	Oviedo Teixeira	Rua Gleide Selma Alexandra de Brito
+49507485	Itabaiana/SE	Oviedo Teixeira	Rua João Tavares de Jesus
+49507490	Itabaiana/SE	Oviedo Teixeira	Rua Aurelino José de Santana
+49507495	Itabaiana/SE	Oviedo Teixeira	Rua Genivaldo Araújo
+49507500	Itabaiana/SE	Oviedo Teixeira	Rua Leda Moura
+49507505	Itabaiana/SE	Oviedo Teixeira	Rua João Batista de Jesus Oliveira
+49507510	Itabaiana/SE	Oviedo Teixeira	Rodovia João Paulo II - lado ímpar
+49507515	Itabaiana/SE	Oviedo Teixeira	Rua Josué de Jesus Oliveira
+49507520	Itabaiana/SE	Oviedo Teixeira	Rua Josina Epfania de Oliveira
+49507525	Itabaiana/SE	Oviedo Teixeira	Rua Severino Geraldo dos Santos
+49507530	Itabaiana/SE	Oviedo Teixeira	Rua José Belo Araújo
+49507640	Itabaiana/SE	Oviedo Teixeira	Avenida Alípio Tavares de Menezes - lado par
+49507645	Itabaiana/SE	Oviedo Teixeira	Rua Maria Luiza Nascimento
+49507650	Itabaiana/SE	Oviedo Teixeira	Rua Manoel Francisco Cardoso
+49507655	Itabaiana/SE	Oviedo Teixeira	Rua João Silveira
+49507660	Itabaiana/SE	Oviedo Teixeira	Rua Tenente Honório Mendonça
+49507665	Itabaiana/SE	Oviedo Teixeira	Rua José Vieira Menezes
+49507670	Itabaiana/SE	Oviedo Teixeira	Travessa Silvana Alves de Oliveira
+49507675	Itabaiana/SE	Oviedo Teixeira	Rua José Nilton Santos
+49507680	Itabaiana/SE	Oviedo Teixeira	Rua Euclides Bispo dos Santos
+49507770	Itabaiana/SE	Oviedo Teixeira	Rua Josefa Santana Monteiro
+49507775	Itabaiana/SE	Oviedo Teixeira	Travessa Josefa Santana Monteiro
+49507780	Itabaiana/SE	Oviedo Teixeira	Rua Julia Marssola Faria
+49507785	Itabaiana/SE	Oviedo Teixeira	Rua Maria Claudice Corcino
+49507790	Itabaiana/SE	Oviedo Teixeira	Rua Aduilson de Jesus
+49507795	Itabaiana/SE	Oviedo Teixeira	Rua Francisco Antonio de Lima
+49507800	Itabaiana/SE	Oviedo Teixeira	Rua Francisco Teles
+49507805	Itabaiana/SE	Oviedo Teixeira	Rua Jerônimo Faria
+49507810	Itabaiana/SE	Oviedo Teixeira	Rua Enivaldo Araújo
+49507815	Itabaiana/SE	Oviedo Teixeira	Rua Doutora Wedna Mendes Rodrigues
+49507820	Itabaiana/SE	Oviedo Teixeira	Rua José Augusto dos Santos
+49507825	Itabaiana/SE	Oviedo Teixeira	Rua José Lisboa dos Anjos
+49507830	Itabaiana/SE	Oviedo Teixeira	Rua José Antonio de Santana
+49507835	Itabaiana/SE	Oviedo Teixeira	Rua H (Lot P Serra)
+49507840	Itabaiana/SE	Oviedo Teixeira	Rua José Hênio Araújo
+49507845	Itabaiana/SE	Oviedo Teixeira	Rua Abner Alves de Almeida
+49507850	Itabaiana/SE	Oviedo Teixeira	Rua Julia Mendonça Almeida
+49507855	Itabaiana/SE	Oviedo Teixeira	Rua A (Lot P Serra)
+49508090	Itabaiana/SE	Oviedo Teixeira	Avenida Josefa Nicielma Santana
+49508095	Itabaiana/SE	Oviedo Teixeira	Rua Gilson Menezes Santos
+49508100	Itabaiana/SE	Oviedo Teixeira	Rua José Menezes Santos
+49508105	Itabaiana/SE	Oviedo Teixeira	Rua Maria da Graça Costa
+49508110	Itabaiana/SE	Oviedo Teixeira	Rua Renato Alves Menezes
+49508115	Itabaiana/SE	Oviedo Teixeira	Rua Armando Paes da Costa
+49508120	Itabaiana/SE	Oviedo Teixeira	Avenida Hermenegildo José de Oliveira
+49508125	Itabaiana/SE	Oviedo Teixeira	Rua Carlito José Nascimento
+49508130	Itabaiana/SE	Oviedo Teixeira	Rua José Dernival dos Santos
+49508135	Itabaiana/SE	Oviedo Teixeira	Rua Givaldo Menezes Santos
+49508138	Itabaiana/SE	Oviedo Teixeira	Rua José Pereira da Silva
+49508142	Itabaiana/SE	Oviedo Teixeira	Rua Everton Araújo
+49508154	Itabaiana/SE	Oviedo Teixeira	Rua José Barbosa de Mendonça
+49508157	Itabaiana/SE	Oviedo Teixeira	Rua Joselito Santana
+49508270	Itabaiana/SE	Oviedo Teixeira	Rua Três (Dt Industrial)
+49508273	Itabaiana/SE	Oviedo Teixeira	Rua Gileno Nunes de Carvalho
+49508275	Itabaiana/SE	Oviedo Teixeira	Rua Cinco (D Industrial)
+49508280	Itabaiana/SE	Oviedo Teixeira	Rua Quatro (D Industrial)
+49508285	Itabaiana/SE	Oviedo Teixeira	Rua Seis (D Industrial)
+49508290	Itabaiana/SE	Oviedo Teixeira	Rua Iata Anderson Alves de Oliveira
+49508295	Itabaiana/SE	Oviedo Teixeira	Rua Um (D Industrial)
+49508300	Itabaiana/SE	Oviedo Teixeira	Rua Dois (D Industrial)
+49509000	Itabaiana/SE	Mamede Paes Mendonça	Rua Percílio Andrade - de 1083 a 1833 - lado ímpar
+49509003	Itabaiana/SE	Mamede Paes Mendonça	Rua Wagner Mota
+49509006	Itabaiana/SE	Mamede Paes Mendonça	Rua Cristóvão de Barros - lado ímpar
+49509009	Itabaiana/SE	Mamede Paes Mendonça	Rua José Venceslau
+49509012	Itabaiana/SE	Mamede Paes Mendonça	Rua Joel Venceslau de Souza
+49509015	Itabaiana/SE	Mamede Paes Mendonça	Rua Manoel Batista Maciel
+49509018	Itabaiana/SE	Mamede Paes Mendonça	Rua São Domingos - de 2364/2365 ao fim
+49509021	Itabaiana/SE	Mamede Paes Mendonça	Travessa José Sizino de Almeida
+49509024	Itabaiana/SE	Mamede Paes Mendonça	Travessa José Sizino de Almeida III
+49509027	Itabaiana/SE	Mamede Paes Mendonça	Travessa José Sizino de Almeida IV
+49509030	Itabaiana/SE	Mamede Paes Mendonça	Rua José Sizino de Almeida - de 971/972 ao fim
+49509033	Itabaiana/SE	Mamede Paes Mendonça	Travessa José Sizino de Almeida II
+49509037	Itabaiana/SE	Mamede Paes Mendonça	Vila Zé de Melinha
+49509070	Itabaiana/SE	Mamede Paes Mendonça	Rua Renilton Ferreira Martins
+49509073	Itabaiana/SE	Mamede Paes Mendonça	Rua Monsenhor Constantino - de 1018/1019 ao fim
+49509076	Itabaiana/SE	Mamede Paes Mendonça	Rua Gabriel Hilário Sobrinho
+49509079	Itabaiana/SE	Mamede Paes Mendonça	Rua Maria Valdete A Santos
+49509082	Itabaiana/SE	Mamede Paes Mendonça	Rua José Paulo Vieira
+49509085	Itabaiana/SE	Mamede Paes Mendonça	Travessa José Pereira
+49509088	Itabaiana/SE	Mamede Paes Mendonça	Rua Francisco Oliveira - de 3550/3551 ao fim
+49509091	Itabaiana/SE	Mamede Paes Mendonça	Rua Aluízio Almeida Silva
+49509094	Itabaiana/SE	Mamede Paes Mendonça	Travessa Zé de Pixitita
+49509097	Itabaiana/SE	Mamede Paes Mendonça	Rua Marechal Deodoro da Fonseca - de 674/675 ao fim
+49509100	Itabaiana/SE	Mamede Paes Mendonça	Travessa Marechal Deodoro da Fonseca
+49509106	Itabaiana/SE	Mamede Paes Mendonça	Travessa Aciole Mendonça Mota
+49509134	Itabaiana/SE	Mamede Paes Mendonça	Travessa Edivaldo José de Oliveira
+49509137	Itabaiana/SE	Mamede Paes Mendonça	Travessa Maurino José da Silva
+49509140	Itabaiana/SE	Mamede Paes Mendonça	Rua Tobias Barreto - de 554/555 ao fim
+49509143	Itabaiana/SE	Mamede Paes Mendonça	Rua Manoel Lapa - de 254/255 ao fim
+49509146	Itabaiana/SE	Mamede Paes Mendonça	Rua José Vicente de Oliveira
+49509149	Itabaiana/SE	Mamede Paes Mendonça	Travessa Xisto Alves dos Santos
+49509152	Itabaiana/SE	Mamede Paes Mendonça	Rua Ana Souza de Jesus
+49509155	Itabaiana/SE	Mamede Paes Mendonça	Rua Capitão José Ferreira Neto - de 333/334 ao fim
+49509158	Itabaiana/SE	Mamede Paes Mendonça	Rua Esperidião Noronha - de 1001/1002 ao fim
+49509161	Itabaiana/SE	Mamede Paes Mendonça	Travessa Antonio Tavares da Costa
+49509164	Itabaiana/SE	Mamede Paes Mendonça	Rua Capitão Manoel Joaquim Mendes - de 657/658 ao fim
+49509167	Itabaiana/SE	Mamede Paes Mendonça	Rua Francisco Oliveira - até 3548/3549
+49509170	Itabaiana/SE	Mamede Paes Mendonça	Travessa Professora Rita Vieira Santos
+49509173	Itabaiana/SE	Mamede Paes Mendonça	Rua Euclides Paes Mendonça - de 651/652 a 1414/1415
+49509176	Itabaiana/SE	Mamede Paes Mendonça	Travessa Francisco Teles de Mendonça
+49509179	Itabaiana/SE	Mamede Paes Mendonça	Rua Professor Lima Junior - de 710 a 1368 - lado par
+49509182	Itabaiana/SE	Mamede Paes Mendonça	Travessa Papa João Paulo VI
+49509185	Itabaiana/SE	Mamede Paes Mendonça	Rua Francolino Alves dos Santos
+49509188	Itabaiana/SE	Mamede Paes Mendonça	Rua Percílio Andrade - até 1081 - lado ímpar
+49509191	Itabaiana/SE	Mamede Paes Mendonça	Avenida Capitão Antonio Cornélio da Fonseca - lado par
+49509194	Itabaiana/SE	Mamede Paes Mendonça	Travessa Marina Meireles Teles
+49509197	Itabaiana/SE	Mamede Paes Mendonça	Rua São Domingos - de 1123/1124 a 2362/2363
+49509200	Itabaiana/SE	Mamede Paes Mendonça	Travessa São Domingos
+49509203	Itabaiana/SE	Mamede Paes Mendonça	Travessa São Domingos II
+49509206	Itabaiana/SE	Mamede Paes Mendonça	Rua Aristela Santos Lima Oliveira
+49509209	Itabaiana/SE	Mamede Paes Mendonça	Avenida Emília Vigencia dos Santos
+49509212	Itabaiana/SE	Mamede Paes Mendonça	Rua José Araújo Ferreira Junior - de 1067/1068 ao fim
+49509215	Itabaiana/SE	Mamede Paes Mendonça	Rua Judite Dantas de Andrade
+49509218	Itabaiana/SE	Mamede Paes Mendonça	Rua Josias da Silva Nunes
+49509260	Itabaiana/SE	Mamede Paes Mendonça	Rua João Nunes de Rezende - lado par
+49509263	Itabaiana/SE	Mamede Paes Mendonça	Rua Maria Luiza Mendonça
+49509266	Itabaiana/SE	Mamede Paes Mendonça	Rua Professor Lima Junior - de 711 a 1369 - lado ímpar
+49509269	Itabaiana/SE	Mamede Paes Mendonça	Rua João Nunes de Rezende - lado ímpar
+49509272	Itabaiana/SE	Mamede Paes Mendonça	Rua Felinto Tavares de Jesus - lado ímpar
+49509284	Itabaiana/SE	Mamede Paes Mendonça	Avenida Virgilio Lourenço dos Reis
+49509590	Itabaiana/SE	Porto	Rua Euclides Paes Mendonça - de 1416/1417 ao fim
+49509600	Itabaiana/SE	Porto	Rua Djenal Rocha
+49509605	Itabaiana/SE	Porto	Rua José Bispo de Góis
+49509610	Itabaiana/SE	Porto	Rua Professor Lima Junior - de 1370/1371 ao fim
+49509616	Itabaiana/SE	Porto	Rua João Nunes de Rezende - lado par
+49509620	Itabaiana/SE	Porto	Avenida Antônio Oliveira
+49509623	Itabaiana/SE	Porto	Rua Gentil Fonseca Lobo
+49509626	Itabaiana/SE	Porto	Rua Amanda Santos Rezende
+49509629	Itabaiana/SE	Porto	Rua Vivaldo Tavares de Almeida
+49509632	Itabaiana/SE	Porto	Rua Cristiano Teles de Andrade
+49509635	Itabaiana/SE	Porto	Rua Pedro Alex Santos de Jesus
+49509638	Itabaiana/SE	Porto	Rua Senador José Passos Porto
+49509641	Itabaiana/SE	Porto	Rua Vereador José Severiano de Jesus
+49509644	Itabaiana/SE	Porto	Rua José Augusto Araújo
+49509647	Itabaiana/SE	Porto	Rua Miguel Barreto Fereira
+49509650	Itabaiana/SE	Porto	Rua Izael Vieira de Jesus
+49509653	Itabaiana/SE	Porto	Calçadão Antônio Pereira de Carvalho - lado ímpar
+49509656	Itabaiana/SE	Porto	Travessa Lucas Alves Machado
+49509658	Itabaiana/SE	Porto	Calçadão Marinete Tavares Feliciano - lado ímpar
+49509680	Itabaiana/SE	Porto	Rua Maria José Maciel
+49509685	Itabaiana/SE	Porto	Rua Telma de Oliveira Santana
+49509740	Itabaiana/SE	Porto	Rua Paulo dos Santos
+49509745	Itabaiana/SE	Porto	Rua Ezídia Alves de Carvalho
+49509750	Itabaiana/SE	Porto	Rua José Rodomarques Alves Santos
+49509755	Itabaiana/SE	Porto	Rua Edith Maria da Costa
+49509760	Itabaiana/SE	Porto	Rua Manoel Avelino de Souza
+49509765	Itabaiana/SE	Porto	Rua Rodolfo Andrade
+49509770	Itabaiana/SE	Porto	Rua João Nunes de Rezende - lado ímpar
+49509775	Itabaiana/SE	Porto	Rua Brasiliano Antonio Batista Santos
+49509780	Itabaiana/SE	Porto	Rua Tercilia Passos de Oliveira
+49509785	Itabaiana/SE	Porto	Rua Antônio Oliveira
+49509790	Itabaiana/SE	Porto	Rua Clotildes Silveira
+49509795	Itabaiana/SE	Porto	Rua José Araújo Ferreira Junior - até 1065/1066
+49509800	Itabaiana/SE	Porto	Rua Maria Linda de Andrade
+49509805	Itabaiana/SE	Porto	Rua São João
+49509810	Itabaiana/SE	Porto	Avenida Capitão Antonio Cornélio da Fonseca - lado ímpar
+49509815	Itabaiana/SE	Porto	Avenida Felisbelo Machado Menezes
+49509870	Itabaiana/SE	Porto	Avenida Capitulino Alves dos Santos
+49509875	Itabaiana/SE	Porto	Rua Mariovan Santos Brito
+49509880	Itabaiana/SE	Porto	Rua Jailton de Melo Rezende
+49509885	Itabaiana/SE	Porto	Rua Juvencio Francisco de Lima
+49509890	Itabaiana/SE	Porto	Rua Antonio Alves do Amorim
+49509895	Itabaiana/SE	Porto	Rua Constantino Alves do Amorim
+49510000	Itabaiana/SE	Porto	Rua São Domingos - até 1121/1122
+49510005	Itabaiana/SE	Porto	Rua José Leilson dos Santos
+49510095	Itabaiana/SE	Porto	Rua Edivaldo Alves de Andrade
+49510101	Itabaiana/SE	Porto	Rua Paulo Tomé da Silva
+49510110	Itabaiana/SE	Porto	Travessa José Luiz de Oliveira
+49510115	Itabaiana/SE	Porto	Rua José Antonio Moura
+49510120	Itabaiana/SE	Porto	Travessa Antonio Alves dos Santos
+49510125	Itabaiana/SE	Porto	Travessa Santa Luzia
+49510130	Itabaiana/SE	Porto	Travessa Nossa Senhora Conceição
+49510135	Itabaiana/SE	Porto	Rua Jean Carlos Santos Lima
+49510140	Itabaiana/SE	Porto	Rua Conceição Ana
+49510145	Itabaiana/SE	Porto	Avenida Zefinha de Capitulino
+49510150	Itabaiana/SE	Porto	Rua Maria Thetis Nunes
+49510155	Itabaiana/SE	Porto	Rua Laurentino Alves dos Santos
+49510160	Itabaiana/SE	Porto	Rua Maria Laura de Carvalho
+49510165	Itabaiana/SE	Porto	Rua Vereador Manoel Clemente da Rocha
+49510170	Itabaiana/SE	Porto	Rua Josias Costa
+49510175	Itabaiana/SE	Porto	Travessa Felisbelo Machado de Menezes
+49510180	Itabaiana/SE	Porto	Rua Pedro Nunes de Carvalho
+49510185	Itabaiana/SE	Porto	Rua Josefa Santos Santana
+49510190	Itabaiana/SE	Porto	Avenida Eduardo Paixão Rocha - lado ímpar
+49510195	Itabaiana/SE	Porto	Rua José Francisco de Andrade
+49510200	Itabaiana/SE	Porto	Avenida Vereador Olimpio Grande - lado ímpar
+49510350	Itabaiana/SE	Riacho Doce	Avenida Pedro Teles Barbosa - lado par
+49510355	Itabaiana/SE	Riacho Doce	Rua José Fernando Peixoto - lado par
+49510360	Itabaiana/SE	Riacho Doce	Travessa Tanque Vermelho
+49510470	Itabaiana/SE	Riacho Doce	Avenida Maria Carreira
+49510475	Itabaiana/SE	Riacho Doce	Rua Tanque Vermelho II
+49510530	Itabaiana/SE	Riacho Doce	Rua José Airton Fraga Rocha
+49510535	Itabaiana/SE	Riacho Doce	Rua Antônio Menezes
+49510540	Itabaiana/SE	Riacho Doce	Travessa Maria das Graças Amorim
+49510545	Itabaiana/SE	Riacho Doce	Rua Maria Felix da Silva
+49510550	Itabaiana/SE	Riacho Doce	Rua Josivaldo dos Santos
+49510555	Itabaiana/SE	Riacho Doce	Rua Cinco
+49510560	Itabaiana/SE	Riacho Doce	Travessa Quatro
+49510565	Itabaiana/SE	Riacho Doce	Rua José Bispo de Souza
+49510570	Itabaiana/SE	Riacho Doce	Rua Antonio Bispo
+49510575	Itabaiana/SE	Riacho Doce	Rua José Meireles Teles
+49510580	Itabaiana/SE	Riacho Doce	Rua José Meireles Teles I
+49510585	Itabaiana/SE	Riacho Doce	Rua José Meireles Teles II
+49510590	Itabaiana/SE	Riacho Doce	Rua José Meireles Teles III
+49510595	Itabaiana/SE	Riacho Doce	Rua José Meireles Teles IV
+49511000	Itabaiana/SE	Queimadas	Avenida Pedro Teles Barbosa - lado par
+49511110	Itabaiana/SE	Queimadas	Rua José Pereira Rosa
+49511115	Itabaiana/SE	Queimadas	Rua Domingos Alves dos Santos
+49511120	Itabaiana/SE	Queimadas	Rua Nicolau Tolentino de Lima
+49511125	Itabaiana/SE	Queimadas	Rua Padre José Luiz dos Santos
+49511130	Itabaiana/SE	Queimadas	Avenida Arivaldo Alves Correia
+49511135	Itabaiana/SE	Queimadas	Travessa Maurina Josina dos Santos
+49511140	Itabaiana/SE	Queimadas	Rua Augusto Pereira Costa
+49511143	Itabaiana/SE	Queimadas	Rua Maria dos Santos Rosa
+49511146	Itabaiana/SE	Queimadas	Rua Augusto Tavares de Jesus
+49511230	Itabaiana/SE	Queimadas	Rua Domingos Francisco de Lima
+49511235	Itabaiana/SE	Queimadas	Rua Manoel Félix de Moura
+49511240	Itabaiana/SE	Queimadas	Rua Alvino Tavares de Jesus
+49511245	Itabaiana/SE	Queimadas	Rua José dos Santos
+49511250	Itabaiana/SE	Queimadas	Rua Maria Alves dos Santos
+49511255	Itabaiana/SE	Queimadas	Rua Aurora Rosa de Góis
+49511260	Itabaiana/SE	Queimadas	Rua João Francisco de Souza
+49511370	Itabaiana/SE	Queimadas	Rua José Alves dos Santos
+49511375	Itabaiana/SE	Queimadas	Rua João de Deus Freitas
+49511380	Itabaiana/SE	Queimadas	Rua Florêncio José dos Santos
+49511385	Itabaiana/SE	Queimadas	Rua Olivio Pinto de Souza
+49511390	Itabaiana/SE	Queimadas	Avenida Eduardo Paixão Rocha - lado par
+49511500	Itabaiana/SE	Queimadas	Rua José Vicente Monteiro
+49511505	Itabaiana/SE	Queimadas	Rua Maria Damitilia da Conceição
+49511510	Itabaiana/SE	Queimadas	Rua Josias
+49511515	Itabaiana/SE	Queimadas	Rua Faixa
+49511520	Itabaiana/SE	Queimadas	Rua Marculino Cruz do Espírito Santo
+49511525	Itabaiana/SE	Queimadas	Rua Pedro Tavares de Jesus
+49511530	Itabaiana/SE	Queimadas	Rua Antonio José Messias
+49511590	Itabaiana/SE	Queimadas	Rua Rosa Perpétua de Jesus
+49511595	Itabaiana/SE	Queimadas	Rua Josias de Souza
+49511600	Itabaiana/SE	Queimadas	Rua João Basilio Cunha
+49511605	Itabaiana/SE	Queimadas	Rua Candida Mamede
+49511610	Itabaiana/SE	Queimadas	Rua Pedro Barros
+49511615	Itabaiana/SE	Queimadas	Rua Candida Maria de Jesus
+49511620	Itabaiana/SE	Queimadas	Rua Maria Pureza de Jesus
+49511625	Itabaiana/SE	Queimadas	Rua Candeia Grande
+49511730	Itabaiana/SE	Queimadas	Avenida Pedro de Romão
+49511735	Itabaiana/SE	Queimadas	Rua Maria Francisca dos Santos
+49511740	Itabaiana/SE	Queimadas	Rua Antonio Alves dos Santos
+49511899	Itabaiana/SE	Área Rural de Itabaiana	Área Rural

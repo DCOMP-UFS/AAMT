@@ -903,7 +903,6 @@ const getOpenRouteByTeam = async ( req, res ) => {
         'r.id AS rua_id, ' +
         'r.nome AS rua_nome, ' +
         'r.cep AS rua_cep, ' +
-        'r.localidade_id AS rua_localidade_id, ' +
         'CAST( ' +
           '(SELECT COUNT(*) FROM imoveis WHERE lado_id = l.id AND ativo = true) ' +
         ' AS INTEGER ) AS imoveis, ' +
@@ -987,7 +986,6 @@ const getOpenRouteByTeam = async ( req, res ) => {
                   id: row.rua_id,
                   nome: row.rua_nome,
                   cep: row.rua_cep,
-                  localidade_id: row.rua_localidade_id
                 },
                 imoveis: row.imoveis,
                 vistorias: row.vistorias,

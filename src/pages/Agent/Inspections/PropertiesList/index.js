@@ -71,8 +71,18 @@ const InspectionStatus = ({ property }) => {
 
 const PropertiesList = ({ currentIndex, routes, indexes, ...props }) => {
   const { blockIndex, streetIndex } = indexes;
-  const properties =
-    routes[currentIndex].rota[blockIndex].lados[streetIndex].imoveis;
+  const params = useRoute().params
+  const { isRouteStarted, imoveis} = params
+
+  function defineProperties(){
+    if(!isRouteStarted)
+      return imoveis
+    
+    return routes[currentIndex].rota[blockIndex].lados[streetIndex].imoveis;
+  }
+
+  const properties = defineProperties()
+    
   const navigation = useNavigation();
 
   return (
@@ -101,23 +111,25 @@ const PropertiesList = ({ currentIndex, routes, indexes, ...props }) => {
             </DetailsColumn>
           </CardRow>
           <ButtonRow>
-            <StartInspectionButton
-              onPress={() => {
-                property.inspection
-                  ? props.loadInspectionEditForm(
-                      propertyIndex,
-                      property.inspection
-                    )
-                  : props.loadInspectionForm(propertyIndex);
-                navigation.navigate('Situação da vistoria');
-              }}
-            >
-              {property.inspection ? 'Editar vistoria' : 'Iniciar vistoria'}
-            </StartInspectionButton>
+            {isRouteStarted && (
+              <StartInspectionButton
+                onPress={() => {
+                  property.inspection
+                    ? props.loadInspectionEditForm(
+                        propertyIndex,
+                        property.inspection
+                      )
+                    : props.loadInspectionForm(propertyIndex);
+                  navigation.navigate('Situação da vistoria');
+                }}
+              >
+                {property.inspection ? 'Editar vistoria' : 'Iniciar vistoria'}
+              </StartInspectionButton>
+            )}
             <SeeInspectionButton
               onPress={() => {
                 props.changePropertyIndex(propertyIndex);
-                navigation.navigate('Detalhes do imóvel', { property });
+                navigation.navigate('Detalhes do imóvel', { property, isRouteStarted });
               }}
             >
               Ver detalhes

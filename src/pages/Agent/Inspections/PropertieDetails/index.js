@@ -29,7 +29,7 @@ const PropertieDetails = () => {
   const route = useRoute();
   const navigation = useNavigation();
 
-  const { property } = route.params;
+  const { isRouteStarted, property } = route.params;
 
   return (
     <Container>
@@ -80,11 +80,13 @@ const PropertieDetails = () => {
             <Description>-</Description>
           )}
         </FullPair>
-        <EditButton
-          onPress={() => navigation.navigate('Editar imóvel', { property })}
-        >
-          Editar imóvel
-        </EditButton>
+        { isRouteStarted && (
+          <EditButton
+            onPress={() => navigation.navigate('Editar imóvel', { property })}
+          >
+            Editar imóvel
+          </EditButton>
+        )}
       </Card>
     </Container>
   );

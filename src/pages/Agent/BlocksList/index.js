@@ -28,9 +28,16 @@ import {
 const BlocksList = ({ currentIndex, routes, ...props }) => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { isStarted, rota } = route.params;
+  const { isRouteStarted, rota } = route.params;
+  
+  function defineRoute(){
+    if(!isRouteStarted)
+      return rota
+    
+    return routes[currentIndex].rota
+  }
 
-  const currentRoute = routes[currentIndex].rota;
+  const currentRoute = defineRoute();
 
   return (
     <Container>
@@ -49,11 +56,19 @@ const BlocksList = ({ currentIndex, routes, ...props }) => {
                     <TouchableOpacity
                       key={street.id}
                       onPress={() => {
-                        if (isStarted) {
+                        if (isRouteStarted) {
                           props.changeBlockIndex(blockIndex);
                           props.changeStreetIndex(streetIndex);
                           navigation.navigate('Lista de imóveis', {
                             street: street.rua.nome,
+                            isRouteStarted: isRouteStarted
+                          });
+                        }
+                        else{
+                          navigation.navigate('Lista de imóveis', {
+                            street: street.rua.nome,
+                            imoveis: currentRoute[blockIndex].lados[streetIndex].imoveis,
+                            isRouteStarted: isRouteStarted
                           });
                         }
                       }}

@@ -8,6 +8,7 @@ const INITIAL_STATE = {
   loadingStartRoute: false,
   routes: [],
   inspections: [],
+  finished: null
 };
 
 export default function routes(state = INITIAL_STATE, action) {
@@ -117,6 +118,15 @@ export default function routes(state = INITIAL_STATE, action) {
         draft.sampleSequence = 0;
         draft.currentRouteIndex = -1;
         draft.routes.splice(current_route_index, 1);
+        draft.finished = true
+      });
+    case '@routes/FINISH_DAILY_WORK_FAIL':
+      return produce(state, draft => {
+        draft.finished = false
+      });
+    case '@routes/RESET_FINISH_DAILY_WORK':
+      return produce(state, draft => {
+        draft.finished = null
       });
     case '@routes/EDIT_PROPERTY':
       return produce(state, draft => {

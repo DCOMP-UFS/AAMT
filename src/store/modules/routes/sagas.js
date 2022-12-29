@@ -7,6 +7,7 @@ import {
   startRouteSuccess,
   startRouteFailure,
   finishDailyWorkSuccess,
+  finishDailyWorkFail,
 } from './actions';
 
 export function* startRoute({ payload }) {
@@ -48,6 +49,7 @@ export function* endRoute({ payload }) {
       'O trabalho diário foi finalizado e armazenado na base de dados'
     );
   } catch (err) {
+    yield put(finishDailyWorkFail());
     Alert.alert(
       'Houve um problema',
       'Não foi possível finalizar o trabalho diário'

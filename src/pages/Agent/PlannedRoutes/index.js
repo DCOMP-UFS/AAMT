@@ -52,6 +52,7 @@ import {
   removeFinishedRoute,
   setCurrentRoute,
   finishDailyWork,
+  resetfinishDailyWork
 } from '../../../store/modules/routes/actions';
 
 import getActualTime from '../../../utils/getActualTime';
@@ -71,6 +72,8 @@ const PlannedRoutes = ({
   const [activities, setActivities] = useState([]);
   const [isOldRouteWithConn, setIsOldRouteWithConn] = useState(false);
   const [isOldRouteWithoutConn, setIsOldRouteWithoutConn] = useState(false);
+  const [loadingEndRoute, setLoadingEndRoute] = useState(false)
+  const [loadingSearchRoute, setLoadingSearchRoute] = useState(false)
 
   const navigation = useNavigation();
 
@@ -108,6 +111,7 @@ const PlannedRoutes = ({
         });
       });
     });
+    setLoadingEndRoute(true)
     props.finishDailyWork(inspections, time, dailyWorkId, currentRouteIndex);
   }
 
@@ -202,6 +206,7 @@ const PlannedRoutes = ({
 
   async function getDailyWork() {
     try {
+      setLoadingSearchRoute(true)
       const response = await api.get(`/rotas/${user_id}/usuarios/${date}/data`);
 
       const data = response.data;
@@ -213,6 +218,10 @@ const PlannedRoutes = ({
         }
       }
 
+      else if(data.trabalhoDiario && data.trabalhoDiario.horaFim !== null){
+        setActivities([]);
+      }
+
       if (
         data &&
         Object.keys(data).length === 0 &&
@@ -220,7 +229,9 @@ const PlannedRoutes = ({
       ) {
         setActivities([]);
       }
+      setLoadingSearchRoute(false)
     } catch (err) {
+      setLoadingSearchRoute(false)
       Alert.alert(
         'Ocorreu um erro',
         'Não foi possível listar o trabalho diário'
@@ -304,6 +315,19 @@ const PlannedRoutes = ({
     manageRoutes();
   }, [connState, currentRouteIndex, routes]);
 
+  useEffect(() => {
+    setLoadingEndRoute(false)
+    if(props.finished){
+      async function searchAnotherDailyWork(){
+        setLoading(true)
+        await getDailyWork()
+        setLoading(false)
+      }
+      searchAnotherDailyWork()
+    }
+    props.resetfinishDailyWork()
+  }, [props.finished]);
+
   const ActivityComponent = () => {
     return activities.map(activity => (
       <RouteCard key={activity.trabalhoDiario.id}>
@@ -313,6 +337,12 @@ const PlannedRoutes = ({
           </RouteTitle>
         </RouteHeader>
         <RouteContent>
+          <FullPair>
+            <Small>Código da atividade</Small>
+            <Description>
+              {activity.trabalhoDiario.atividade.id}
+            </Description>
+          </FullPair>
           <FullPair>
             <Small>Objetivo</Small>
             <Description>
@@ -358,6 +388,7 @@ const PlannedRoutes = ({
           <ButtonRow>
             {!activity.trabalhoDiario.horaInicio ? (
               <StartRouteButton
+                disabled={loadingStartRoute}
                 loading={loadingStartRoute}
                 onPress={() => handleStartActivity(activity)}
               >
@@ -366,6 +397,8 @@ const PlannedRoutes = ({
             ) : (
               <EndRouteButton
                 // type="error"
+                disabled={loadingEndRoute}
+                loading={loadingEndRoute}
                 onPress={() => handleFinishActivity()}
               >
                 Encerrar rota
@@ -373,10 +406,10 @@ const PlannedRoutes = ({
             )}
             {activity.trabalhoDiario.horaInicio ? (
               <RouteButton
-                // isDisabled={true}
+                isDisabled={loadingEndRoute}
                 onPress={() =>
                   navigation.navigate('Rota', {
-                    isStarted: activity.trabalhoDiario.horaInicio,
+                    isRouteStarted: activity.trabalhoDiario.horaInicio,
                   })
                 }
               >
@@ -384,13 +417,14 @@ const PlannedRoutes = ({
               </RouteButton>
             ) : (
               <RouteButton
+                isDisabled={loadingStartRoute}
                 onPress={() =>
                   navigation.navigate('Rota', {
                     rota: activity.rota,
-                    isStarted: activity.trabalhoDiario.horaInicio,
+                    isRouteStarted: activity.trabalhoDiario.horaInicio,
                   })
                 }
-                isDisabled={true}
+                //isDisabled={true}
               >
                 Ver rota
               </RouteButton>
@@ -445,9 +479,16 @@ const PlannedRoutes = ({
             />
             <EmptyTitle>Ohh... que pena!</EmptyTitle>
             <EmptyDescription>
-              Você não possui rotas planejadas para hoje. Que tal voltar mais
-              tarde?
+              Não foi encotrada um rota planejada para hoje. Caso deseje fazer outra busca, aperte o botão abaixo.
             </EmptyDescription>
+            <StartRouteButton
+                style={{marginTop:10}}
+                disabled={loadingSearchRoute}
+                loading={loadingSearchRoute}
+                onPress={() => getDailyWork()}
+              >
+                Buscar Rotas
+              </StartRouteButton>
           </>
         )}
         {connState === false && (
@@ -524,6 +565,7 @@ const mapStateToProps = state => ({
   routes: state.routes.routes,
   currentRouteIndex: state.routes.currentRouteIndex,
   loadingStartRoute: state.routes.loadingStartRoute,
+  finished: state.routes.finished,
 });
 
 const mapDispatchToProps = dispatch =>
@@ -533,6 +575,7 @@ const mapDispatchToProps = dispatch =>
       removeFinishedRoute,
       setCurrentRoute,
       finishDailyWork,
+      resetfinishDailyWork
     },
     dispatch
   );

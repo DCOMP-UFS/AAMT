@@ -100,6 +100,18 @@ export function finishDailyWorkSuccess(current_route_index) {
   };
 }
 
+export function finishDailyWorkFail() {
+  return {
+    type: '@routes/FINISH_DAILY_WORK_FAIL',
+  };
+}
+
+export function resetfinishDailyWork() {
+  return {
+    type: '@routes/RESET_FINISH_DAILY_WORK',
+  };
+}
+
 export function editProperty(blockIndex, streetIndex, propertyIndex, property) {
   return {
     type: '@routes/EDIT_PROPERTY',

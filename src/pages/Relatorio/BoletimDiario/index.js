@@ -204,11 +204,11 @@ function BoletimDiario({ usuario, vistorias, trabalhoDiario, ...props }) {
             break;
         }
       });
+      if( vistoria.depositos.length > 0 )qtdInspecionado++
 
       if( fl_tratado ) qtdTratado++;
 
-      if( vistoria.situacaoVistoria === "N" ) qtdInspecionado++;
-      else qtdRecuperado++;
+      if( vistoria.situacaoVistoria === "R" ) qtdRecuperado++;
 
       qtdTrabalhados++;
 

@@ -168,7 +168,7 @@ const ChooseActivity = ({ regionalSaude }) => {
                       <Box>
                         {team.membros.map(
                           member =>
-                            member.tipoPerfil === 4 && (
+                            (
                               <TouchableOpacity
                                 key={member.usuario.id}
                                 onPress={() =>

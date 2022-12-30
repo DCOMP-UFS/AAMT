@@ -101,16 +101,17 @@ const AgentDailyReport = () => {
       switch (inspection.pendencia) {
         case 'F':
           pendencia[0].value++;
+          statusVistoria[4].value++;
           break;
         case 'R':
           pendencia[1].value++;
+          statusVistoria[4].value++;
           break;
         default:
           break;
       }
       switch (inspection.situacaoVistoria) {
         case 'N':
-          statusVistoria[1].value++;
           statusVistoria[0].value++;
           break;
         case 'R':
@@ -121,6 +122,7 @@ const AgentDailyReport = () => {
           break;
       }
       if (inspection.depositos.length > 0) {
+        statusVistoria[1].value++;
         inspection.depositos.map(deposito => {
           switch (deposito.tipoRecipiente) {
             case 'A1':

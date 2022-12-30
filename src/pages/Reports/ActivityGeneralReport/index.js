@@ -155,10 +155,9 @@ const ActivityGeneralReport = () => {
       setLarvicide(report.depositTreated[1].value);
       setSampleNumber(report.totalSample);
       let stts = status;
-      stts[0].value =
-        report.propertiesByStatus[0].value + report.propertiesByStatus[1].value;
+      stts[0].value = report.propertiesByStatus[2].value;
       stts[1].value = report.properties[0].value;
-      // stts[2].value =
+      stts[2].value = report.properties[2].value;
       stts[3].value = report.properties[1].value;
       stts[4].value = report.propertiesByPendency[0].value;
       stts[5].value = report.propertiesByPendency[1].value;

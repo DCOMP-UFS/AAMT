@@ -61,14 +61,14 @@ const BlocksList = ({ currentIndex, routes, ...props }) => {
                           props.changeStreetIndex(streetIndex);
                           navigation.navigate('Lista de imóveis', {
                             street: street.rua.nome,
-                            isRouteStarted: isRouteStarted
+                            isRouteStarted: true
                           });
                         }
                         else{
                           navigation.navigate('Lista de imóveis', {
                             street: street.rua.nome,
                             imoveis: currentRoute[blockIndex].lados[streetIndex].imoveis,
-                            isRouteStarted: isRouteStarted
+                            isRouteStarted: false
                           });
                         }
                       }}

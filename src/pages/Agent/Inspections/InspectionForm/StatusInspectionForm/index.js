@@ -88,7 +88,7 @@ const StatusInspectionForm = ({
         indexes,
         dailyWorkId
       );
-      navigation.navigate('Lista de imóveis');
+      navigation.navigate('Lista de imóveis', { isRouteStarted:true });
     } else {
       props.saveStatusForm(
         nw_data.status,

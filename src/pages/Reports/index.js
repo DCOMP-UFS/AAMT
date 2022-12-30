@@ -10,6 +10,13 @@ import { Container } from './styles';
 const Reports = ({ profile }) => {
   const supervisorReports = [
     {
+      title: 'Meu Boletim',
+      description: 'Resumo dos trabalhos diários do usuário',
+      iconColor: '#19bf5b',
+      goTo: 'Trabalhos diários',
+      observation: 'diary-report-agent',
+    },
+    {
       title: 'Boletim Diário',
       description: 'Informações das atividades desempenhadas',
       iconColor: '#ffb26a',
@@ -48,9 +55,9 @@ const Reports = ({ profile }) => {
 
   const agentReports = [
     {
-      title: 'Boletim Diário',
-      description: 'Resumo do trabalho diário do agente',
-      iconColor: '#ffb26a',
+      title: 'Meu Boletim',
+      description: 'Resumo dos trabalhos diários do usuário',
+      iconColor: '#19bf5b',
       goTo: 'Trabalhos diários',
       observation: 'diary-report-agent',
     },

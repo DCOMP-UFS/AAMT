@@ -26,6 +26,8 @@ import {
   NumberText,
 } from './styles';
 
+import {LoadingContainer, LoadingComponent} from '../styles'
+
 const AgentDailyReport = () => {
   const [loading, setLoading] = useState(false);
   const [activity, setActivity] = useState([]);
@@ -204,14 +206,15 @@ const AgentDailyReport = () => {
   useEffect(() => {
     async function loadActivity() {
       try {
+        setLoading(true)
         const response = await api.get(`/trabalhoDiario/${id}`);
-
-        console.log(JSON.stringify(response.data));
-
+        //console.log(JSON.stringify(response.data));
         if (response.data.status) {
           setActivity(response.data.data.vistorias);
         }
+        setLoading(false)
       } catch (err) {
+        setLoading(false)
         Alert.alert(
           'Ocorreu um erro',
           'Não foi possível carregar o boletim diário'
@@ -275,74 +278,82 @@ const AgentDailyReport = () => {
   }
 
   return (
-    <Container>
-      <Card>
-        <Header>
-          <PropertyTitle>Imóveis por tipo</PropertyTitle>
-        </Header>
-        {Bar(propertiesType)}
-      </Card>
-      <Card>
-        <Header>
-          <PropertyTitle>Imóveis por status</PropertyTitle>
-        </Header>
-        {Bar(status)}
-      </Card>
-      <Card>
-        <Header>
-          <PropertyTitle>Depósitos inspecionados por tipo</PropertyTitle>
-        </Header>
-        {Bar(recipientType)}
-      </Card>
-      <RowContainer>
-        <CardPair>
-          <InfoContainer>
-            <Title>Amostra(s)</Title>
-            <MiniText>Nº amostras</MiniText>
-          </InfoContainer>
-          <NumberText>{sampleNumber}</NumberText>
-        </CardPair>
-        <CardPair>
-          <InfoContainer>
-            <Title>Recusa(s)</Title>
-            <MiniText>Nº de recusas</MiniText>
-          </InfoContainer>
-          <NumberText>{pendency[1].value}</NumberText>
-        </CardPair>
-      </RowContainer>
-      <RowContainer>
-        <CardPair>
-          <InfoContainer>
-            <Title>Fechada(s)</Title>
-            <MiniText>Nº imóveis fechados</MiniText>
-          </InfoContainer>
-          <NumberText>{pendency[0].value}</NumberText>
-        </CardPair>
-        <CardPair>
-          <InfoContainer>
-            <Title>Eliminado(s</Title>
-            <MiniText>Qtd. Depósito(s)</MiniText>
-          </InfoContainer>
-          <NumberText>{destination[0].value}</NumberText>
-        </CardPair>
-      </RowContainer>
-      <RowContainer>
-        <CardPair>
-          <InfoContainer>
-            <Title>Tratado(s)</Title>
-            <MiniText>Qtd. Depósito(s)</MiniText>
-          </InfoContainer>
-          <NumberText>{destination[1].value}</NumberText>
-        </CardPair>
-        <CardPair>
-          <InfoContainer>
-            <Title>Larvicida</Title>
-            <MiniText>Qtd. usada</MiniText>
-          </InfoContainer>
-          <NumberText>{`${larvicide} g`}</NumberText>
-        </CardPair>
-      </RowContainer>
-    </Container>
+    <>
+      {loading ? (
+        <LoadingContainer>
+          <LoadingComponent />
+        </LoadingContainer>
+      ) : (
+        <Container>
+          <Card>
+            <Header>
+              <PropertyTitle>Imóveis por tipo</PropertyTitle>
+            </Header>
+            {Bar(propertiesType)}
+          </Card>
+          <Card>
+            <Header>
+              <PropertyTitle>Imóveis por status</PropertyTitle>
+            </Header>
+            {Bar(status)}
+          </Card>
+          <Card>
+            <Header>
+              <PropertyTitle>Depósitos inspecionados por tipo</PropertyTitle>
+            </Header>
+            {Bar(recipientType)}
+          </Card>
+          <RowContainer>
+            <CardPair>
+              <InfoContainer>
+                <Title>Amostra(s)</Title>
+                <MiniText>Nº amostras</MiniText>
+              </InfoContainer>
+              <NumberText>{sampleNumber}</NumberText>
+            </CardPair>
+            <CardPair>
+              <InfoContainer>
+                <Title>Recusa(s)</Title>
+                <MiniText>Nº de recusas</MiniText>
+              </InfoContainer>
+              <NumberText>{pendency[1].value}</NumberText>
+            </CardPair>
+          </RowContainer>
+          <RowContainer>
+            <CardPair>
+              <InfoContainer>
+                <Title>Fechada(s)</Title>
+                <MiniText>Nº imóveis fechados</MiniText>
+              </InfoContainer>
+              <NumberText>{pendency[0].value}</NumberText>
+            </CardPair>
+            <CardPair>
+              <InfoContainer>
+                <Title>Eliminado(s</Title>
+                <MiniText>Qtd. Depósito(s)</MiniText>
+              </InfoContainer>
+              <NumberText>{destination[0].value}</NumberText>
+            </CardPair>
+          </RowContainer>
+          <RowContainer>
+            <CardPair>
+              <InfoContainer>
+                <Title>Tratado(s)</Title>
+                <MiniText>Qtd. Depósito(s)</MiniText>
+              </InfoContainer>
+              <NumberText>{destination[1].value}</NumberText>
+            </CardPair>
+            <CardPair>
+              <InfoContainer>
+                <Title>Larvicida</Title>
+                <MiniText>Qtd. usada</MiniText>
+              </InfoContainer>
+              <NumberText>{`${larvicide} g`}</NumberText>
+            </CardPair>
+          </RowContainer>
+        </Container>
+      )}
+    </>
   );
 };
 

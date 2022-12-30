@@ -84,7 +84,7 @@ const PropertieEdit = ({ indexes, ...props }) => {
           onPress: () => {
             const { blockIndex, streetIndex, propertyIndex } = indexes;
             props.editProperty(blockIndex, streetIndex, propertyIndex, f_data);
-            navigation.navigate('Lista de imóveis');
+            navigation.navigate('Lista de imóveis',{ isRouteStarted:true });
           },
         },
       ],

@@ -30,9 +30,12 @@ import {
   SelectActivityButton,
 } from './styles';
 
+import {LoadingContainer, LoadingComponent} from '../styles'
+
 const ChooseActivity = ({ regionalSaude }) => {
   const [activities, setActivities] = useState([]);
   const [cycle, setCycle] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const userId = useSelector(state => state.user.profile.id);
 
@@ -43,6 +46,7 @@ const ChooseActivity = ({ regionalSaude }) => {
   useEffect(() => {
     async function getCycle() {
       try {
+        setLoading(true)
         const response = await api.get(
           `/ciclos/open/${regionalSaude}/regionaisSaude`
         );
@@ -50,14 +54,16 @@ const ChooseActivity = ({ regionalSaude }) => {
         if (response.data) {
           setCycle(response.data.id);
         }
+        else
+          setLoading(false)
       } catch (err) {
+        setLoading(false)
         Alert.alert(
           'Ocorreu um erro',
           'Não foi possível determinar o ciclo atual'
         );
       }
     }
-
     getCycle();
   }, []);
 
@@ -67,16 +73,17 @@ const ChooseActivity = ({ regionalSaude }) => {
         const response = await api.get(
           `/atividades/supervisor/${userId}/responsavel/${cycle}/ciclos`
         );
-
+        
         setActivities(response.data);
+        setLoading(false)
       } catch (err) {
+        setLoading(false)
         Alert.alert(
           'Ocorreu um erro',
           'Não foi possível carregar a lista de atividades'
         );
       }
     }
-
     if (cycle) {
       loadActivities();
     }
@@ -112,68 +119,77 @@ const ChooseActivity = ({ regionalSaude }) => {
   }
 
   return (
-    <Container>
-      <Text>Olá!</Text>
-      {activities.map(activity => (
-        <Card key={activity.id}>
-          <Header>
-            <Icon size={23} name="assignment" color="#3a3c4e" />
-            <Title>{activity.metodologia.sigla}</Title>
-          </Header>
-          <Label>Objetivo</Label>
-          <Smaller>{activity.objetivo.descricao}</Smaller>
-          {/* <Label>Data de início</Label>
-          <Smaller>
-            {format(parseISO(activity.createdAt), 'dd/MM/yyyy')}
-          </Smaller> */}
+    <>
+      {loading ? (
+        <LoadingContainer>
+          <LoadingComponent />
+        </LoadingContainer>
+      ) : (
+        <Container>
+          {activities.map(activity => (
+            <Card key={activity.id}>
+              <Header>
+                <Icon size={23} name="assignment" color="#3a3c4e" />
+                <Title>{activity.metodologia.sigla}</Title>
+              </Header>
+              <Label>Código da atividade</Label>
+              <Smaller>{activity.id}</Smaller>
+              <Label>Objetivo</Label>
+              <Smaller>{activity.objetivo.descricao}</Smaller>
+              {/* <Label>Data de início</Label>
+              <Smaller>
+                {format(parseISO(activity.createdAt), 'dd/MM/yyyy')}
+              </Smaller> */}
 
-          {observation === 'weekly-report' && (
-            <SelectActivityButton onPress={() => navigationTo(activity.id, 0)}>
-              Selecionar atividade
-            </SelectActivityButton>
-          )}
+              {observation === 'weekly-report' && (
+                <SelectActivityButton onPress={() => navigationTo(activity.id, 0)}>
+                  Selecionar atividade
+                </SelectActivityButton>
+              )}
 
-          {observation === 'current-activity-report' && (
-            <SelectActivityButton onPress={() => navigationTo(activity.id, 0)}>
-              Selecionar atividade
-            </SelectActivityButton>
-          )}
+              {observation === 'current-activity-report' && (
+                <SelectActivityButton onPress={() => navigationTo(activity.id, 0)}>
+                  Selecionar atividade
+                </SelectActivityButton>
+              )}
 
-          {observation !== 'weekly-report' &&
-            observation !== 'current-activity-report' &&
-            activity.equipes.map((team, index) => (
-              <Collapse key={index} style={{ margin: 5 }}>
-                <CollapseHeader>
-                  <AccordionHeader>
-                    <AccordionTitle>{`Equipe ${
-                      team.apelido ? team.apelido : ''
-                    }`}</AccordionTitle>
-                  </AccordionHeader>
-                </CollapseHeader>
-                <CollapseBody>
-                  <Box>
-                    {team.membros.map(
-                      member =>
-                        member.tipoPerfil === 4 && (
-                          <TouchableOpacity
-                            key={member.usuario.id}
-                            onPress={() =>
-                              navigationTo(member.usuario.id, team.id)
-                            }
-                          >
-                            <AccordionItemText>
-                              {member.usuario.nome}
-                            </AccordionItemText>
-                          </TouchableOpacity>
-                        )
-                    )}
-                  </Box>
-                </CollapseBody>
-              </Collapse>
-            ))}
-        </Card>
-      ))}
-    </Container>
+              {observation !== 'weekly-report' &&
+                observation !== 'current-activity-report' &&
+                activity.equipes.map((team, index) => (
+                  <Collapse key={index} style={{ margin: 5 }}>
+                    <CollapseHeader>
+                      <AccordionHeader>
+                        <AccordionTitle>{`Equipe ${
+                          team.apelido ? team.apelido : ''
+                        }`}</AccordionTitle>
+                      </AccordionHeader>
+                    </CollapseHeader>
+                    <CollapseBody>
+                      <Box>
+                        {team.membros.map(
+                          member =>
+                            member.tipoPerfil === 4 && (
+                              <TouchableOpacity
+                                key={member.usuario.id}
+                                onPress={() =>
+                                  navigationTo(member.usuario.id, team.id)
+                                }
+                              >
+                                <AccordionItemText>
+                                  {member.usuario.nome}
+                                </AccordionItemText>
+                              </TouchableOpacity>
+                            )
+                        )}
+                      </Box>
+                    </CollapseBody>
+                  </Collapse>
+                ))}
+            </Card>
+          ))}
+        </Container>
+      )}
+    </>
   );
 };
 

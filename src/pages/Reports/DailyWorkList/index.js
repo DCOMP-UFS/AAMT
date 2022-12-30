@@ -79,12 +79,18 @@ const DailyWorkList = () => {
               </TitleContainer>
             </Header>
             <CardRow>
+            <DetailsColumn>
+                <Label>Código da atividade</Label>
+                <Small>{`${item.equipe.atividade_id}`}</Small>
+              </DetailsColumn>
               <DetailsColumn>
                 <Label>Jornada de trabalho</Label>
                 <Small>{`${item.horaInicio ? item.horaInicio : '-- : --'} à ${
                   item.horaFim ? item.horaFim : '-- : -- '
                 }`}</Small>
               </DetailsColumn>
+            </CardRow>
+            <CardRow>
               <DetailsColumn>
                 <Label>Metodologia - Objetivo</Label>
                 <Small>{`${item.equipe.atividade.metodologia.sigla} - ${item.equipe.atividade.objetivo.sigla}`}</Small>

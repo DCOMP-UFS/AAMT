@@ -13,3 +13,10 @@ export const Card = styled.View`
   margin-bottom: 10px;
   background: #fff;
 `;
+
+export const Small = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.bold};
+  color: ${({ theme }) => theme.colors.black};
+  font-size: 18px;
+  margin-bottom: 10px;
+`;

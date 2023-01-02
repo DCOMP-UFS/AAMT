@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Alert, TouchableOpacity } from 'react-native';
+import { Alert, TouchableOpacity, Text } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -58,10 +58,26 @@ const StatusInspectionForm = ({
   }
 
   useEffect(() => {
+    if(methodology === 'LIRAa'){
+      setOptionStatus([{ value: 'N', label: 'Normal' }])
+      setOptionPendency([{ value: 'N', label: 'Nenhuma' }])
+    }
+
+    else if(methodology === 'PNCD'){
+      setOptionStatus([
+        { value: 'N', label: 'Normal' },
+        { value: 'R', label: 'Recuperada' },
+      ])
+      setOptionPendency([
+        { value: 'N', label: 'Nenhuma' },
+        { value: 'F', label: 'Fechada' },
+        { value: 'R', label: 'Recusada' },
+      ]);  
+    }
+
     if (
       !form.situacaoVistoria &&
-      routes[currentRouteIndex].trabalhoDiario.atividade.metodologia.sigla ===
-        'LIRAa'
+      methodology === 'LIRAa'
     ) {
       formRef.current.setFieldValue('status', 'N');
     }
@@ -147,8 +163,14 @@ const StatusInspectionForm = ({
         >
           {({ handleChange, handleSubmit, errors, values }) => (
             <>
+              
+              <Text style={{marginBottom:15}}>
+                <Small style={{color:'red'}}>Atenção! </Small>
+                Campos com <Text style={{color:'red'}}>* </Text> são obrigatórios.
+              </Text>
+            
               <SectionContainer>
-                <Small>Status da vistoria</Small>
+                <Small>Status da vistoria <Text style={{color:'red'}}>*</Text></Small>
                 <ButtonContainer>
                   {optionStatus.map(item => (
                     <TouchableOpacity
@@ -174,7 +196,7 @@ const StatusInspectionForm = ({
               </SectionContainer>
 
               <SectionContainer>
-                <Small>Pendência</Small>
+                <Small>Pendência <Text style={{color:'red'}}>*</Text></Small>
                 <ButtonContainer>
                   {optionPendency.map(item => (
                     <TouchableOpacity

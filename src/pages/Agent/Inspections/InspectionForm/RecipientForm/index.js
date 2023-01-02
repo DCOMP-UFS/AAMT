@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { TouchableOpacity, Alert, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -63,6 +63,8 @@ const RecipientForm = ({
     { id: 1, label: 'Focal' },
     { id: 2, label: 'Perifocal' },
   ]);
+
+  const [treatmentOptionSelected, setTreatmentOptionSelected] = useState(null)
 
   const navigation = useNavigation();
   const formRef = useRef(null);
@@ -128,10 +130,33 @@ const RecipientForm = ({
     );
   }
 
-  const statusValidationSchema = Yup.object().shape({
+  /* var statusValidationSchema = Yup.object().shape({ 
     recipientType: Yup.string().required('Selecione o tipo do depósito'),
     focus: Yup.boolean().required('Selecione se há ou não foco do mosquito'),
-  });
+    treatment: methodology === 'PNCD' ? Yup.boolean().required('Selecione o destino do depósito') : false,
+    treatmentType: treatmentOptionSelected != null ? Yup.number().required('Selecione a técnica empregada') : false,
+  }); */
+
+  const statusValidationSchema = useMemo(() => {
+    if(methodology === 'LIRAa'){
+      return Yup.object().shape({ 
+        recipientType: Yup.string().required('Selecione o tipo do depósito'),
+        focus: Yup.boolean().required('Selecione se há ou não foco do mosquito'),
+       })
+    }
+    else{
+      return Yup.object().shape({ 
+        recipientType: Yup.string().required('Selecione o tipo do depósito'),
+        focus: Yup.boolean().required('Selecione se há ou não foco do mosquito'),
+        treatment: methodology === 'PNCD' ? Yup.boolean().required('Selecione o destino do depósito') : false,
+        treatmentType: treatmentOptionSelected == true ? Yup.number().required('Selecione a técnica empregada') : false,
+        quantity: treatmentOptionSelected == true ? Yup.number()
+          .typeError("Informe um número válido, Ex: 2.57")
+          .required('Informe a quantidade de larvicida') 
+          .positive("Informe um número positivo") : false,
+      });
+    }
+  }, [treatmentOptionSelected]);
 
   /**
    * Carregando dados para a edição do formulário
@@ -198,8 +223,8 @@ const RecipientForm = ({
       const recipient = {
         fl_comFoco: data.focus,
         tipoRecipiente: data.recipientType,
-        fl_tratado: data.treatment,
-        fl_eliminado: !data.treatment,
+        fl_tratado: data.treatment != undefined ? data.treatment : false,
+        fl_eliminado: data.treatment != undefined ? !data.treatment : false,
         sequencia: recipientSequence,
         tratamento: {
           quantidade: parseFloat(data.quantity ? data.quantity : 0),
@@ -228,15 +253,20 @@ const RecipientForm = ({
             focus: undefined,
             samples: [],
             treatment: undefined,
-            treatmentType: 0,
+            treatmentType: undefined,
             quantity: '',
           }}
           onSubmit={values => handleRecipientSubmit(values)}
         >
           {({ handleChange, handleSubmit, errors, values }) => (
             <>
+              <Text style={{marginBottom:15}}>
+                <Small style={{color:'red'}}>Atenção! </Small>
+                Campos com <Text style={{color:'red'}}>* </Text> são obrigatórios.
+              </Text>
+
               <SectionContainer>
-                <Small>Tipo do depósito</Small>
+                <Small>Tipo do depósito <Text style={{color:'red'}}>*</Text></Small>
                 <Dropdown
                   itens={recipientOptions}
                   placeholder="Selecionar tipo de recipiente"
@@ -249,7 +279,7 @@ const RecipientForm = ({
               </SectionContainer>
 
               <SectionContainer>
-                <Small>Foco de mosquito</Small>
+                <Small>Foco de mosquito <Text style={{color:'red'}}>*</Text></Small>
                 <ButtonContainer>
                   {focusOptions.map(item => (
                     <TouchableOpacity
@@ -270,41 +300,47 @@ const RecipientForm = ({
                 </ButtonContainer>
                 {errors.focus && <ErrorMessage>{errors.focus}</ErrorMessage>}
               </SectionContainer>
-
-              <SectionContainer>
-                <Small>Destino do depósito</Small>
-                <ButtonContainer>
-                  {treatmentOptions.map(item => (
-                    <TouchableOpacity
-                      onPress={() =>
-                        formRef.current.setFieldValue('treatment', item.id)
-                      }
-                      key={item.label}
-                    >
-                      <SelectionButton
-                        status={
-                          values.treatment === item.id ? 'selected' : 'normal'
-                        }
-                      >
-                        {item.label}
-                      </SelectionButton>
-                    </TouchableOpacity>
-                  ))}
-                </ButtonContainer>
-              </SectionContainer>
+              {methodology === 'PNCD' && (
+                <>
+                  <SectionContainer>
+                    <Small>Destino do depósito <Text style={{color:'red'}}>*</Text></Small>
+                    <ButtonContainer>
+                      {treatmentOptions.map(item => (
+                        <TouchableOpacity
+                          onPress={() =>{
+                            setTreatmentOptionSelected(item.id)
+                            formRef.current.setFieldValue('treatment', item.id)
+                            }
+                          }
+                          key={item.label}
+                        >
+                          <SelectionButton
+                            status={
+                              values.treatment === item.id ? 'selected' : 'normal'
+                            }
+                          >
+                            {item.label}
+                          </SelectionButton>
+                        </TouchableOpacity>
+                      ))}
+                    </ButtonContainer>
+                    {errors.treatment && <ErrorMessage>{errors.treatment}</ErrorMessage>}
+                  </SectionContainer>
+                </>
+              )}
 
               {values.treatment === true && methodology === 'PNCD' && (
                 <>
                   <SectionContainer>
-                    <Small>Técnica de tratamento empregada</Small>
+                    <Small>Técnica de tratamento empregada <Text style={{color:'red'}}>*</Text></Small>
                     <ButtonContainer>
                       {treatmentTypeOptions.map(item => (
                         <TouchableOpacity
-                          onPress={() =>
+                          onPress={() => {
                             formRef.current.setFieldValue(
                               'treatmentType',
                               item.id
-                            )
+                            )}
                           }
                           key={item.label}
                         >
@@ -320,19 +356,27 @@ const RecipientForm = ({
                         </TouchableOpacity>
                       ))}
                     </ButtonContainer>
+                    {errors.treatmentType && <ErrorMessage>{errors.treatmentType}</ErrorMessage>}
                   </SectionContainer>
 
                   <SectionContainer>
-                    <Small>Quantidade de larvicida usada</Small>
+                    <Small>Quantidade de larvicida usada (g) <Text style={{color:'red'}}>*</Text></Small>
+                    <Text style={{marginTop:5,marginBottom:3}}>
+                      <Small style={{color:'red'}}>Atenção! </Small>
+                      Para casa decimal, utilize ponto.
+                    </Text>
                     <Input
                       value={values.quantity}
-                      onChangeText={handleChange('quantity')}
+                      onChangeText={
+                        handleChange('quantity')
+                      }
                       autoCapitalize="none"
-                      keyboardType="number-pad"
+                      keyboardType="decimal-pad"
                       returnKeyType="send"
-                      onSubmitEditing={handleSubmit}
+                      //onSubmitEditing={handleSubmit}
                       // errors={errors.password}
                     />
+                    {errors.quantity && <ErrorMessage>{errors.quantity}</ErrorMessage>}
                   </SectionContainer>
                 </>
               )}

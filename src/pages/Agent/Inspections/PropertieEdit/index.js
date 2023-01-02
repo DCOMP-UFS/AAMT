@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Alert } from 'react-native';
+import { Alert, Text } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -13,7 +13,7 @@ import Input from '../../../../components/Input';
 import Button from '../../../../components/Button';
 import Dropdown from '../../../../components/Dropdown';
 
-import { Container, Card } from './styles';
+import { Container, Card, Small } from './styles';
 
 const PropertieEdit = ({ indexes, ...props }) => {
   const route = useRoute();
@@ -111,6 +111,11 @@ const PropertieEdit = ({ indexes, ...props }) => {
         >
           {({ handleChange, handleSubmit, errors, values }) => (
             <>
+              <Text style={{marginBottom:15}}>
+                <Small style={{color:'red'}}>Atenção! </Small>
+                Campos com <Text style={{color:'red'}}>* </Text> são obrigatórios.
+              </Text>
+
               <Input
                 value={values.number}
                 onChangeText={handleChange('number')}
@@ -166,7 +171,7 @@ const PropertieEdit = ({ indexes, ...props }) => {
                 }}
                 errors={errors.propertyType}
               />
-              <Button onPress={handleSubmit}>Editar imóvel</Button>
+              <Button onPress={handleSubmit}>Salvar</Button>
             </>
           )}
         </Formik>

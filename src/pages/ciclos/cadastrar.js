@@ -71,7 +71,7 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
 
   useEffect(() => {
     let today = new Date();
-    today.setDate(today.getDate() - 1);
+    //today.setDate(today.getDate() - 1);
 
     if (ciclos.length === 0) {
       setSequencia({ value: 1, label: "1" });

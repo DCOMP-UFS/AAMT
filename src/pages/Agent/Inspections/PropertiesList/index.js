@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 
 import { bindActionCreators } from 'redux';
@@ -10,6 +10,10 @@ import {
   loadInspectionEditForm,
   changePropertyIndex,
 } from '../../../../store/modules/inspectionForm/actions';
+
+import {
+  removeInspection
+} from '../../../../store/modules/routes/actions';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
@@ -125,6 +129,7 @@ const PropertiesList = ({ currentIndex, routes, indexes, ...props }) => {
               >
                 {property.inspection ? 'Editar vistoria' : 'Iniciar vistoria'}
               </StartInspectionButton>
+              
             )}
             <SeeInspectionButton
               onPress={() => {
@@ -135,6 +140,37 @@ const PropertiesList = ({ currentIndex, routes, indexes, ...props }) => {
               Ver detalhes
             </SeeInspectionButton>
           </ButtonRow>
+          {isRouteStarted && property.inspection && (
+              <StartInspectionButton
+                style={{marginTop: 10, backgroundColor:"red"}}
+                onPress={() => {
+                  const { blockIndex, streetIndex } = indexes
+                  const removeIndexes = { blockIndex, streetIndex, propertyIndex}
+            
+                  Alert.alert(
+                    'Atenção!',
+                    `Tem certeza que deseja excluir a vistoria do imóvel?`,
+                    [
+                      {
+                        text: 'Não',
+                        style: 'cancel',
+                      },
+                      {
+                        text: 'Sim',
+                        onPress: () => {
+                          props.removeInspection(removeIndexes)
+                        },
+                      },
+                    ],
+                    { cancelable: false }
+                  );
+                  //navigation.navigate('Situação da vistoria');
+                }}
+              >
+                Excluir vistoria
+              </StartInspectionButton>
+              
+            )}
         </Card>
       ))}
     </Container>
@@ -149,7 +185,11 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
-    { loadInspectionForm, loadInspectionEditForm, changePropertyIndex },
+    { 
+      loadInspectionForm, 
+      loadInspectionEditForm, 
+      removeInspection, 
+      changePropertyIndex },
     dispatch
   );
 

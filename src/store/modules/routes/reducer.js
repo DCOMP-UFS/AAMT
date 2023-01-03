@@ -104,6 +104,17 @@ export default function routes(state = INITIAL_STATE, action) {
         draft.recipientSequence = 1;
         draft.totalInspections = state.totalInspections + 1;
       });
+      case '@routes/REMOVE_INSPECTION':
+        return produce(state, draft => {
+          const { removeIndexes } = action.payload;
+          const { blockIndex, streetIndex, propertyIndex } = removeIndexes;
+          const index = state.currentRouteIndex;
+
+          delete draft.routes[index].rota[blockIndex].lados[streetIndex].imoveis[propertyIndex]['inspection'] 
+
+          draft.recipientSequence = 1;
+          draft.totalInspections = state.totalInspections - 1;
+        });
     case '@routes/FINISH_DAILY_WORK':
       return produce(state, draft => {
         const { inspections } = action.payload;

@@ -81,6 +81,13 @@ export function addInspectionWithoutPendency(form, indexes, dailyWorkId) {
   };
 }
 
+export function removeInspection(removeIndexes) {
+  return {
+    type: '@routes/REMOVE_INSPECTION',
+    payload: { removeIndexes },
+  };
+}
+
 export function finishDailyWork(
   inspections,
   end_hour,

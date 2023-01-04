@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import NetInfo from '@react-native-community/netinfo';
 
 import AlertBox from '../../../components/AlertBox';
+import Dropdown from '../../../components/Dropdown';
 
 import emptyState from '../../../assets/empty-state.png';
 import noInternet from '../../../assets/no-internet.png';
@@ -75,6 +76,11 @@ const PlannedRoutes = ({
   const [loadingEndRoute, setLoadingEndRoute] = useState(false)
   const [loadingSearchRoute, setLoadingSearchRoute] = useState(false)
 
+
+  const [listaAtividadesRotas, setListaAtividadesRotas] = useState([])
+  const [indexAtividadeOptions, setIndexAtividadeOptions] = useState([])
+  const [indexAtividade, setIndexAtividade] = useState(undefined)
+
   const navigation = useNavigation();
 
   const date = format(new Date(), 'yyyy-MM-dd');
@@ -121,11 +127,6 @@ const PlannedRoutes = ({
       const dailyWorkId = route.trabalhoDiario.id;
 
       props.startRouteRequest(route, dailyWorkId, time);
-
-      Alert.alert(
-        'Trabalho diário iniciado com sucesso!',
-        'Tenha um bom dia de trabalho!'
-      );
     } else {
       Alert.alert(
         'Ocorreu um erro!',
@@ -204,31 +205,37 @@ const PlannedRoutes = ({
     };
   }, []);
 
-  async function getDailyWork() {
+  async function getDailyWorks() {
     try {
       setLoadingSearchRoute(true)
-      const response = await api.get(`/rotas/${user_id}/usuarios/${date}/data`);
+      setActivities([])
+      setIndexAtividade(undefined)
+      setIndexAtividadeOptions([])
+
+      const response = await api.get(`/rotas/todas/${user_id}/usuarios/${date}/data`);
 
       const data = response.data;
+      var listaAtividadesRotas = []
+      var indexAtividadeOptions = []
+      var index = 0
 
-      if (data.trabalhoDiario && data.trabalhoDiario.horaFim === null) {
-        setActivities([response.data]);
-        if (response.data.trabalhoDiario.horaInicio) {
-          handleStartActivity(response.data);
+      data.forEach(element => {
+        if(element.trabalhoDiario.horaFim === null){
+
+          //Evita problema caso uma rota tenha sido iniciada na aplicação web
+          //e o agente começa a trabalhar nela no mobile
+          element.trabalhoDiario.horaInicio = null
+
+          listaAtividadesRotas.push(element)
+          indexAtividadeOptions.push({
+            id: index,
+            name: element.trabalhoDiario.atividade.id+" ("+element.trabalhoDiario.atividade.metodologia.sigla+")"
+          })
+          index++
         }
-      }
-
-      else if(data.trabalhoDiario && data.trabalhoDiario.horaFim !== null){
-        setActivities([]);
-      }
-
-      if (
-        data &&
-        Object.keys(data).length === 0 &&
-        Object.getPrototypeOf(data === Object.prototype)
-      ) {
-        setActivities([]);
-      }
+      });
+      setIndexAtividadeOptions(indexAtividadeOptions)
+      setListaAtividadesRotas(listaAtividadesRotas)
       setLoadingSearchRoute(false)
     } catch (err) {
       setLoadingSearchRoute(false)
@@ -305,7 +312,7 @@ const PlannedRoutes = ({
         }
       } else {
         if (connState) {
-          await getDailyWork();
+          await getDailyWorks();
         }
       }
 
@@ -318,12 +325,12 @@ const PlannedRoutes = ({
   useEffect(() => {
     setLoadingEndRoute(false)
     if(props.finished){
-      async function searchAnotherDailyWork(){
+      async function searchDailyWorks(){
         setLoading(true)
-        await getDailyWork()
+        await getDailyWorks()
         setLoading(false)
       }
-      searchAnotherDailyWork()
+      searchDailyWorks()
     }
     props.resetfinishDailyWork()
   }, [props.finished]);
@@ -390,7 +397,24 @@ const PlannedRoutes = ({
               <StartRouteButton
                 disabled={loadingStartRoute}
                 loading={loadingStartRoute}
-                onPress={() => handleStartActivity(activity)}
+                onPress={() =>
+                  Alert.alert(
+                    'Atenção!',
+                    `Tem certeza que deseja iniciar esta rota? Ao fazer isso não será `+
+                     `mais possivel iniciar outras rotas a até que esta seja encerrada`,
+                    [
+                      {
+                        text: 'Cancelar',
+                        style: 'cancel',
+                      },
+                      {
+                        text: 'Iniciar rota',
+                        onPress: () => handleStartActivity(activity),
+                      },
+                    ],
+                    { cancelable: false }
+                  ) 
+                }
               >
                 Iniciar rota
               </StartRouteButton>
@@ -485,7 +509,7 @@ const PlannedRoutes = ({
                 style={{marginTop:10}}
                 disabled={loadingSearchRoute}
                 loading={loadingSearchRoute}
-                onPress={() => getDailyWork()}
+                onPress={() => getDailyWorks()}
               >
                 Buscar Rotas
               </StartRouteButton>
@@ -537,6 +561,32 @@ const PlannedRoutes = ({
     );
   };
 
+  const CodeActivitySelector = () => {
+    return (
+      <>
+      <Card>
+          <Dropdown
+            enabled={!loadingStartRoute && !loadingEndRoute}
+            itens={indexAtividadeOptions}
+            label="Codigo da atividade"
+            placeholder="Selecione o codigo"
+            selectedValue={indexAtividade}
+            onValueChange={value => {
+              setIndexAtividade(value)
+              if(value != undefined){
+                var activity = []
+                activity.push( listaAtividadesRotas[value] )
+                setActivities(activity)
+              }
+              else
+                setActivities([])
+            }}
+          />
+        </Card>
+      </>
+    )
+  }
+
   return (
     <>
       {loading ? (
@@ -545,9 +595,10 @@ const PlannedRoutes = ({
         </LoadingContainer>
       ) : (
         <Container>
-          {activities.length > 0 ? (
+          {listaAtividadesRotas.length > 0 || currentRouteIndex >= 0 ? (
             <>
               <OldRouteAlert />
+              {currentRouteIndex < 0 && <CodeActivitySelector/>}
               <ActivityComponent />
               {currentRouteIndex >= 0 && <ProgressBarComponent />}
             </>

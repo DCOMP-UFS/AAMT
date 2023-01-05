@@ -60,12 +60,19 @@ const ActivityGeneralReport = () => {
     async function loadReport() {
       try {
         const response = await api.get(`/relatorios/atividade/${id}`);
-
         setReport(response.data);
+        setLoading(false);
+
       } catch (err) {
-        Alert.alert('Ocorreu um erro', 'Não foi possível carregar o relatório');
+        setReport(undefined);
+        setLoading(false);
+        
+        Alert.alert(
+          'Ocorreu um erro',
+          'Não foi possível carregar o boletim geral. Verifique se é um problema com conexão de internet. '+ 
+          'Não sendo o caso, por favor contate o suporte técnico'
+        );
       }
-      setLoading(false);
     }
 
     loadReport();
@@ -251,7 +258,7 @@ const ActivityGeneralReport = () => {
         <LoadingPage />
       ) : (
         <Container>
-          {report?.situacao_quarteirao && (
+          {report?.situacao_quarteirao ? (
             <>
               <Card>
                 <Header>
@@ -443,8 +450,8 @@ const ActivityGeneralReport = () => {
                 contentData={blocksWithAlbopictus}
               />
             </>
-          )}
-          {report.length === 0 && <EmptyState />}
+          ) : (<EmptyState />)}
+          {/*report.length === 0 && <EmptyState />*/}
         </Container>
       )}
     </>

@@ -219,7 +219,8 @@ const AgentDailyReport = () => {
         setLoading(false)
         Alert.alert(
           'Ocorreu um erro',
-          'Não foi possível carregar o boletim diário'
+          'Não foi possível carregar o boletim diário. Verifique se é um problema com conexão de internet. '+ 
+          'Não sendo o caso, por favor contate o suporte técnico'
         );
       }
     }

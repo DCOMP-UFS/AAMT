@@ -4,10 +4,11 @@ import { format, parseISO } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import NetInfo from '@react-native-community/netinfo';
+
+import EmptyState from '../../../components/EmptyState';
 
 import api from '../../../services/api';
-
-import emptyState from '../../../assets/empty-state.png';
 
 import {
   Container,
@@ -23,13 +24,11 @@ import {
   ActivitySummaryButton,
   LoadingComponent,
   LoadingContainer,
-  EmptyContainer,
-  EmptyTitle,
-  EmptyDescription,
 } from './styles';
 
 const DailyWorkList = () => {
-  const [activities, setActivities] = useState([]);
+  const [connState, setConnState] = useState();
+  const [dailyWorks, setDailyWorks] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
   const route = useRoute();
@@ -38,24 +37,31 @@ const DailyWorkList = () => {
     ? route.params.id
     : useSelector(state => state.user.profile.id);
 
-  const loadActivities = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await api.get(`/trabalhoDiario/${id}/usuarios`);
+  const equipe_id = route.params.equipe_id
+    ? route.params.equipe_id
+    : null
 
-      if (response.data.status === 'success') {
-        setActivities(response.data.data);
-      }
-    } catch (err) {
-      if (err.response.status === 400) {
-        Alert.alert(
-          'Ocorreu um erro',
-          'Não foi possível carregar as atividades'
-        );
-      }
-    }
-    setLoading(false);
+  useEffect(() => {
+    NetInfo.fetch().then(state => {
+      setConnState(state.isConnected);
+    });
+
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setConnState(state.isConnected);
+    });
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
+  
+  const loadActivities = useCallback( async () => {
+      if(connState === true)
+        await getDailyWorks();
+      else{
+        setDailyWorks([])
+      }
+  }, [connState]);
 
   useEffect(() => {
     loadActivities();
@@ -65,10 +71,33 @@ const DailyWorkList = () => {
     return date ? format(parseISO(date), 'dd/MM/yyyy') : '-- / -- / --';
   }
 
+  const getDailyWorks = async () => {
+    setLoading(true);
+    setDailyWorks([])
+    try {
+      var response = null
+
+      if(equipe_id == null)
+        response = await api.get(`/trabalhoDiario/${id}/usuarios`);
+      else
+        response = await api.get(`/trabalhoDiario/${equipe_id}/equipes/${id}/usuarios`);
+
+      if (response.data.status === 'success') {
+        setDailyWorks(response.data.data);
+      }
+    } catch (err) {
+        Alert.alert(
+          'Ocorreu um erro',
+          'Não foi possível carregar os trabalhos diários'
+        );  
+    }
+    setLoading(false);
+  }
+
   const ListComponent = () => {
     return (
       <List
-        data={activities}
+        data={dailyWorks}
         keyExtractor={activity => String(activity.id)}
         renderItem={({ item }) => (
           <Card>
@@ -114,27 +143,6 @@ const DailyWorkList = () => {
     );
   };
 
-  const EmptyState = () => {
-    return (
-      <EmptyContainer>
-        <Image
-          source={emptyState}
-          style={{
-            resizeMode: 'contain',
-            width: 270,
-            height: 160,
-            marginBottom: 20,
-            tintColor: '#999999',
-          }}
-        />
-        <EmptyTitle>Ohh... que pena!</EmptyTitle>
-        <EmptyDescription>
-          Não foram encontrados trabalhos diários para este agente.
-        </EmptyDescription>
-      </EmptyContainer>
-    );
-  };
-
   return (
     <>
       {loading ? (
@@ -143,7 +151,15 @@ const DailyWorkList = () => {
         </LoadingContainer>
       ) : (
         <Container>
-          {activities.length > 0 ? <ListComponent /> : <EmptyState />}
+          {dailyWorks.length > 0 ? 
+            <ListComponent /> : 
+            <EmptyState 
+              connState={connState}
+              emptyDescription="Não foi encontrado nenhum trabalho diário. Para refazer a busca, aperte o botão abaixo."
+              retryButtonText="Buscar Trabalhos"
+              retryButtonFunction={getDailyWorks}
+            />
+          }
         </Container>
       )}
     </>

@@ -70,20 +70,26 @@ const WeeklyReport = () => {
         const response = await api.get(url);
 
         setReport(response.data);
+        setLoading(false);
       } catch (err) {
+        setLoading(false);
+      
         if (
+          err.response &&
           err.response.data.error ===
           'Este ano não possui 53 semanas epidemiológicas'
         ) {
-          setReport([]);
-        } else {
+          setReport(undefined);
+        } 
+        else {
+          setReport(undefined);
           Alert.alert(
             'Ocorreu um erro',
-            'Não foi possível carregar o relatório'
+            'Não foi possível carregar o boletim semanal. Verifique se é um problema com conexão de internet. '+ 
+            'Não sendo o caso, por favor contate o suporte técnico'
           );
         }
       }
-      setLoading(false);
     }
 
     loadReport();
@@ -276,7 +282,7 @@ const WeeklyReport = () => {
         <LoadingPage />
       ) : (
         <Container>
-          {report.epiWeek && (
+          {report?.epiWeek ? (
             <>
               <Card>
                 <Header>
@@ -493,8 +499,8 @@ const WeeklyReport = () => {
                 contentData={blocksWithAlbopictus}
               />
             </>
-          )}
-          {report.length === 0 && <EmptyState />}
+          ) : (<EmptyState />)}
+          {/*report.length === 0 && <EmptyState />*/}
         </Container>
       )}
     </>

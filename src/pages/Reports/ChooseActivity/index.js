@@ -5,6 +5,9 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { format, parseISO } from 'date-fns';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import NetInfo from '@react-native-community/netinfo';
+
+import EmptyState from '../../../components/EmptyState';
 
 import {
   Collapse,
@@ -36,6 +39,7 @@ const ChooseActivity = ({ regionalSaude }) => {
   const [activities, setActivities] = useState([]);
   const [cycle, setCycle] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [connState, setConnState] = useState();
 
   const userId = useSelector(state => state.user.profile.id);
 
@@ -43,29 +47,32 @@ const ChooseActivity = ({ regionalSaude }) => {
   const route = useRoute();
   const { observation } = route.params;
 
-  useEffect(() => {
-    async function getCycle() {
-      try {
-        setLoading(true)
-        const response = await api.get(
-          `/ciclos/open/${regionalSaude}/regionaisSaude`
-        );
 
-        if (response.data) {
-          setCycle(response.data.id);
-        }
-        else
-          setLoading(false)
-      } catch (err) {
-        setLoading(false)
-        Alert.alert(
-          'Ocorreu um erro',
-          'Não foi possível determinar o ciclo atual'
-        );
-      }
-    }
-    getCycle();
+  useEffect(() => {
+    NetInfo.fetch().then(state => {
+      setConnState(state.isConnected);
+    });
+
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setConnState(state.isConnected);
+    });
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      if(connState === true)
+        await getCycle();
+      else{
+        setActivities([])
+        setCycle(null)
+      }
+    })();
+    
+  }, [connState]);
 
   useEffect(() => {
     async function loadActivities() {
@@ -73,7 +80,7 @@ const ChooseActivity = ({ regionalSaude }) => {
         const response = await api.get(
           `/atividades/supervisor/${userId}/responsavel/${cycle}/ciclos`
         );
-        
+  
         setActivities(response.data);
         setLoading(false)
       } catch (err) {
@@ -89,10 +96,34 @@ const ChooseActivity = ({ regionalSaude }) => {
     }
   }, [cycle]);
 
+  const getCycle = async () => {
+    setActivities([])
+    setCycle(null)
+
+    try {
+      setLoading(true)
+      const response = await api.get(
+        `/ciclos/open/${regionalSaude}/regionaisSaude`
+      );
+
+      if (response.data) 
+        setCycle(response.data.id);
+      else
+        setLoading(false)
+    } catch (err) {
+      setLoading(false)
+      Alert.alert(
+        'Ocorreu um erro',
+        'Não foi possível determinar o ciclo atual'
+      );
+    }
+  }
+
   function navigationTo(id, equipe_id) {
     if (observation === 'diary-report-agent') {
       return navigation.navigate('Trabalhos diários', {
         id,
+        equipe_id
       });
     }
     if (observation === 'diary-report-team') {
@@ -118,6 +149,70 @@ const ChooseActivity = ({ regionalSaude }) => {
     }
   }
 
+  const ActivitiesComponent = () => {
+    return activities.map(activity => (
+      <Card key={activity.id}>
+        <Header>
+          <Icon size={23} name="assignment" color="#3a3c4e" />
+          <Title>{activity.metodologia.sigla}</Title>
+        </Header>
+        <Label>Código da atividade</Label>
+        <Smaller>{activity.id}</Smaller>
+        <Label>Objetivo</Label>
+        <Smaller>{activity.objetivo.descricao}</Smaller>
+        {/* <Label>Data de início</Label>
+        <Smaller>
+          {format(parseISO(activity.createdAt), 'dd/MM/yyyy')}
+        </Smaller> */}
+
+        {observation === 'weekly-report' && (
+          <SelectActivityButton onPress={() => navigationTo(activity.id, 0)}>
+            Selecionar atividade
+          </SelectActivityButton>
+        )}
+
+        {observation === 'current-activity-report' && (
+          <SelectActivityButton onPress={() => navigationTo(activity.id, 0)}>
+            Selecionar atividade
+          </SelectActivityButton>
+        )}
+
+        {observation !== 'weekly-report' &&
+          observation !== 'current-activity-report' &&
+          activity.equipes.map((team, index) => (
+            <Collapse key={index} style={{ margin: 5 }}>
+              <CollapseHeader>
+                <AccordionHeader>
+                  <AccordionTitle>{`Equipe ${
+                    team.apelido ? team.apelido : ''
+                  }`}</AccordionTitle>
+                </AccordionHeader>
+              </CollapseHeader>
+              <CollapseBody>
+                <Box>
+                  {team.membros.map(
+                    member =>
+                      (
+                        <TouchableOpacity
+                          key={member.usuario.id}
+                          onPress={() =>
+                            navigationTo(member.usuario.id, team.id)
+                          }
+                        >
+                          <AccordionItemText>
+                            {member.usuario.nome}
+                          </AccordionItemText>
+                        </TouchableOpacity>
+                      )
+                  )}
+                </Box>
+              </CollapseBody>
+            </Collapse>
+          ))}
+      </Card>
+    ))
+  }
+
   return (
     <>
       {loading ? (
@@ -126,67 +221,16 @@ const ChooseActivity = ({ regionalSaude }) => {
         </LoadingContainer>
       ) : (
         <Container>
-          {activities.map(activity => (
-            <Card key={activity.id}>
-              <Header>
-                <Icon size={23} name="assignment" color="#3a3c4e" />
-                <Title>{activity.metodologia.sigla}</Title>
-              </Header>
-              <Label>Código da atividade</Label>
-              <Smaller>{activity.id}</Smaller>
-              <Label>Objetivo</Label>
-              <Smaller>{activity.objetivo.descricao}</Smaller>
-              {/* <Label>Data de início</Label>
-              <Smaller>
-                {format(parseISO(activity.createdAt), 'dd/MM/yyyy')}
-              </Smaller> */}
-
-              {observation === 'weekly-report' && (
-                <SelectActivityButton onPress={() => navigationTo(activity.id, 0)}>
-                  Selecionar atividade
-                </SelectActivityButton>
-              )}
-
-              {observation === 'current-activity-report' && (
-                <SelectActivityButton onPress={() => navigationTo(activity.id, 0)}>
-                  Selecionar atividade
-                </SelectActivityButton>
-              )}
-
-              {observation !== 'weekly-report' &&
-                observation !== 'current-activity-report' &&
-                activity.equipes.map((team, index) => (
-                  <Collapse key={index} style={{ margin: 5 }}>
-                    <CollapseHeader>
-                      <AccordionHeader>
-                        <AccordionTitle>{`Equipe ${
-                          team.apelido ? team.apelido : ''
-                        }`}</AccordionTitle>
-                      </AccordionHeader>
-                    </CollapseHeader>
-                    <CollapseBody>
-                      <Box>
-                        {team.membros.map(
-                          member =>
-                            (
-                              <TouchableOpacity
-                                key={member.usuario.id}
-                                onPress={() =>
-                                  navigationTo(member.usuario.id, team.id)
-                                }
-                              >
-                                <AccordionItemText>
-                                  {member.usuario.nome}
-                                </AccordionItemText>
-                              </TouchableOpacity>
-                            )
-                        )}
-                      </Box>
-                    </CollapseBody>
-                  </Collapse>
-                ))}
-            </Card>
-          ))}
+          {cycle && activities.length > 0 ? (
+            <ActivitiesComponent/>
+          ) : (
+            <EmptyState 
+              connState={connState}
+              emptyDescription="Não foi encontrada nenhuma atividade. Para refazer a busca, aperte o botão abaixo."
+              retryButtonText="Buscar Atividades"
+              retryButtonFunction={getCycle}
+            />
+          )}
         </Container>
       )}
     </>

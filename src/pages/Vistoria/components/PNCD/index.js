@@ -101,6 +101,10 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
       fl_valido = false;
       props.showNotifyToast( "O campo visita é obrigatório!", "warning" );
     }
+    else if(pendencia.value && recipientes.length > 0){
+      fl_valido = false;
+      props.showNotifyToast( "Vistoria com pendência fechada ou recusada não pode ter depositos cadastrados!", "warning" );
+    }
 
     if( fl_valido ) {
       const vistoria = {
@@ -204,7 +208,11 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
 
               <Col md="6" >
                  {/*isPaginaEdicao Indica para o componente se ele está sendo usado na pagina de edição de vistoria*/}
-                <InspecionarRecipiente objetivo={ objetivo } isPaginaEdicao={ props.indexInspection != null ? true : false}/>
+                <InspecionarRecipiente 
+                  objetivo={ objetivo } 
+                  isPaginaEdicao={ props.indexInspection != null ? true : false}
+                  vistoriaPendente={pendencia.value}
+                />
               </Col>
             </Row>
           </div>

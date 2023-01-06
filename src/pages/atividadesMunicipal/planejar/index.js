@@ -28,7 +28,8 @@ import {
   getLocationsRequest,
   removeEstrato,
   removeEquipe,
-  planActivityRequest
+  planActivityRequest,
+  planActivityReset
 } from '../../../store/Atividade/atividadeActions';
 
 // STYLES
@@ -56,6 +57,7 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
   } );
   const [modalEstratoOpen, setModalEstratoOpen] = useState(false);
   const [modalEquipeOpen,  setModalEquipeOpen]  = useState(false);
+  const [loadingSaveButton, setLoadingSaveButton] = useState( false )
 
   const handleCloseModalEstrato = () => {setModalEstratoOpen(false)} 
   const handleCloseModalEquipe = () => {setModalEquipeOpen(false)} 
@@ -85,6 +87,14 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
       props.getLocationsRequest( atividade.abrangencia, props.municipio_id, 'sim' );
     }
   }, [ atividade ] );
+
+  useEffect(() => {
+    if( props.planned )
+      window.location = window.location.origin.toString() + '/atividadesMunicipal';
+
+    props.planActivityReset()
+    setLoadingSaveButton(false)
+  }, [ props.planned ]);
 
   function handleSubmit( e ) {
     e.preventDefault();
@@ -124,12 +134,18 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
                   <ButtonSave
                     title="Salvar"
                     className="bg-info text-white"
-                    type="submit" />
+                    type="submit" 
+                    loading={ loadingSaveButton }
+                    disabled={ loadingSaveButton } 
+                    />
                 </ContainerFixed>
                 <ModalConfirm
                   id="modal-confirmar-planejamento"
                   title="Confirmar planejamento"
-                  confirm={() => props.planActivityRequest( id, estratos, equipes, atividade.abrangencia ) }
+                  confirm={() => {
+                    setLoadingSaveButton(true)
+                    props.planActivityRequest( id, estratos, equipes, atividade.abrangencia )
+                  } }
                 >
                   <p>Deseja salvar o planejamento? A atividade uma vez planejada não poderá ser editada</p>
                 </ModalConfirm>
@@ -401,7 +417,8 @@ const mapStateToProps = state => ({
   locais      : state.atividade.locais,
   estratos    : state.atividade.estratos,
   equipes     : state.atividade.equipes,
-  reload      : state.atividade.reload
+  reload      : state.atividade.reload,
+  planned     : state.atividade.planned
 });
 
 const mapDispatchToProps = dispatch =>
@@ -412,7 +429,8 @@ const mapDispatchToProps = dispatch =>
     getUsersByCityRequest,
     removeEstrato,
     removeEquipe,
-    planActivityRequest
+    planActivityRequest,
+    planActivityReset
   }, dispatch );
 
 export default connect(

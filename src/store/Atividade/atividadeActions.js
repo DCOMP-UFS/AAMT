@@ -25,6 +25,9 @@ export const ActionTypes = {
   REMOVE_ESTRATO                        : "REMOVE_ESTRATO",
   REMOVE_EQUIPE                         : "REMOVE_EQUIPE",
   PLAN_ACTIVITY_REQUEST                 : "PLAN_ACTIVITY_REQUEST",
+  PLAN_ACTIVITY_SUCCESS                 : "PLAN_ACTIVITY_SUCCESS",
+  PLAN_ACTIVITY_FAIL                    : "PLAN_ACTIVITY_FAIL",
+  PLAN_ACTIVITY_RESET                   : "PLAN_ACTIVITY_RESET",
   RESET_TOGGLE_LADO                     : "RESET_TOGGLE_LADO",
   FINISH_ACTIVITY_REQUEST               : "FINISH_ACTIVITY_REQUEST",
   FINISH_ACTIVITY_SUCCESS               : "FINISH_ACTIVITY_SUCCESS",
@@ -356,6 +359,24 @@ export const planActivityRequest = (id, estratos, equipes, abrangencia_id) => {
       equipes,
       abrangencia_id
     }
+  }
+}
+
+export const planActivitySuccess = () => {
+  return {
+    type: ActionTypes.PLAN_ACTIVITY_SUCCESS,
+  }
+}
+
+export const planActivityFail = () => {
+  return {
+    type: ActionTypes.PLAN_ACTIVITY_FAIL,
+  }
+}
+
+export const planActivityReset = () => {
+  return {
+    type: ActionTypes.PLAN_ACTIVITY_RESET,
   }
 }
 

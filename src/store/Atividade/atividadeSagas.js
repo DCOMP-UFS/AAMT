@@ -160,11 +160,14 @@ export function* planActivity( action ) {
     const { status } = yield call( service.planActivityRequest, action.payload );
 
     if( status === 200 ) {
-      window.location = window.location.origin.toString() + '/atividadesMunicipal';
+      yield put( AtividadeActions.planActivitySuccess() );
+      
     }else {
+      yield put( AtividadeActions.planActivityFail() );
       yield put( AppConfigActions.showNotifyToast( "Falha ao salvar planejamento: " + status, "error" ) );
     }
   } catch (err) {
+    yield put( AtividadeActions.planActivityFail() );
     if(err.response){
       //Provavel erro de logica na API
       yield put( AppConfigActions.showNotifyToast( "Erro ao salvar planejamento, entre em contato com o suporte", "error" ) );

@@ -17,6 +17,7 @@ const INITIAL_STATE = {
   locais: [],
   estratos: [],
   finished: null,
+  planned:null,
 }
 
 export default function Atividade(state = INITIAL_STATE, action) {
@@ -319,6 +320,27 @@ export default function Atividade(state = INITIAL_STATE, action) {
       return {
         ...state,
         finished: null
+      }
+    }
+
+    case ActionTypes.PLAN_ACTIVITY_SUCCESS: {
+      return {
+        ...state,
+        planned: true
+      }
+    }
+
+    case ActionTypes.PLAN_ACTIVITY_FAIL: {
+      return {
+        ...state,
+        planned: false
+      }
+    }
+
+    case ActionTypes.PLAN_ACTIVITY_RESET: {
+      return {
+        ...state,
+        planned: null
       }
     }
 

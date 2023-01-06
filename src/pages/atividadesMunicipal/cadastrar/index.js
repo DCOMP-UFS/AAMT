@@ -39,7 +39,8 @@ const Atividades = ( { metodologias, ciclos, ...props } ) => {
       return { value: value.id, label: value.label };
     } );
   const [ isValidObjetivo, setIsValidObjetivo ] = useState( true );
-
+  const [ loadingSaveButton, setLoadingSaveButton ]  = useState( false )
+  
   useEffect(() => {
     props.changeSidebar( "atividade_municipio", "atm_cadastrar" );
     props.getMethodologiesRequest();
@@ -77,6 +78,8 @@ const Atividades = ( { metodologias, ciclos, ...props } ) => {
   useEffect(() => {
     if( props.created )
       window.location = window.location.origin.toString() + "/atividadesMunicipal";
+
+    setLoadingSaveButton(false)
   }, [ props.created ]);
 
   function handleSubmit( e ) {
@@ -86,17 +89,18 @@ const Atividades = ( { metodologias, ciclos, ...props } ) => {
       setIsValidObjetivo(false)
     else{
       setIsValidObjetivo(true)
-      
-     props.createActiveRequest(
-        objetivoAtividade,
-        flTodosImoveis.value,
-        2,//responsabilidade
-        ciclo.value,
-        props.municipio_id,
-        metodologia.value,
-        objetivo.value,
-        abrangencia.value
-      );
+      setLoadingSaveButton(true)
+
+      props.createActiveRequest(
+          objetivoAtividade,
+          flTodosImoveis.value,
+          2,//responsabilidade
+          ciclo.value,
+          props.municipio_id,
+          metodologia.value,
+          objetivo.value,
+          abrangencia.value
+        );
     }
   }
 
@@ -117,7 +121,10 @@ const Atividades = ( { metodologias, ciclos, ...props } ) => {
                 <ButtonSave
                   title="Salvar"
                   className="bg-info text-white"
-                  type="submit" />
+                  type="submit"
+                  loading={ loadingSaveButton }
+                  disabled={ loadingSaveButton } 
+                  />
               </ContainerFixed>
               <Row>
                 <Col>

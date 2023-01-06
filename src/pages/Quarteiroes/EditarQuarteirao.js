@@ -71,6 +71,7 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
   const [ showExcluirLado, setShowExcluirLado ]               = useState( false );
   const [ ladoIndex, setLadoIndex ]                           = useState( -1 );
   const [ localidadeOriginal, setLocalidadeOriginal ]         = useState( {} );
+  const [ loadingSaveButton, setLoadingSaveButton ]           = useState( false )
 
   useEffect(() => {
     props.changeSidebar( "quarteirao" );
@@ -121,6 +122,7 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
       //espera 1s para recarregar a pagina
       setTimeout(() => { document.location.reload( true );}, 1000)
     }
+    setLoadingSaveButton(false)
     props.setUpdated(null)
   }, [ props.updated ]);
 
@@ -324,6 +326,7 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
    */
   function handleSubmit( e ) {
     e.preventDefault();
+    setLoadingSaveButton(true)
     const quarteirao = new Quarteirao( {
       id            : parseInt( id ),
       numero,
@@ -487,6 +490,8 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
                         title="Salvar"
                         className="bg-info text-white"
                         type="submit"
+                        loading={ loadingSaveButton }
+                        disabled={ loadingSaveButton }
                       />
                     </ContainerFixed>
                   </form>

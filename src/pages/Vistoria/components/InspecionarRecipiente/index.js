@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { removerRecipiente, changeUpdatedIndex, changeDuplicatorIndex } from '../../../../store/Vistoria/vistoriaActions';
+import { showNotifyToast } from '../../../../store/AppConfig/appConfigActions';
 
 // STYLES
 import {
@@ -25,7 +26,7 @@ import {
 import { LiEmpty } from '../../../../styles/global';
 
 function InspecionarRecipiente({ sequenciaRecipiente, inspectionSequence, vistorias, trabalhoDiario_id, 
-                                 recipientes, objetivo, isPaginaEdicao, ...props }) {
+                                 recipientes, objetivo, isPaginaEdicao, vistoriaPendente, ...props }) {
   function openModalEdit( index ) {
     props.changeUpdatedIndex( index );
     $('#modalEditarInspecao').modal('show');
@@ -44,7 +45,12 @@ function InspecionarRecipiente({ sequenciaRecipiente, inspectionSequence, vistor
           <ButtonNewObject
             title="Cadastrar Inspeção"
             data-toggle="modal"
-            data-target="#modalCadastrarInspecao" />
+            onClick={() => {
+              if(vistoriaPendente)
+                props.showNotifyToast( "Vistoria com pendência fechada ou recusada não pode ter depositos cadastrados!", "warning" );
+              else 
+                $( '#modalCadastrarInspecao' ).modal( 'show' )
+            }} />
         </h4>
 
         <ListRecipiente
@@ -123,7 +129,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ removerRecipiente, changeUpdatedIndex, changeDuplicatorIndex }, dispatch);
+  bindActionCreators({ removerRecipiente, changeUpdatedIndex, changeDuplicatorIndex, showNotifyToast, }, dispatch);
 
 export default connect(
   mapStateToProps,

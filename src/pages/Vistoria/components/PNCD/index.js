@@ -37,6 +37,7 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
   const [ entrada, setEntrada ]                     = useState( "" );
   const [ justificativa, setJustificativa ]         = useState( null );
   const [ sequenciaVistoria, setSequenciaVistoria ] = useState( 0 );
+  const [ loadingSaveButton, setLoadingSaveButton ] = useState(false)
 
   useEffect( () => {
     //Coletar da vistoriasCache somente as vistorias do trabalho diario atual
@@ -101,8 +102,13 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
       fl_valido = false;
       props.showNotifyToast( "O campo visita é obrigatório!", "warning" );
     }
+    else if(pendencia.value && recipientes.length > 0){
+      fl_valido = false;
+      props.showNotifyToast( "Vistoria com pendência fechada ou recusada não pode ter depositos cadastrados!", "warning" );
+    }
 
     if( fl_valido ) {
+      setLoadingSaveButton(true)
       const vistoria = {
         situacaoVistoria: visita.value,
         horaEntrada:      entrada,
@@ -204,7 +210,11 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
 
               <Col md="6" >
                  {/*isPaginaEdicao Indica para o componente se ele está sendo usado na pagina de edição de vistoria*/}
-                <InspecionarRecipiente objetivo={ objetivo } isPaginaEdicao={ props.indexInspection != null ? true : false}/>
+                <InspecionarRecipiente 
+                  objetivo={ objetivo } 
+                  isPaginaEdicao={ props.indexInspection != null ? true : false}
+                  vistoriaPendente={pendencia.value}
+                />
               </Col>
             </Row>
           </div>
@@ -215,7 +225,8 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
         <ButtonSave
           title="Salvar Vistoria"
           className="bg-info text-white"
-          loading={ false }
+          loading={ loadingSaveButton }
+          disabled={ loadingSaveButton }
           type="button"
           onClick={ submit } />
       </ContainerFixed>

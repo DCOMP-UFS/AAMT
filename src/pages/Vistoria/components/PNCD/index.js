@@ -37,6 +37,7 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
   const [ entrada, setEntrada ]                     = useState( "" );
   const [ justificativa, setJustificativa ]         = useState( null );
   const [ sequenciaVistoria, setSequenciaVistoria ] = useState( 0 );
+  const [ loadingSaveButton, setLoadingSaveButton ] = useState(false)
 
   useEffect( () => {
     //Coletar da vistoriasCache somente as vistorias do trabalho diario atual
@@ -107,6 +108,7 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
     }
 
     if( fl_valido ) {
+      setLoadingSaveButton(true)
       const vistoria = {
         situacaoVistoria: visita.value,
         horaEntrada:      entrada,
@@ -223,7 +225,8 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
         <ButtonSave
           title="Salvar Vistoria"
           className="bg-info text-white"
-          loading={ false }
+          loading={ loadingSaveButton }
+          disabled={ loadingSaveButton }
           type="button"
           onClick={ submit } />
       </ContainerFixed>

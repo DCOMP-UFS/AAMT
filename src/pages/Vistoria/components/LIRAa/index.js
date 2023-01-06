@@ -32,6 +32,7 @@ function LIRAa({ handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, .
     { value: "N", label: "Normal" },
     { value: "R", label: "Recuperada" },
   ]);
+  const [ loadingSaveButton, setLoadingSaveButton ] = useState(false)
 
   useEffect(() => {
     //Coletar da vistoriasCache somente as vistorias do trabalho diario atual
@@ -90,6 +91,7 @@ function LIRAa({ handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, .
     
 
     if( fl_valido ) {
+      setLoadingSaveButton(true)
       const vistoria = {
         situacaoVistoria: visita.value,
         horaEntrada: entrada,
@@ -188,7 +190,8 @@ function LIRAa({ handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, .
           <ButtonSave
             title="Salvar Vistoria"
             className="bg-info text-white"
-            loading={ false }
+            loading={ loadingSaveButton }
+            disabled={ loadingSaveButton }
             type="button"
             onClick={ submit } />
         </ContainerFixed>

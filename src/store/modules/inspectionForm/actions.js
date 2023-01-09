@@ -67,3 +67,10 @@ export function deleteRecipient(recipientSequence) {
     payload: { recipientSequence },
   };
 }
+
+export function cloneRecipient(recipient, numberClones, recipientSequence, sampleSequence) {
+  return {
+    type: '@inspectionform/CLONE_RECIPIENT',
+    payload: { recipient, numberClones, recipientSequence, sampleSequence },
+  };
+}

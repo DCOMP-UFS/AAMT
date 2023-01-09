@@ -125,3 +125,11 @@ export function editProperty(blockIndex, streetIndex, propertyIndex, property) {
     payload: { blockIndex, streetIndex, propertyIndex, property },
   };
 }
+
+export function ajustarSequencias(numberClones, numberSamples) {
+  return {
+    type: '@routes/ADJUST_INSPECTION_SEQUENCE',
+    payload: { numberClones, numberSamples },
+  };
+}
+

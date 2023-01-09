@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
-import { Image, TouchableOpacity, Alert, StatusBar } from 'react-native';
+import { Image, TouchableOpacity, Alert, StatusBar, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { addInspectionWithoutPendency } from '../../../../../store/modules/routes/actions';
+import { addInspectionWithoutPendency, ajustarSequencias } from '../../../../../store/modules/routes/actions';
 import {
   changeRecipientIndex,
   deleteRecipient,
+  cloneRecipient
 } from '../../../../../store/modules/inspectionForm/actions';
 
 import ModalComponent from '../../../../../components/ModalComponent';
+import Input from '../../../../../components/Input';
+import Button from '../../../../../components/Button';
 
 import testTube from '../../../../../assets/test-tube.png';
 
@@ -53,6 +58,8 @@ const RecipientList = ({
 }) => {
   const navigation = useNavigation();
   const [visible, setVisible] = useState(false);
+  const [showModalClone, setShowModalClone] = useState(false);
+  const [ recipientSelected, setRecipientSelected] = useState({})
 
   function handleFinishInspection() {
     Alert.alert(
@@ -100,7 +107,7 @@ const RecipientList = ({
     );
   }
 
-  const RecipientModal = ({ recipient, index }) => {
+  var RecipientModal = ({ recipient }) => {
     return (
       <>
         <HeaderModal>
@@ -200,6 +207,62 @@ const RecipientList = ({
     );
   };
 
+  const cloneRecipientModalValidation = Yup.object().shape({
+    number: Yup.number()
+          .typeError("Informe um número válido")
+          .required('Informe a quantidade de larvicida')
+          .integer('Informe um numero inteiro')
+          .min(1,'O número min. de clones é 1')
+  });
+
+  function createClones (recipient,numberClones){
+    var numberClone = +numberClones
+    props.cloneRecipient(recipient, numberClone, props.recipientSequence, props.sampleSequence)
+    props.ajustarSequencias(numberClone, recipient.amostras.length)
+    setShowModalClone(false)
+  }
+
+  var CloneRecipientModal = ({ recipient }) => {
+    return (
+      <>
+        <HeaderModal>
+          <TouchableOpacity onPress={() => setShowModalClone(false)}>
+            <FontAwesome5 size={22} name="times" color="#a6a8ad" />
+          </TouchableOpacity>
+        </HeaderModal>
+        <TitleModal>{` Clonagem do depósito ${recipient.idUnidade}`}</TitleModal>
+        <DetailsModal>
+            <Formik
+              validationSchema={cloneRecipientModalValidation}
+              validateOnChange={false}
+              validateOnBlur={false}
+              initialValues={{
+                number: '',
+              }}
+              onSubmit={values => createClones(recipient,values.number)}
+            >
+              {({ handleChange, handleSubmit, errors, values }) => (
+                <>
+                  <Input
+                    value={values.number}
+                    onChangeText={handleChange('number')}
+                    label="Número de clones"
+                    required={true}
+                    keyboardType="number-pad"
+                    returnKeyType="next"
+                    autoCapitalize="none"
+                    errors={errors.number}
+                  />
+                  <Button onPress={handleSubmit}>Salvar</Button>
+                </>
+              )}
+            </Formik>
+
+        </DetailsModal>
+      </>
+    );
+  };
+
   return (
     <>
       {recipients.length > 0 ? (
@@ -222,15 +285,29 @@ const RecipientList = ({
                 Finalizar vistoria
               </FinishInspection>
             </ButtonsRow>
+            <ModalComponent visible={visible}>
+              <RecipientModal recipient={recipientSelected} />
+            </ModalComponent>
+            <ModalComponent visible={showModalClone}>
+              <CloneRecipientModal recipient={recipientSelected} />
+            </ModalComponent>
             {recipients.map((recipient, index) => (
               <RecipientContainer key={index}>
-                <ModalComponent visible={visible}>
-                  <RecipientModal recipient={recipient} index={index} />
-                </ModalComponent>
                 <RecipientHeader>
                   <HeaderText>{`Depósito ${recipient.sequencia}`}</HeaderText>
                 </RecipientHeader>
                 <ButtonsContainer>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setRecipientSelected(recipient)
+                      setShowModalClone(true)
+                    }}
+                  >
+                    <FontAwesome5
+                      size={23}
+                      name="clone"
+                    />
+                  </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() =>
                       handleDeleteRecipient(recipient.sequencia, recipient)
@@ -247,7 +324,10 @@ const RecipientList = ({
                   >
                     <FontAwesome5 name="edit" size={22} color="#585666" />
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => setVisible(true)}>
+                  <TouchableOpacity onPress={() => {
+                    setRecipientSelected(recipient)
+                    setVisible(true)
+                    }}>
                     <FontAwesome5
                       name="info-circle"
                       size={22}
@@ -297,13 +377,21 @@ const mapStateToProps = state => ({
   form: state.inspectionForm.form,
   indexes: state.inspectionForm.indexes,
   recipients: state.inspectionForm.form.recipientes,
+  sampleSequence: state.routes.sampleSequence,
+  recipientSequence: state.routes.recipientSequence,
   routes: state.routes.routes,
   currentRouteIndex: state.routes.currentRouteIndex,
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
-    { addInspectionWithoutPendency, changeRecipientIndex, deleteRecipient },
+    { 
+      addInspectionWithoutPendency, 
+      changeRecipientIndex, 
+      deleteRecipient,
+      cloneRecipient,
+      ajustarSequencias,
+     },
     dispatch
   );
 

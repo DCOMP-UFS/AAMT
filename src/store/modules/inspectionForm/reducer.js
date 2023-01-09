@@ -100,6 +100,38 @@ export default function inspectionForm(state = INITIAL_STATE, action) {
         );
       });
     }
+    case '@inspectionform/CLONE_RECIPIENT': {
+      return produce(state, draft => {
+        var { recipient, numberClones, recipientSequence, sampleSequence } = action.payload;
+        const possuiAmostras = recipient.amostras.length > 0
+
+        var recipientSequenceClone = recipientSequence
+        var sampleSequenceClone = sampleSequence + 1
+        var clonesList = []
+
+        for( var i = 0; i < numberClones; i++){
+          var recipientClone = {...recipient}
+          recipientClone.idUnidade = recipientSequenceClone
+          recipientClone.sequencia = recipientSequenceClone
+          recipientSequenceClone++
+
+          if(possuiAmostras){
+            var novasAmostras = recipientClone.amostras.map( amostra => {
+              const aux = amostra.idUnidade.split(".", 4)
+              const idUnidadeClone = aux[0]+"."+aux[1]+"."+aux[2]+"."+aux[3]+"."+sampleSequenceClone
+              const sequenciaClone = sampleSequenceClone
+              sampleSequenceClone++
+              return {...amostra, idUnidade:idUnidadeClone, sequencia:sequenciaClone}
+            })
+            recipientClone.amostras = novasAmostras
+          }
+          clonesList.push(recipientClone)
+        }
+        const newRecipentes = draft.form.recipientes.concat(clonesList)
+        
+        draft.form.recipientes = newRecipentes
+      });
+    }
     default:
       return state;
   }

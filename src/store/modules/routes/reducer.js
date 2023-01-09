@@ -160,6 +160,13 @@ export default function routes(state = INITIAL_STATE, action) {
           streetIndex
         ].imoveis[propertyIndex].sequencia = property.sequence;
       });
+    case '@routes/ADJUST_INSPECTION_SEQUENCE': {
+      return produce(state, draft => {
+        const { numberClones, numberSamples } = action.payload;
+        draft.recipientSequence += numberClones;
+        draft.sampleSequence += numberSamples * numberClones;
+      });
+    }
     case '@inspectionform/ADD_RECIPIENT_TO_FORM': {
       return produce(state, draft => {
         draft.recipientSequence = draft.recipientSequence + 1;

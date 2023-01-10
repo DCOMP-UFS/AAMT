@@ -46,7 +46,9 @@ function InspecionarRecipiente({ sequenciaRecipiente, inspectionSequence, vistor
             title="Cadastrar Inspeção"
             data-toggle="modal"
             onClick={() => {
-              if(vistoriaPendente)
+              if(vistoriaPendente === "inv")
+                props.showNotifyToast( "Por favor selecione o valor do campo pendência!", "warning" );
+              else if(vistoriaPendente === "F" || vistoriaPendente === "R")
                 props.showNotifyToast( "Vistoria com pendência fechada ou recusada não pode ter depositos cadastrados!", "warning" );
               else 
                 $( '#modalCadastrarInspecao' ).modal( 'show' )

@@ -20,3 +20,10 @@ export const getInspectsByTeam = data => {
     ...headerAuthorization()
   });
 }
+
+export const getNewInspectStatus = data => {
+  const { trabalho_diario_id, imovel_id } = data;
+  return api.get(`/vistorias/status/${ trabalho_diario_id }/trabalhos_diarios/${ imovel_id }/imoveis`, {
+    ...headerAuthorization()
+  });
+}

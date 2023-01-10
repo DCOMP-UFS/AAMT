@@ -47,6 +47,29 @@ export function* getInspectsByDailyWork( action ) {
   }
 }
 
+export function* getNewInspectStatus( action ) {
+  try {
+    const { data, status } = yield call( servico.getNewInspectStatus, action.payload );
+
+    if( status === 200 ) {
+      yield put( VistoriaActions.getNewInspectStatusSuccess( data.statusNovaVistoria ) );
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Falha ao definir status da nova vistoria: " + status, "error" ) );
+    }
+
+  } catch (err) {
+    yield put( VistoriaActions.getNewInspectStatusFail() );
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao definir status da nova vistoria, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao definir status da nova vistoria, favor verifique a conexão", "error" ) );
+  }
+}
+
 function* watchGetInspects() {
   yield takeLatest( VistoriaActions.ActionTypes.CONSULTAR_VISTORIAS_REQUEST, getInspects );
 }
@@ -55,9 +78,14 @@ function* watchGetInspectsByDailyWork() {
   yield takeLatest( VistoriaActions.ActionTypes.GET_INSPECTS_BY_DAILY_WORK_REQUEST, getInspectsByDailyWork );
 }
 
+function* watchGetNewInspectStatus() {
+  yield takeLatest( VistoriaActions.ActionTypes.GET_NEW_INSPECT_STATUS_REQUEST, getNewInspectStatus );
+}
+
 export function* vistoriaSaga() {
   yield all( [
     watchGetInspects(),
     watchGetInspectsByDailyWork(),
+    watchGetNewInspectStatus()
   ] );
 }

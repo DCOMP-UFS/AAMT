@@ -18,7 +18,7 @@ import { tipoImovel as tipoImovelEnum } from '../../../../config/enumerate';
 import { selectDefault } from '../../../../styles/global';
 import { Container, UlImovel, LiImovel, ContainerIcon, DivDescription, LiEmpty, Span } from './styles';
 
-function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEdicao, trabalhoDiario_id, ...props }) {
+function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEdicao, trabalhoDiario_id, loadingStatusVistoria, ...props }) {
   const [ optionQuarteirao, setOptionQuarteirao ] = useState([]);
   const [ numero, setNumero ] = useState("");
   const [ sequencia, setSequencia ] = useState("");
@@ -288,14 +288,16 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEd
             handleImovel={ handleImovel }
             numero={ numero === "" ? "-1" : numero }
             sequencia={ sequencia === "" ? "-1" : sequencia }
-            vistorias={ vistoriasFiltradas } />
+            vistorias={ vistoriasFiltradas } 
+            loadingStatusVistoria={loadingStatusVistoria}
+            />
         </Col>
       </Row>
     </Container>
   );
 }
 
-function ListImovel({ rotaIndex, idImovelSelect, quarteirao, imoveis, ...props }) {
+function ListImovel({ rotaIndex, idImovelSelect, quarteirao, imoveis, loadingStatusVistoria, ...props }) {
   const numero = parseInt( props.numero );
   const sequencia = parseInt( props.sequencia );
 
@@ -315,10 +317,10 @@ function ListImovel({ rotaIndex, idImovelSelect, quarteirao, imoveis, ...props }
     return (
       <LiImovel
         key={ index}
-        className={ `${ idImovelSelect === imovel.id ? "active" : imovel.fl_inspection ? " disabled" : "" }` }
+        className={ `${ idImovelSelect === imovel.id ? "active" : imovel.fl_inspection || loadingStatusVistoria ? " disabled" : "" }` }
         onClick={ () => {
           if( idImovelSelect !== imovel.id )
-            if( imovel.fl_inspection )
+            if( loadingStatusVistoria || imovel.fl_inspection )
               return;
           
           props.handleImovel( imovel );

@@ -13,7 +13,12 @@ export const ActionTypes = {
   SET_RECIPIENT: "SET_RECIPIENT",
   SET_SEQUENCE_INSPECTION: "SET_SEQUENCE_INSPECTION",
   SET_IMMOBILE: "SET_IMMOBILE",
-  GET_INSPECTS_BY_DAILY_WORK_REQUEST: "GET_INSPECTS_BY_DAILY_WORK_REQUEST"
+  GET_INSPECTS_BY_DAILY_WORK_REQUEST: "GET_INSPECTS_BY_DAILY_WORK_REQUEST",
+  GET_NEW_INSPECT_STATUS_REQUEST: "GET_NEW_INSPECT_STATUS_REQUEST",
+  GET_NEW_INSPECT_STATUS_SUCCESS: "GET_NEW_INSPECT_STATUS_SUCCESS",
+  GET_NEW_INSPECT_STATUS_FAIL: "GET_NEW_INSPECT_STATUS_FAIL",
+  NEW_INSPECT_STATUS_RESET: "NEW_INSPECT_STATUS_RESET",
+  LIMPAR_STATUS_NOVA_VISTORIA: "LIMPAR_STATUS_NOVA_VISTORIA"
 }
 
 export const setImovel = imovel => {
@@ -159,5 +164,42 @@ export const getInspectsByDailyWork = vistorias => {
     payload: {
       vistorias
     }
+  }
+}
+
+export const getNewInspectStatusRequest = (trabalho_diario_id, imovel_id) => {
+  return {
+    type: ActionTypes.GET_NEW_INSPECT_STATUS_REQUEST,
+    payload: {
+      trabalho_diario_id,
+      imovel_id
+    }
+  }
+}
+
+export const getNewInspectStatusSuccess = (statusNovaVistoria) => {
+  return {
+    type: ActionTypes.GET_NEW_INSPECT_STATUS_SUCCESS,
+    payload: {
+      statusNovaVistoria
+    }
+  }
+}
+
+export const getNewInspectStatusFail = () => {
+  return {
+    type: ActionTypes.GET_NEW_INSPECT_STATUS_FAIL,
+  }
+}
+
+export const newInspectStatusReset = () => {
+  return {
+    type: ActionTypes.NEW_INSPECT_STATUS_RESET,
+  }
+}
+
+export const limparStatusNovaVistoria = () => {
+  return {
+    type: ActionTypes.LIMPAR_STATUS_NOVA_VISTORIA
   }
 }

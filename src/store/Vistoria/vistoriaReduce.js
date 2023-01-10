@@ -25,7 +25,9 @@ const INITIAL_STATE = {
   reload: false,
   updatedIndex: -1,
   duplicatorIndex: -1,
-  vistorias: []
+  vistorias: [],
+  statusNovaVistoria:"",
+  buscaStatusNovaVistoria:null
 }
 
 export default function Vistoria(state = INITIAL_STATE, action) {
@@ -157,6 +159,37 @@ export default function Vistoria(state = INITIAL_STATE, action) {
         ...state,
         recipientes: [ ...state.recipientes, ...recips ],
         sequenciaRecipiente: seq
+      }
+    }
+
+    case ActionTypes.GET_NEW_INSPECT_STATUS_SUCCESS: {
+      let statusNovaVistoria = action.payload.statusNovaVistoria;
+
+      return {
+        ...state,
+        statusNovaVistoria,
+        buscaStatusNovaVistoria:true
+      }
+    }
+
+    case ActionTypes.GET_NEW_INSPECT_STATUS_FAIL: {
+      return {
+        ...state,
+        buscaStatusNovaVistoria:false
+      }
+    }
+
+    case ActionTypes.NEW_INSPECT_STATUS_RESET: {
+      return {
+        ...state,
+        buscaStatusNovaVistoria:null
+      }
+    }
+
+    case ActionTypes.LIMPAR_STATUS_NOVA_VISTORIA: {
+      return {
+        ...state,
+        statusNovaVistoria:""
       }
     }
 

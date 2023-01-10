@@ -13,7 +13,14 @@ import { connect } from 'react-redux';
 // ACTIONS
 import { showNotifyToast } from '../../../../store/AppConfig/appConfigActions';
 import { addVistoria, updateInspection } from '../../../../store/VistoriaCache/vistoriaCacheActions';
-import { setRecipient, setSequenceInspection, setImmobile } from '../../../../store/Vistoria/vistoriaActions';
+import { 
+  setRecipient, 
+  setSequenceInspection, 
+  setImmobile, 
+  getNewInspectStatusRequest,
+  newInspectStatusReset,
+  limparStatusNovaVistoria
+} from '../../../../store/Vistoria/vistoriaActions';
 
 // STYLES
 import { selectDefault } from '../../../../styles/global';
@@ -33,11 +40,12 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
     { value: "R", label: "Recusada" }
   ] );
   const [ visita, setVisita ]                       = useState( {} );
-  const [ pendencia, setPendencia ]                 = useState( {} );
+  const [ pendencia, setPendencia ]                 = useState( { value: "inv", label: "" } );
   const [ entrada, setEntrada ]                     = useState( "" );
   const [ justificativa, setJustificativa ]         = useState( null );
   const [ sequenciaVistoria, setSequenciaVistoria ] = useState( 0 );
   const [ loadingSaveButton, setLoadingSaveButton ] = useState(false)
+  const [ loadingStatusVistoria, setLoadingStatusVistoria] = useState(false)
 
   useEffect( () => {
     //Coletar da vistoriasCache somente as vistorias do trabalho diario atual
@@ -61,13 +69,40 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
 
     props.setSequenceInspection( seq );
     setSequenciaVistoria( seq );
+
+    //reseta o valor de statusNovaVistoria para ""
+    props.limparStatusNovaVistoria()
   }, [ ] );
-  //optionPendencia, optionVisita, props
   
   useEffect( () => {
     if( handleSave )
       setTimeout( () => { window.location = window.location.origin + '/vistoria'; }, 300 );
   }, [ handleSave ] );
+
+  //Useeffect acionado toda vez que o o usuario selecionar um imovel
+  //diferente na lista de imoveis
+  useEffect( () => {
+    //caso tenha sido selecionado um imovel e não estivermos na pagina
+    //de edição de vistoria, sera buscado o status de visita do imovel
+    //(Normal ou Recuperada)
+    if(imovel.id != undefined && props.indexInspection == null){
+      setLoadingStatusVistoria(true)
+      props.getNewInspectStatusRequest(trabalhoDiario_id, imovel.id)
+    }
+  }, [ imovel ] );
+
+  useEffect( () => {
+    if(props.buscaStatusNovaVistoria){
+      if(props.statusNovaVistoria === 'N')
+        setVisita({ value: "N", label: "Normal" })
+      else
+        setVisita({ value: "R", label: "Recuperada" })
+    }
+    setLoadingStatusVistoria(false)
+
+    //reseta o valor de buscaStatusnovaVistoria para null 
+    props.newInspectStatusReset()
+  }, [ props.buscaStatusNovaVistoria ] );
 
   function isImovelSelected(){
     if( !imovel || imovel.id == null)
@@ -101,8 +136,10 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
     }else if( !visita.value ) {
       fl_valido = false;
       props.showNotifyToast( "O campo visita é obrigatório!", "warning" );
-    }
-    else if(pendencia.value && recipientes.length > 0){
+    }else if(pendencia.value === "inv"){
+      fl_valido = false;
+      props.showNotifyToast( "O campo pendência é obrigatório!", "warning" );
+    }else if(pendencia.value && recipientes.length > 0){
       fl_valido = false;
       props.showNotifyToast( "Vistoria com pendência fechada ou recusada não pode ter depositos cadastrados!", "warning" );
     }
@@ -134,89 +171,122 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
         <article className="col-md-12">
           <div className="card">
             {/*isPaginaEdicao Indica para o componente se ele está sendo usado na pagina de edição de vistoria*/}
-            <ProcurarImovel isPaginaEdicao={ props.indexInspection != null ? true : false }/>
+            <ProcurarImovel 
+              isPaginaEdicao={ props.indexInspection != null ? true : false }
+              loadingStatusVistoria={loadingStatusVistoria}
+            />
           </div>
         </article>
-        <article className="col-md-12">
+        <article  className="col-md-12">
           <div className="card">
-            <Row className="mt-4">
-              {/* Dados específicos do formulário PNCD */}
+          { loadingStatusVistoria && (
+            <Col md="6">
+              <Row>
+                <Col md="12">
+                  <h4 className="title">Vistoria</h4>
+                
+                  <h4 className="text-description">
+                    Carregando dados necessarios....
+                  </h4>
+                </Col>
+                </Row>
+              </Col>
+            )}
+            { imovel.id == undefined && !loadingStatusVistoria && (
               <Col md="6">
                 <Row>
                   <Col md="12">
                     <h4 className="title">Vistoria</h4>
-                    <p className="text-description">
-                      Atenção os campos com <code>*</code> são obrigatórios
-                    </p>
-                  </Col>
-
-                  <Col md="6" className="form-group">
-                    <label htmlFor="horaEntrada">Horário de entrada <code>*</code></label>
-                    <TextField
-                      id="horaEntrada"
-                      type="time"
-                      value={ entrada }
-                      className="form-control"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      inputProps={{
-                        step: 300, // 5 min
-                      }}
-                      onChange={ e => setEntrada( e.target.value ) }
-                    />
+                  
+                    <h4 className="text-description">
+                      Por favor selecione o imovel onde foi feito a vistoria!
+                    </h4>
                   </Col>
                 </Row>
-
-                <Row>
-                  <Col md="6" className="form-group">
-                    <label htmlFor="visita">Visita <code>*</code></label>
-                    <Select
-                      id="visita"
-                      styles={ selectDefault }
-                      options={ optionVisita }
-                      value={ visita }
-                      onChange={ option => setVisita( option ) } />
-                  </Col>
-
-                  <Col md="6" className="form-group">
-                    <label htmlFor="pendencia">Pendência</label>
-                    <Select
-                      id="pendencia"
-                      styles={ selectDefault }
-                      options={ optionPendencia }
-                      value={ pendencia }
-                      onChange={ option => setPendencia( option ) } />
-                  </Col>
-                </Row>
-
-                { ( pendencia.value === 'F' || pendencia.value === 'R' ) && (
+              </Col>
+            )}
+            { imovel.id != undefined && !loadingStatusVistoria && (
+              <Row className="mt-4">
+                {/* Dados específicos do formulário PNCD */}
+                <Col md="6">
                   <Row>
-                    <Col md="12" className="form-group">
-                      <label>Justificativa da pendência</label>
-                      <textarea
-                        id="justificativa"
-                        value={ justificativa }
+                    <Col md="12">
+                      <h4 className="title">Vistoria</h4>
+                      <p className="text-description">
+                        Atenção os campos com <code>*</code> são obrigatórios
+                      </p>
+                    </Col>
+
+                    <Col md="6" className="form-group">
+                      <label htmlFor="horaEntrada">Horário de entrada <code>*</code></label>
+                      <TextField
+                        id="horaEntrada"
+                        type="time"
+                        value={ entrada }
                         className="form-control"
-                        onChange={ e => setJustificativa( e.target.value ) }
-                        rows="5"
-                        maxLength="255"
-                        required
-                      ></textarea>
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        inputProps={{
+                          step: 300, // 5 min
+                        }}
+                        onChange={ e => setEntrada( e.target.value ) }
+                      />
                     </Col>
                   </Row>
-                ) }
-              </Col>
 
-              <Col md="6" >
-                 {/*isPaginaEdicao Indica para o componente se ele está sendo usado na pagina de edição de vistoria*/}
-                <InspecionarRecipiente 
-                  objetivo={ objetivo } 
-                  isPaginaEdicao={ props.indexInspection != null ? true : false}
-                  vistoriaPendente={pendencia.value}
-                />
-              </Col>
-            </Row>
+                  <Row>
+                    <Col md="6" className="form-group">
+                      <label htmlFor="visita">Visita</label>
+                      <Select
+                        id="visita"
+                        styles={ selectDefault }
+                        options={ optionVisita }
+                        value={ visita }
+                        onChange={ option => setVisita( option ) } 
+                        isDisabled={true}/>
+                    </Col>
+
+                    <Col md="6" className="form-group">
+                      <label htmlFor="pendencia">Pendência<code>*</code></label>
+                      <Select
+                        id="pendencia"
+                        styles={ selectDefault }
+                        options={ optionPendencia }
+                        value={ pendencia }
+                        onChange={ option => setPendencia( option ) } />
+                    </Col>
+                  </Row>
+
+                  { ( pendencia.value === 'F' || pendencia.value === 'R' ) && (
+                    <Row>
+                      <Col md="12" className="form-group">
+                        <label>Justificativa da pendência</label>
+                        <textarea
+                          id="justificativa"
+                          value={ justificativa }
+                          className="form-control"
+                          onChange={ e => setJustificativa( e.target.value ) }
+                          rows="5"
+                          maxLength="255"
+                          required
+                        ></textarea>
+                      </Col>
+                    </Row>
+                  ) }
+                </Col>
+
+                <Col md="6" >
+                  {/*isPaginaEdicao Indica para o componente se ele está sendo usado na pagina de edição de vistoria*/}
+                  <InspecionarRecipiente 
+                    objetivo={ objetivo } 
+                    isPaginaEdicao={ props.indexInspection != null ? true : false}
+                    vistoriaPendente={pendencia.value}
+                  />
+                </Col>
+              </Row>
+            )
+            }
           </div>
         </article>
       </Row>
@@ -226,7 +296,7 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
           title="Salvar Vistoria"
           className="bg-info text-white"
           loading={ loadingSaveButton }
-          disabled={ loadingSaveButton }
+          disabled={ loadingSaveButton || loadingStatusVistoria }
           type="button"
           onClick={ submit } />
       </ContainerFixed>
@@ -242,6 +312,8 @@ const mapStateToProps = state => ({
   trabalhoDiario_id: state.rotaCache.trabalhoDiario.id,
   rota: state.rotaCache.rota,
   trabalhoDiario_horaInicio: state.rotaCache.trabalhoDiario.horaInicio,
+  statusNovaVistoria: state.vistoria.statusNovaVistoria,
+  buscaStatusNovaVistoria: state.vistoria.buscaStatusNovaVistoria
 });
 
 const mapDispatchToProps = dispatch =>
@@ -251,7 +323,10 @@ const mapDispatchToProps = dispatch =>
     setRecipient,
     setSequenceInspection,
     setImmobile,
-    updateInspection
+    updateInspection,
+    getNewInspectStatusRequest,
+    newInspectStatusReset,
+    limparStatusNovaVistoria
   }, dispatch);
 
 export default connect(

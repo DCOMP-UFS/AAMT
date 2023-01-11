@@ -4,6 +4,7 @@ const { Op } = require('sequelize');
 const Usuario = require('../models/Usuario');
 const TrabalhoDiario = require('../models/TrabalhoDiario');
 const Vistoria = require('../models/Vistoria');
+const Imovel = require('../models/Imovel')
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
@@ -270,11 +271,71 @@ getInspectsByPeriod = async ( req, res ) => {
   }
 }
 
+//Está rota recebe o id do trabalho diario iniciado, mas não finalizado, além do id do imóvel.
+//O papel desta rota é retornar o status da nova vistoria do imovel (normal ou recuperada)
+//Esta rota so deve ser utilizada para vistoria que pertence à um trabalho diario não finalizdo,
+//pois em um trabalho não finalizado, os imoveis presente na rota ou não foram vistoriados ou possuem uma
+//vistoria pendente(fechada ou recusada)
+getNewInspectStatus = async ( req, res ) => {
+  try{
+    const { trabalho_diario_id, imovel_id } = req.params;
+    
+    const trabalhoDiario = await TrabalhoDiario.findByPk(trabalho_diario_id)
+    if( !trabalhoDiario ) {
+      return res.status(400).json({ error: 'Trabalho diário informado não existe' });
+    }
+
+    const imovel = Imovel.findByPk(imovel_id)
+    if( !imovel ){
+      return res.status(400).json({ error: 'Imovél informado não existe' });
+    }
+
+    //Encontra todos os trabalhos diarios anteriores ao trabalho diario informado,
+    //que foram feitos pela mesma equipe
+    const trabalhosAnterioresEquipe = await TrabalhoDiario.findAll({
+      where:{
+        equipe_id: trabalhoDiario.equipe_id,
+        id:{ [Op.lt]: trabalhoDiario.id },
+        horaFim:{ [Op.ne]: null }
+    
+      },
+      order:[["id","DESC"]]
+    })
+
+    //Para cada trabalho anterior, é buscado uma vistoria 
+    //com pendencia(fechado ou recusado) feita no imovel informado
+    //Se for encontrada uma vistoria assim, significa que o status da nova vistoria é recuperada
+    for(const trabalho_anterior of  trabalhosAnterioresEquipe){
+      const isPendente = await Vistoria.findOne( {
+        where: {
+          trabalho_diario_id: trabalho_anterior.id,
+          imovel_id: imovel_id,
+          pendencia: {[Op.ne]: null}
+        },
+      })
+      if(isPendente)
+        return res.send( { statusNovaVistoria:"R"} )  
+    }
+
+    //Se chegou aqui significa que o imovel informado
+    //não foi vistoriado uma unica vez, o que indica que
+    //o status da nova vistoria é normal
+    return res.send( { statusNovaVistoria:"N"} )  
+
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
+}
+
 const router = express.Router();
 router.use( authMiddleware );
 
 router.get('/:usuario_id/usuarios', getInspects);
 router.get('/trabalho/:trabalho_diario_id/trabalhos_diarios', getInspectsByDailyWork);
 router.get('/periodo/:usuario_id/usuarios/:data_inicio/data_inicio/:data_fim/data_fim', getInspectsByPeriod);
+router.get('/status/:trabalho_diario_id/trabalhos_diarios/:imovel_id/imoveis', getNewInspectStatus);
 
 module.exports = app => app.use('/vistorias', router);

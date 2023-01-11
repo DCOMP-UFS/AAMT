@@ -38,6 +38,7 @@ getByUser = async ( req, res ) => {
       where: {
         usuario_id
       },
+      order: [[ 'data', 'desc' ]],
       include: [
         {
           association: 'supervisor',
@@ -213,6 +214,7 @@ getByTeamAndUser = async ( req, res ) => {
         usuario_id,
         equipe_id
       },
+      order: [[ 'data', 'desc' ]],
       include: [
         {
           association: 'supervisor',

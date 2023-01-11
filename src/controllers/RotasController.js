@@ -154,6 +154,7 @@ getRoute = async ( req, res ) => {
 getAllRoutes = async ( req, res ) => {
   try{
     const { usuario_id, data } = req.params;
+    const isMobile = req.query.isMobile //indica se a rota foi chamada pelo app mobile
     const userId = req.userId;
 
     // Iniciando validação
@@ -248,6 +249,50 @@ getAllRoutes = async ( req, res ) => {
       } ).then( mun => mun.codigo );
 
       rota = rota.filter( r => r.lados.length > 0 );
+
+      //caso esta rota tenha sido chamada pelo mobile, cada imovel de cada rota terá
+      //seu status de visita definido (normal ou recuperada)
+      if(isMobile){
+        const trabalhosAnterioresEquipe = await TrabalhoDiario.findAll({
+          where:{
+            equipe_id: td.equipe_id,
+            id:{ [Op.lt]: td.id },
+            horaFim:{ [Op.ne]: null }
+        
+          },
+          order:[["id","DESC"]]
+        })
+        
+        //rota só contem imoveis que ainda não foram vistoriados ou que com pendencia (fechado ou recusado). 
+        //Estes laços servem para indentifica os imoveis que possuem pendencias. 
+        if(trabalhosAnterioresEquipe.length > 0){
+          for( const r of rota) {
+            for( const l of r.lados) {
+              for( const imovel of l.imoveis) {
+
+                //Status padrão de uma visita (normal)
+                imovel.dataValues.statusVisita = "N"
+
+                for(const trabalho_anterior of  trabalhosAnterioresEquipe){
+                  const isPendente = await Vistoria.findOne( {
+                    where: {
+                      trabalho_diario_id: trabalho_anterior.id,
+                      imovel_id: imovel.id,
+                      pendencia: {[Op.ne]: null}
+                    },
+                  })
+                  //caso verdadeiro, significa que este imovel foi vistoriado antes,
+                  //mas ficou pendente, logo o status de visita da proxima vistoria é recuperada
+                  if(isPendente){
+                    imovel.dataValues.statusVisita = "R"
+                    break
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
       
       let equipe = {
         id: td.equipe.id,

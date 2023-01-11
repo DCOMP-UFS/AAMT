@@ -124,7 +124,7 @@ const PropertiesList = ({ currentIndex, routes, indexes, ...props }) => {
                         property.inspection
                       )
                     : props.loadInspectionForm(propertyIndex);
-                  navigation.navigate('Situação da vistoria');
+                  navigation.navigate('Situação da vistoria', { statusVisita: property.statusVisita });
                 }}
               >
                 {property.inspection ? 'Editar vistoria' : 'Iniciar vistoria'}

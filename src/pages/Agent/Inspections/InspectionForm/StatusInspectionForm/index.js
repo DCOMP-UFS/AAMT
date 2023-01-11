@@ -42,6 +42,9 @@ const StatusInspectionForm = ({
   const formRef = useRef();
   const navigation = useNavigation();
 
+  const route = useRoute();
+  const { statusVisita } = route.params;
+
   const methodology =
     routes[currentRouteIndex].trabalhoDiario.atividade.metodologia.sigla;
 
@@ -64,10 +67,11 @@ const StatusInspectionForm = ({
     }
 
     else if(methodology === 'PNCD'){
-      setOptionStatus([
-        { value: 'N', label: 'Normal' },
-        { value: 'R', label: 'Recuperada' },
-      ])
+      if(statusVisita === 'N')
+        setOptionStatus([{ value: 'N', label: 'Normal' },])
+      else
+        setOptionStatus([{ value: 'R', label: 'Recuperada' },])
+      
       setOptionPendency([
         { value: 'N', label: 'Nenhuma' },
         { value: 'F', label: 'Fechada' },

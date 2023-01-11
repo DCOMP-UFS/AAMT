@@ -212,7 +212,7 @@ const PlannedRoutes = ({
       setIndexAtividade(undefined)
       setIndexAtividadeOptions([])
 
-      const response = await api.get(`/rotas/todas/${user_id}/usuarios/${date}/data`);
+      const response = await api.get(`/rotas/todas/${user_id}/usuarios/${date}/data`,{ params: {isMobile: true}});
 
       const data = response.data;
       var listaAtividadesRotas = []

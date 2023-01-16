@@ -347,7 +347,10 @@ getLocations = async ( req, res ) => {
       case "1": //Localidade/bairro
         locais = await Localidade.findAll({
           where: {
-            municipio_id
+            ...(ativo ? {
+              municipio_id,
+              ativo: ativo === 'sim' ? 1 : 0
+            } : { municipio_id})
           }
         }).then( localidades => {
           return localidades.map( localidade => ({ id: localidade.id, nome: localidade.nome, tipo: "localidade" }));
@@ -356,7 +359,10 @@ getLocations = async ( req, res ) => {
       case "2"://Zona
         locais = await Zona.findAll({
           where: {
-            municipio_id
+            ...(ativo ? {
+              municipio_id,
+              ativo: ativo === 'sim' ? 1 : 0
+            } : { municipio_id})
           }
         }).then( zonas => {
           return zonas.map( zona => ({ id: zona.id, nome: zona.nome, tipo: "zona" }));

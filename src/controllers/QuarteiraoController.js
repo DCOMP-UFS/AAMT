@@ -641,15 +641,129 @@ async function quarteiraoExistente(id,municipio_id, numero){
   
 }
 
+getBlockByCityWithouZone = async (req, res) => {
+  try{
+    const { municipio_id }  = req.params;
+
+    const municipio = await Municipio.findOne({
+      where: {
+        id: municipio_id
+      },
+      include: {
+        association: 'localidades',
+        attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+        include: {
+          where: {
+            ativo: 1,
+            zona_id: null
+          },
+          association: 'quarteiroes',
+          include: [
+            {
+              association: 'localidade',
+              attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+            },
+            {
+              association: 'zona',
+              attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+            }
+          ]
+        }
+      }
+    });
+
+    if( !municipio ) {
+      return res.status(400).json({ error: "Município não existe" });
+    }
+
+    let quarteirao = [];
+    municipio.localidades.forEach( localidade => {
+      quarteirao = [ ...localidade.quarteiroes, ...quarteirao ];
+    });
+
+    quarteirao.sort((a,b) => a.numero - b.numero)
+
+    return res.json( quarteirao );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
+}
+
+insertBlockInZone = async (req, res) => {
+  try{
+    const { id, zona_id }  = req.params;
+
+    const quarteirao = await Quarteirao.findOne({where: {id}})
+
+    if( !quarteirao ) {
+      return res.status(400).json({ error: "Quarteirão não existe" });
+    }
+
+    const zona = await Zona.findOne({where: {id:zona_id}})
+
+    if( !zona ) {
+      return res.status(400).json({ error: "Zona não existe" });
+    }
+
+    const {isRejected} = Quarteirao.update(
+      {zona_id:zona_id},
+      {where: {id}}
+    )
+
+    if(isRejected)
+      return res.status(400).json({ error: "Erro ao associar quarteirão à zona" });
+
+    return res.json( quarteirao );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
+}
+
+removeBlockInZone = async (req, res) => {
+  try{
+    const { id }  = req.params;
+
+    const quarteirao = await Quarteirao.findOne({where: {id}})
+
+    if( !quarteirao ) {
+      return res.status(400).json({ error: "Quarteirão não existe" });
+    }
+
+    const {isRejected} = Quarteirao.update(
+      {zona_id:null},
+      {where: {id}}
+    )
+
+    if(isRejected)
+      return res.status(400).json({ error: "Erro ao retirar quarteirão da zona" });
+
+    return res.json( quarteirao );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
+}
+
 const router = express.Router();
 router.use( authMiddleware );
 
 router.get( '/:id', index );
 router.get(  '/lados/:id', getLadosQuarteirao  );
 router.get( '/:municipio_id/municipios', getBlockByCity );
+router.get( '/semZona/:municipio_id/municipios', getBlockByCityWithouZone );
 router.post( '/', store );
 router.put( '/:id/desativar', disabled );
 router.put( '/:id', update );
+router.put( '/:id/zona/:zona_id', insertBlockInZone );
+router.put( '/:id/removerDaZona', removeBlockInZone );
 router.post( '/excluirLado/:excluirLadoId', excluirLadoPorId );
 
 module.exports = app => app.use( '/quarteiroes', router );

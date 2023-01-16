@@ -2,15 +2,18 @@ const express = require('express');
 const authMiddleware = require('../middlewares/auth');
 const Municipio = require('../models/Municipio');
 const Zona = require('../models/Zona');
-const {QueryTypes} = require('sequelize');
+const {QueryTypes, where} = require('sequelize');
+const { Op } = require("sequelize");
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
 const sequelize = require('sequelize');
+const Quarteirao = require('../models/Quarteirao');
 
 getByCityId = async (req, res) => {
   try{
     const { municipio_id } = req.params;
+    const { ativo } = req.query
 
     const municipio = await Municipio.findByPk( municipio_id );
 
@@ -20,7 +23,10 @@ getByCityId = async (req, res) => {
 
     const zonas = await Zona.findAll({
       where: {
-        municipio_id
+        ...(ativo ? {
+          municipio_id,
+          ativo: ativo === 'sim' ? 1 : 0
+        } : {municipio_id})
       },
       attributes: {
         exclude: [ 'municipio_id' ]
@@ -54,7 +60,14 @@ getById = async (req, res) => {
       return res.status(400).json({ error: "Zona não existe" });
     }
 
-    return res.json( zona );
+    const quarteiroes_zona = await Quarteirao.findAll(
+      {
+        where:{zona_id: zona.id},
+        order:[['numero','asc']]
+      }
+    )
+
+    return res.json( {zona, quarteiroes_zona} );
   } catch (error) {
     return res.status( 400 ).send( { 
       status: 'unexpected error',
@@ -65,7 +78,7 @@ getById = async (req, res) => {
 
 store = async (req, res) => {
   try{
-    const { municipio_id, nome } = req.body;
+    const { municipio_id, nome, quarteiroes_id } = req.body;
     const userId = req.userId;
 
     const allow = await allowFunction( userId, 'manter_zona' );
@@ -97,6 +110,17 @@ store = async (req, res) => {
       municipio_id,
       ativo: 1
     });
+
+    for(const id of quarteiroes_id){
+      const { isRejected } = await Quarteirao.update(
+        {zona_id: zona.id},
+        {where:{id}}
+      )
+
+      if(isRejected){
+        return res.status(400).json({ error: 'Não foi possível adicionar o quarteirao de id='+id+' na zona' });
+      }
+    }
 
     const result = await Zona.findByPk( zona.id, {
       include: { association: 'municipio', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } },
@@ -181,6 +205,16 @@ update = async (req, res) => {
           return res.status(400).json({ error: 'Não foi possível atualizar a zona' });
         }
 
+        if(ativo == 0){
+          const { isRejected } = await Quarteirao.update(
+            {zona_id: null},
+            {where: {zona_id: zona.id}}
+          )
+          if( isRejected ){
+            return res.status(400).json({ error: 'Não foi possivel desvincular os quarteirões da zona recem-excluida' });
+          }
+        }
+
         const result = await Zona.findByPk( id,  {
           include: [
             { association: 'municipio', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } }
@@ -208,7 +242,7 @@ update = async (req, res) => {
 async function zoneAlreadyExist(id , nome, municipio_id) {
   var query = null
   var variaveis = null
-  var filtro = {nome: nome}
+  var filtro = {nome: nome, ativo:1}
 
   if(id)
     filtro.id = {[Op.ne]: id}

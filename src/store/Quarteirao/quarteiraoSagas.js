@@ -30,6 +30,32 @@ export function* getQuarteiroes( action ) {
   }
 }
 
+/**
+ * Solicita ao service os quarteirões de um município que não estão em nenhuma zona
+ * @param {Object} action 
+ */
+export function* getQuarteiroesSemZona( action ) {
+  try {
+    const { data, status } = yield call( service.getQuarteiroesPorMunicipioSemZonaRequest, action.payload );
+
+    if( status === 200 ) {
+      yield put( QuarteiraoActions.setQuarteiroes( data ) );
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Falha ao consultar quarteirões: " + status, "error" ) );
+    }
+
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar quarteirões, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar quarteirões, favor verifique a conexão", "error" ) );
+  }
+}
+
 export function* getLadosQuarteirao( action ) {
   try {
     const { data, status } = yield call( service.getLadosQuarteiraoRequest, action.payload );
@@ -196,9 +222,62 @@ export function* excluirImovel( action ) {
   }
 }
 
+export function* inserirQuarteiraoEmZona( action ) {
+  const { updatedZone } =  action.payload
+  try {
+    const { status } = yield call( service.inserirQuarteiraoEmZona, action.payload );
+
+    if( status === 200 ) {
+      yield put( QuarteiraoActions.inserirQuarteiraoEmZonaSuccess(updatedZone) );
+    }else {
+      yield put( QuarteiraoActions.inserirQuarteiraoEmZonaFail() );
+      yield put( AppConfigActions.showNotifyToast( "Falha ao adicionar quarteirao na zona: " + status, "error" ) );
+    }
+  } catch (err) {
+    yield put( QuarteiraoActions.inserirQuarteiraoEmZonaFail(updatedZone) );
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao adicionar quarteirao na zona, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao adicionar quarteirao na zona, favor verifique a conexão", "error" ) );
+  }
+}
+
+export function* removerQuarteiraoEmZona( action ) {
+  try {
+    const { status } = yield call( service.removerQuarteiraoEmZona, action.payload );
+
+    if( status === 200 ) {
+      yield put( QuarteiraoActions.removerQuarteiraoEmZonaSuccess() );
+    }else {
+      yield put( QuarteiraoActions.removerQuarteiraoEmZonaFail() );
+      yield put( AppConfigActions.showNotifyToast( "Falha ao remover quarteirao da zona: " + status, "error" ) );
+    }
+  } catch (err) {
+    yield put( QuarteiraoActions.removerQuarteiraoEmZonaFail() );
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao remover quarteirao da zona, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao remover quarteirao da zona, favor verifique a conexão", "error" ) );
+  }
+}
+
+
+
 // Watcher Sagas
 function* watchGetQuarteiroes() {
   yield takeLatest( QuarteiraoActions.ActionTypes.GET_QUARTEIROES_MUNICIPIO_REQUEST, getQuarteiroes );
+}
+
+function* watchGetQuarteiroesSemZona() {
+  yield takeLatest( QuarteiraoActions.ActionTypes.GET_QUARTEIROES_MUNICIPIO_SEM_ZONA_REQUEST, getQuarteiroesSemZona );
 }
 
 function* watchGetLadosQuarteirao() {
@@ -225,14 +304,24 @@ function* watchAddQuarteirao() {
   yield takeLatest( QuarteiraoActions.ActionTypes.ADD_QUARTEIRAO_REQUEST, addQuarteirao );
 }
 
+function* watchInserirQuarteiraoEmZona() {
+  yield takeLatest( QuarteiraoActions.ActionTypes.INSERIR_QUARTEIRAO_ZONA_REQUEST, inserirQuarteiraoEmZona );
+}
+function* watchRemoverQuarteiraoEmZona() {
+  yield takeLatest( QuarteiraoActions.ActionTypes.REMOVER_QUARTEIRAO_ZONA_REQUEST, removerQuarteiraoEmZona );
+}
+
 export function* quarteiraoSaga() {
   yield all( [
     watchGetQuarteiroes(),
+    watchGetQuarteiroesSemZona(),
     watchGetLadosQuarteirao(),
     watchSetQuarteirao(),
     watchGetQuarteiraoPorId(),
     watchExcluirLado(),
     watchExcluirImovel(),
     watchAddQuarteirao(),
+    watchInserirQuarteiraoEmZona(),
+    watchRemoverQuarteiraoEmZona(),
   ] );
 }

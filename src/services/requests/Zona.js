@@ -1,7 +1,12 @@
 import api, { headerAuthorization } from '../../services/api';
 
-export const getZoneByCityRequest = municipio_id => {
-  return api.get(`/zonas/${ municipio_id }/municipios`, {
+export const getZoneByCityRequest = data => {
+  const { municipio_id, ativo } = data;
+  var url = `/zonas/${ municipio_id }/municipios`
+  if(ativo != null)
+    url = url + `?ativo=${ativo}`
+  
+  return api.get(url, {
     ...headerAuthorization()
   });
 }
@@ -14,11 +19,12 @@ export const getZoneByLocalityRequest = data => {
 }
 
 export const createZoneRequest = data => {
-  const { municipio_id, nome } = data;
+  const { municipio_id, nome, quarteiroes_id } = data;
 
   return api.post(`/zonas`, {
     municipio_id,
-    nome
+    nome,
+    quarteiroes_id
   },
   {
     ...headerAuthorization()

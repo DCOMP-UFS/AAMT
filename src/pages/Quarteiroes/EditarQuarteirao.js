@@ -99,9 +99,9 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
       return ({ value: z.id, label: z.nome })
     });
     const semZona = { value: null, label: "Nenhuma" }
-    if(Object.keys(zona).length === 0)
+    if(!quarteirao.zona)
       setZona(semZona);
-    options.push(semZona)
+    options.unshift(semZona)
     setOptionZona( options );
   }, [ props.zonas ]);
 

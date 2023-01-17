@@ -13,6 +13,13 @@ export const getQuarteiroesPorMunicipioRequest = data => {
   } );
 }
 
+export const getQuarteiroesPorMunicipioSemZonaRequest = data => {
+  const { municipio_id } = data;
+  return api.get( `/quarteiroes/semZona/${ municipio_id }/municipios`, {
+    ...headerAuthorization()
+  } );
+}
+
 /**
  * Solicita a API add um quarteirão
  * @param {Object} data 
@@ -87,4 +94,19 @@ export const getQuarteiraoPorIdRequest = data => {
   return api.get(`/quarteiroes/${ id }`, {
     ...headerAuthorization()
   });
+}
+
+
+export const inserirQuarteiraoEmZona = data => {
+  const { id, zona_id } = data;
+  return api.put( `/quarteiroes/${ id }/zona/${ zona_id }`, {}, {
+    ...headerAuthorization()
+  } );
+}
+
+export const removerQuarteiraoEmZona = data => {
+  const { id } = data;
+  return api.put( `/quarteiroes/${ id }/removerDaZona`, {}, {
+    ...headerAuthorization()
+  } );
 }

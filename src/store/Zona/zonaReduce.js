@@ -3,6 +3,7 @@ import { ActionTypes } from './zonaActions';
 const INITIAL_STATE = {
   zona: {},
   zonas: [],
+  quarteiroes_zona: [],
   index: -1,
   created: null,
   updated: null,
@@ -21,7 +22,8 @@ export default function Zona(state = INITIAL_STATE, action) {
     case ActionTypes.GET_ZONE_BY_ID_SUCCESS: {
       return {
         ...state,
-        zona: action.payload.zona
+        zona: action.payload.data.zona,
+        quarteiroes_zona: action.payload.data.quarteiroes_zona
       }
     }
 

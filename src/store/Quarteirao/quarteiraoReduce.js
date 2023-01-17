@@ -8,7 +8,10 @@ const INITIAL_STATE = {
   reload      : false,
   imovel      : new Imovel(),
   updated     : false,
-  created     : false
+  created     : false,
+  insertedZone: null,
+  removedZone:  null,
+  updatedZone:  null
 }
 
 export default function Quarteirao( state = INITIAL_STATE, action ) {
@@ -115,6 +118,51 @@ export default function Quarteirao( state = INITIAL_STATE, action ) {
         ...state,
         quarteirao,
         updated: !state.updated
+      }
+    }
+    case ActionTypes.INSERIR_QUARTEIRAO_ZONA_SUCCESS: {
+
+      const updatedZone = action.payload.updatedZone;
+      if(updatedZone)
+        return {...state,updatedZone:true}
+      else
+        return {...state,insertedZone:true}
+    }
+
+    case ActionTypes.INSERIR_QUARTEIRAO_ZONA_FAIL: {
+      const updatedZone = action.payload.updatedZone;
+      if(updatedZone)
+        return {...state,updatedZone:false}
+      else
+        return {...state,insertedZone:false}
+    }
+
+    case ActionTypes.INSERIR_QUARTEIRAO_ZONA_RESET: {
+      const updatedZone = action.payload.updatedZone;
+      if(updatedZone)
+        return {...state,updatedZone:null}
+      else
+        return {...state,insertedZone:null}
+    }
+
+    case ActionTypes.REMOVER_QUARTEIRAO_ZONA_SUCCESS: {
+      return {
+        ...state,
+        removedZone:true
+      }
+    }
+
+    case ActionTypes.REMOVER_QUARTEIRAO_ZONA_FAIL: {
+      return {
+        ...state,
+        removedZone:false
+      }
+    }
+
+    case ActionTypes.REMOVER_QUARTEIRAO_ZONA_RESET: {
+      return {
+        ...state,
+        removedZone:null
       }
     }
 

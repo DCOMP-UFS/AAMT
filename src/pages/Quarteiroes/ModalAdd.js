@@ -37,7 +37,7 @@ function ModalAdd({ municipio_id, created, show, handleClose, ...props }) {
   const [ lados, setLados ]                       = useState( [] );
   const [ localidade, setLocalidade ]             = useState( {} );
   const [ optionLocalidade, setOptionLocalidade ] = useState( [] );
-  const [ zona, setZona ]                         = useState( {} );
+  const [ zona, setZona ]                         = useState( { value: null, label: "Nenhuma" } );
   const [ optionZona, setOptionZona ]             = useState( [] );
   const [ showModalLado, setShowModalLado ]       = useState( false );
   const [ botaoSalvar, setBotaoSalvar ]           = useState( false );
@@ -50,7 +50,7 @@ function ModalAdd({ municipio_id, created, show, handleClose, ...props }) {
     setNumero(null)
     setLados([])
     setLocalidade({})
-    setZona({})
+    setZona({ value: null, label: "Nenhuma" })
     //setOptionZona( [] );
     setShowModalLado(false)
     setFlLoading(false)
@@ -64,7 +64,7 @@ function ModalAdd({ municipio_id, created, show, handleClose, ...props }) {
   useEffect( () => {
     props.setCreated( null );
     props.getLocationByCityRequest( municipio_id );
-    props.getZoneByCityRequest( municipio_id );
+    props.getZoneByCityRequest( municipio_id, 'sim' );
     props.getStreetByCityRequest( municipio_id );
   }, [] );
 
@@ -85,6 +85,8 @@ function ModalAdd({ municipio_id, created, show, handleClose, ...props }) {
   useEffect( () => {
     const options = props.zonas.map( z => ( { value: z.id, label: z.nome } ) );
 
+    const semZona = { value: null, label: "Nenhuma" }
+    options.unshift(semZona)
     setOptionZona( options );
   }, [ props.zonas ] );
 
@@ -135,7 +137,7 @@ function ModalAdd({ municipio_id, created, show, handleClose, ...props }) {
    */
   const clearInput = () => {
     setLocalidade( {} );
-    setZona( {} );
+    setZona( { value: null, label: "Nenhuma" } );
     //setOptionZona( [] );
     setNumero( null );
     setLados( [] );

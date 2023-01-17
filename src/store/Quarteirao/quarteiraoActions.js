@@ -1,21 +1,30 @@
 export const ActionTypes = {
-  GET_QUARTEIROES_MUNICIPIO_REQUEST     : "GET_QUARTEIROES_MUNICIPIO_REQUEST",
-  SET_QUARTEIROES                       : "SET_QUARTEIROES",
-  GET_LADOS_QUARTEIRAO                  : "GET_LADOS_QUARTEIRAO",
-  SET_LADOS                             : "SET_LADOS",
-  SET_IMOVEL_EDITAR                     : "SET_IMOVEL_EDITAR",
-  EDITAR_QUARTEIRAO_REQUEST             : "EDITAR_QUARTEIRAO_REQUEST",
-  SET_UPDATED                           : "SET_UPDATED",
-  SET_CREATED                           : "SET_CREATED",
-  EXCLUIR_LADO_REDUCE                   : "EXCLUIR_LADO_REDUCE",
-  EXCLUIR_LADO_REQUEST                  : "EXCLUIR_LADO_REQUEST",
-  GET_QUARTEIRAO_POR_ID                 : "GET_QUARTEIRAO_POR_ID",
-  SET_QUARTEIRAO                        : "SET_QUARTEIRAO",
-  EXCLUIR_IMOVEL_REQUEST                : "EXCLUIR_IMOVEL_REQUEST",
-  EXCLUIR_IMOVEL_REDUCE                 : "EXCLUIR_IMOVEL_REDUCE",
-  GET_QUARTEIROES_POR_MUNICIPIO_REQUEST : "GET_QUARTEIROES_POR_MUNICIPIO_REQUEST",
-  ADD_QUARTEIRAO_REQUEST                : "ADD_QUARTEIRAO_REQUEST",
-  ADD_QUARTEIRAO_SUCCESS                : "ADD_QUARTEIRAO_SUCCESS",
+  GET_QUARTEIROES_MUNICIPIO_REQUEST           : "GET_QUARTEIROES_MUNICIPIO_REQUEST",
+  GET_QUARTEIROES_MUNICIPIO_SEM_ZONA_REQUEST  : "GET_QUARTEIROES_MUNICIPIO_SEM_ZONA_REQUEST",
+  SET_QUARTEIROES                             : "SET_QUARTEIROES",
+  GET_LADOS_QUARTEIRAO                        : "GET_LADOS_QUARTEIRAO",
+  SET_LADOS                                   : "SET_LADOS",
+  SET_IMOVEL_EDITAR                           : "SET_IMOVEL_EDITAR",
+  EDITAR_QUARTEIRAO_REQUEST                   : "EDITAR_QUARTEIRAO_REQUEST",
+  SET_UPDATED                                 : "SET_UPDATED",
+  SET_CREATED                                 : "SET_CREATED",
+  EXCLUIR_LADO_REDUCE                         : "EXCLUIR_LADO_REDUCE",
+  EXCLUIR_LADO_REQUEST                        : "EXCLUIR_LADO_REQUEST",
+  GET_QUARTEIRAO_POR_ID                       : "GET_QUARTEIRAO_POR_ID",
+  SET_QUARTEIRAO                              : "SET_QUARTEIRAO",
+  EXCLUIR_IMOVEL_REQUEST                      : "EXCLUIR_IMOVEL_REQUEST",
+  EXCLUIR_IMOVEL_REDUCE                       : "EXCLUIR_IMOVEL_REDUCE",
+  GET_QUARTEIROES_POR_MUNICIPIO_REQUEST       : "GET_QUARTEIROES_POR_MUNICIPIO_REQUEST",
+  ADD_QUARTEIRAO_REQUEST                      : "ADD_QUARTEIRAO_REQUEST",
+  ADD_QUARTEIRAO_SUCCESS                      : "ADD_QUARTEIRAO_SUCCESS",
+  INSERIR_QUARTEIRAO_ZONA_REQUEST             : "INSERIR_QUARTEIRAO_ZONA_REQUEST",
+  INSERIR_QUARTEIRAO_ZONA_SUCCESS             : "INSERIR_QUARTEIRAO_ZONA_SUCCESS",
+  INSERIR_QUARTEIRAO_ZONA_FAIL                : "INSERIR_QUARTEIRAO_ZONA_FAIL",
+  INSERIR_QUARTEIRAO_ZONA_RESET               : "INSERIR_QUARTEIRAO_ZONA_RESET",
+  REMOVER_QUARTEIRAO_ZONA_REQUEST             : "REMOVER_QUARTEIRAO_ZONA_REQUEST",
+  REMOVER_QUARTEIRAO_ZONA_SUCCESS             : "REMOVER_QUARTEIRAO_ZONA_SUCCESS",
+  REMOVER_QUARTEIRAO_ZONA_FAIL                : "REMOVER_QUARTEIRAO_ZONA_FAIL",
+  REMOVER_QUARTEIRAO_ZONA_RESET               : "REMOVER_QUARTEIRAO_ZONA_RESET"
 }
 
 /**
@@ -86,6 +95,21 @@ export const getQuarteiroesMunicipioRequest = ( municipio_id, ativo = undefined 
     payload: {
       municipio_id,
       ativo
+    }
+  }
+}
+
+/**
+ * Aciona o sagas para consultar os quarteiroes de um município na API
+ *
+ * @param integer municipio_id
+ * @returns
+ */
+export const getQuarteiroesMunicipioSemZonaRequest = ( municipio_id ) => {
+  return {
+    type: ActionTypes.GET_QUARTEIROES_MUNICIPIO_SEM_ZONA_REQUEST,
+    payload: {
+      municipio_id
     }
   }
 }
@@ -272,5 +296,70 @@ export const excluirImovelReduce = ( imovel_id, lado_id ) => {
       imovel_id,
       lado_id
     }
+  }
+}
+
+export const inserirQuarteiraoEmZonaRequest = ( id, zona_id, updatedZone=false ) => {
+  return {
+    type: ActionTypes.INSERIR_QUARTEIRAO_ZONA_REQUEST,
+    payload: {
+      id,
+      zona_id,
+      updatedZone
+    }
+  }
+}
+
+export const inserirQuarteiraoEmZonaSuccess = (updatedZone) => {
+  return {
+    type: ActionTypes.INSERIR_QUARTEIRAO_ZONA_SUCCESS,
+    payload: {
+      updatedZone
+    }
+  }
+}
+
+export const inserirQuarteiraoEmZonaFail = (updatedZone) => {
+  return {
+    type: ActionTypes.INSERIR_QUARTEIRAO_ZONA_FAIL,
+    payload: {
+      updatedZone
+    }
+  }
+}
+
+export const inserirQuarteiraoEmZonaReset = (updatedZone) => {
+  return {
+    type: ActionTypes.INSERIR_QUARTEIRAO_ZONA_RESET,
+    payload: {
+      updatedZone
+    }
+  }
+}
+
+export const removerQuarteiraoEmZonaRequest = ( id ) => {
+  return {
+    type: ActionTypes.REMOVER_QUARTEIRAO_ZONA_REQUEST,
+    payload: {
+      id,
+    }
+  }
+}
+
+export const removerQuarteiraoEmZonaSuccess = () => {
+  return {
+    type: ActionTypes.REMOVER_QUARTEIRAO_ZONA_SUCCESS,
+  }
+}
+
+export const removerQuarteiraoEmZonaFail = () => {
+  return {
+    type: ActionTypes.REMOVER_QUARTEIRAO_ZONA_FAIL,
+  }
+}
+
+export const removerQuarteiraoEmZonaReset = () => {
+  return {
+    type: ActionTypes.REMOVER_QUARTEIRAO_ZONA_RESET
   }
 }

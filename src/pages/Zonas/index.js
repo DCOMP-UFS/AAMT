@@ -6,6 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import ModalAdd from "./ModalAdd";
 import ModalDisabled from "./ModalDisabled";
 import ViewCompactIcon from '@material-ui/icons/ViewCompact';
+import $ from "jquery";
 
 // REDUX
 import { bindActionCreators } from 'redux';
@@ -56,11 +57,11 @@ const columns = [
   },
   "Cod. Município",
   "Município",
-  "Ativo"
 ];
 
 function Zonas({ zonas, municipio, ...props }) {
   const [ rows, setRows ] = useState([]);
+  const [ showModalAdd, setShowModalAdd] = useState(false)
 
   const options = {
     customToolbar: () => {
@@ -68,14 +69,18 @@ function Zonas({ zonas, municipio, ...props }) {
         <ButtonAdd
           title="Adicionar"
           data-toggle="modal"
-          data-target="#modal-novo-zona" />
+          data-target="#modal-novo-zona" 
+          onClick={() => {setShowModalAdd(true)}} />
       );
     },
     customToolbarSelect: ({ data }) => {
       props.changeTableSelected('tableZone', data);
       return (
         <ButtonDesabled
-          title="Deletar zona(s)"
+          onClick={() => {
+            $("#modal-desativar-zona").modal("show");
+          }}
+          title="Excluir zona(s)"
           toggle="modal"
           target="#modal-desativar-zona" />
       );
@@ -96,7 +101,7 @@ function Zonas({ zonas, municipio, ...props }) {
 
   useEffect(() => {
     props.changeSidebar(4, 1);
-    props.getZoneByCityRequest( municipio.id );
+    props.getZoneByCityRequest( municipio.id, 'sim' );
   }, []);
 
   useEffect(() => {
@@ -112,7 +117,6 @@ function Zonas({ zonas, municipio, ...props }) {
         getDateBr( z.updatedAt ),
         municipio.codigo,
         municipio.nome,
-        z.ativo ? "Sim" : "Não"
       ])
     });
 
@@ -141,7 +145,7 @@ function Zonas({ zonas, municipio, ...props }) {
           </article>
         </div>
 
-        <ModalAdd />
+        <ModalAdd show={showModalAdd} handleClose={() => { setShowModalAdd(false) }} />
         <ModalDisabled />
       </section>
     </>

@@ -5,7 +5,7 @@ import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getZoneByCity(action) {
   try {
-    const { data, status } = yield call( servico.getZoneByCityRequest, action.payload.municipio_id );
+    const { data, status } = yield call( servico.getZoneByCityRequest, action.payload );
 
     if( status === 200 ) {
       yield put( ZonaActions.getZoneByCity( data ) );

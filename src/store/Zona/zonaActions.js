@@ -15,11 +15,15 @@ export const ActionTypes = {
   CLEAR_UPDATE_ZONE: "CLEAR_UPDATE_ZONE"
 }
 
-export const getZoneByCityRequest = municipio_id => {
+/**
+ * ativo pode receber 'sim', 'nao' ou null, indicando para busca zonas ativas, inativas e ambas respectivamente
+**/
+export const getZoneByCityRequest = (municipio_id, ativo) => {
   return {
     type: ActionTypes.GET_ZONE_BY_CITY_REQUEST,
     payload: {
-      municipio_id
+      municipio_id,
+      ativo
     }
   }
 }
@@ -42,11 +46,11 @@ export const getZoneByIdRequest = id => {
   }
 }
 
-export const getZoneById = zona => {
+export const getZoneById = (data) => {
   return {
     type: ActionTypes.GET_ZONE_BY_ID_SUCCESS,
     payload: {
-      zona
+      data
     }
   }
 }
@@ -69,12 +73,13 @@ export const getZoneByLocality = zonas => {
   }
 }
 
-export const createZoneRequest = ( municipio_id, nome ) => {
+export const createZoneRequest = ( municipio_id, nome, quarteiroes_id ) => {
   return {
     type: ActionTypes.CREATE_ZONE_REQUEST,
     payload: {
       municipio_id,
-      nome
+      nome,
+      quarteiroes_id
     }
   }
 }

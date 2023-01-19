@@ -153,7 +153,6 @@ function VisualizarRelatorioDiario({ usuario, vistorias, trabalhoDiario, ...prop
         qtdPendencia    = 0,
         qtdRecuperado   = 0;
     
-    console.log(vistorias)
     vistorias.forEach(( vistoria, index ) => {
       switch ( vistoria.tipoImovelVistoria ) {
         case tipoImovelEnum.residencial.id:// residencial

@@ -21,7 +21,6 @@ export const ActionTypes = {
  * @returns Object
  */
 export const deletarImovelRequest = imovel_id => {
-  console.log(imovel_id);
   return {
     type: ActionTypes.DELETAR_IMOVEL_REQUEST,
     payload: {

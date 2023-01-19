@@ -11,7 +11,7 @@ var ruas = []
 //Busca as ruas de aracaju continda no arquivo ruas.txt
 async function getRuasAracaju() {
   const rl = readline.createInterface({
-    input: fs.createReadStream('ruasAracaju.txt'),
+    input: fs.createReadStream("arquivosRuas/ruasAracaju.txt"),
     crlfDelay: Infinity,
   });
   rl.on('line', (line) => {
@@ -32,7 +32,7 @@ async function getRuasAracaju() {
 //Busca as ruas de itabaiana contida no arquivo ruas.txt
 async function getRuasItabaiana() {
   const rl = readline.createInterface({
-    input: fs.createReadStream('ruasItabaiana.txt'),
+    input: fs.createReadStream("arquivosRuas/ruasItabaiana.txt"),
     crlfDelay: Infinity,
   });
   rl.on('line', (line) => {

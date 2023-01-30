@@ -279,16 +279,16 @@ function VisualizarRelatorioDiario({ usuario, vistorias, trabalhoDiario, ...prop
                 <Bar data={ imoveisTipoData } />
                 <Row>
                   <Col md="5">
-                    <small>R - Rural </small>
+                    <small><b>R</b> - Rural </small>
                   </Col>
                   <Col md="5">
-                    <small>C - Comercial</small>
+                    <small><b>C</b> - Comercial</small>
                   </Col>
                   <Col md="5">
-                    <small>TB - Terreno Baldio</small>
+                    <small><b>TB</b> - Terreno Baldio</small>
                   </Col>
                   <Col md="5">
-                    <small>PE - Ponto Estratégico</small>
+                    <small><b>PE</b> - Ponto Estratégico</small>
                   </Col>
                 </Row>
               </div>
@@ -299,6 +299,26 @@ function VisualizarRelatorioDiario({ usuario, vistorias, trabalhoDiario, ...prop
               <div className="card">
                 <h2 className="title">Imóveis</h2>
                 <Bar data={ numeroImoveisData } />
+                <Row>
+                  <Col md="8">
+                    <small><b>Trabalhados</b> - imóveis vistoriados sem pendência </small>
+                  </Col>
+                  <Col md="12">
+                    <small><b>Inspecionados</b> - imóveis com ao menos 1 deposito adicionado na vistoria</small>
+                  </Col>
+                  <Col md="12">
+                    <small><b>Com Foco</b> - imóveis com ao menos 1 deposito com foco adicionado na vistoria</small>
+                  </Col>
+                  <Col md="12">
+                    <small><b>Tratados</b> - imóveis com ao menos 1 deposito tratado adicionado na vistoria</small>
+                  </Col>
+                  <Col md="12">
+                    <small><b>Fechado/Recusado</b> - imóveis com vistoria pendente por está fechado ou por recusa</small>
+                  </Col>
+                  <Col md="12">
+                    <small><b>Recuperados</b> - imoveis que foram vistoriados mais de uma vez</small>
+                  </Col>
+                </Row>
               </div>
             </article>
           </Col>

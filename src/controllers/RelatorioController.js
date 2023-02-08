@@ -954,14 +954,16 @@ getActivityWeeklyReport = async (req, res) => {
                   other       = amostra.exemplares.filter( exemplar => exemplar.mosquito.id > 2 );
 
               // Checando se o imóvel deu posítivo para aegypti
-              if( aegypti.length > 0 )
+              if( aegypti.length > 0 ){
                 property_contain_aegypti = true;
                 quarteiroesAedesAegypti.push(num_quarteirao);
+              }
 
               // Checando se o imóvel deu posítivo para albopictus
-              if( albopictus.length > 0 )
+              if( albopictus.length > 0 ){
                 property_contain_albopictus = true;
                 quarteiroesAedesAlbopictus.push(num_quarteirao);
+              }
 
               // Checando se o imóvel deu posítivo para outros
               if( other.length > 0 )
@@ -1629,14 +1631,16 @@ getCurrentActivityReport = async ( req, res ) => {
                   other       = amostra.exemplares.filter( exemplar => exemplar.mosquito.id > 2 );
 
               // Checando se o imóvel deu posítivo para aegypti
-              if( aegypti.length > 0 )
+              if( aegypti.length > 0 ){
                 property_contain_aegypti = true;
                 quarteiroesAedesAegypti.push(num_quarteirao);
+              }
 
               // Checando se o imóvel deu posítivo para albopictus
-              if( albopictus.length > 0 )
+              if( albopictus.length > 0 ){
                 property_contain_albopictus = true;
                 quarteiroesAedesAlbopictus.push(num_quarteirao);
+              }
 
               // Checando se o imóvel deu posítivo para outros
               if( other.length > 0 )

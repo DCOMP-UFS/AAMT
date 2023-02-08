@@ -271,7 +271,7 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
                     <small><b>Fechados</b> - imóveis com vistoria pendente por está fechado</small>
                   </Col>
                   <Col md="12">
-                    <small><b>Recuperados</b> - imóveis com vistoria pendente por recusa</small>
+                    <small><b>Recusados</b> - imóveis com vistoria pendente por recusa</small>
                   </Col>
                   <Col md="12">
                     <small><b>Recuperados</b> - imoveis que foram vistoriados mais de uma vez</small>

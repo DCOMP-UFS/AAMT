@@ -118,7 +118,6 @@ export const SelecionarAtividade = ({ indexAtividade, atividades, ...props }) =>
                       >
                         Encerrar
                       </Button>
-                      <ModalEncerrarAtividade id="modal-encerrar-atividade" atividadeId = {idAtividadeEncerrar}/>
                   </div>
                 </AtividadeCard>
               </Col>
@@ -126,6 +125,7 @@ export const SelecionarAtividade = ({ indexAtividade, atividades, ...props }) =>
           })
         }
       </Row>
+      <ModalEncerrarAtividade id='modal-encerrar-atividade' atividadeId = {idAtividadeEncerrar}/>
     </Container>
   )
 }

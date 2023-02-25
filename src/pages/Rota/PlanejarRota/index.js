@@ -41,7 +41,6 @@ export const PlanejarRota = ( {
   ]);
   const [ indexStep, setIndexStep ] = useState( 0 );
   const [ isLoading, setIsLoading ] = useState( false );
-  const [ flGetActivitiesAgain, setFlGetActivitiesAgain ] = useState( false );
 
   useEffect( () => {
     props.changeSidebar( "planejar_rota" );
@@ -55,7 +54,7 @@ export const PlanejarRota = ( {
     if( Object.entries( ciclo ).length > 0 ) {
       props.getResponsabilityActivitiesRequest(usuario.id, ciclo.id);
     }
-  }, [ ciclo, flGetActivitiesAgain ]);
+  }, [ ciclo ]);
 
   useEffect(() => {
     if( fl_rota_planejada ) {
@@ -64,7 +63,8 @@ export const PlanejarRota = ( {
       setIndexStep( 0 );
       props.setIndexEquipe( -1 );
       props.setIndexMembro( -1 );
-      setFlGetActivitiesAgain(!flGetActivitiesAgain)
+      setTimeout(() => { document.location.reload( true );}, 1500)
+      
     }
     setIsLoading(false)
     props.setRotaPlanejada( null )
@@ -284,7 +284,7 @@ export const PlanejarRota = ( {
                                 }
                                 //Se true, significa que o agente selecionado ja possui um trabalho diario para hoje
                                 //e o supervisor deseja altera-la
-                                else if(equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje.id != null)
+                                else if(indexEquipe > -1 && indexMembro > -1 && equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje.id != null)
                                   return 'Alterar'
                                 else
                                   return 'Salvar'

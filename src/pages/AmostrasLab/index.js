@@ -10,7 +10,7 @@ import $ from 'jquery';
 
 // ACTIONS
 import { changeSidebar } from '../../store/Sidebar/sidebarActions';
-import { getAmostrasByLab, enviarAmostrasRequest, setAmostra } from '../../store/Amostra/amostraActions';
+import { getAmostrasByLab, setAmostra } from '../../store/Amostra/amostraActions';
 
 // STYLES
 import { PageIcon, PageHeader } from '../../styles/util';
@@ -162,7 +162,6 @@ const mapStateToProps = state => ( {
 const mapDispatchToProps = {
   changeSidebar,
   getAmostrasByLab,
-  enviarAmostrasRequest,
   setAmostra
 }
 

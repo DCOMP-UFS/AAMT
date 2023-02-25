@@ -46,16 +46,18 @@ export function* getAmostras( action ) {
   }
 }
 
-export function* enviarAmostras( action ) {
+export function* encaminharAmostras( action ) {
   try {
     const { status } = yield call( servico.enviarAmostrasRequest, action.payload );
 
     if( status === 200 ) {
-      document.location.reload();
+      yield put( AmostraActions.encaminharAmostrasSuccess() );
+      //document.location.reload();
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao enviar amostras para o laboratório: " + status, "error" ) );
     }
   } catch (err) {
+    yield put( AmostraActions.encaminharAmostrasFail() );
     if(err.response){
       //Provavel erro de logica na API
       yield put( AppConfigActions.showNotifyToast( "Erro ao enviar amostras para o laboratório, entre em contato com o suporte", "error" ) );
@@ -97,8 +99,8 @@ function* watchGetAmostrasByLab() {
   yield takeLatest( AmostraActions.ActionTypes.GET_AMOSTRAS_BY_LAB, getAmostrasByLab);
 }
 
-function* watchEnviarAmostras() {
-  yield takeLatest( AmostraActions.ActionTypes.ENVIAR_AMOSTRAS_REQUEST, enviarAmostras );
+function* watchEncaminharAmostras() {
+  yield takeLatest( AmostraActions.ActionTypes.ENCAMINHAR_AMOSTRAS_REQUEST, encaminharAmostras );
 }
 
 function* watchRegistrarExame() {
@@ -109,7 +111,7 @@ export function* amostraSaga() {
   yield all( [
     watchGetAmostras(),
     watchGetAmostrasByLab(),
-    watchEnviarAmostras(),
+    watchEncaminharAmostras(),
     watchRegistrarExame(),
   ] );
 }

@@ -5,6 +5,7 @@ const INITIAL_STATE = {
   amostras: [],
   reload: false,
   exameSalvo: null,
+  amostrasEncaminhadas: null,
 }
 
 export default function Amostra(state = INITIAL_STATE, action) {
@@ -39,6 +40,24 @@ export default function Amostra(state = INITIAL_STATE, action) {
         ...state,
         exameSalvo: null
       };
+    
+      case ActionTypes.ENCAMINHAR_AMOSTRAS_SUCCESS:
+        return {
+          ...state,
+          amostrasEncaminhadas: true
+        };
+      
+      case ActionTypes.ENCAMINHAR_AMOSTRAS_FAIL:
+        return {
+          ...state,
+          amostrasEncaminhadas: false
+        };
+      
+      case ActionTypes.ENCAMINHAR_AMOSTRAS_RESET:
+        return {
+          ...state,
+          amostrasEncaminhadas: null
+        };
 
     default:
       return {...state};

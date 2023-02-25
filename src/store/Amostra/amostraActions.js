@@ -2,7 +2,10 @@ export const ActionTypes = {
   GET_AMOSTRAS_REQUEST: "GET_AMOSTRAS_REQUEST",
   GET_AMOSTRAS_BY_LAB: "GET_AMOSTRAS_BY_LAB",
   SET_AMOSTRAS: "SET_AMOSTRAS",
-  ENVIAR_AMOSTRAS_REQUEST: "ENVIAR_AMOSTRAS_REQUEST",
+  ENCAMINHAR_AMOSTRAS_REQUEST: "ENCAMINHAR_AMOSTRAS_REQUEST",
+  ENCAMINHAR_AMOSTRAS_SUCCESS: "ENCAMINHAR_AMOSTRAS_SUCCESS",
+  ENCAMINHAR_AMOSTRAS_FAIL: "ENCAMINHAR_AMOSTRAS_FAIL",
+  ENCAMINHAR_AMOSTRAS_RESET: "ENCAMINHAR_AMOSTRAS_RESET",
   REGISTRAR_EXAME_REQUEST: "REGISTRAR_EXAME_REQUEST",
   REGISTRAR_EXAME_SUCCESS: "REGISTRAR_EXAME_SUCCESS",
   REGISTRAR_EXAME_FAIL: "REGISTRAR_EXAME_FAIL",
@@ -41,13 +44,31 @@ export const getAmostrasRequest = supervisor_id => {
  *
  * @param {*} laboratorio_id
  */
- export const enviarAmostrasRequest = ( laboratorio_id, amostras ) => {
+ export const encaminharAmostrasRequest = ( laboratorio_id, amostras ) => {
   return {
-    type: ActionTypes.ENVIAR_AMOSTRAS_REQUEST,
+    type: ActionTypes.ENCAMINHAR_AMOSTRAS_REQUEST,
     payload: {
       laboratorio_id,
       amostras
     }
+  }
+}
+
+export const encaminharAmostrasSuccess = () => {
+  return {
+    type: ActionTypes.ENCAMINHAR_AMOSTRAS_SUCCESS,
+  }
+}
+
+export const encaminharAmostrasFail = () => {
+  return {
+    type: ActionTypes.ENCAMINHAR_AMOSTRAS_FAIL,
+  }
+}
+
+export const encaminharAmostrasReset = () => {
+  return {
+    type: ActionTypes.ENCAMINHAR_AMOSTRAS_RESET,
   }
 }
 

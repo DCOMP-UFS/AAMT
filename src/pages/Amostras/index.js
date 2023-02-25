@@ -8,12 +8,19 @@ import IconButton from '@material-ui/core/IconButton';
 import Modal, { ModalBody, ModalFooter } from '../../components/Modal';
 import Select from 'react-select';
 import ModalExaminarAmostra from '../../components/ModalExaminarAmostra';
+import LoadginGif from '../../assets/loading.gif'
 import $ from 'jquery';
 
 // ACTIONS
 import { changeSidebar } from '../../store/Sidebar/sidebarActions';
-import { getAmostrasByLab, getAmostrasRequest, enviarAmostrasRequest, setAmostra } from '../../store/Amostra/amostraActions';
+import { 
+  getAmostrasByLab, 
+  getAmostrasRequest, 
+  encaminharAmostrasRequest,
+  encaminharAmostrasReset,
+  setAmostra } from '../../store/Amostra/amostraActions';
 import { getLaboratoriosRequest } from '../../store/Laboratorio/laboratorioActions';
+import { showNotifyToast } from '../../store/AppConfig/appConfigActions';
 
 // STYLES
 import { Button, FormGroup, selectDefault } from '../../styles/global';
@@ -74,6 +81,7 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
   const [ laboratorioSelect, setLaboratorioSelect ] = useState( { value: null, label: '' } );
   const [ openModalExaminar, setOpenModalExaminar] = useState(false)
   const [ labAmostra, setLabAmostra] = useState({ value: null, label: '' })
+  const [ flLoading, setFlLoading ] = useState( false );
 
   const handleCloseModalExaminar = () => {setOpenModalExaminar(false)}
 
@@ -191,11 +199,20 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
     e.preventDefault();
 
     if( laboratorioSelect.value ) {
+      setFlLoading(true)
       const amostras_ids = rowsSelected.map( r => amostras[ r ].id );
-
-      props.enviarAmostrasRequest( laboratorioSelect.value, amostras_ids );
+      props.encaminharAmostrasRequest( laboratorioSelect.value, amostras_ids );
     }
   }
+
+  useEffect(() => {
+    if( props.amostrasEncaminhadas ) {
+      props.showNotifyToast("Amostra(s) encaminhada(s) com sucesso", "success")
+      setTimeout(() => { document.location.reload( true );}, 1500)
+    }
+    setFlLoading(false)
+    props.encaminharAmostrasReset()
+  }, [ props.amostrasEncaminhadas ]);
 
   return (
     <Container>
@@ -233,8 +250,27 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
                   </FormGroup>
                 </ModalBody>
                 <ModalFooter>
-                  <Button className="secondary" data-dismiss="modal">Cancelar</Button>
-                  <Button type="submit" className="info">Salvar</Button>
+                  <Button className="secondary" data-dismiss="modal" disabled={ flLoading }>Cancelar</Button>
+                  <Button 
+                    type="submit" 
+                    className="info"
+                    disabled={ flLoading }>
+                      {
+                        flLoading ?
+                          (
+                            <>
+                              <img
+                                src={ LoadginGif }
+                                width="25"
+                                style={{ marginRight: 10 }}
+                                alt="Carregando"
+                              />
+                              Salvando...
+                            </>
+                          ) :
+                          "Salvar"
+                        }
+                    </Button>
                 </ModalFooter>
               </form>
             </Modal>
@@ -264,6 +300,7 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
 const mapStateToProps = state => ( {
   usuario     : state.appConfig.usuario,
   amostras    : state.amostra.amostras,
+  amostrasEncaminhadas: state.amostra.amostrasEncaminhadas,
   laboratorios: state.nw_laboratorio.laboratorios
 } );
 
@@ -272,8 +309,10 @@ const mapDispatchToProps = {
   getAmostrasRequest,
   getAmostrasByLab,
   getLaboratoriosRequest,
-  enviarAmostrasRequest,
+  encaminharAmostrasRequest,
+  encaminharAmostrasReset,
   setAmostra,
+  showNotifyToast,
 }
 
 export default connect(

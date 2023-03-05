@@ -18,6 +18,7 @@ const INITIAL_STATE = {
   estratos: [],
   finished: null,
   planned:null,
+  getActivitiesOfCity:null
 }
 
 export default function Atividade(state = INITIAL_STATE, action) {
@@ -157,7 +158,22 @@ export default function Atividade(state = INITIAL_STATE, action) {
     case ActionTypes.GET_ACTIVITIES_OF_CITY_SUCCESS: {
       return {
         ...state,
-        atividades: action.payload.atividades
+        atividades: action.payload.atividades,
+        getActivitiesOfCity: true
+      }
+    }
+
+    case ActionTypes.GET_ACTIVITIES_OF_CITY_FAIL: {
+      return {
+        ...state,
+        getActivitiesOfCity: false
+      }
+    }
+
+    case ActionTypes.GET_ACTIVITIES_OF_CITY_RESET: {
+      return {
+        ...state,
+        getActivitiesOfCity: null
       }
     }
 

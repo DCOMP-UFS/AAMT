@@ -6,10 +6,11 @@ import { Row } from 'react-bootstrap';
 import { IoIosPaper } from 'react-icons/io';
 import Select from 'react-select';
 import cityIcon from '../../assets/city-icon.png';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 // ACTIONS
 import { changeSidebar } from '../../store/Sidebar/sidebarActions';
-import { getActivitiesOfCityRequest } from '../../store/Atividade/atividadeActions';
+import { getActivitiesOfCityRequest, getActivitiesOfCityReset } from '../../store/Atividade/atividadeActions';
 import { getAllowedCyclesRequest } from '../../store/Ciclo/cicloActions';
 
 // STYLES
@@ -37,13 +38,13 @@ import {
 } from '../../styles/util';
 
 const AtividadesRegConsultar = ({ ciclos, atividades, regionalSaude_id, ...props }) => {
-  const [ ciclo, setCiclo ] = useState({});
+  const [ ciclo, setCiclo ] = useState(null);
   const [ situacaoCiclo, setSituacaoCiclo ] = useState({});
   const [ optionCiclo, setOptionCiclo ] = useState({});
+  const [ isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     props.changeSidebar( "atividade", "at_consultar" );
-    props.getActivitiesOfCityRequest( regionalSaude_id );
     props.getAllowedCyclesRequest( regionalSaude_id );
   }, []);
 
@@ -69,17 +70,26 @@ const AtividadesRegConsultar = ({ ciclos, atividades, regionalSaude_id, ...props
 
   useEffect(() => {
     // props.getActivitiesByCityRequest( ciclo.value, props.municipio_id );
+    if( ciclo != null){
+      setIsLoading(true)
+      props.getActivitiesOfCityRequest( regionalSaude_id, ciclo.value );
 
-    let current_date = new Date();
-    current_date.setHours(0,0,0,0);
+      let current_date = new Date();
+      current_date.setHours(0,0,0,0);
 
-    if( ciclo.dataInicio > current_date )
-      setSituacaoCiclo({ situacao: "Planejado", class: "bg-warning text-white ml-3" });
-    else if( ciclo.dataFim < current_date )
-      setSituacaoCiclo({ situacao: "Finalizado", class: "bg-info text-white ml-3" });
-    else
-      setSituacaoCiclo({ situacao: "Em aberto", class: "bg-info text-white ml-3" });
+      if( ciclo.dataInicio > current_date )
+        setSituacaoCiclo({ situacao: "Planejado", class: "bg-warning text-white ml-3" });
+      else if( ciclo.dataFim < current_date )
+        setSituacaoCiclo({ situacao: "Finalizado", class: "bg-info text-white ml-3" });
+      else
+        setSituacaoCiclo({ situacao: "Em aberto", class: "bg-info text-white ml-3" });
+    }
   }, [ ciclo ]);
+
+  useEffect(() => {
+    setIsLoading(false)
+    props.getActivitiesOfCityReset()
+  }, [props.getActivitiesOfCity]);
 
   return (
     <>
@@ -152,9 +162,27 @@ const AtividadesRegConsultar = ({ ciclos, atividades, regionalSaude_id, ...props
 
         <Row>
           {
-            atividades.map( (municipio, index) => (
-              <CardAtividades key={ index } municipio={ municipio } />
-            ))
+           (() => {
+              if(isLoading){
+                return (
+                  <div style={{ marginTop: "25%", marginLeft: "50%" }}>
+                    <CircularProgress color="inherit" />
+                  </div>
+                )
+              } 
+              else{
+                if(atividades.length > 0){
+                  return (
+                    atividades.map( (municipio, index) => (
+                      <CardAtividades key={ index } municipio={ municipio } />
+                    ))
+                  )
+                }
+                else{
+                  return (<div style={{ marginLeft: "25%" }}><h2>Nenhuma atividade encontrada neste ciclo</h2></div>)
+                }
+              }
+           }) ()
           }
         </Row>
       </section>
@@ -255,13 +283,15 @@ const mapStateToProps = state => ({
   regionalSaude_id: state.appConfig.usuario.regionalSaude.id,
   atividades      : state.atividade.atividades,
   ciclos          : state.ciclo.ciclos,
+  getActivitiesOfCity: state.atividade.getActivitiesOfCity
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
     changeSidebar,
     getActivitiesOfCityRequest,
-    getAllowedCyclesRequest
+    getAllowedCyclesRequest,
+    getActivitiesOfCityReset,
   }, dispatch);
 
 export default connect(

@@ -1,8 +1,8 @@
 import api, { headerAuthorization } from '../../services/api';
 
 export const getActivitiesOfCityRequest = data => {
-  const { regionalSaude_id } = data;
-  return api.get(`/atividades/${ regionalSaude_id }/regionaisSaude`, {
+  const { regionalSaude_id, ciclo_id } = data;
+  return api.get(`/atividades/${ regionalSaude_id }/regionaisSaude/${ ciclo_id }/ciclo`, {
     ...headerAuthorization()
   });
 }

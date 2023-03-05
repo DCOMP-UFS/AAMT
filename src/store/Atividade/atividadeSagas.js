@@ -52,12 +52,13 @@ export function* getActivitiesOfCity(action) {
     const { data, status } = yield call( service.getActivitiesOfCityRequest, action.payload );
 
     if( status === 200 ) {
-      yield put( AtividadeActions.getActivitiesOfCity( data ) );
+      yield put( AtividadeActions.getActivitiesOfCitySuccess( data ) );
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao consultar as atividades: " + status, "error" ) );
     }
 
   } catch (err) {
+    yield put( AtividadeActions.getActivitiesOfCityFail() );
     if(err.response){
       //Provavel erro de logica na API
       yield put( AppConfigActions.showNotifyToast( "Erro ao consultar atividades, entre em contato com o suporte", "error" ) );

@@ -12,6 +12,8 @@ export const ActionTypes = {
   CHECAR_ROTA                           : "CHECAR_ROTA",
   GET_ACTIVITIES_OF_CITY_REQUEST        : "GET_ACTIVITIES_OF_CITY_REQUEST",
   GET_ACTIVITIES_OF_CITY_SUCCESS        : "GET_ACTIVITIES_OF_CITY_SUCCESS",
+  GET_ACTIVITIES_OF_CITY_FAIL           : "GET_ACTIVITIES_OF_CITY_FAIL",
+  GET_ACTIVITIES_OF_CITY_RESET          : "GET_ACTIVITIES_OF_CITY_RESET",
   GET_ACTIVITIE_BY_ID_REQUEST           : "GET_ACTIVITIE_BY_ID_REQUEST",
   GET_ACTIVITIE_BY_ID_SUCCESS           : "GET_ACTIVITIE_BY_ID_SUCCESS",
   GET_ACTIVITIES_BY_CITY_REQUEST        : "GET_ACTIVITIES_BY_CITY_REQUEST",
@@ -202,21 +204,34 @@ export const checarRota = () => {
   }
 }
 
-export const getActivitiesOfCityRequest = regionalSaude_id => {
+export const getActivitiesOfCityRequest = (regionalSaude_id, ciclo_id) => {
   return {
     type: ActionTypes.GET_ACTIVITIES_OF_CITY_REQUEST,
     payload: {
-      regionalSaude_id
+      regionalSaude_id,
+      ciclo_id
     }
   }
 }
 
-export const getActivitiesOfCity = atividades => {
+export const getActivitiesOfCitySuccess = atividades => {
   return {
     type: ActionTypes.GET_ACTIVITIES_OF_CITY_SUCCESS,
     payload: {
       atividades
     }
+  }
+}
+
+export const getActivitiesOfCityFail = () => {
+  return {
+    type: ActionTypes.GET_ACTIVITIES_OF_CITY_FAIL,
+  }
+}
+
+export const getActivitiesOfCityReset = () => {
+  return {
+    type: ActionTypes.GET_ACTIVITIES_OF_CITY_RESET,
   }
 }
 

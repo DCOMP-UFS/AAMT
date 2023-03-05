@@ -1,7 +1,7 @@
 import { ActionTypes } from './cicloActions';
 
 const INITIAL_STATE = {
-  ciclo       : {},
+  ciclo       : null,
   cicloAberto : null,
   ciclos      : [],
   index       : -1,
@@ -41,7 +41,15 @@ export default function Atividade( state = INITIAL_STATE, action ) {
       }
     }
 
+
     case ActionTypes.GET_ALLOWED_CYCLES_SUCCESS: {
+      return {
+        ...state,
+        ciclos: action.payload.ciclos
+      }
+    }
+
+    case ActionTypes.GET_OPEN_AND_FINISHED_CYCLES_SUCCESS: {
       return {
         ...state,
         ciclos: action.payload.ciclos

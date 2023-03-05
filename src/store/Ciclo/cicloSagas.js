@@ -135,6 +135,28 @@ export function* getOpenCycle(action) {
   }
 }
 
+export function* getOpenAndFinishedCycles(action) {
+  try {
+    const { data, status } = yield call( service.getOpenAndFinishedCyclesRequest, action.payload );
+
+    if( status === 200 ) {
+      yield put( CicloActions.getOpenAndFinishedCyclesSuccess( data ) );
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Falha ao consultar o ciclos: " + status, "error" ) );
+    }
+
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar o ciclos, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar o ciclos, favor verifique a conexão", "error" ) );
+  }
+}
+
 export function* createCycle( action ) {
   try {
     const { status } = yield call( service.createCycleRequest, action.payload );
@@ -217,6 +239,10 @@ function* watchGetCicloAberto() {
   yield takeLatest( CicloActions.ActionTypes.GET_CICLO_ABERTO_REQUEST, getCicloAberto );
 }
 
+function* watchGetCiclosAbertosEFinalizados() {
+  yield takeLatest( CicloActions.ActionTypes.GET_OPEN_AND_FINISHED_CYCLES_REQUEST, getOpenAndFinishedCycles );
+}
+
 function* watchGetCycle() {
   yield takeLatest( CicloActions.ActionTypes.GET_CYCLE_REQUEST, getCycle );
 }
@@ -260,5 +286,6 @@ export function* cicloSaga() {
     watchCreateCycle(),
     watchUpdateCycle(),
     watchDestroyCycle(),
+    watchGetCiclosAbertosEFinalizados(),
   ] );
 }

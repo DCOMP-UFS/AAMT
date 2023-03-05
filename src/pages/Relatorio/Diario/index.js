@@ -7,28 +7,68 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ModalTrabalhoDiario from '../components/ModalTrabalhoDiario';
 import $ from 'jquery';
 import { dataToStringBr } from '../../../config/function';
+import Select from 'react-select';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
 import { getResponsabilityActivitiesRequest } from '../../../store/Atividade/atividadeActions';
-import { getCicloAbertoRequest } from '../../../store/Ciclo/cicloActions';
+import { getCicloAbertoRequest, getOpenAndFinishedCyclesRequest } from '../../../store/Ciclo/cicloActions';
 import { getTrabalhosEquipeAndUsuarioRequest, setTrabalhos } from '../../../store/TrabalhoDiario/trabalhoDiarioActions';
 
 // STYLES
-import { Container, PanelTitle } from './styles';
-import { PageIcon, PageHeader } from '../../../styles/util';
+import { Container, PanelTitle, CardBodyInfo } from './styles';
+import { PageIcon, PageHeader, PagePopUp } from '../../../styles/util';
+import { FormGroup, selectDefault } from '../../../styles/global';
 
-export const RelatorioDiario = ({ atividades, ciclo, usuario, ...props }) => {
+
+export const RelatorioDiario = ({ atividades, ciclos, usuario, ...props }) => {
+
+  const [ cicloSelecionado, setCicloSelecionado ] = useState(null);
+  const [ optionCiclos, setOptionCiclos ] = useState({});
+
   useEffect(() => {
     props.changeSidebar( "relatorio", "rlt_boletimDiario" );
-    props.getCicloAbertoRequest( usuario.municipio.regional.id );
+    //props.getCicloAbertoRequest( usuario.municipio.regional.id );
+    props.getOpenAndFinishedCyclesRequest(usuario.municipio.regional.id)
   }, []);
 
   useEffect(() => {
-    if( Object.entries( ciclo ).length > 0 ) {
-      props.getResponsabilityActivitiesRequest( usuario.id, ciclo.id );
+    const options = ciclos.map( (ciclo) => {
+      let current_date = new Date();
+      let dataInicio = new Date( ciclo.dataInicio );
+      let dataFim = new Date( ciclo.dataFim );
+      current_date.setHours(0,0,0,0);
+      dataInicio.setHours(0,0,0,0);
+      dataFim.setHours(0,0,0,0);
+
+      const periodo_ciclo = " -> de "+dataToStringBr(ciclo.dataInicio)+" até "+dataToStringBr(ciclo.dataFim)
+
+      if( dataInicio <= current_date && dataFim >= current_date )
+        setCicloSelecionado({ 
+          value: ciclo.id, 
+          label: `${ ciclo.ano }.${ ciclo.sequencia }`+periodo_ciclo, 
+          dataInicio: ciclo.dataInicio, 
+          dataFim: ciclo.dataFim });
+
+      return (
+        { 
+          value: ciclo.id, 
+          label: `${ ciclo.ano }.${ ciclo.sequencia }`+periodo_ciclo, 
+          dataInicio: ciclo.dataInicio, 
+          dataFim: ciclo.dataFim 
+        }
+      );
+    });
+
+    setOptionCiclos(options);
+  }, [ ciclos ]);
+
+  useEffect(() => {
+    if( cicloSelecionado != null){
+      props.getResponsabilityActivitiesRequest( usuario.id, cicloSelecionado.value );
     }
-  }, [ ciclo ]);
+  }, [ cicloSelecionado ]);
 
   const abrirModalTrabalho = (equipe_id, usuario_id) => {
     props.setTrabalhos( [] );
@@ -45,57 +85,98 @@ export const RelatorioDiario = ({ atividades, ciclo, usuario, ...props }) => {
           Boletim Diário
         </h3>
       </PageHeader>
-
+      <section className="card-list">
+        <Row>
+          <PagePopUp className="w-100" style={{ paddingTop: 15, paddingBottom: 40, paddingRight: 15, paddingLeft: 15 }}>
+            <div className="card">
+              <CardBodyInfo>
+                <div className="d-flex flex-grow-1 align-items-center">
+                  <FormGroup className="w-50 m-0 mr-2 inline">
+                    <label htmlFor="ciclo"><b>Escolha um ciclo</b></label>
+                    <Select
+                      id="ciclo"
+                      value={ cicloSelecionado }
+                      styles={ selectDefault }
+                      options={ optionCiclos }
+                      onChange={ e => setCicloSelecionado( e ) }
+                    />
+                  </FormGroup>
+                </div>
+              </CardBodyInfo>
+            </div>
+          </PagePopUp>
+        </Row>
+      </section>
       <section className="card-list">
         <article className="row">
           {
-            atividades.map( atividade => (
-              <Col key={ 'atv-' + atividade.id } md="4" className="mb-3">
-                <div className="card2">
-                  <div className="card2-header">
-                    <h3 className="title">{ atividade.metodologia.sigla }</h3>
+            (() => {
+              if(props.searchResponsabilityActivities){
+                return (
+                  <div style={{ marginTop: "25%", marginLeft: "50%" }}>
+                    <CircularProgress color="inherit" />
                   </div>
-                  <div className="card2-body">
-                    <div className="form-group">
-                      <label style={{ fontWeight: 'bold' }}>Código</label>
-                      <span>{ atividade.id }</span>
-                    </div>
-                    <div className="form-group">
-                      <label style={{ fontWeight: 'bold' }}>Objetivo</label>
-                      <span>{ atividade.objetivo.descricao }</span>
-                    </div>
-                    <div className="form-group">
-                      <label style={{ fontWeight: 'bold' }}>Data de Início</label>
-                      <span>{ dataToStringBr( ciclo.dataInicio) }</span>
-                    </div>
-                    {
-                      atividade.equipes.map( equipe => (
-                        <Accordion key={ 'eq-' + equipe.id } className="expansion">
-                          <AccordionSummary
-                            expandIcon={ <ExpandMoreIcon /> }
-                            aria-controls="panel-side-content-0"
-                            id="panel-side-0"
-                          >
-                            <PanelTitle>
-                              <p>{ equipe.apelido ? `Equipe ${equipe.apelido}` : 'Equipe' }</p>
-                            </PanelTitle>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                            <ul className="lista-membros">
-                              {
-                                equipe.membros.map( membro => (
-                                  <li key={ 'mb-' + membro.usuario.id } onClick={ () => abrirModalTrabalho( equipe.id, membro.usuario.id ) }>{ membro.usuario.nome }</li>
-                                ) )
-                              }
-                            </ul>
-                          </AccordionDetails>
-                        </Accordion>
-                      ) )
-                    }
+                )
+              }
+              else if(atividades.length == 0) {
+                return (
+                  <div style={{ marginTop: "10%", marginLeft: "30%" }}>
+                    <h3>Não foi encontrada nenhuma atividade</h3>
                   </div>
-                </div>
-              </Col>
-            ) )
+                )
+              }
+              else {
+                return (
+                  atividades.map( atividade => (
+                    <Col key={ 'atv-' + atividade.id } md="4" className="mb-3">
+                      <div className="card2">
+                        <div className="card2-header">
+                          <h3 className="title">{ atividade.metodologia.sigla }</h3>
+                        </div>
+                        <div className="card2-body">
+                          <div className="form-group">
+                            <label style={{ fontWeight: 'bold' }}>Código</label>
+                            <span>{ atividade.id }</span>
+                          </div>
+                          <div className="form-group">
+                            <label style={{ fontWeight: 'bold' }}>Objetivo</label>
+                            <span>{ atividade.objetivo.descricao }</span>
+                          </div>
+                          <div className="form-group">
+                            <label style={{ fontWeight: 'bold' }}>Data de Início</label>
+                            <span>{ dataToStringBr( cicloSelecionado.dataInicio) }</span>
+                          </div>
+                          {
+                            atividade.equipes.map( equipe => (
+                              <Accordion key={ 'eq-' + equipe.id } className="expansion">
+                                <AccordionSummary
+                                  expandIcon={ <ExpandMoreIcon /> }
+                                  aria-controls="panel-side-content-0"
+                                  id="panel-side-0"
+                                >
+                                  <PanelTitle>
+                                    <p>{ equipe.apelido ? `Equipe ${equipe.apelido}` : 'Equipe' }</p>
+                                  </PanelTitle>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                  <ul className="lista-membros">
+                                    {
+                                      equipe.membros.map( membro => (
+                                        <li key={ 'mb-' + membro.usuario.id } onClick={ () => abrirModalTrabalho( equipe.id, membro.usuario.id ) }>{ membro.usuario.nome }</li>
+                                      ) )
+                                    }
+                                  </ul>
+                                </AccordionDetails>
+                              </Accordion>
+                            ) )
+                          }
+                        </div>
+                      </div>
+                    </Col>
+                  ) )
+                )
+              }
+            })()
           }
         </article>
       </section>
@@ -107,8 +188,9 @@ export const RelatorioDiario = ({ atividades, ciclo, usuario, ...props }) => {
 
 const mapStateToProps = state => ( {
   usuario   : state.appConfig.usuario,
-  ciclo     : state.ciclo.ciclo,
-  atividades: state.atividade.atividades
+  ciclos    : state.ciclo.ciclos,
+  atividades: state.atividade.atividades,
+  searchResponsabilityActivities: state.atividade.searchResponsabilityActivities
 } );
 
 const mapDispatchToProps = {
@@ -116,7 +198,8 @@ const mapDispatchToProps = {
   getResponsabilityActivitiesRequest,
   getCicloAbertoRequest,
   getTrabalhosEquipeAndUsuarioRequest,
-  setTrabalhos
+  setTrabalhos,
+  getOpenAndFinishedCyclesRequest
 }
 
 export default connect(

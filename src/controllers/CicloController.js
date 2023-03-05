@@ -158,7 +158,8 @@ getCiclosPermitidos = async ( req, res ) => {
         dataFim: {
           [Sequelize.Op.gt]: current_date
         }
-      }
+      },
+      order:[['id','desc']]
     } );
 
     return res.json( ciclos );

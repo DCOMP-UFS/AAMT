@@ -80,12 +80,14 @@ getById = async ( req, res ) => {
 
 getActivitiesOfCity = async ( req, res ) => {
   try{
-    const { regionalSaude_id } = req.params;
-
+    const { regionalSaude_id, ciclo_id } = req.params;
+    
     let current_date = new Date();
     current_date.setHours(0,0,0,0);
 
-    const ciclo = await Ciclo.findOne({
+    const ciclo = await Ciclo.findByPk(ciclo_id)
+
+    /* const ciclo = await Ciclo.findOne({
       where: {
         regional_saude_id: regionalSaude_id,
         [Op.and]: [
@@ -101,10 +103,10 @@ getActivitiesOfCity = async ( req, res ) => {
           }
         ]
       }
-    });
+    }); */
 
     if( !ciclo )
-      return res.status(200).json({ message: "Não há nenhum ciclo em aberto cadastrado" });
+      return res.status(200).json({ message: "Não foi encontrado o ciclo com id="+ciclo_id });
 
     const municipios = await Municipio.findAll({
       where: {
@@ -836,7 +838,7 @@ router.use(authMiddleware);
 
 router.get('/:id', getById);
 router.get('/:ciclo_id/ciclos/:municipio_id/municipios', index);
-router.get('/:regionalSaude_id/regionaisSaude', getActivitiesOfCity);
+router.get('/:regionalSaude_id/regionaisSaude/:ciclo_id/ciclo', getActivitiesOfCity);
 router.get('/abertas/:usuario_id/usuarios', getUserActivities);
 router.get('/todas/:usuario_id/usuarios', getAllUserActivities);
 router.get('/locais/:abrangencia_id/abrangencia/:municipio_id/municipios', getLocations);

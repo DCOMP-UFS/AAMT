@@ -6,6 +6,7 @@ import { responsabilidadeAtividadeEnum as responsabilidadeEnum, abrangenciaEnum 
 import  ModalEncerrarAtividade  from '../ModalEncerrarAtividade';
 import { Button } from '../../../../../styles/global';
 import $ from 'jquery';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 // ACTIONS
 import { setEquipes, setIndexAtividade, setIndexEquipe, setIndexMembro } from '../../../../../store/Atividade/atividadeActions';
@@ -16,6 +17,7 @@ import { Container, AtividadeCard } from './styles';
 export const SelecionarAtividade = ({ indexAtividade, atividades, ...props }) => {
 
   const [ idAtividadeEncerrar, setIdAtividadeEncerrar ] = useState( -1 );
+  const [ isLoading, setIsLoading] = useState( false );
 
   const handleAtividade = ( equipes, index ) => {
     props.setEquipes( equipes );
@@ -59,70 +61,90 @@ export const SelecionarAtividade = ({ indexAtividade, atividades, ...props }) =>
           </h4>
         </Col>
         {
-          atividades.map( ( atividade, index ) => {
-            return (
-              <Col md="6" sm="6" xs="12">
-                <AtividadeCard
-                  key={ atividade.id }
-                  className={ indexAtividade === index ? 'active' : '' }
-                  onClick={ () => handleAtividade( atividade.equipes, index ) }
-                >
-                  <Row>
-                    <Col>
-                      <div className="ca-header">
-                        <h4 className="ca-title">{ atividade.metodologia.sigla }</h4>
-                        <span className="ca-sub-title">{ atividade.objetivo.sigla }</span>
-                      </div>
-                    </Col>
-                    <Col>
-                      <div className={atividade.situacao == 3 ? "ca-header" : "d-none"}>
-                        <h2>
-                          <code>Encerrado</code>
-                        </h2>
-                      </div>
-                    </Col>
-                  </Row>
-                  <hr/>
-                  <div className="ca-info">
-                    <div className="ca-label font-weight-bold">Código:</div>
-                    <div className="ca-value">{ atividade.id }</div>
-                  </div>
-                  <div className="ca-info">
-                    <div className="ca-label font-weight-bold">Trabalhar todos imóveis:</div>
-                    <div className="ca-value">{ atividade.flTodosImoveis ? 'Sim' : 'Não' }</div>
-                  </div>
-                  <div className="ca-info">
-                    <div className="ca-label font-weight-bold">Abrangência:</div>
-                    <div className="ca-value">
-                      {
-                        abrangenciaEnum.find( a => a.id === atividade.abrangencia ).label
-                      }
-                    </div>
-                  </div>
-                  <div className="ca-info">
-                    <div className="ca-label font-weight-bold">Responsabilidade:</div>
-                    <div className="ca-value">
-                      {
-                        responsabilidadeEnum.find( r => r.id === atividade.responsabilidade ).label
-                      }
-                    </div>
-                  </div>
-                  <div className="ca-row-info">
-                    <div className="ca-label font-weight-bold">Objetivo da Atividade</div>
-                    <div className="ca-value">{ atividade.objetivoAtividade }</div>
-                  </div>
-                  <div className={permitirEncerramneto(atividade) ? "ca-row-info" : "d-none"}>
-                      <Button
-                          className="bg-info text-white"
-                          onClick={ () =>  abrirModalEncerrarAtividade(atividade.id)}
+           (() => {
+            if(props.searchResponsabilityActivities){
+              return (
+                <div style={{ marginTop: "10%", marginLeft: "45%" }}>
+                  <CircularProgress color="inherit" />
+                </div>
+              )
+            } 
+            else if(atividades.length == 0){
+              return (
+                <div style={{ marginTop: "10%", marginLeft: "20%" }}>
+                  <h3>Não foi encontrada nenhuma atividade</h3>
+                </div>
+              )
+            }
+            else{
+              return (
+                atividades.map( ( atividade, index ) => {
+                  return (
+                    <Col md="6" sm="6" xs="12">
+                      <AtividadeCard
+                        key={ atividade.id }
+                        className={ indexAtividade === index ? 'active' : '' }
+                        onClick={ () => handleAtividade( atividade.equipes, index ) }
                       >
-                        Encerrar
-                      </Button>
-                  </div>
-                </AtividadeCard>
-              </Col>
-            )
-          })
+                        <Row>
+                          <Col>
+                            <div className="ca-header">
+                              <h4 className="ca-title">{ atividade.metodologia.sigla }</h4>
+                              <span className="ca-sub-title">{ atividade.objetivo.sigla }</span>
+                            </div>
+                          </Col>
+                          <Col>
+                            <div className={atividade.situacao == 3 ? "ca-header" : "d-none"}>
+                              <h2>
+                                <code>Encerrado</code>
+                              </h2>
+                            </div>
+                          </Col>
+                        </Row>
+                        <hr/>
+                        <div className="ca-info">
+                          <div className="ca-label font-weight-bold">Código:</div>
+                          <div className="ca-value">{ atividade.id }</div>
+                        </div>
+                        <div className="ca-info">
+                          <div className="ca-label font-weight-bold">Trabalhar todos imóveis:</div>
+                          <div className="ca-value">{ atividade.flTodosImoveis ? 'Sim' : 'Não' }</div>
+                        </div>
+                        <div className="ca-info">
+                          <div className="ca-label font-weight-bold">Abrangência:</div>
+                          <div className="ca-value">
+                            {
+                              abrangenciaEnum.find( a => a.id === atividade.abrangencia ).label
+                            }
+                          </div>
+                        </div>
+                        <div className="ca-info">
+                          <div className="ca-label font-weight-bold">Responsabilidade:</div>
+                          <div className="ca-value">
+                            {
+                              responsabilidadeEnum.find( r => r.id === atividade.responsabilidade ).label
+                            }
+                          </div>
+                        </div>
+                        <div className="ca-row-info">
+                          <div className="ca-label font-weight-bold">Objetivo da Atividade</div>
+                          <div className="ca-value">{ atividade.objetivoAtividade }</div>
+                        </div>
+                        <div className={permitirEncerramneto(atividade) ? "ca-row-info" : "d-none"}>
+                            <Button
+                                className="bg-info text-white"
+                                onClick={ () =>  abrirModalEncerrarAtividade(atividade.id)}
+                            >
+                              Encerrar
+                            </Button>
+                        </div>
+                      </AtividadeCard>
+                    </Col>
+                  )
+                })
+              )
+            }
+           })()
         }
       </Row>
       <ModalEncerrarAtividade id='modal-encerrar-atividade' atividadeId = {idAtividadeEncerrar}/>
@@ -132,7 +154,8 @@ export const SelecionarAtividade = ({ indexAtividade, atividades, ...props }) =>
 
 const mapStateToProps = state => ({
   atividades    : state.atividade.atividades,
-  indexAtividade: state.atividade.indexAtividade
+  indexAtividade: state.atividade.indexAtividade,
+  searchResponsabilityActivities: state.atividade.searchResponsabilityActivities
 })
 
 const mapDispatchToProps = {

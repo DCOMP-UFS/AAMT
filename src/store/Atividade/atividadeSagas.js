@@ -5,6 +5,7 @@ import * as AppConfigActions from '../AppConfig/appConfigActions';
 
 export function* getResponsabilityActivities( action ) {
   try {
+    yield put( AtividadeActions.searchingResponsabilityActivities() );
     const { data, status } = yield call( service.getResponsabilityActivitiesRequest, action.payload );
 
     if( status === 200 ) {
@@ -14,6 +15,7 @@ export function* getResponsabilityActivities( action ) {
     }
 
   } catch (err) {
+    yield put( AtividadeActions.getResponsabilityActivitiesFail() );
     if(err.response){
       //Provavel erro de logica na API
       yield put( AppConfigActions.showNotifyToast( "Erro ao consultar atividades, entre em contato com o suporte", "error" ) );

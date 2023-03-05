@@ -18,7 +18,8 @@ const INITIAL_STATE = {
   estratos: [],
   finished: null,
   planned:null,
-  getActivitiesOfCity:null
+  getActivitiesOfCity:null,
+  searchResponsabilityActivities:false,
 }
 
 export default function Atividade(state = INITIAL_STATE, action) {
@@ -27,6 +28,7 @@ export default function Atividade(state = INITIAL_STATE, action) {
       return {
         ...state,
         atividades: action.payload.activities,
+        searchResponsabilityActivities: false,
         reload: !state.reload
       };
 
@@ -357,6 +359,20 @@ export default function Atividade(state = INITIAL_STATE, action) {
       return {
         ...state,
         planned: null
+      }
+    }
+
+    case ActionTypes.SEARCHING_RESPONSABILITY_ACTIVITIES: {
+      return {
+        ...state,
+        searchResponsabilityActivities: true
+      }
+    }
+
+    case ActionTypes.GET_RESPONSABILITY_ACTIVITIES_FAIL: {
+      return {
+        ...state,
+        searchResponsabilityActivities: false
       }
     }
 

@@ -35,7 +35,7 @@ export const PlanejarRota = ( {
 } ) => {
   const [ currentDate, setCurrentDate] = useState( '' );
   const [ steps, setSteps ] = useState([
-    { valid: false, name: 'Atividades', slug: 'selecionar_atividade', content: <SelecionarAtividade /> },
+    { valid: false, name: 'Atividades', slug: 'selecionar_atividade', content: <SelecionarAtividade/> },
     { valid: false, name: 'Selecionar Agente', slug: 'selecionar_agente', content: <SelecionarAgente /> },
     { valid: false, name: 'Planejar Rota', slug: 'planejar_rota', content: <SelecionarQuarteiroes /> }
   ]);
@@ -51,7 +51,7 @@ export const PlanejarRota = ( {
   }, [] );
 
   useEffect(() => {
-    if( Object.entries( ciclo ).length > 0 ) {
+    if( ciclo != null ) {
       props.getResponsabilityActivitiesRequest(usuario.id, ciclo.id);
     }
   }, [ ciclo ]);
@@ -206,7 +206,7 @@ export const PlanejarRota = ( {
                         `Ciclo ${ ciclo.ano }.${ ciclo.sequencia }: selecione uma equipe para planejar as rotas do dia ${ currentDate }.` :
                         "Não há ciclo em abertos"
                       :
-                      ''
+                      'Não existe nenhum ciclo em aberto no momento. Retorne quando um novo ciclo tenha iniciado.'
                   }
                 </label>
               </div>

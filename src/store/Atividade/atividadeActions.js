@@ -1,5 +1,8 @@
 export const ActionTypes = {
   GET_RESPONSABILITY_ACTIVITIES_REQUEST : "GET_RESPONSABILITY_ACTIVITIES_REQUEST",
+  GET_RESPONSABILITY_ACTIVITIES_SUCCESS : "GET_RESPONSABILITY_ACTIVITIES_SUCCESS",
+  GET_RESPONSABILITY_ACTIVITIES_FAIL    : "GET_RESPONSABILITY_ACTIVITIES_FAIL",
+  SEARCHING_RESPONSABILITY_ACTIVITIES   : "SEARCHING_RESPONSABILITY_ACTIVITIES",
   SET_ATIVIDADES                        : "SET_ATIVIDADES",
   SET_EQUIPES                           : "SET_EQUIPES",
   SET_INDEX                             : "SET_INDEX",
@@ -50,6 +53,24 @@ export const getResponsabilityActivitiesRequest = ( usuario_id, ciclo_id ) => {
       usuario_id,
       ciclo_id
     }
+  }
+}
+
+export const getResponsabilityActivitiesSuccess = ( ) => {
+  return {
+    type: ActionTypes.GET_RESPONSABILITY_ACTIVITIES_SUCCESS,
+  }
+}
+
+export const getResponsabilityActivitiesFail = ( ) => {
+  return {
+    type: ActionTypes.GET_RESPONSABILITY_ACTIVITIES_SUCCESS,
+  }
+}
+
+export const searchingResponsabilityActivities = ( ) => {
+  return {
+    type: ActionTypes.SEARCHING_RESPONSABILITY_ACTIVITIES,
   }
 }
 

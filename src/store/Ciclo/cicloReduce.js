@@ -2,7 +2,7 @@ import { ActionTypes } from './cicloActions';
 
 const INITIAL_STATE = {
   ciclo       : {},
-  cicloAberto : {},
+  cicloAberto : null,
   ciclos      : [],
   index       : -1,
   created     : null,

@@ -169,6 +169,36 @@ getCiclosPermitidos = async ( req, res ) => {
       mensage: 'Algum problema inesperado ocorreu nesta rota da api',
     } );
   }
+} 
+
+/**
+ * Consultar os ciclos da regional que estam em aberto e que ja foram finalizados
+ * @params {Integer} regionalSaude_id
+ */
+getCiclosAbertosEFinalizados = async ( req, res ) => {
+  try{
+    const { regionalSaude_id }  = req.params;
+    let current_date            = new Date();
+
+    current_date.setHours( 0, 0, 0, 0 );
+
+    const ciclos = await Ciclo.findAll( {
+      where: {
+        regional_saude_id: regionalSaude_id,
+        dataInicio: {
+          [Sequelize.Op.lt]: current_date
+        }
+      },
+      order:[['id','desc']]
+    } );
+
+    return res.json( ciclos );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
 }
 
 store = async ( req, res ) => {
@@ -386,6 +416,7 @@ router.use( authMiddleware );
 
 router.get( '/:regionalSaude_id/regionaisSaude', getCiclosPorRegional );
 router.get( '/open/:regionalSaude_id/regionaisSaude', getCicloAberto );
+router.get( '/open/finished/:regionalSaude_id/regionaisSaude', getCiclosAbertosEFinalizados );
 router.get( '/allowedCycles/:regionalSaude_id/regionaisSaude', getCiclosPermitidos );
 router.get( '/:ano/:regionalSaude_id/regionaisSaude', getCiclosPorAno );
 router.get( '/:id', getCiclo );

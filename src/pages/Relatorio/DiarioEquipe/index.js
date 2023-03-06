@@ -1,35 +1,73 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { FaChartLine } from 'react-icons/fa';
-import { Row, Col } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import { dataToStringBr } from '../../../config/function';
 import ModalDia from '../components/ModalDia';
 import $ from 'jquery';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
-import { getCicloAbertoRequest } from '../../../store/Ciclo/cicloActions';
+import { getCicloAbertoRequest, getOpenAndFinishedCyclesRequest } from '../../../store/Ciclo/cicloActions';
 import { getResponsabilityActivitiesRequest } from '../../../store/Atividade/atividadeActions';
 
 // STYLES
 import { Container } from './styles';
 import { PageIcon, PageHeader } from '../../../styles/util';
 
-export const RelatorioDiarioEquipe = ({ atividades, ciclo, usuario, ...props }) => {
+//COMPONENTS
+import { CycleSelector } from '../../../components/CycleSelector';
+
+export const RelatorioDiarioEquipe = ({ atividades, ciclos, usuario, ...props }) => {
   const idMOdal         = 'modal-dia';
   const idElementMOdal  = '#' + idMOdal;
   const [ equipe_id, setEquipe_id ] = useState( undefined );
+  const [ cicloSelecionado, setCicloSelecionado ] = useState(null);
+  const [ optionCiclos, setOptionCiclos ] = useState({});
 
   useEffect(() => {
     props.changeSidebar( "relatorio", "rlt_boletimDiarioEquipe" );
-    props.getCicloAbertoRequest( usuario.municipio.regional.id );
+    //props.getCicloAbertoRequest( usuario.municipio.regional.id );
+    props.getOpenAndFinishedCyclesRequest(usuario.municipio.regional.id)
   }, []);
 
   useEffect(() => {
-    if( Object.entries( ciclo ).length > 0 ) {
-      props.getResponsabilityActivitiesRequest( usuario.id, ciclo.id );
+    const options = ciclos.map( (ciclo) => {
+      let current_date = new Date();
+      let dataInicio = new Date( ciclo.dataInicio );
+      let dataFim = new Date( ciclo.dataFim );
+      current_date.setHours(0,0,0,0);
+      dataInicio.setHours(0,0,0,0);
+      dataFim.setHours(0,0,0,0);
+
+      const periodo_ciclo = " -> de "+dataToStringBr(ciclo.dataInicio)+" até "+dataToStringBr(ciclo.dataFim)
+
+      if( dataInicio <= current_date && dataFim >= current_date )
+        setCicloSelecionado({ 
+          value: ciclo.id, 
+          label: `${ ciclo.ano }.${ ciclo.sequencia }`+periodo_ciclo, 
+          dataInicio: ciclo.dataInicio, 
+          dataFim: ciclo.dataFim });
+
+      return (
+        { 
+          value: ciclo.id, 
+          label: `${ ciclo.ano }.${ ciclo.sequencia }`+periodo_ciclo, 
+          dataInicio: ciclo.dataInicio, 
+          dataFim: ciclo.dataFim 
+        }
+      );
+    });
+
+    setOptionCiclos(options);
+  }, [ ciclos ]);
+
+  useEffect(() => {
+    if( cicloSelecionado != null) {
+      props.getResponsabilityActivitiesRequest( usuario.id, cicloSelecionado.value );
     }
-  }, [ ciclo ]);
+  }, [ cicloSelecionado ]);
 
   const openModal = eq_id => {
     setEquipe_id( eq_id );
@@ -45,41 +83,66 @@ export const RelatorioDiarioEquipe = ({ atividades, ciclo, usuario, ...props }) 
         </h3>
       </PageHeader>
 
+      <CycleSelector 
+        optionCiclos={optionCiclos} 
+        cicloSelecionado={cicloSelecionado} 
+        setCicloSelecionado={ (e) => setCicloSelecionado(e) } />
+
       <section className="card-list">
         <article className="row">
           {
-            atividades.map( atividade => (
-              <Col key={ 'atv-' + atividade.id } md="4" className="mb-3">
-                <div className="card2">
-                  <div className="card2-header">
-                    <h3 className="title">{ atividade.metodologia.sigla }</h3>
+            (() => {
+              if(props.searchResponsabilityActivities){
+                return (
+                  <div style={{ marginTop: "25%", marginLeft: "50%" }}>
+                    <CircularProgress color="inherit" />
                   </div>
-                  <div className="card2-body">
-                    <div className="form-group">
-                      <label style={{ fontWeight: 'bold' }}>Código</label>
-                      <span>{ atividade.id }</span>
-                    </div>
-                    <div className="form-group">
-                      <label style={{ fontWeight: 'bold' }}>Objetivo</label>
-                      <span>{ atividade.objetivo.descricao }</span>
-                    </div>
-                    <div className="form-group">
-                      <label style={{ fontWeight: 'bold' }}>Data de Início</label>
-                      <span>{ dataToStringBr( ciclo.dataInicio ) }</span>
-                    </div>
-                    <ul className="lista-equipes">
-                      {
-                        atividade.equipes.map( equipe => (
-                          <li key={ 'eq-' + equipe.id } onClick={ () => openModal( equipe.id ) } >
-                            { equipe.apelido ? `Equipe ${equipe.apelido}` : 'Equipe' }
-                          </li>
-                        ) )
-                      }
-                    </ul>
+                )
+              }
+              else if(atividades.length == 0) {
+                return (
+                  <div style={{ marginTop: "10%", marginLeft: "30%" }}>
+                    <h3>Não foi encontrada nenhuma atividade</h3>
                   </div>
-                </div>
-              </Col>
-            ) )
+                )
+              }
+              else{
+                return(
+                  atividades.map( atividade => (
+                    <Col key={ 'atv-' + atividade.id } md="4" className="mb-3">
+                      <div className="card2">
+                        <div className="card2-header">
+                          <h3 className="title">{ atividade.metodologia.sigla }</h3>
+                        </div>
+                        <div className="card2-body">
+                          <div className="form-group">
+                            <label style={{ fontWeight: 'bold' }}>Código</label>
+                            <span>{ atividade.id }</span>
+                          </div>
+                          <div className="form-group">
+                            <label style={{ fontWeight: 'bold' }}>Objetivo</label>
+                            <span>{ atividade.objetivo.descricao }</span>
+                          </div>
+                          <div className="form-group">
+                            <label style={{ fontWeight: 'bold' }}>Data de Início</label>
+                            <span>{ dataToStringBr( cicloSelecionado.dataInicio ) }</span>
+                          </div>
+                          <ul className="lista-equipes">
+                            {
+                              atividade.equipes.map( equipe => (
+                                <li key={ 'eq-' + equipe.id } onClick={ () => openModal( equipe.id ) } >
+                                  { equipe.apelido ? `Equipe ${equipe.apelido}` : 'Equipe' }
+                                </li>
+                              ) )
+                            }
+                          </ul>
+                        </div>
+                      </div>
+                    </Col>
+                  ) )
+                )
+              }
+            })()
           }
         </article>
       </section>
@@ -91,14 +154,16 @@ export const RelatorioDiarioEquipe = ({ atividades, ciclo, usuario, ...props }) 
 
 const mapStateToProps = state => ( {
   usuario   : state.appConfig.usuario,
-  ciclo     : state.ciclo.ciclo,
-  atividades: state.atividade.atividades
+  ciclos     : state.ciclo.ciclos,
+  atividades: state.atividade.atividades,
+  searchResponsabilityActivities: state.atividade.searchResponsabilityActivities
 } );
 
 const mapDispatchToProps = {
   changeSidebar,
   getCicloAbertoRequest,
-  getResponsabilityActivitiesRequest
+  getResponsabilityActivitiesRequest,
+  getOpenAndFinishedCyclesRequest
 }
 
 export default connect(

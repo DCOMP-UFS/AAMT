@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { FaChartLine } from 'react-icons/fa';
-import { Row, Col } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import { Accordion, AccordionSummary, AccordionDetails } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ModalTrabalhoDiario from '../components/ModalTrabalhoDiario';
 import $ from 'jquery';
 import { dataToStringBr } from '../../../config/function';
-import Select from 'react-select';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 // ACTIONS
@@ -17,10 +16,11 @@ import { getCicloAbertoRequest, getOpenAndFinishedCyclesRequest } from '../../..
 import { getTrabalhosEquipeAndUsuarioRequest, setTrabalhos } from '../../../store/TrabalhoDiario/trabalhoDiarioActions';
 
 // STYLES
-import { Container, PanelTitle, CardBodyInfo } from './styles';
-import { PageIcon, PageHeader, PagePopUp } from '../../../styles/util';
-import { FormGroup, selectDefault } from '../../../styles/global';
+import { Container, PanelTitle } from './styles';
+import { PageIcon, PageHeader } from '../../../styles/util';
 
+//COMPONENTS
+import { CycleSelector } from '../../../components/CycleSelector';
 
 export const RelatorioDiario = ({ atividades, ciclos, usuario, ...props }) => {
 
@@ -85,28 +85,12 @@ export const RelatorioDiario = ({ atividades, ciclos, usuario, ...props }) => {
           Boletim Diário
         </h3>
       </PageHeader>
-      <section className="card-list">
-        <Row>
-          <PagePopUp className="w-100" style={{ paddingTop: 15, paddingBottom: 40, paddingRight: 15, paddingLeft: 15 }}>
-            <div className="card">
-              <CardBodyInfo>
-                <div className="d-flex flex-grow-1 align-items-center">
-                  <FormGroup className="w-50 m-0 mr-2 inline">
-                    <label htmlFor="ciclo"><b>Escolha um ciclo</b></label>
-                    <Select
-                      id="ciclo"
-                      value={ cicloSelecionado }
-                      styles={ selectDefault }
-                      options={ optionCiclos }
-                      onChange={ e => setCicloSelecionado( e ) }
-                    />
-                  </FormGroup>
-                </div>
-              </CardBodyInfo>
-            </div>
-          </PagePopUp>
-        </Row>
-      </section>
+      
+      <CycleSelector 
+        optionCiclos={optionCiclos} 
+        cicloSelecionado={cicloSelecionado} 
+        setCicloSelecionado={ (e) => setCicloSelecionado(e) } />
+
       <section className="card-list">
         <article className="row">
           {

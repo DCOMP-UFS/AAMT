@@ -10,6 +10,7 @@ import Select from 'react-select';
 import ModalExaminarAmostra from '../../components/ModalExaminarAmostra';
 import LoadginGif from '../../assets/loading.gif'
 import $ from 'jquery';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 // ACTIONS
 import { changeSidebar } from '../../store/Sidebar/sidebarActions';
@@ -21,6 +22,7 @@ import {
   setAmostra } from '../../store/Amostra/amostraActions';
 import { getLaboratoriosRequest } from '../../store/Laboratorio/laboratorioActions';
 import { showNotifyToast } from '../../store/AppConfig/appConfigActions';
+import { getOpenAndFinishedCyclesRequest } from '../../store/Ciclo/cicloActions';
 
 // STYLES
 import { Button, FormGroup, selectDefault } from '../../styles/global';
@@ -30,6 +32,10 @@ import { TramRounded } from '@material-ui/icons';
 
 //UTILIES FUNCTIONS
 import { ordenadorData } from '../../config/function';
+import { dataToStringBr } from '../../config/function';
+
+//COMPONENTS
+import { CycleSelector } from '../../components/CycleSelector';
 
 const columns = [
   {
@@ -74,7 +80,7 @@ const columns = [
   }
 ];
 
-export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
+export const Amostras = ({ laboratorios, amostras, usuario, ciclos, ...props }) => {
   const [ rows, setRows ] = useState( [] );
   const [ rowsSelected, setRowsSelected ] = useState( [] );
   const [ laboratoriosOptions, setLaboratoriosOptions ] = useState( [] );
@@ -82,6 +88,8 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
   const [ openModalExaminar, setOpenModalExaminar] = useState(false)
   const [ labAmostra, setLabAmostra] = useState({ value: null, label: '' })
   const [ flLoading, setFlLoading ] = useState( false );
+  const [ cicloSelecionado, setCicloSelecionado ] = useState(null);
+  const [ optionCiclos, setOptionCiclos ] = useState({});
 
   const handleCloseModalExaminar = () => {setOpenModalExaminar(false)}
 
@@ -108,7 +116,7 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
 
   useEffect( () => {
     props.changeSidebar( "amostra" );
-    props.getAmostrasRequest( usuario.id );
+    props.getOpenAndFinishedCyclesRequest(usuario.municipio.regional.id)
     props.getLaboratoriosRequest( usuario.municipio.id );
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [] );
@@ -120,6 +128,43 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
       } ) ) );
     }
   }, [ laboratorios ]);
+
+  useEffect(() => {
+    const options = ciclos.map( (ciclo) => {
+      let current_date = new Date();
+      let dataInicio = new Date( ciclo.dataInicio );
+      let dataFim = new Date( ciclo.dataFim );
+      current_date.setHours(0,0,0,0);
+      dataInicio.setHours(0,0,0,0);
+      dataFim.setHours(0,0,0,0);
+
+      const periodo_ciclo = " -> de "+dataToStringBr(ciclo.dataInicio)+" até "+dataToStringBr(ciclo.dataFim)
+
+      if( dataInicio <= current_date && dataFim >= current_date )
+        setCicloSelecionado({ 
+          value: ciclo.id, 
+          label: `${ ciclo.ano }.${ ciclo.sequencia }`+periodo_ciclo, 
+          dataInicio: ciclo.dataInicio, 
+          dataFim: ciclo.dataFim });
+
+      return (
+        { 
+          value: ciclo.id, 
+          label: `${ ciclo.ano }.${ ciclo.sequencia }`+periodo_ciclo, 
+          dataInicio: ciclo.dataInicio, 
+          dataFim: ciclo.dataFim 
+        }
+      );
+    });
+
+    setOptionCiclos(options);
+  }, [ ciclos ]);
+
+  useEffect(() => {
+    if( cicloSelecionado != null) {
+      props.getAmostrasRequest( usuario.id, cicloSelecionado.value );
+    }
+  }, [ cicloSelecionado ]);
 
   useEffect( () => {
     let r = rows;
@@ -222,77 +267,97 @@ export const Amostras = ({ laboratorios, amostras, usuario, ...props }) => {
           Coleta de Amostras
         </h3>
       </PageHeader>
-      <section className="card-list">
-        <Row>
-          <article className="col-md-12 stretch-card">
-            <Table
-              title={ `Amostras` }
-              columns={ columns }
-              data={ rows }
-              options={ options }
-            />
 
-            <ModalExaminarAmostra id="modal-examinar" isOpen={openModalExaminar} handleClose={handleCloseModalExaminar}/>
-
-            <Modal id="modal-encaminhar" title="Encaminhar amostras">
-              <form onSubmit={ e => enviarAmostras( e ) }>
-                <ModalBody>
-                  <FormGroup>
-                    <label htmlFor="laboratorio">Laboratório <code>*</code></label>
-                    <Select
-                      id="laboratorio"
-                      value={ laboratorioSelect }
-                      options={ laboratoriosOptions }
-                      styles={ selectDefault }
-                      onChange={ e => setLaboratorioSelect( e ) }
-                      className={ laboratorioSelect.value ? '' : 'invalid' }
+      <CycleSelector 
+        optionCiclos={optionCiclos} 
+        cicloSelecionado={cicloSelecionado} 
+        setCicloSelecionado={ (e) => setCicloSelecionado(e) } />
+      {
+        (() => {
+          if(props.buscandoAmostras){
+            return (
+              <div style={{ marginTop: "25%", marginLeft: "50%" }}>
+                <CircularProgress color="inherit" />
+              </div>
+            )
+          }
+          else if(cicloSelecionado != null) {
+            return (
+              <section className="card-list">
+                <Row>
+                  <article className="col-md-12 stretch-card">
+                    <Table
+                      title={ `Amostras` }
+                      columns={ columns }
+                      data={ rows }
+                      options={ options }
                     />
-                  </FormGroup>
-                </ModalBody>
-                <ModalFooter>
-                  <Button className="secondary" data-dismiss="modal" disabled={ flLoading }>Cancelar</Button>
-                  <Button 
-                    type="submit" 
-                    className="info"
-                    disabled={ flLoading }>
-                      {
-                        flLoading ?
-                          (
-                            <>
-                              <img
-                                src={ LoadginGif }
-                                width="25"
-                                style={{ marginRight: 10 }}
-                                alt="Carregando"
-                              />
-                              Salvando...
-                            </>
-                          ) :
-                          "Salvar"
-                        }
-                    </Button>
-                </ModalFooter>
-              </form>
-            </Modal>
 
-            <Modal id="modal-laboratorio-enviado" title="Informações Laboratório">
-              
-              <ModalBody>
-                <FormGroup>
-                  <label htmlFor="laboratorio">Laboratório</label>
-                    <input
-                      value={ labAmostra.label }
-                      type="text"
-                      className="form-control"
-                      disabled={true}
-                    />         
-                </FormGroup>
-              </ModalBody>
-            </Modal>
+                    <ModalExaminarAmostra id="modal-examinar" isOpen={openModalExaminar} handleClose={handleCloseModalExaminar}/>
 
-          </article>
-        </Row>
-      </section>
+                    <Modal id="modal-encaminhar" title="Encaminhar amostras">
+                      <form onSubmit={ e => enviarAmostras( e ) }>
+                        <ModalBody>
+                          <FormGroup>
+                            <label htmlFor="laboratorio">Laboratório <code>*</code></label>
+                            <Select
+                              id="laboratorio"
+                              value={ laboratorioSelect }
+                              options={ laboratoriosOptions }
+                              styles={ selectDefault }
+                              onChange={ e => setLaboratorioSelect( e ) }
+                              className={ laboratorioSelect.value ? '' : 'invalid' }
+                            />
+                          </FormGroup>
+                        </ModalBody>
+                        <ModalFooter>
+                          <Button className="secondary" data-dismiss="modal" disabled={ flLoading }>Cancelar</Button>
+                          <Button 
+                            type="submit" 
+                            className="info"
+                            disabled={ flLoading }>
+                              {
+                                flLoading ?
+                                  (
+                                    <>
+                                      <img
+                                        src={ LoadginGif }
+                                        width="25"
+                                        style={{ marginRight: 10 }}
+                                        alt="Carregando"
+                                      />
+                                      Salvando...
+                                    </>
+                                  ) :
+                                  "Salvar"
+                                }
+                            </Button>
+                        </ModalFooter>
+                      </form>
+                    </Modal>
+
+                    <Modal id="modal-laboratorio-enviado" title="Informações Laboratório">
+                      
+                      <ModalBody>
+                        <FormGroup>
+                          <label htmlFor="laboratorio">Laboratório</label>
+                            <input
+                              value={ labAmostra.label }
+                              type="text"
+                              className="form-control"
+                              disabled={true}
+                            />         
+                        </FormGroup>
+                      </ModalBody>
+                    </Modal>
+
+                  </article>
+                </Row>
+              </section>
+            )
+          }
+        })()
+      }
     </Container>
   );
 }
@@ -301,7 +366,10 @@ const mapStateToProps = state => ( {
   usuario     : state.appConfig.usuario,
   amostras    : state.amostra.amostras,
   amostrasEncaminhadas: state.amostra.amostrasEncaminhadas,
-  laboratorios: state.nw_laboratorio.laboratorios
+  laboratorios: state.nw_laboratorio.laboratorios,
+  ciclos      : state.ciclo.ciclos,
+  buscandoAmostras: state.amostra.buscandoAmostras,
+
 } );
 
 const mapDispatchToProps = {
@@ -313,6 +381,7 @@ const mapDispatchToProps = {
   encaminharAmostrasReset,
   setAmostra,
   showNotifyToast,
+  getOpenAndFinishedCyclesRequest
 }
 
 export default connect(

@@ -26,6 +26,7 @@ export function* getAmostrasByLab( action ) {
 
 export function* getAmostras( action ) {
   try {
+    yield put( AmostraActions.buscandoAmostras() );
     const { data, status } = yield call( servico.getAmostrasRequest, action.payload );
 
     if( status === 200 ) {
@@ -35,6 +36,7 @@ export function* getAmostras( action ) {
     }
 
   } catch (err) {
+    yield put( AmostraActions.getAmostrasRequestFail() );
     if(err.response){
       //Provavel erro de logica na API
       yield put( AppConfigActions.showNotifyToast( "Erro ao consultar amostras, entre em contato com o suporte", "error" ) );

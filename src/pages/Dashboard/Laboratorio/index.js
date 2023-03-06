@@ -7,7 +7,7 @@ import Select from 'react-select';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
-import { getAmostrasRequest, getAmostrasByLab } from '../../../store/Amostra/amostraActions';
+import { getAmostrasByLab } from '../../../store/Amostra/amostraActions';
 
 // STYLES
 import { PageIcon, PageHeader } from '../../../styles/util';
@@ -23,7 +23,6 @@ export const HomeSupervisor = ( { ...props } ) => {
   } );
 
   useEffect( () => {
-    //props.getAmostrasRequest(1);
     //props.getAmostrasByLab( props.usuario.laboratorio.laboratorio_id );
     //props.changeSidebar( "dashboard_municipío" );
   } );
@@ -78,7 +77,6 @@ const mapStateToProps = state => ( {
 const mapDispatchToProps = {
   changeSidebar,
   getAmostrasByLab,
-  getAmostrasRequest
 }
 
 export default connect(

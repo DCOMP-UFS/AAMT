@@ -6,6 +6,7 @@ const INITIAL_STATE = {
   reload: false,
   exameSalvo: null,
   amostrasEncaminhadas: null,
+  buscandoAmostras: false
 }
 
 export default function Amostra(state = INITIAL_STATE, action) {
@@ -14,6 +15,7 @@ export default function Amostra(state = INITIAL_STATE, action) {
       return {
         ...state,
         amostras: action.payload.amostras,
+        buscandoAmostras: false,
         reload: !state.reload
       };
 
@@ -57,6 +59,18 @@ export default function Amostra(state = INITIAL_STATE, action) {
         return {
           ...state,
           amostrasEncaminhadas: null
+        };
+
+      case ActionTypes.BUSCANDO_AMOSTRA:
+        return {
+          ...state,
+          buscandoAmostras: true,
+        };
+
+      case ActionTypes.GET_AMOSTRAS_REQUEST_FAIL:
+        return {
+          ...state,
+          buscandoAmostras: false,
         };
 
     default:

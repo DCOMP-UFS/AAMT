@@ -1,8 +1,8 @@
 import api, { headerAuthorization } from '../../services/api';
 
 export const getAmostrasRequest = data => {
-  const { supervisor_id } = data;
-  return api.get(`/amostras/${ supervisor_id }`, {
+  const { supervisor_id, ciclo_id } = data;
+  return api.get(`/amostras/supervisor/${ supervisor_id }/ciclo/${ ciclo_id }`, {
     ...headerAuthorization()
   });
 }

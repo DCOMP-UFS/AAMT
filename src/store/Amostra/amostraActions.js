@@ -1,5 +1,6 @@
 export const ActionTypes = {
   GET_AMOSTRAS_REQUEST: "GET_AMOSTRAS_REQUEST",
+  GET_AMOSTRAS_REQUEST_FAIL: "GET_AMOSTRAS_REQUEST_FAIL",
   GET_AMOSTRAS_BY_LAB: "GET_AMOSTRAS_BY_LAB",
   SET_AMOSTRAS: "SET_AMOSTRAS",
   ENCAMINHAR_AMOSTRAS_REQUEST: "ENCAMINHAR_AMOSTRAS_REQUEST",
@@ -10,7 +11,8 @@ export const ActionTypes = {
   REGISTRAR_EXAME_SUCCESS: "REGISTRAR_EXAME_SUCCESS",
   REGISTRAR_EXAME_FAIL: "REGISTRAR_EXAME_FAIL",
   REGISTRAR_EXAME_RESET: "REGISTRAR_EXAME_RESET",
-  SET_AMOSTRA: "SET_AMOSTRA"
+  SET_AMOSTRA: "SET_AMOSTRA",
+  BUSCANDO_AMOSTRA: "BUSCANDO_AMOSTRA"
 }
 
 /**
@@ -30,12 +32,25 @@ export const getAmostrasByLab = laboratorio_id => {
  *
  * @param {*} supervisor_id
  */
-export const getAmostrasRequest = supervisor_id => {
+export const getAmostrasRequest = ( supervisor_id, ciclo_id ) => {
   return {
     type: ActionTypes.GET_AMOSTRAS_REQUEST,
     payload: {
-      supervisor_id
+      supervisor_id,
+      ciclo_id
     }
+  }
+}
+
+export const getAmostrasRequestFail = ( ) => {
+  return {
+    type: ActionTypes.GET_AMOSTRAS_REQUEST_FAIL,
+  }
+}
+
+export const buscandoAmostras = ( ) => {
+  return {
+    type: ActionTypes.BUSCANDO_AMOSTRA,
   }
 }
 

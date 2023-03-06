@@ -109,6 +109,10 @@ const columns = [
 function Agent_DailyReport({ user, dailyJobs, ...props }) {
   const [ rows, setRows ] = useState([]);
 
+  const options = {
+    selectableRows: 'none'
+  };
+
   useEffect(() => {
     props.changeSidebar( "relatorio", "rlt_meu_boletim" );
     props.getByUserRequest( user.id );
@@ -164,7 +168,8 @@ function Agent_DailyReport({ user, dailyJobs, ...props }) {
             <Table
               title="Boletins"
               columns={ columns }
-              data={ rows } 
+              data={ rows }
+              options={ options }
             />
           </Col>
         </Row>

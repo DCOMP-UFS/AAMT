@@ -16,13 +16,12 @@ const router = express.Router();
 router.use(authMiddleware);
 
 /**
- * Esta função retorna um array de Amostras de um supervisor,
+ * Esta função retorna um array de Amostras de um supervisor em um determinado ciclo,
  * retorna somente as amostras das equipes que o usuário é supervisor
- * de um ciclo em aberto.
  */
-getSampleBySurpervision = async ( req, res ) => {
+getSampleBySurpervisionAndCycle = async ( req, res ) => {
   try{
-    const { id } = req.params;
+    const { supervisor_id, ciclo_id } = req.params;
 
     const allow = await allowFunction( req.userId, 'definir_trabalho_diario' );
     if( !allow )
@@ -34,7 +33,7 @@ getSampleBySurpervision = async ( req, res ) => {
       }
     } );
 
-    if( userRequest.id !== parseInt( id ) )
+    if( userRequest.id !== parseInt( supervisor_id ) )
       return res.status( 403 ).json( { error: 'Acesso negado' } );
 
     /**
@@ -42,7 +41,7 @@ getSampleBySurpervision = async ( req, res ) => {
      * se sim, verificando se o ID da URL é diferente do usuário requisitado.
      */
     if( userRequest.atuacoes[ 0 ].tipoPerfil === 3 ) {
-      if( parseInt( id ) !== req.userId )
+      if( parseInt( supervisor_id ) !== req.userId )
         return res.status( 403 ).json( { error: 'Acesso negado' } );
     }
 
@@ -68,34 +67,23 @@ getSampleBySurpervision = async ( req, res ) => {
         break;
     }
 
-    // Consultando o ciclo em aberto da regional de saúde
-    const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split( '/' );
-    const current_date = `${ Y }-${ m }-${ d }`;
-
-    const ciclo = await Ciclo.findOne( {
-      where: Sequelize.and(
-        { regional_saude_id: regional_id } ,
-        Sequelize.where(
-          Sequelize.fn( 'date', Sequelize.col( 'data_inicio' ) ),
-          '<=', current_date
-        ),
-        Sequelize.where(
-          Sequelize.fn( 'date', Sequelize.col( 'data_fim' ) ),
-          '>=', current_date
-        )
-      )
-    } );
-
-    //Significa que não existe um ciclo em aberto, logo é retornado
-    //uma lista vazia de amostras
+    const ciclo = await Ciclo.findByPk(ciclo_id)
+    
+    console.log("-------------------")
+    console.log("FOI 1")
+    console.log("-------------------")
     if(ciclo == null)
-      return res.json( [] );
+      return res.status(400).json({ error: 'Não existe ciclo com id='+ciclo_id });
+    
+    console.log("-------------------")
+    console.log("FOI 2")
+    console.log("-------------------")
 
     // Pegando todas as atividades do ciclo atual
     // que pertencem ao municipio do usuario
     const atividades = await Atividade.findAll( {
       where: {
-        ciclo_id: ciclo.id,
+        ciclo_id: ciclo_id,
         municipio_id: userRequest.atuacoes[ 0 ].local_id
       },
       include: [
@@ -120,7 +108,7 @@ getSampleBySurpervision = async ( req, res ) => {
     atividades.forEach( atividade => {
       atividade.equipes.forEach( equipe => {
         equipe.membros.forEach( membro => {
-          if( membro.usuario_id === parseInt( id ) && membro.tipoPerfil === 3 )
+          if( membro.usuario_id === parseInt( supervisor_id ) && membro.tipoPerfil === 3 )
             equipes.push( equipe.id );
         } );
       } );
@@ -380,7 +368,7 @@ getSamplesByLab = async ( req, res ) => {
   }
 }
 
-router.get( '/:id', getSampleBySurpervision );
+router.get( '/supervisor/:supervisor_id/ciclo/:ciclo_id', getSampleBySurpervisionAndCycle );
 router.get( '/laboratorio/:laboratorio_id', getSamplesByLab);
 router.post( '/enviar', sendSample );
 router.post( '/examinar', insertExamination );

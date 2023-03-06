@@ -69,15 +69,8 @@ getSampleBySurpervisionAndCycle = async ( req, res ) => {
 
     const ciclo = await Ciclo.findByPk(ciclo_id)
     
-    console.log("-------------------")
-    console.log("FOI 1")
-    console.log("-------------------")
     if(ciclo == null)
       return res.status(400).json({ error: 'Não existe ciclo com id='+ciclo_id });
-    
-    console.log("-------------------")
-    console.log("FOI 2")
-    console.log("-------------------")
 
     // Pegando todas as atividades do ciclo atual
     // que pertencem ao municipio do usuario

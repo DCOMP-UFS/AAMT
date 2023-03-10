@@ -225,8 +225,69 @@ sendSample = async ( req, res ) => {
       }
     );
 
+    const amostrasAtualizadas = await Amostra.sequelize.query(
+      'SELECT ' +
+        'a.id as "id", ' +
+        'a.data_encaminhamento as "dataEncaminhamento", ' +
+        'a.data_examinado as "dataExaminado", ' +
+        'a.codigo as "codigo", ' +
+        'a.situacao_amostra as "situacaoAmostra", ' +
+        'a.laboratorio_id as "laboratorio_id", ' +
+        'td.id as "td_id", ' +
+        'td.data as "td_data", ' +
+        'ativ.id as "ativ_id", ' +
+        'ativ.metodologia_id as "ativ_metodologia", ' +
+        'metod.sigla as "metodo_sigla", ' +
+        'obj.sigla as "objetivo_sigla", ' +
+        'ativ.objetivo_id as "ativ_objetivo" ' +
+      'FROM ' +
+        'amostras as a ' +
+        'JOIN depositos as dep ON( a.deposito_id = dep.id ) ' +
+        'JOIN vistorias as vist ON( dep.vistoria_id = vist.id ) ' +
+        'JOIN trabalhos_diarios as td ON( vist.trabalho_diario_id = td.id ) ' +
+        'JOIN equipes as equip ON( td.equipe_id = equip.id ) ' +
+        'JOIN atividades as ativ ON( equip.atividade_id = ativ.id ) ' +
+        'JOIN metodologias as metod ON( ativ.metodologia_id = metod.id ) ' +
+        'JOIN objetivos as obj ON( ativ.objetivo_id = obj.id ) ' +
+      'WHERE ' +
+        'a.id = ANY($amostras_ids) '+
+      'ORDER BY '+
+        'td.data', 
+      {
+        bind:{ amostras_ids: amostras },
+        logging: console.log,
+      }
+    )
+
+    const result = amostrasAtualizadas[ 1 ].rows.map( (i) => ({
+      id: i.id,
+      codigo: i.codigo,
+      situacaoAmostra: i.situacaoAmostra,
+      dataEncaminhamento: i.dataEncaminhamento,
+      dataExaminado: i.dataExaminado,
+      laboratorio_id: i.laboratorio_id,
+      trabalhoDiario:{
+        id: i.td_id,
+        data: i.td_data
+      },
+      atividade: {
+        id: i.ativ_id,
+        metodologia: {
+          id: i.ativ_metodologia,
+          sigla: i.metodo_sigla
+        },
+        objetivo: {
+          id: i.ativ_objetivo,
+          sigla: i.objetivo_sigla
+        }
+      },
+      exemplares: [],
+      ciclo: null
+    }));
+
     res.json({
       mensage: "Amostras encaminhadas com sucesso",
+      amostrasEncaminhadas: result,
       data: {
         status: 200
       }
@@ -269,8 +330,76 @@ insertExamination = async ( req, res ) => {
     });
     await Exemplar.bulkCreate( exemplares );
 
+    var amostra = await Amostra.sequelize.query(
+      'SELECT ' +
+        'a.id as "id", ' +
+        'a.data_encaminhamento as "dataEncaminhamento", ' +
+        'a.data_examinado as "dataExaminado", ' +
+        'a.codigo as "codigo", ' +
+        'a.situacao_amostra as "situacaoAmostra", ' +
+        'a.laboratorio_id as "laboratorio_id", ' +
+        'td.id as "td_id", ' +
+        'td.data as "td_data", ' +
+        'ativ.id as "ativ_id", ' +
+        'ativ.metodologia_id as "ativ_metodologia", ' +
+        'metod.sigla as "metodo_sigla", ' +
+        'obj.sigla as "objetivo_sigla", ' +
+        'ativ.objetivo_id as "ativ_objetivo" ' +
+      'FROM ' +
+        'amostras as a ' +
+        'JOIN depositos as dep ON( a.deposito_id = dep.id ) ' +
+        'JOIN vistorias as vist ON( dep.vistoria_id = vist.id ) ' +
+        'JOIN trabalhos_diarios as td ON( vist.trabalho_diario_id = td.id ) ' +
+        'JOIN equipes as equip ON( td.equipe_id = equip.id ) ' +
+        'JOIN atividades as ativ ON( equip.atividade_id = ativ.id ) ' +
+        'JOIN metodologias as metod ON( ativ.metodologia_id = metod.id ) ' +
+        'JOIN objetivos as obj ON( ativ.objetivo_id = obj.id ) ' +
+      'WHERE ' +
+        'a.id = $1 '+
+      'ORDER BY '+
+        'td.data', 
+      {
+        bind: [ id ],
+      }
+    )
+
+    const exemplaresAmostra = await Exemplar.findAll({
+      attributes: { exclude: [ 'amostra_id','createdAt', 'updatedAt' ] },
+      where: {
+        amostra_id: id
+      }
+    });
+    
+    amostra = amostra[ 1 ].rows[0]
+
+    const result = {
+      id: amostra.id,
+      codigo: amostra.codigo,
+      situacaoAmostra: amostra.situacaoAmostra,
+      dataEncaminhamento: amostra.dataEncaminhamento,
+      dataExaminado: amostra.dataExaminado,
+      laboratorio_id: amostra.laboratorio_id,
+      trabalhoDiario:{
+        id: amostra.td_id,
+        data: amostra.td_data
+      },
+      atividade: {
+        id: amostra.ativ_id,
+        metodologia: {
+          id: amostra.ativ_metodologia,
+          sigla: amostra.metodo_sigla
+        },
+        objetivo: {
+          id: amostra.ativ_objetivo,
+          sigla: amostra.objetivo_sigla
+        }
+      },
+      exemplares: exemplaresAmostra,
+    };
+
     return res.json({
-      mensage: "Amostra examinada com sucesso"
+      mensage: "Amostra examinada com sucesso",
+      amostraExaminada: result
     });
   } catch (error) {
     return res.status( 400 ).send( { 

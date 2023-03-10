@@ -19,7 +19,10 @@ import {
   getAmostrasRequest, 
   encaminharAmostrasRequest,
   encaminharAmostrasReset,
-  setAmostra } from '../../store/Amostra/amostraActions';
+  setAmostra,
+  setIndexExaminarAmostra,
+  setIndexIdAmostrasEncaminhadas
+ } from '../../store/Amostra/amostraActions';
 import { getLaboratoriosRequest } from '../../store/Laboratorio/laboratorioActions';
 import { showNotifyToast } from '../../store/AppConfig/appConfigActions';
 import { getOpenAndFinishedCyclesRequest } from '../../store/Ciclo/cicloActions';
@@ -48,6 +51,14 @@ const columns = [
   {
     name: "createdAt",
     label: "Coletada Em",
+    options: {
+      filter: false,
+      sortCompare: ordenadorData
+    }
+  },
+  {
+    name: "encaminhada",
+    label: "Encaminhada Em",
     options: {
       filter: false,
       sortCompare: ordenadorData
@@ -97,7 +108,7 @@ export const Amostras = ({ laboratorios, amostras, usuario, ciclos, ...props }) 
     //Não permite que amostras com situação positiva, negativa ou encaminhada
     //sejam selecionados para serem encaminhadas
     isRowSelectable: (dataIndex) => {
-      return (rows[dataIndex][5] != "Positiva" && rows[dataIndex][5] != "Negativa" && rows[dataIndex][5] != "Encaminhada")
+      return (rows[dataIndex][6] != "Positiva" && rows[dataIndex][6] != "Negativa" && rows[dataIndex][6] != "Encaminhada")
     },
     customToolbarSelect: () => {
       return (
@@ -168,13 +179,18 @@ export const Amostras = ({ laboratorios, amostras, usuario, ciclos, ...props }) 
 
   useEffect( () => {
     let r = rows;
-
     r = amostras.map( ( amostra, index ) => {
       const trabalhoDiario  = amostra.trabalhoDiario;
-      const ciclo           = amostra.ciclo;
       const metodologia     = amostra.atividade.metodologia;
       const objetivo        = amostra.atividade.objetivo;
-      const data            = trabalhoDiario.data.split( '-' );
+      const dataColeta      = trabalhoDiario.data.split( '-' );
+
+      var dataEncaminhamento = null
+
+      if(amostra.dataEncaminhamento){
+        const auxData = amostra.dataEncaminhamento.split( '-' )
+        dataEncaminhamento = `${ auxData[ 2 ] }/${ auxData[ 1 ] }/${ auxData[ 0 ] }`
+      } 
 
       let situacaoAmostra = '';
       if( amostra.situacaoAmostra === 1 )
@@ -188,7 +204,8 @@ export const Amostras = ({ laboratorios, amostras, usuario, ciclos, ...props }) 
 
       return [
         amostra.codigo,
-        `${ data[ 2 ] }/${ data[ 1 ] }/${ data[ 0 ] }`,
+        `${ dataColeta[ 2 ] }/${ dataColeta[ 1 ] }/${ dataColeta[ 0 ] }`,
+        dataEncaminhamento,
         trabalhoDiario.id,
         metodologia.sigla,
         objetivo.sigla,
@@ -222,7 +239,7 @@ export const Amostras = ({ laboratorios, amostras, usuario, ciclos, ...props }) 
     } );
     setRows( r );
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ amostras ] );
+  }, [ amostras, props.reload ] );
 
   const handlerSample = index => {
     //O amostra foi encaminhada e não pode ser examinada pelo supervisor
@@ -234,6 +251,7 @@ export const Amostras = ({ laboratorios, amostras, usuario, ciclos, ...props }) 
   
     }
     else{
+      props.setIndexExaminarAmostra(index)
       props.setAmostra( amostras[ index ] );
       setOpenModalExaminar(true)
       $( '#modal-examinar' ).modal( 'show' );
@@ -245,6 +263,8 @@ export const Amostras = ({ laboratorios, amostras, usuario, ciclos, ...props }) 
 
     if( laboratorioSelect.value ) {
       setFlLoading(true)
+      const index_id_amostras = rowsSelected.map( function(r) {return {index: r, id: amostras[ r ].id }} );
+      props.setIndexIdAmostrasEncaminhadas(index_id_amostras)
       const amostras_ids = rowsSelected.map( r => amostras[ r ].id );
       props.encaminharAmostrasRequest( laboratorioSelect.value, amostras_ids );
     }
@@ -253,7 +273,7 @@ export const Amostras = ({ laboratorios, amostras, usuario, ciclos, ...props }) 
   useEffect(() => {
     if( props.amostrasEncaminhadas ) {
       props.showNotifyToast("Amostra(s) encaminhada(s) com sucesso", "success")
-      setTimeout(() => { document.location.reload( true );}, 1500)
+      $( '#modal-encaminhar' ).modal( 'hide' );
     }
     setFlLoading(false)
     props.encaminharAmostrasReset()
@@ -369,6 +389,7 @@ const mapStateToProps = state => ( {
   laboratorios: state.nw_laboratorio.laboratorios,
   ciclos      : state.ciclo.ciclos,
   buscandoAmostras: state.amostra.buscandoAmostras,
+  reload      : state.amostra.reload,
 
 } );
 
@@ -381,7 +402,9 @@ const mapDispatchToProps = {
   encaminharAmostrasReset,
   setAmostra,
   showNotifyToast,
-  getOpenAndFinishedCyclesRequest
+  getOpenAndFinishedCyclesRequest,
+  setIndexExaminarAmostra,
+  setIndexIdAmostrasEncaminhadas
 }
 
 export default connect(

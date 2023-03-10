@@ -12,7 +12,9 @@ export const ActionTypes = {
   REGISTRAR_EXAME_FAIL: "REGISTRAR_EXAME_FAIL",
   REGISTRAR_EXAME_RESET: "REGISTRAR_EXAME_RESET",
   SET_AMOSTRA: "SET_AMOSTRA",
-  BUSCANDO_AMOSTRA: "BUSCANDO_AMOSTRA"
+  BUSCANDO_AMOSTRA: "BUSCANDO_AMOSTRA",
+  SET_INDEX_EXAMINAR_AMOSTRA: "SET_INDEX_EXAMINAR_AMOSTRA",
+  SET_INDEX_ID_AMOSTRAS_ENCAMINHADAS: "SET_INDEX_ID_AMOSTRAS_ENCAMINHADAS"
 }
 
 /**
@@ -69,9 +71,12 @@ export const buscandoAmostras = ( ) => {
   }
 }
 
-export const encaminharAmostrasSuccess = () => {
+export const encaminharAmostrasSuccess = (amostrasEncaminhadas) => {
   return {
     type: ActionTypes.ENCAMINHAR_AMOSTRAS_SUCCESS,
+    payload: {
+      amostrasEncaminhadas
+    }
   }
 }
 
@@ -115,9 +120,12 @@ export const registrarExameRequest = exame => {
   }
 }
 
-export const registrarExameSuccess = () => {
+export const registrarExameSuccess = (amostraExaminada) => {
   return {
     type: ActionTypes.REGISTRAR_EXAME_SUCCESS,
+    payload: {
+      amostraExaminada
+    }
   }
 }
 
@@ -143,6 +151,24 @@ export const registrarExameReset = () => {
     type: ActionTypes.SET_AMOSTRA,
     payload: {
       amostra
+    }
+  }
+}
+
+export const setIndexExaminarAmostra = indexExaminarAmostra => {
+  return {
+    type: ActionTypes.SET_INDEX_EXAMINAR_AMOSTRA,
+    payload: {
+      indexExaminarAmostra
+    }
+  }
+}
+
+export const setIndexIdAmostrasEncaminhadas = indexIdAmostrasEncaminhadas => {
+  return {
+    type: ActionTypes.SET_INDEX_ID_AMOSTRAS_ENCAMINHADAS,
+    payload: {
+      indexIdAmostrasEncaminhadas
     }
   }
 }

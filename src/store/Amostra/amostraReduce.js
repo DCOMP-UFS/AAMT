@@ -6,7 +6,9 @@ const INITIAL_STATE = {
   reload: false,
   exameSalvo: null,
   amostrasEncaminhadas: null,
-  buscandoAmostras: false
+  buscandoAmostras: false,
+  indexExaminarAmostra: -1,
+  indexIdAmostrasEncaminhadas: []
 }
 
 export default function Amostra(state = INITIAL_STATE, action) {
@@ -26,9 +28,19 @@ export default function Amostra(state = INITIAL_STATE, action) {
       };
     
     case ActionTypes.REGISTRAR_EXAME_SUCCESS:
+
+      let new_amostras = state.amostras
+      const indexExaminarAmostra = state.indexExaminarAmostra
+      const amostraExaminada = action.payload.amostraExaminada;
+
+      new_amostras[indexExaminarAmostra] = amostraExaminada
+
       return {
         ...state,
-        exameSalvo: true
+        amostras: new_amostras,
+        exameSalvo: true,
+        reload: !state.reload,
+        indexExaminarAmostra: -1
       };
     
     case ActionTypes.REGISTRAR_EXAME_FAIL:
@@ -44,8 +56,21 @@ export default function Amostra(state = INITIAL_STATE, action) {
       };
     
       case ActionTypes.ENCAMINHAR_AMOSTRAS_SUCCESS:
+
+      let amostras = state.amostras
+      const indexIdAmostrasEncaminhadas = state.indexIdAmostrasEncaminhadas
+      const amostrasEncaminhadas = action.payload.amostrasEncaminhadas;
+
+      //aqui cada amostra que foi encaminhada tem seus dados atualizado na lista de amostras
+      indexIdAmostrasEncaminhadas.forEach(element => {
+        let amos_encaminhada = amostrasEncaminhadas.find( a => a.id == element.id)
+        amostras[element.index] = amos_encaminhada
+      });
+  
         return {
           ...state,
+          amostras: amostras,
+          reload: !state.reload,
           amostrasEncaminhadas: true
         };
       
@@ -71,6 +96,18 @@ export default function Amostra(state = INITIAL_STATE, action) {
         return {
           ...state,
           buscandoAmostras: false,
+        };
+
+      case ActionTypes.SET_INDEX_EXAMINAR_AMOSTRA:
+        return {
+          ...state,
+          indexExaminarAmostra: action.payload.indexExaminarAmostra,
+        };
+      
+      case ActionTypes.SET_INDEX_ID_AMOSTRAS_ENCAMINHADAS:
+        return {
+          ...state,
+          indexIdAmostrasEncaminhadas: action.payload.indexIdAmostrasEncaminhadas,
         };
 
     default:

@@ -50,10 +50,10 @@ export function* getAmostras( action ) {
 
 export function* encaminharAmostras( action ) {
   try {
-    const { status } = yield call( servico.enviarAmostrasRequest, action.payload );
+    const { data, status } = yield call( servico.enviarAmostrasRequest, action.payload );
 
     if( status === 200 ) {
-      yield put( AmostraActions.encaminharAmostrasSuccess() );
+      yield put( AmostraActions.encaminharAmostrasSuccess( data.amostrasEncaminhadas ) );
       //document.location.reload();
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao enviar amostras para o laboratório: " + status, "error" ) );
@@ -73,10 +73,10 @@ export function* encaminharAmostras( action ) {
 
 export function* registrarExame( action ) {
   try {
-    const { status } = yield call( servico.registrarExameRequest, action.payload );
+    const { data, status } = yield call( servico.registrarExameRequest, action.payload );
 
     if( status === 200 ) {
-      yield put( AmostraActions.registrarExameSuccess() );
+      yield put( AmostraActions.registrarExameSuccess(data.amostraExaminada) );
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao registrar exame: " + status, "error" ) );
     }

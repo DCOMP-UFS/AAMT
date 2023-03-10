@@ -10,7 +10,7 @@ import $ from 'jquery';
 
 // ACTIONS
 import { changeSidebar } from '../../store/Sidebar/sidebarActions';
-import { getAmostrasByLab, setAmostra } from '../../store/Amostra/amostraActions';
+import { getAmostrasByLab, setAmostra, setIndexExaminarAmostra } from '../../store/Amostra/amostraActions';
 
 // STYLES
 import { PageIcon, PageHeader } from '../../styles/util';
@@ -18,6 +18,7 @@ import { Container } from './styles';
 
 //UTILIES FUNCTIONS
 import { ordenadorData } from '../../config/function';
+import { propTypes } from 'react-bootstrap/esm/Image';
 
 const columns = [
   {
@@ -119,9 +120,10 @@ export const AmostrasLab = ({ laboratorios, amostras, usuario, ...props }) => {
     } );
     setRows( r );
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ amostras ] );
+  }, [ amostras, props.reload ] );
 
   const handlerSample = index => {
+    props.setIndexExaminarAmostra(index)
     props.setAmostra( amostras[ index ] );
     setOpenModalExaminar(true)
     $( '#modal-examinar' ).modal( 'show' );
@@ -157,12 +159,14 @@ export const AmostrasLab = ({ laboratorios, amostras, usuario, ...props }) => {
 const mapStateToProps = state => ( {
   usuario     : state.appConfig.usuario,
   amostras    : state.amostra.amostras,
+  reload      : state.amostra.reload
 } );
 
 const mapDispatchToProps = {
   changeSidebar,
   getAmostrasByLab,
-  setAmostra
+  setAmostra,
+  setIndexExaminarAmostra
 }
 
 export default connect(

@@ -10,6 +10,7 @@ import IconButton from '@material-ui/core/IconButton';
 import { FaTrash } from 'react-icons/fa';
 import SelectWrap from '../SelectWrap';
 import LoadginGif from '../../assets/loading.gif'
+import $ from 'jquery';
 
 // ACTIONS
 import { registrarExameRequest, registrarExameReset } from '../../store/Amostra/amostraActions';
@@ -64,15 +65,16 @@ export const ModalExaminarAmostra = ({ mosquitos, amostra, isOpen, handleClose, 
     if( Object.entries( amostra ).length > 0 ) {
 
       setCodAmostra( amostra.codigo );
-
-      // Preenchendo os dados da amostra caso já exista exame cadastrado
-      const option = sampleSituationOptions.find( option => option.value === amostra.situacaoAmostra );
-      if( option )
+      
+      //significa que é uma amostra foi coletada e será cadastrado o exame agora
+      if(amostra.situacaoAmostra == 1 ){
+        setSampleSituation( {} )
+      }
+      //Significa que é uma amostra examinada que houve a presença de mosquito 
+      else if( amostra.exemplares.length > 0 ) {
+        const option = sampleSituationOptions.find( option => option.value === 3 );
         setSampleSituation( option );
-      else
-        setSampleSituation( {} );
 
-      if( amostra.exemplares.length > 0 ) {
         let ex = [];
         amostra.exemplares.forEach( exemplar => {
           const index = ex.findIndex( e => e.gnat.value === exemplar.mosquito_id );
@@ -80,28 +82,21 @@ export const ModalExaminarAmostra = ({ mosquitos, amostra, isOpen, handleClose, 
           if( index === -1 ) {
             ex.push({
               gnat: gnatOptions.find( option => option.value === exemplar.mosquito_id ),
-              eggs: exemplar.fase === 1 ? exemplar.quantidade : 0,
-              pulps: exemplar.fase === 2 ? exemplar.quantidade : 0,
-              pulpExuvia: exemplar.fase === 3 ? exemplar.quantidade : 0,
-              maggots: exemplar.fase === 4 ? exemplar.quantidade : 0,
-              adults: exemplar.fase === 5 ? exemplar.quantidade : 0
+              pulps: exemplar.fase === 1 ? exemplar.quantidade : 0,
+              maggots: exemplar.fase === 2 ? exemplar.quantidade : 0,
             });
           } else {
             if( exemplar.fase === 1 )
-              ex[ index ].eggs = exemplar.quantidade;
-            if( exemplar.fase === 2 )
               ex[ index ].pulps = exemplar.quantidade;
-            if( exemplar.fase === 3 )
-              ex[ index ].pulpExuvia = exemplar.quantidade;
-            if( exemplar.fase === 4 )
+            if( exemplar.fase === 2 )
               ex[ index ].maggots = exemplar.quantidade;
-            if( exemplar.fase === 5 )
-              ex[ index ].adults = exemplar.quantidade;
           }
         });
 
         setExamination( ex );
       } else {
+        const option = sampleSituationOptions.find( option => option.value === 4 );
+        setSampleSituation( option );
         setExamination( [] );
       }
     }
@@ -111,7 +106,8 @@ export const ModalExaminarAmostra = ({ mosquitos, amostra, isOpen, handleClose, 
   useEffect(() => {
     if( props.exameSalvo ) {
       props.showNotifyToast("Amostra examinada com sucesso", "success")
-      setTimeout(() => { document.location.reload( true );}, 2000)
+      $( '#modal-examinar' ).modal( 'hide' );
+      //setTimeout(() => { document.location.reload( true );}, 2000)
     }
     setFlLoading(false)
     props.registrarExameReset()
@@ -122,11 +118,8 @@ export const ModalExaminarAmostra = ({ mosquitos, amostra, isOpen, handleClose, 
 
     e.push({
       gnat: { value: -1, label: '' }, // mosquito
-      eggs: 0,
       pulps: 0,
-      pulpExuvia: 0,
       maggots: 0, // larvas
-      adults: 0
     });
 
     setExamination( e );
@@ -141,14 +134,6 @@ export const ModalExaminarAmostra = ({ mosquitos, amostra, isOpen, handleClose, 
     setReload( !reload );
   }
 
-  const changeEggs = ( eggs, index ) => {
-    let e = examination;
-    e[ index ].eggs = eggs;
-
-    setExamination( e );
-    setReload( !reload );
-  }
-
   const changePulps = ( pulps, index ) => {
     let e = examination;
     e[ index ].pulps = pulps;
@@ -157,25 +142,9 @@ export const ModalExaminarAmostra = ({ mosquitos, amostra, isOpen, handleClose, 
     setReload( !reload );
   }
 
-  const changePulpExuvia = ( pulpExuvia, index ) => {
-    let e = examination;
-    e[ index ].pulpExuvia = pulpExuvia;
-
-    setExamination( e );
-    setReload( !reload );
-  }
-
   const changeMaggots = ( maggots, index ) => {
     let e = examination;
     e[ index ].maggots = maggots;
-
-    setExamination( e );
-    setReload( !reload );
-  }
-
-  const changeAdults = ( adults, index ) => {
-    let e = examination;
-    e[ index ].adults = adults;
 
     setExamination( e );
     setReload( !reload );
@@ -218,42 +187,36 @@ export const ModalExaminarAmostra = ({ mosquitos, amostra, isOpen, handleClose, 
           const e = [
             {
               "amostra_id": amostra.id,
-              "quantidade": ex.eggs,
-              "fase": 1, // Ovo - Eggs
-              "mosquito_id": ex.gnat.value
-            },
-            {
-              "amostra_id": amostra.id,
               "quantidade": ex.pulps,
-              "fase": 2, // Pulpa - Pulps
-              "mosquito_id": ex.gnat.value
-            },
-            {
-              "amostra_id": amostra.id,
-              "quantidade": ex.pulpExuvia,
-              "fase": 3, // Exúvia de Pulpa - Pulp Exuvia
+              "fase": 1, // Pulpa - Pulps
               "mosquito_id": ex.gnat.value
             },
             {
               "amostra_id": amostra.id,
               "quantidade": ex.maggots,
-              "fase": 4, // Larva - Maggots
+              "fase": 2, // Larva - Maggots
               "mosquito_id": ex.gnat.value
             },
-            {
-              "amostra_id": amostra.id,
-              "quantidade": ex.adults,
-              "fase": 5, // Adulto - adults
-              "mosquito_id": ex.gnat.value
-            }
           ];
 
           return ([ ...exem, ...e ]);
         }, [] );
 
+        var situacaoAmostra = 4 // NEGATIVA
+        const Outros = gnatOptions.find( mosquito => mosquito.label == "Outros")
+        
+        //Percorre os exemplares até que encontre um que contenha um mosquito transmissor de dengue (Qualquer mosquito que não seja "Outros").
+        //Caso seja encontrado, a amostra receberá situação positiva, indicando que foi encontrado presença de mosquito transmissor de dengue
+        for( var index in exemplary){
+          if(exemplary[index].mosquito_id != Outros.value){
+            situacaoAmostra = 3 //POSITIVA
+            break
+          }
+        }
+
         const data = {
           "id": amostra.id,
-          "situacaoAmostra": sampleSituation.value,
+          "situacaoAmostra": situacaoAmostra,
           "exemplares": exemplary
         };
 
@@ -377,42 +340,12 @@ export const ModalExaminarAmostra = ({ mosquitos, amostra, isOpen, handleClose, 
                         <Row>
                           <Col sm="12" md="6">
                             <FormGroup>
-                              <label>Ovos</label>
-                              <input
-                                value={ exa.eggs }
-                                type="number"
-                                className="form-control"
-                                onChange={ e => { changeEggs( parseInt( e.target.value == '' ? 0 : e.target.value ), index ) } }
-                                min={ 0 }
-                                required
-                                disabled={amostra.situacaoAmostra == 3 || amostra.situacaoAmostra == 4}
-                              />
-                            </FormGroup>
-                          </Col>
-                          <Col sm="12" md="6">
-                            <FormGroup>
                               <label>Pulpas</label>
                               <input
                                 value={ exa.pulps }
                                 type="number"
                                 className="form-control"
                                 onChange={ e => { changePulps( parseInt( e.target.value == '' ? 0 : e.target.value ), index ) } }
-                                min={ 0 }
-                                required
-                                disabled={amostra.situacaoAmostra == 3 || amostra.situacaoAmostra == 4}
-                              />
-                            </FormGroup>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col sm="12" md="6">
-                            <FormGroup>
-                              <label>Exúvias de Pulpa</label>
-                              <input
-                                value={ exa.pulpExuvia }
-                                type="number"
-                                className="form-control"
-                                onChange={ e => { changePulpExuvia( parseInt( e.target.value == '' ? 0 : e.target.value ), index ) } }
                                 min={ 0 }
                                 required
                                 disabled={amostra.situacaoAmostra == 3 || amostra.situacaoAmostra == 4}
@@ -427,22 +360,6 @@ export const ModalExaminarAmostra = ({ mosquitos, amostra, isOpen, handleClose, 
                                 type="number"
                                 className="form-control"
                                 onChange={ e => { changeMaggots( parseInt( e.target.value == '' ? 0 : e.target.value ), index ) } }
-                                min={ 0 }
-                                required
-                                disabled={amostra.situacaoAmostra == 3 || amostra.situacaoAmostra == 4}
-                              />
-                            </FormGroup>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col md="12">
-                            <FormGroup>
-                              <label>Adultos</label>
-                              <input
-                                value={ exa.adults }
-                                type="number"
-                                className="form-control"
-                                onChange={ e => { changeAdults( parseInt( e.target.value == '' ? 0 : e.target.value ), index ) } }
                                 min={ 0 }
                                 required
                                 disabled={amostra.situacaoAmostra == 3 || amostra.situacaoAmostra == 4}

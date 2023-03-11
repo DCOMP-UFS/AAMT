@@ -700,62 +700,61 @@ getActivityWeeklyReport = async (req, res) => {
           label: 'A1', 
           value: [
             { label: 'Aedes aegypti', value: 0 },
-            { label: 'Aedes albopictus', value: 0 }
+            { label: 'Aedes albopictus', value: 0 },
+            { label: 'Outros', value: 0 }
           ] 
         },
         { 
           label: 'A2', 
           value: [
             { label: 'Aedes aegypti', value: 0 },
-            { label: 'Aedes albopictus', value: 0 }
+            { label: 'Aedes albopictus', value: 0 },
+            { label: 'Outros', value: 0 }
           ] 
         },
         { 
           label: 'B', 
           value: [
             { label: 'Aedes aegypti', value: 0 },
-            { label: 'Aedes albopictus', value: 0 }
+            { label: 'Aedes albopictus', value: 0 },
+            { label: 'Outros', value: 0 }
           ] 
         },
         { 
           label: 'C', 
           value: [
             { label: 'Aedes aegypti', value: 0 },
-            { label: 'Aedes albopictus', value: 0 }
+            { label: 'Aedes albopictus', value: 0 },
+            { label: 'Outros', value: 0 }
           ] 
         },
         { 
           label: 'D1', 
           value: [
             { label: 'Aedes aegypti', value: 0 },
-            { label: 'Aedes albopictus', value: 0 }
+            { label: 'Aedes albopictus', value: 0 },
+            { label: 'Outros', value: 0 }
           ] 
         },
         { 
           label: 'D2', 
           value: [
             { label: 'Aedes aegypti', value: 0 },
-            { label: 'Aedes albopictus', value: 0 }
+            { label: 'Aedes albopictus', value: 0 },
+            { label: 'Outros', value: 0 }
           ] 
         },
         { 
           label: 'E', 
           value: [
             { label: 'Aedes aegypti', value: 0 },
-            { label: 'Aedes albopictus', value: 0 }
+            { label: 'Aedes albopictus', value: 0 },
+            { label: 'Outros', value: 0 }
           ] 
         },
       ]
 
       let sampleExemplary = [
-        {
-          label: 'Ovo',
-          value: [
-            { label: 'Aedes aegypti', value: 0 },
-            { label: 'Aedes albopictus', value: 0 },
-            { label: 'Outros', value: 0 }
-          ]
-        },
         {
           label: 'Pupa',
           value: [
@@ -765,23 +764,7 @@ getActivityWeeklyReport = async (req, res) => {
           ]
         },
         {
-          label: 'Exúvia de pupa',
-          value: [
-            { label: 'Aedes aegypti', value: 0 },
-            { label: 'Aedes albopictus', value: 0 },
-            { label: 'Outros', value: 0 }
-          ]
-        },
-        {
           label: 'Larva',
-          value: [
-            { label: 'Aedes aegypti', value: 0 },
-            { label: 'Aedes albopictus', value: 0 },
-            { label: 'Outros', value: 0 }
-          ]
-        },
-        {
-          label: 'Adulto',
           value: [
             { label: 'Aedes aegypti', value: 0 },
             { label: 'Aedes albopictus', value: 0 },
@@ -972,7 +955,7 @@ getActivityWeeklyReport = async (req, res) => {
               // Preenchendo informações dos exemplares
               amostra.exemplares.forEach( exemplar => {
                 switch( exemplar.fase ) {
-                  case 1: // Ovo
+                  case 1: // Pulpa
                     if( exemplar.mosquito_id === 1 )
                       sampleExemplary[ 0 ].value[ 0 ].value += exemplar.quantidade;
 
@@ -982,7 +965,7 @@ getActivityWeeklyReport = async (req, res) => {
                     if( exemplar.mosquito_id > 2 )
                       sampleExemplary[ 0 ].value[ 2 ].value += exemplar.quantidade;
                     break;
-                  case 2: // Pupa
+                  case 2: // Larva
                     if( exemplar.mosquito_id === 1 )
                       sampleExemplary[ 1 ].value[ 0 ].value += exemplar.quantidade;
 
@@ -991,36 +974,6 @@ getActivityWeeklyReport = async (req, res) => {
 
                     if( exemplar.mosquito_id > 2 )
                       sampleExemplary[ 1 ].value[ 2 ].value += exemplar.quantidade;
-                    break;
-                  case 3: // Exúvia de pupa
-                    if( exemplar.mosquito_id === 1 )
-                      sampleExemplary[ 2 ].value[ 0 ].value += exemplar.quantidade;
-
-                    if( exemplar.mosquito_id === 2 )
-                      sampleExemplary[ 2 ].value[ 1 ].value += exemplar.quantidade;
-
-                    if( exemplar.mosquito_id > 2 )
-                      sampleExemplary[ 2 ].value[ 2 ].value += exemplar.quantidade;
-                    break;
-                  case 4: // Larva
-                    if( exemplar.mosquito_id === 1 )
-                      sampleExemplary[ 3 ].value[ 0 ].value += exemplar.quantidade;
-
-                    if( exemplar.mosquito_id === 2 )
-                      sampleExemplary[ 3 ].value[ 1 ].value += exemplar.quantidade;
-
-                    if( exemplar.mosquito_id > 2 )
-                      sampleExemplary[ 3 ].value[ 2 ].value += exemplar.quantidade;
-                    break;
-                  case 5: // Adulto
-                    if( exemplar.mosquito_id === 1 )
-                      sampleExemplary[ 4 ].value[ 0 ].value += exemplar.quantidade;
-
-                    if( exemplar.mosquito_id === 2 )
-                      sampleExemplary[ 4 ].value[ 1 ].value += exemplar.quantidade;
-
-                    if( exemplar.mosquito_id > 2 )
-                      sampleExemplary[ 4 ].value[ 2 ].value += exemplar.quantidade;
                     break;
                 
                   default:
@@ -1032,30 +985,37 @@ getActivityWeeklyReport = async (req, res) => {
                 case 'A1':
                   sampleByDeposit[ 0 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
                   sampleByDeposit[ 0 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                  sampleByDeposit[ 0 ].value[ 2 ].value += other.length > 0 ? 1 : 0;
                   break;
                 case 'A2':
                   sampleByDeposit[ 1 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
                   sampleByDeposit[ 1 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                  sampleByDeposit[ 1 ].value[ 2 ].value += other.length > 0 ? 1 : 0;
                   break; 
                 case 'B':
                   sampleByDeposit[ 2 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
                   sampleByDeposit[ 2 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                  sampleByDeposit[ 2 ].value[ 2 ].value += other.length > 0 ? 1 : 0;
                   break;
                 case 'C':
                   sampleByDeposit[ 3 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
                   sampleByDeposit[ 3 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                  sampleByDeposit[ 3 ].value[ 2 ].value += other.length > 0 ? 1 : 0;
                   break; 
                 case 'D1':
                   sampleByDeposit[ 4 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
                   sampleByDeposit[ 4 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                  sampleByDeposit[ 4 ].value[ 2 ].value += other.length > 0 ? 1 : 0;
                   break;
                 case 'D2':
                   sampleByDeposit[ 5 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
                   sampleByDeposit[ 5 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                  sampleByDeposit[ 5 ].value[ 2 ].value += other.length > 0 ? 1 : 0;
                   break; 
                 case 'E':
                   sampleByDeposit[ 6 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
                   sampleByDeposit[ 6 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                  sampleByDeposit[ 6 ].value[ 2 ].value += other.length > 0 ? 1 : 0;
                   break;      
               }
             });
@@ -1135,8 +1095,8 @@ getActivityWeeklyReport = async (req, res) => {
         epiWeek: {
           semana,
           ano, 
-          inicio: format(parseISO(data_inicio), 'dd-MM-yyyy'),
-          fim: format(parseISO(data_fim), 'dd-MM-yyyy'),
+          inicio: format(parseISO(data_inicio), 'dd/MM/yyyy'),
+          fim: format(parseISO(data_fim), 'dd/MM/yyyy'),
           totalAgentes: numberAgents
         },
         situacao_quarteirao,
@@ -1377,62 +1337,61 @@ getCurrentActivityReport = async ( req, res ) => {
           label: 'A1', 
           value: [
             { label: 'Aedes aegypti', value: 0 },
-            { label: 'Aedes albopictus', value: 0 }
+            { label: 'Aedes albopictus', value: 0 },
+            { label: 'Outros', value: 0 }
           ] 
         },
         { 
           label: 'A2', 
           value: [
             { label: 'Aedes aegypti', value: 0 },
-            { label: 'Aedes albopictus', value: 0 }
+            { label: 'Aedes albopictus', value: 0 },
+            { label: 'Outros', value: 0 }
           ] 
         },
         { 
           label: 'B', 
           value: [
             { label: 'Aedes aegypti', value: 0 },
-            { label: 'Aedes albopictus', value: 0 }
+            { label: 'Aedes albopictus', value: 0 },
+            { label: 'Outros', value: 0 }
           ] 
         },
         { 
           label: 'C', 
           value: [
             { label: 'Aedes aegypti', value: 0 },
-            { label: 'Aedes albopictus', value: 0 }
+            { label: 'Aedes albopictus', value: 0 },
+            { label: 'Outros', value: 0 }
           ] 
         },
         { 
           label: 'D1', 
           value: [
             { label: 'Aedes aegypti', value: 0 },
-            { label: 'Aedes albopictus', value: 0 }
+            { label: 'Aedes albopictus', value: 0 },
+            { label: 'Outros', value: 0 }
           ] 
         },
         { 
           label: 'D2', 
           value: [
             { label: 'Aedes aegypti', value: 0 },
-            { label: 'Aedes albopictus', value: 0 }
+            { label: 'Aedes albopictus', value: 0 },
+            { label: 'Outros', value: 0 }
           ] 
         },
         { 
           label: 'E', 
           value: [
             { label: 'Aedes aegypti', value: 0 },
-            { label: 'Aedes albopictus', value: 0 }
+            { label: 'Aedes albopictus', value: 0 },
+            { label: 'Outros', value: 0 }
           ] 
         },
       ]
 
       let sampleExemplary = [
-        {
-          label: 'Ovo',
-          value: [
-            { label: 'Aedes aegypti', value: 0 },
-            { label: 'Aedes albopictus', value: 0 },
-            { label: 'Outros', value: 0 }
-          ]
-        },
         {
           label: 'Pupa',
           value: [
@@ -1442,23 +1401,7 @@ getCurrentActivityReport = async ( req, res ) => {
           ]
         },
         {
-          label: 'Exúvia de pupa',
-          value: [
-            { label: 'Aedes aegypti', value: 0 },
-            { label: 'Aedes albopictus', value: 0 },
-            { label: 'Outros', value: 0 }
-          ]
-        },
-        {
           label: 'Larva',
-          value: [
-            { label: 'Aedes aegypti', value: 0 },
-            { label: 'Aedes albopictus', value: 0 },
-            { label: 'Outros', value: 0 }
-          ]
-        },
-        {
-          label: 'Adulto',
           value: [
             { label: 'Aedes aegypti', value: 0 },
             { label: 'Aedes albopictus', value: 0 },
@@ -1649,7 +1592,7 @@ getCurrentActivityReport = async ( req, res ) => {
               // Preenchendo informações dos exemplares
               amostra.exemplares.forEach( exemplar => {
                 switch( exemplar.fase ) {
-                  case 1: // Ovo
+                  case 1: // Pupa
                     if( exemplar.mosquito_id === 1 )
                       sampleExemplary[ 0 ].value[ 0 ].value += exemplar.quantidade;
 
@@ -1659,7 +1602,7 @@ getCurrentActivityReport = async ( req, res ) => {
                     if( exemplar.mosquito_id > 2 )
                       sampleExemplary[ 0 ].value[ 2 ].value += exemplar.quantidade;
                     break;
-                  case 2: // Pupa
+                  case 2: // Larva
                     if( exemplar.mosquito_id === 1 )
                       sampleExemplary[ 1 ].value[ 0 ].value += exemplar.quantidade;
 
@@ -1669,37 +1612,6 @@ getCurrentActivityReport = async ( req, res ) => {
                     if( exemplar.mosquito_id > 2 )
                       sampleExemplary[ 1 ].value[ 2 ].value += exemplar.quantidade;
                     break;
-                  case 3: // Exúvia de pupa
-                    if( exemplar.mosquito_id === 1 )
-                      sampleExemplary[ 2 ].value[ 0 ].value += exemplar.quantidade;
-
-                    if( exemplar.mosquito_id === 2 )
-                      sampleExemplary[ 2 ].value[ 1 ].value += exemplar.quantidade;
-
-                    if( exemplar.mosquito_id > 2 )
-                      sampleExemplary[ 2 ].value[ 2 ].value += exemplar.quantidade;
-                    break;
-                  case 4: // Larva
-                    if( exemplar.mosquito_id === 1 )
-                      sampleExemplary[ 3 ].value[ 0 ].value += exemplar.quantidade;
-
-                    if( exemplar.mosquito_id === 2 )
-                      sampleExemplary[ 3 ].value[ 1 ].value += exemplar.quantidade;
-
-                    if( exemplar.mosquito_id > 2 )
-                      sampleExemplary[ 3 ].value[ 2 ].value += exemplar.quantidade;
-                    break;
-                  case 5: // Adulto
-                    if( exemplar.mosquito_id === 1 )
-                      sampleExemplary[ 4 ].value[ 0 ].value += exemplar.quantidade;
-
-                    if( exemplar.mosquito_id === 2 )
-                      sampleExemplary[ 4 ].value[ 1 ].value += exemplar.quantidade;
-
-                    if( exemplar.mosquito_id > 2 )
-                      sampleExemplary[ 4 ].value[ 2 ].value += exemplar.quantidade;
-                    break;
-                
                   default:
                     break;
                 }
@@ -1709,30 +1621,37 @@ getCurrentActivityReport = async ( req, res ) => {
                 case 'A1':
                   sampleByDeposit[ 0 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
                   sampleByDeposit[ 0 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                  sampleByDeposit[ 0 ].value[ 2 ].value += other.length > 0 ? 1 : 0;
                   break;
                 case 'A2':
                   sampleByDeposit[ 1 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
                   sampleByDeposit[ 1 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                  sampleByDeposit[ 1 ].value[ 2 ].value += other.length > 0 ? 1 : 0;
                   break; 
                 case 'B':
                   sampleByDeposit[ 2 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
                   sampleByDeposit[ 2 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                  sampleByDeposit[ 2 ].value[ 2 ].value += other.length > 0 ? 1 : 0;
                   break;
                 case 'C':
                   sampleByDeposit[ 3 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
                   sampleByDeposit[ 3 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                  sampleByDeposit[ 3 ].value[ 2 ].value += other.length > 0 ? 1 : 0;
                   break; 
                 case 'D1':
                   sampleByDeposit[ 4 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
                   sampleByDeposit[ 4 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                  sampleByDeposit[ 4 ].value[ 2 ].value += other.length > 0 ? 1 : 0;
                   break;
                 case 'D2':
                   sampleByDeposit[ 5 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
                   sampleByDeposit[ 5 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                  sampleByDeposit[ 5 ].value[ 2 ].value += other.length > 0 ? 1 : 0;
                   break; 
                 case 'E':
                   sampleByDeposit[ 6 ].value[ 0 ].value += aegypti.length > 0 ? 1 : 0;
                   sampleByDeposit[ 6 ].value[ 1 ].value += albopictus.length > 0 ? 1 : 0;
+                  sampleByDeposit[ 6 ].value[ 2 ].value += other.length > 0 ? 1 : 0;
                   break;      
               }
             });

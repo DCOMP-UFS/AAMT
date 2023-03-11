@@ -203,12 +203,11 @@ export const ModalExaminarAmostra = ({ mosquitos, amostra, isOpen, handleClose, 
         }, [] );
 
         var situacaoAmostra = 4 // NEGATIVA
-        const Outros = gnatOptions.find( mosquito => mosquito.label == "Outros")
         
-        //Percorre os exemplares até que encontre um que contenha um mosquito transmissor de dengue (Qualquer mosquito que não seja "Outros").
-        //Caso seja encontrado, a amostra receberá situação positiva, indicando que foi encontrado presença de mosquito transmissor de dengue
+        //Percorre os exemplares até que encontre um que contenha um mosquito transmissor de dengue 
+        //(Aedes aegypti ou Aedes albopictus).
         for( var index in exemplary){
-          if(exemplary[index].mosquito_id != Outros.value){
+          if(exemplary[index].mosquito_id == 1 || exemplary[index].mosquito_id == 2){
             situacaoAmostra = 3 //POSITIVA
             break
           }

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Typography from "@material-ui/core/Typography";
 import 'react-toastify/dist/ReactToastify.css';
 import Table, { ButtonAdd, ButtonDesabled } from '../../components/Table';
-import { FaSyncAlt, FaRegChartBar } from 'react-icons/fa';
+import { FaSyncAlt, FaRegChartBar, FaEdit } from 'react-icons/fa';
 import ModalDestroy from './ModalDestroy';
 import ModalUpdateCycle from './ModalUpdateCycle';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -156,9 +156,9 @@ function Ciclos({ ciclos, regionalSaude_id, ...props }) {
           dataInicioBr,
           dataFimBr,
           ciclo.situacao,
-          <Tooltip className="text-info" title="Relatórios" >
+          <Tooltip className="text-info" title="Editar Ciclo" >
             <IconButton aria-label="desativar">
-              <FaRegChartBar />
+              <FaEdit />
             </IconButton>
           </Tooltip>
         ]

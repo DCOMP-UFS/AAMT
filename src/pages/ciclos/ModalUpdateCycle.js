@@ -106,7 +106,7 @@ function ModalUpdateCycle({ ciclos, index, isOpen, handleClose, ...props }) {
 
   // Evita que a dataFim seja anterior a dataInicio
   useEffect(() => {
-    if (dataInicio) {
+    /* if (dataInicio) {
       let endDate = new Date(dataInicio);
       let today = new Date();
       let endDateStringFormat =
@@ -117,7 +117,7 @@ function ModalUpdateCycle({ ciclos, index, isOpen, handleClose, ...props }) {
       setDataFim(
         dataFim <= dataInicio && dataFim ? endDateStringFormat : dataFim
       );
-    }
+    } */
   }, [dataInicio]);
 
   // Controla a ativação dos inputs de datas
@@ -220,11 +220,9 @@ function ModalUpdateCycle({ ciclos, index, isOpen, handleClose, ...props }) {
                   type="date"
                   className="form-control"
                   value={dataInicio}
-                  min={minDate}
-                  max={maxDate}
                   onChange={(e) => setDataInicio(e.target.value)}
                   required
-                  disabled={dataInicioDesativado}
+                  disabled={true}
                 />
               </FormGroup>
             </Col>
@@ -238,11 +236,10 @@ function ModalUpdateCycle({ ciclos, index, isOpen, handleClose, ...props }) {
                   id="dataFim"
                   className="form-control"
                   value={dataFim}
-                  min={minDate}
+                  min={dataInicio}
                   max={maxDate}
                   onChange={(e) => setDataFim(e.target.value)}
                   required
-                  disabled={dataFimDesativado}
                 />
               </FormGroup>
             </Col>

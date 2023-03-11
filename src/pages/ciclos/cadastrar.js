@@ -60,6 +60,7 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
   const [ maxDate, setMaxDate ] = useState( "" );
   const [ isModalAddActiveOpen, setIsModalAddActiveOpen ] = useState( false );
   const [ isModalUpdateActiveOpen, setIsModalUpdateOpen ] = useState( false );
+  const [ isLastCycleOpen, setIsLastCycleOpen ] = useState( false );
 
   const handleCloseAddActive = () => {setIsModalAddActiveOpen(false)}
   const handleCloseUpdateActive = () => {setIsModalUpdateOpen(false)}
@@ -79,6 +80,12 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
     } else {
       let lastCycle = ciclos.at(-1);
       let tomorrow = new Date(lastCycle.dataFim);
+      const today = new Date()
+
+      //Siginifica que o ultimo ciclo ainda está em andamento
+      if(today <= new Date(lastCycle.dataFim))
+        setIsLastCycleOpen(true)
+
       tomorrow.setDate(tomorrow.getDate() + 1);
       setSequencia({ value: lastCycle.sequencia + 1, label: (lastCycle.sequencia + 1).toString() });
       setMinDate(tomorrow.toISOString().split("T")[0]);
@@ -161,119 +168,127 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
           <article className="col-md-12 stretch-card">
             <div className="card">
               <h4 className="title">Ciclo</h4>
-              <p className="text-description">
+              <p className={isLastCycleOpen ? "d-none" : "text-description"}>
                 Atenção! Os campos com <code>*</code> são obrigatórios
               </p>
-              <Row>
-                <Col sm='6'>
-                  <form onSubmit={ handleSubmit }>
-                    <ContainerFixed>
-                      <ButtonSave
-                        title="Salvar"
-                        className="bg-info text-white"
-                        loading={ flBtnLoading }
-                        disabled={ flBtnLoading }
-                        type="submit" />
-                    </ContainerFixed>
+              <p className={isLastCycleOpen ? "text-description" : "d-none"}>
+                Não é permitido cadastrar um novo ciclo enquanto existir outro sendo feito. 
+              </p>
+              <div className={ isLastCycleOpen ? 'd-none' : " " }>
+                <Row>
+                  <Col sm='6'>
+                    <form onSubmit={ handleSubmit }>
+                      <ContainerFixed>
+                        <ButtonSave
+                          title="Salvar"
+                          className="bg-info text-white"
+                          loading={ flBtnLoading }
+                          disabled={ flBtnLoading || isLastCycleOpen }
+                          type="submit" />
+                      </ContainerFixed>
 
-                    <h4 className="title">Informações do ciclo</h4>
-                    <p className="text-description">
-                      Atenção! As atividades cadastradas neste ciclo serão aplicadas a todos os municípios de responsabilidade da regional de saúde
-                    </p>
-                    <Row>
-                      <Col sm="6">
-                        <FormGroup>
-                          <label htmlFor="ano">Ano <code>*</code></label>
-                          <Select
-                            id="ano"
-                            value={ano}
-                            options={optionAno}
-                            onChange={e => setAno(e)}
-                            styles={selectDefault}
-                            isRequired={true}
-                            required
-                            isDisabled
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col sm="6">
-                        <FormGroup>
-                          <label htmlFor="sequencia">Sequência <code>*</code></label>
-                          <Select
-                            id="sequencia"
-                            value={ sequencia }
-                            options={ optionSequencia }
-                            onChange={ e => setSequencia( e ) }
-                            styles={ selectDefault }
-                            required
-                            isDisabled
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col sm="6">
-                        <FormGroup>
-                          <label htmlFor="ano">Data de início <code>*</code></label>
-                          <input
-                            type="date"
-                            className="form-control"
-                            value={ dataInicio }
-                            min={minDate}
-                            max={maxDate}
-                            onChange={ e => setDataInicio( e.target.value ) }
-                            required
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col sm="6">
-                        <FormGroup>
-                          <label htmlFor="sequencia">Data de fim <code>*</code></label>
-                          <input
-                            id="dataFim"
-                            type="date"
-                            className="form-control"
-                            value={ dataFim }
-                            min={minDate}
-                            max={maxDate}
-                            onChange={ e => setDataFim( e.target.value ) }
-                            required
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
+                      <h4 className="title">Informações do ciclo</h4>
+                      <p className="text-description">
+                        Atenção! As atividades cadastradas neste ciclo serão aplicadas a todos os municípios de responsabilidade da regional de saúde
+                      </p>
+                      <Row>
+                        <Col sm="6">
+                          <FormGroup>
+                            <label htmlFor="ano">Ano <code>*</code></label>
+                            <Select
+                              id="ano"
+                              value={ano}
+                              options={optionAno}
+                              onChange={e => setAno(e)}
+                              styles={selectDefault}
+                              isRequired={true}
+                              required
+                              isDisabled
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col sm="6">
+                          <FormGroup>
+                            <label htmlFor="sequencia">Sequência <code>*</code></label>
+                            <Select
+                              id="sequencia"
+                              value={ sequencia }
+                              options={ optionSequencia }
+                              onChange={ e => setSequencia( e ) }
+                              styles={ selectDefault }
+                              required
+                              isDisabled
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col sm="6">
+                          <FormGroup>
+                            <label htmlFor="ano">Data de início <code>*</code></label>
+                            <input
+                              type="date"
+                              className="form-control"
+                              value={ dataInicio }
+                              min={minDate}
+                              max={maxDate}
+                              onChange={ e => setDataInicio( e.target.value ) }
+                              required
+                              disabled={isLastCycleOpen}
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col sm="6">
+                          <FormGroup>
+                            <label htmlFor="sequencia">Data de fim <code>*</code></label>
+                            <input
+                              id="dataFim"
+                              type="date"
+                              className="form-control"
+                              value={ dataFim }
+                              min={minDate}
+                              max={maxDate}
+                              onChange={ e => setDataFim( e.target.value ) }
+                              required
+                              disabled={isLastCycleOpen}
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
 
-                  </form>
-                </Col>
+                    </form>
+                  </Col>
 
-                <Col sm='6'>
-                  <h4 className="title">
-                    Atividades
-                    <ButtonNewObject
-                      title="Cadastrar Atividade"
-                      data-toggle="modal"
-                      data-target="#modal-novo-atividade"
-                      onClick={() => {setIsModalAddActiveOpen(true)}}
+                  <Col sm='6'>
+                    <h4 className="title">
+                      Atividades
+                      <ButtonNewObject
+                        title="Cadastrar Atividade"
+                        data-toggle="modal"
+                        data-target="#modal-novo-atividade"
+                        disabled={isLastCycleOpen}
+                        onClick={() => {setIsModalAddActiveOpen(true)}}
+                      />
+                      <small>Quais atividades deseja executadar neste ciclo?</small>
+                    </h4>
+
+                    <ListActive
+                      atividades={ atividades }
+                      deleteAction={ removeActive }
+                      setIndexAtv={ setIndexAtv }
+                      setIsModalUpdateOpen={ setIsModalUpdateOpen }
                     />
-                    <small>Quais atividades deseja executadar neste ciclo?</small>
-                  </h4>
+                  </Col>
 
-                  <ListActive
-                    atividades={ atividades }
-                    deleteAction={ removeActive }
-                    setIndexAtv={ setIndexAtv }
-                    setIsModalUpdateOpen={ setIsModalUpdateOpen }
+                  <ModalAddActive addAtividade={ addAtividade } isOpen={isModalAddActiveOpen} handleClose={handleCloseAddActive}/>
+                  <ModalUpdateActive
+                    atividade={ atividades[ indexAtv ] }
+                    updateAtividade={ updateAtividade }
+                    isOpen={isModalUpdateActiveOpen}
+                    handleClose={handleCloseUpdateActive}
                   />
-                </Col>
-
-                <ModalAddActive addAtividade={ addAtividade } isOpen={isModalAddActiveOpen} handleClose={handleCloseAddActive}/>
-                <ModalUpdateActive
-                  atividade={ atividades[ indexAtv ] }
-                  updateAtividade={ updateAtividade }
-                  isOpen={isModalUpdateActiveOpen}
-                  handleClose={handleCloseUpdateActive}
-                />
-              </Row>
+                </Row>
+              </div>
             </div>
           </article>
         </div>

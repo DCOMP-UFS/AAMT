@@ -117,6 +117,7 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
   const [ quarteiroesTrabalhados, setQuarteiroesTrabalhados ] = useState( [] );
   const [ quarteiroesAedesAegypti, setQuarteiroesAedesAegypti ] = useState( [] );
   const [ quarteiroesAedesAlbopictus, setQuarteiroesAedesAlbopictus ] = useState( [] );
+  const [ semanaDataInicioFim, setSemanaDataInicioFim ] = useState( "" );
 
   function sliceIntoSubArrays (array, size) {
     const res = [];
@@ -147,6 +148,7 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
       setAmostrasPorDepositos( boletimSemanal.sampleByDeposit );
       setAmostrasPorImoveis( boletimSemanal.sampleByProperty );
       setAmostrasPorExemplar( boletimSemanal.sampleExemplary );
+      setSemanaDataInicioFim( "( "+boletimSemanal.epiWeek.inicio+" até "+boletimSemanal.epiWeek.fim+" )" )
 
       const qrt_concluidos = boletimSemanal.situacao_quarteirao.concluidos;
       const qrt_trabalhados = boletimSemanal.situacao_quarteirao.trabalhados;
@@ -221,7 +223,7 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaChartPie /></PageIcon>
-          Boletim semanal - Semana epidemiológica { semana } de { ano }
+          Boletim semanal - Semana epidemiológica { semana } de { ano } {semanaDataInicioFim}
         </h3>
       </PageHeader>
       <section className="card-list">
@@ -370,7 +372,7 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
         <Col md="12">
             <article className="p-0">
               <div className="card">
-                <h2 className="title">Nº dos quarteirões trabalhados</h2>
+                <h2 className="title">Nº dos quarteirões para serem trabalhados</h2>
                 <table className="table table-striped table-hover">
                   <thead className="thead-dark">
                     <tr>
@@ -442,7 +444,7 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
           <Col md="12">
             <article className="p-0">
               <div className="card">
-                <h2 className="title">Nº depósitos com espécimes por tipo</h2>
+                <h2 className="title">Nº depósitos por tipo com espécimes</h2>
                 <table className="table table-striped table-hover">
                   <thead className="thead-dark">
                     <tr>
@@ -476,6 +478,15 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
                       }
                       <td>{ amostrasPorDepositos.reduce( ( ac, row ) => ( ac + row.value[ 1 ].value ), 0 ) }</td>
                     </tr>
+                    <tr>
+                      <td>Outros</td>
+                      {
+                        amostrasPorDepositos.map( ( row, index ) => (
+                          <td key={ 'albopictus-' + index }>{ row.value[ 2 ].value }</td>
+                        ))
+                      }
+                      <td>{ amostrasPorDepositos.reduce( ( ac, row ) => ( ac + row.value[ 2 ].value ), 0 ) }</td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -484,7 +495,7 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
           <Col md="12">
             <article className="p-0">
               <div className="card">
-                <h2 className="title">Nº de imóveis com espécimes por tipo</h2>
+                <h2 className="title">Nº de imóveis por tipo com espécimes</h2>
                 <table className="table table-striped table-hover">
                   <thead className="thead-dark">
                     <tr>
@@ -537,11 +548,8 @@ export const VisualizarRelatorio = ({ boletimSemanal, ...props }) => {
                   <thead className="thead-dark">
                     <tr>
                       <th>Mosquito</th>
-                      <th>Ovos</th>
                       <th>Pupas</th>
-                      <th>Exúvias de pupa</th>
                       <th>Larvas</th>
-                      <th>Adultos</th>
                     </tr>
                   </thead>
                   <tbody>

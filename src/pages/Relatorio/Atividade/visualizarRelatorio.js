@@ -367,7 +367,7 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
         <Col md="12">
             <article className="p-0">
               <div className="card">
-                <h2 className="title">Nº dos quarteirões trabalhados</h2>
+                <h2 className="title">Nº dos quarteirões para serem trabalhados</h2>
                 <table className="table table-striped table-hover">
                   <thead className="thead-dark">
                     <tr>
@@ -439,7 +439,7 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
           <Col md="12">
             <article className="p-0">
               <div className="card">
-                <h2 className="title">Nº depósitos com espécimes por tipo</h2>
+                <h2 className="title">Nº depósitos por tipo com espécimes</h2>
                 <table className="table table-striped table-hover">
                   <thead className="thead-dark">
                     <tr>
@@ -473,6 +473,15 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
                       }
                       <td>{ amostrasPorDepositos.reduce( ( ac, row ) => ( ac + row.value[ 1 ].value ), 0 ) }</td>
                     </tr>
+                    <tr>
+                      <td>Outros</td>
+                      {
+                        amostrasPorDepositos.map( ( row, index ) => (
+                          <td key={ 'albopictus-' + index }>{ row.value[ 2 ].value }</td>
+                        ))
+                      }
+                      <td>{ amostrasPorDepositos.reduce( ( ac, row ) => ( ac + row.value[ 2 ].value ), 0 ) }</td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -481,7 +490,7 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
           <Col md="12">
             <article className="p-0">
               <div className="card">
-                <h2 className="title">Nº de imóveis com espécimes por tipo</h2>
+                <h2 className="title">Nº de imóveis por tipo com espécimes</h2>
                 <table className="table table-striped table-hover">
                   <thead className="thead-dark">
                     <tr>
@@ -534,11 +543,8 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
                   <thead className="thead-dark">
                     <tr>
                       <th>Mosquito</th>
-                      <th>Ovos</th>
                       <th>Pupas</th>
-                      <th>Exúvias de pupa</th>
                       <th>Larvas</th>
-                      <th>Adultos</th>
                     </tr>
                   </thead>
                   <tbody>

@@ -60,7 +60,6 @@ export const PlanejarRota = ( {
     if( fl_rota_planejada ) {
       const iEquipe = indexEquipe;
       props.showNotifyToast( "Rota salva com sucesso", "success" );
-      setIndexStep( 0 );
       props.setIndexEquipe( -1 );
       props.setIndexMembro( -1 );
       setTimeout(() => { document.location.reload( true );}, 1500)

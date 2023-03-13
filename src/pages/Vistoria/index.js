@@ -217,7 +217,7 @@ const Vistoria = ( { vistoriasCache, usuario, trabalhoDiario, rota, showNotStart
 
     setCodigoAtividadeOptions( trabalhosRotasFilter.map( (elem,index) => ( { 
       value: index, 
-      label: elem.trabalhoDiario.atividade.id+" ( Metodologia - "+elem.trabalhoDiario.atividade.metodologia.sigla+" )" 
+      label: elem.trabalhoDiario.atividade.id+" ( Metodologia - "+elem.trabalhoDiario.atividade.objetivo.sigla+" )" 
     } )) )
 
     //Caso exista um trabalho diario armazenado no cache

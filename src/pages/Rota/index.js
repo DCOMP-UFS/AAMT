@@ -171,7 +171,7 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
     const trabalhosRotasFilter = props.todosTrabalhosRotas.filter( elem => elem.trabalhoDiario.horaInicio == null)
     setCodigoAtividadeOptions( trabalhosRotasFilter.map( (elem,index) => ( { 
       value: index, 
-      label: elem.trabalhoDiario.atividade.id+" ( Metodologia - "+elem.trabalhoDiario.atividade.metodologia.sigla+" )" 
+      label: elem.trabalhoDiario.atividade.id+" ( Metodologia - "+elem.trabalhoDiario.atividade.objetivo.sigla+" )" 
     } )) )
 
     setTrabalhosRotasFiltrados(trabalhosRotasFilter)

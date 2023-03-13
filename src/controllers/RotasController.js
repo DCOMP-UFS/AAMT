@@ -222,6 +222,9 @@ getAllRoutes = async ( req, res ) => {
                 id: {
                   [Op.notIn]: imoveisId
                 },
+                tipoImovel:{
+                  [Op.ne]: 4 //Ponto estrategico
+                }
               }
             },
             {
@@ -949,7 +952,7 @@ const getOpenRouteByTeam = async ( req, res ) => {
         'r.nome AS rua_nome, ' +
         'r.cep AS rua_cep, ' +
         'CAST( ' +
-          '(SELECT COUNT(*) FROM imoveis WHERE lado_id = l.id AND ativo = true) ' +
+          '(SELECT COUNT(*) FROM imoveis WHERE lado_id = l.id AND ativo = true AND tipo_imovel != 4) ' +
         ' AS INTEGER ) AS imoveis, ' +
         'CAST( ' +
           '( ' +

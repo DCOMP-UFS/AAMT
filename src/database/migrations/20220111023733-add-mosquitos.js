@@ -6,12 +6,20 @@ module.exports = {
 
     return queryInterface.bulkInsert( 'mosquitos', [
       {
+        id:1,
         nome: 'Aedes aegypti',
         created_at: new Date(),
         updated_at: new Date()
       },
       {
+        id:2,
         nome: 'Aedes albopictus',
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
+        id:3,
+        nome: 'Outros',
         created_at: new Date(),
         updated_at: new Date()
       },

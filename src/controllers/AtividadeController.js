@@ -449,7 +449,7 @@ store = async ( req, res ) => {
 plain = async ( req, res ) => {
   try{
     const { id } = req.params;
-    const { estratos, equipes, abrangencia_id } = req.body;
+    const { equipes, abrangencia_id } = req.body;
 
     const allow = await allowFunction( req.userId, "manter_atividade_municipio" );
     if( !allow )
@@ -459,14 +459,17 @@ plain = async ( req, res ) => {
     if( !atividade )
       return res.status(400).json({ message: "Atividade não existe" });
 
-    estratos.forEach( async e => {
+    equipes.forEach( async eq => {
+      //estrato da equipe sempre é uma lista com um unico elemento
+      const estrato_equipe = eq.estrato[0]
+
       const est = await Estrato.create({
         atividade_id: id
       });
 
       switch ( abrangencia_id ) {
         case 1: // Localidade
-          e.locais.forEach( async l => {
+          estrato_equipe.locais.forEach( async l => {
             await Quarteirao.findAll({
               include: {
                 association: 'localidade',
@@ -488,7 +491,7 @@ plain = async ( req, res ) => {
         
           break;
         case 2: // Zona
-          e.locais.forEach( async l => {
+          estrato_equipe.locais.forEach( async l => {
             await Quarteirao.findAll({
               include: {
                 association: 'zona',
@@ -509,7 +512,7 @@ plain = async ( req, res ) => {
           break;
       
         default: // Quarteirão
-          e.locais.forEach( async l => {
+          estrato_equipe.locais.forEach( async l => {
             await SituacaoQuarteirao.create({
               situacaoQuarteiraoId: 1,
               estrato_id: est.id,
@@ -521,12 +524,16 @@ plain = async ( req, res ) => {
     });
 
     equipes.forEach( async equipe => {
+
+      //estrato da equipe sempre é uma lista com um unico elemento
+      const estrato_equipe = equipe.estrato[0]
+
       const e = await Equipe.create({
         atividade_id: id
       });
     
       // Vinculando os quarteirões de responsabilidade da equipe
-      equipe.locais.forEach( async l => {
+      estrato_equipe.locais.forEach( async l => {
         switch ( abrangencia_id ) {
           case 1:// Localidade
             await Quarteirao.findAll({
@@ -831,6 +838,31 @@ finish = async ( req, res ) => {
 
   return true
 
+}
+
+/**
+ * Função recebe id de um quarteirão e retorna a quantidade de imoveis
+ * do quarteirão que estão ativos e que não são do tipo Ponto Estrategicos
+**/
+async function quantidadeImoveisValidosQuarteirao( quarteirao_id){
+  let sql_quarteiroes = 
+    'SELECT ' +
+      'q.id, ' +
+      'count( l.* ) ' +
+    'FROM ' +
+      'quarteiroes as q ' +
+      'JOIN lados as l ON (l.quarteirao_id = q.id) ' +
+      'JOIN imoveis as i ON (i.lado_id = l.id) ' +
+    'WHERE ' +
+      'q.id = ' + quarteirao_id +
+      ' AND i.tipo_imovel != 4' +
+      ' AND i.ativo = TRUE' +
+    ' GROUP BY ' +
+      'q.id';
+  
+  const quarteiroes = await Quarteirao.sequelize.query( sql_quarteiroes );
+  const totalImoveisQuarteirao    = quarteiroes[ 1 ].rows[0].count;
+  return totalImoveisQuarteirao;
 }
 
 const router = express.Router();

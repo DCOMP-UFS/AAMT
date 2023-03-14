@@ -383,7 +383,8 @@ getLocations = async ( req, res ) => {
             where: {
               municipio_id,
             }
-          }
+          },
+          order: [[ "numero", "asc" ]]
         }).then( quarteiroes => {
           return quarteiroes.map( quarteirao => ({ id: quarteirao.id, nome: quarteirao.numero, tipo: "quarteirao" }));
         });

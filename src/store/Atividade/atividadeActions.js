@@ -357,13 +357,13 @@ export const addEstrato = ( locais, locaisSelecionados ) => {
   }
 }
 
-export const addEquipe = ( membros, supervisor, locais ) => {
+export const addEquipe = ( membros, supervisor, estrato ) => {
   return {
     type: ActionTypes.ADD_EQUIPE,
     payload: {
       membros,
       supervisor,
-      locais
+      estrato
     }
   }
 }
@@ -386,12 +386,11 @@ export const removeEquipe = index => {
   }
 }
 
-export const planActivityRequest = (id, estratos, equipes, abrangencia_id) => {
+export const planActivityRequest = (id, equipes, abrangencia_id) => {
   return {
     type: ActionTypes.PLAN_ACTIVITY_REQUEST,
     payload: {
       id,
-      estratos,
       equipes,
       abrangencia_id
     }

@@ -64,10 +64,9 @@ export const createActiveRequest = data => {
 }
 
 export const planActivityRequest = data => {
-  const { id, estratos, equipes, abrangencia_id } = data;
+  const { id, equipes, abrangencia_id } = data;
 
   return api.post(`/atividades/planejar/${ id }`, {
-    estratos,
     equipes,
     abrangencia_id
   },

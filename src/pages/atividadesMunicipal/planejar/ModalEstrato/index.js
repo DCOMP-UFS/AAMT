@@ -42,12 +42,21 @@ const ModalEstrato = ( { atividade, estratos, isOpen, handleClose, ...props } ) 
   }, [ atividade ] );
 
   useEffect( () => {
+    montarListaLocais()
+  }, [ props.locais, props.externalReload ] );
+
+  function clearInput() {
+    montarListaLocais()
+    setLocaisSelecionados( [] );
+  }
+
+  function montarListaLocais() {
     const l = props.locais
       .map( ( loc, index ) => ( { ...loc, dataIndex: index } ) )
       .filter( loc => loc.flEstrato ? !loc.flEstrato : true );
 
-    setLocais( l );
-  }, [ props.locais, props.externalReload ] );
+    setLocais(l);
+  }
 
   function handleLocal( index ) {
     let l = locais;
@@ -107,26 +116,6 @@ const ModalEstrato = ( { atividade, estratos, isOpen, handleClose, ...props } ) 
 
     setLocais( [ ...locais, locaisSelecionados[ index ] ] );
     setLocaisSelecionados( l );
-  }
-
-  function clearInput() {
-    /* const est = [];
-    for (const estrato of estratos) {
-      for (const local of estrato.locais) {
-        est.push(local)
-      }
-    }
-    const nw_locais = locais.filter(local => !est.find(e => local.nome === e.nome));
-    setLocais( nw_locais.map((l) => ({ ...l, checked: false })) );
-    setLocaisSelecionados( [] ); */
-
-    const l = props.locais
-      .map( ( loc, index ) => ( { ...loc, dataIndex: index } ) )
-      .filter( loc => loc.flEstrato ? !loc.flEstrato : true );
-
-    setLocais(l);
-    setLocaisSelecionados( [] );
-  
   }
 
   function handleSubmit( e ) {

@@ -58,7 +58,7 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
   const [modalEstratoOpen, setModalEstratoOpen] = useState(false);
   const [modalEquipeOpen,  setModalEquipeOpen]  = useState(false);
   const [loadingSaveButton, setLoadingSaveButton] = useState( false )
-
+  const [ indexEstratoRemovido, setIndexEstratoRemovido] = useState(-1)
   const handleCloseModalEstrato = () => {setModalEstratoOpen(false)} 
   const handleCloseModalEquipe = () => {setModalEquipeOpen(false)} 
 
@@ -110,6 +110,11 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
     }
   }
 
+  const confirmarRemoveEstrato = (index) => {
+     setIndexEstratoRemovido(index)
+    $('#modal-exclusao-estrato').modal('show');
+  }
+
   return (
     <>
       <PageHeader>
@@ -144,7 +149,7 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
                   title="Confirmar planejamento"
                   confirm={() => {
                     setLoadingSaveButton(true)
-                    props.planActivityRequest( id, estratos, equipes, atividade.abrangencia )
+                    props.planActivityRequest( id, equipes, atividade.abrangencia )
                   } }
                 >
                   <p>Deseja salvar o planejamento? A atividade uma vez planejada não poderá ser editada</p>
@@ -220,7 +225,9 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
                       <span className="text-danger">{ mensageEstrato }</span>
                     </h4>
 
-                    <ListEstrato estratos={ estratos } actionRemove={ props.removeEstrato } />
+                    <ListEstrato 
+                      estratos={ estratos } confirmarRemoveEstrato = {confirmarRemoveEstrato} 
+                    />
                   </Col>
                   <Col>
                     <h4>
@@ -241,6 +248,14 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
 
               <ModalEstrato isOpen={modalEstratoOpen} handleClose={handleCloseModalEstrato} />
               <ModalEquipe  isOpen={modalEquipeOpen} handleClose={handleCloseModalEquipe}/>
+              <ModalConfirm
+                id="modal-exclusao-estrato"
+                title="Confirmar exclusão do estrato"
+                confirm={() => { props.removeEstrato(indexEstratoRemovido)} }
+                
+              >
+                <p>Deseja mesmo excluir o estrato? Caso uma equipe selecionou este estrato, a equipe tambem será excluida</p>
+              </ModalConfirm>
             </div>
           </article>
         </div>
@@ -250,7 +265,7 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
 }
 
 function ListEstrato( props ) {
-  const removeEstrato = props.actionRemove;
+  const confirmarRemoveEstrato = props.confirmarRemoveEstrato
   const estratos = props.estratos;
   let expansion = [];
 
@@ -289,7 +304,7 @@ function ListEstrato( props ) {
           <IconButton
             className="text-danger"
             aria-label="cart"
-            onClick={() => removeEstrato( index ) }
+            onClick={() => confirmarRemoveEstrato( index ) }
           >
             <FaTrash className="icon-sm" />
           </IconButton>
@@ -355,11 +370,11 @@ function ListEquipe( props ) {
           <Row>
             <Col>
               <FormGroup>
-                <label>Locai(s)</label>
+                <label>Estrato</label>
                 <UlIcon style={{ width: '100%' }}>
                   {
-                    e.locais.map( l => (
-                      <LiIcon key={ l.id } >
+                    e.estrato.map( (e,index) => (
+                      <LiIcon key={ index } >
                         <ContainerIcon className="ContainerIcon" >
                           <FaMapSigns />
                         </ContainerIcon>
@@ -367,11 +382,8 @@ function ListEquipe( props ) {
                           <div>
                             <span className="mr-2">
                             {
-                              l.tipo === "quarteirao" ?
-                                `Quarteirão nº ${ l.nome }` :
-                              l.tipo === "zona" ?
-                                `Zona ${ l.nome }` :
-                                `Localidade/Bairro: ${ l.nome }`
+                              `Estrato ${ e.dataIndex + 1 }`
+                            
                             }
                             </span>
                           </div>

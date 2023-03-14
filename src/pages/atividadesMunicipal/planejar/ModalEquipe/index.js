@@ -34,7 +34,7 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
   const [ optionSupervisor, setOptionSupervisor ]       = useState( [] );
   const [ message, setMessage ]                         = useState( "" );
   const [ messageMembro, setMessageMembro ]             = useState( "" );
-  const [ locais, setLocais ]                           = useState( [] );
+  const [ estratos, setEstratos ]                       = useState( [] );
   const [ messageLocais, setMessageLocais ]             = useState( "" );
 
   //É acionado sempre que o modal é aberto abre
@@ -69,12 +69,34 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
   }, [ membrosSelecionados ] );
 
   useEffect( () => {
-    const l = props.locais
-      .filter( loc => loc.flEstrato ? !loc.flEquipe : false )
-      .map( loc => ( { ...loc, checked: false } ) );
+    montarEstratos()
+  }, [ props.estratos, props.reload ] );
 
-    setLocais( l );
-  }, [ props.locais, props.reload ] );
+  function clearInput() {
+
+    //retirar os usuarios que são coordenadores municipais da lista de seleção
+    const filter = props.membros.filter( membro => membro.atuacoes[0].tipoPerfil != 2  )
+
+    const m = filter.map( m => ( {
+      id      : m.id,
+      nome    : m.nome,
+      checked : false
+    } ) );
+
+    setMembros( m );
+    setMembrosSelecionados( [] );
+    setSupervisor( {} );
+
+    montarEstratos()
+  }
+
+  function montarEstratos() {
+    const e = props.estratos
+      .map( (est,index) => ( { ...est, checked: false, dataIndex: index } ) )
+      .filter( e => !e.flEquipe )
+
+    setEstratos( e );
+  }
 
   function addMembro() {
     let mSelecionado = membros
@@ -144,45 +166,28 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
       setSupervisor( {} );
   }
 
-  function handleLocal( index ) {
-    let l = locais;
+  function handleEstrato( index ) {
+    let e = estratos;
 
-    if( l[ index ].checked ) {
-      l[ index ].checked = !l[ index ].checked;
+    if( e[ index ].checked ) {
+      e[ index ].checked = !e[ index ].checked;
     }else {
-      l[ index ].checked = true;
+      e[ index ].checked = true;
     }
 
-    setLocais( l );
+    e.forEach( (est,i) => {
+      if(i != index && e[ i ].checked)
+        e[ i ].checked = false
+    })
+
+    setEstratos( e );
     setInternalReload( !internalReload );
-  }
-
-  function clearInput() {
-
-    //retirar os usuarios que são coordenadores municipais da lista de seleção
-    const filter = props.membros.filter( membro => membro.atuacoes[0].tipoPerfil != 2  )
-
-    const m = filter.map( m => ( {
-      id      : m.id,
-      nome    : m.nome,
-      checked : false
-    } ) );
-
-    setMembros( m );
-    setMembrosSelecionados( [] );
-    setSupervisor( {} );
-
-    const l = props.locais
-      .filter( loc => loc.flEstrato ? !loc.flEquipe : false )
-      .map( loc => ( { ...loc, checked: false } ) );
-
-    setLocais( l );
   }
 
   function handleSubmit( e ) {
     e.preventDefault();
-    if( locaisSelecionados() == 0){
-      setMessageLocais("Adicione ao menos um local");
+    if( estratoSelecionado() == 0){
+      setMessageLocais("Adicione um estrato");
       setTimeout(() => setMessageLocais("") , 3000);
     }else if( membrosSelecionados.length === 0 ) {
       setMessageMembro("Adicione ao menos um membro a equipe");
@@ -197,7 +202,9 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
           id: supervisor.value,
           nome: supervisor.label
         },
-        locais.filter( l => l.checked )
+        // apenas um estrato pode ser selecionado, logo o comando abaixo retorna uma
+        //lista com um unico elemento
+        estratos.filter( e => e.checked ) 
       );
 
       clearInput();
@@ -205,12 +212,10 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
     }
   }
 
-  function locaisSelecionados() {
-    var numLocaisSelecionados = 0
-    locais.forEach( l => {
-      if(l.checked) numLocaisSelecionados++
-    })
-    return numLocaisSelecionados
+  function estratoSelecionado() {
+    const e = estratos.find( e => e.checked == true)
+    if(e) return 1
+    return 0
   }
 
   return (
@@ -224,10 +229,10 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
           <Row>
             <Col>
               <FormGroup>
-                <label>Locai(s) de responsabilidade da equipe <code>*</code><span className="text-danger">{ messageLocais }</span></label>
-                <ListLocaly
-                  locais={ locais }
-                  onClick={ handleLocal }
+                <label>Estrato sob responsabilidade da equipe <code>*</code><span className="text-danger">{ messageLocais }</span></label>
+                <ListEstratosLivres
+                  estratos={ estratos }
+                  onClick={ handleEstrato }
                 />
               </FormGroup>
             </Col>
@@ -240,7 +245,7 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
                 <ListMembros
                   membros={ membros }
                   onClick={ handleMembro }
-                  onDoubleClick={ dbClickMembro }
+                  onDoubleClick={ () => dbClickMembro }
                 />
               </FormGroup>
             </Col>
@@ -352,22 +357,24 @@ function ListMembros( props ) {
   );
 }
 
-function ListLocaly( props ) {
-  const locais = props.locais;
+function ListEstratosLivres( props ) {
+  let estratos = props.estratos;
   const handleLocal = props.onClick;
   const dbClickLocal = props.onDoubleClick;
   let li = [];
 
-  if( locais ) {
-    li = locais.map( (l, index) => (
+  //retira os estratos que ja foram escolhidos por outras equipes
+  estratos = estratos.filter( e => !e.flEquipe ? true : false)
+  if( estratos ) {
+    li = estratos.map( (e, index) => (
       <LiLocal
-        key={ l.id }
+        key={ e.dataIndex }
         onClick={ () => handleLocal( index ) }
-        onDoubleClick={ () => dbClickLocal( index ) }
+        onDoubleClick={ () => {} /*dbClickLocal( index )*/ }
       >
         <ContainerCheck>
           <Checkbox
-            checked={ l.checked ? l.checked : false }
+            checked={ e.checked ? e.checked : false }
             inputProps={{ 'aria-label': 'primary checkbox' }}
           />
         </ContainerCheck>
@@ -375,11 +382,7 @@ function ListLocaly( props ) {
           <div>
             <span className="mr-2">
               {
-                l.tipo === "quarteirao" ?
-                  `Quarteirão nº ${ l.nome }` :
-                l.tipo === "zona" ?
-                  `Zona ${ l.nome }` :
-                  `Localidade/Bairro ${ l.nome }`
+                `Estrato ${ e.dataIndex + 1 }`
               }
             </span>
           </div>
@@ -388,10 +391,10 @@ function ListLocaly( props ) {
     ));
   }
 
-  if( locais.length === 0) {
+  if( estratos.length === 0) {
     li = [
       <LiEmpty key={ 0 }>
-        <h4>Nenhum local disponivél para equipe</h4>
+        <h4>Nenhum estrato disponivél para equipe</h4>
       </LiEmpty>
     ]
   }
@@ -405,6 +408,7 @@ function ListLocaly( props ) {
 
 const mapStateToProps = state => ( {
   membros : state.usuario.usuarios,
+  estratos: state.atividade.estratos,
   locais  : state.atividade.locais,
   equipes : state.atividade.equipes,
   reload  : state.atividade.reload

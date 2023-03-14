@@ -203,7 +203,8 @@ export default function Atividade(state = INITIAL_STATE, action) {
     case ActionTypes.ADD_ESTRATO: {
       let estratos = state.estratos
       const estrato = {
-        locais: action.payload.locaisSelecionados
+        locais: action.payload.locaisSelecionados,
+        flEquipe: false
       }
 
       estratos = [...estratos, estrato];
@@ -232,21 +233,24 @@ export default function Atividade(state = INITIAL_STATE, action) {
       const equipe = {
         membros: action.payload.membros,
         supervisor: action.payload.supervisor,
-        locais: action.payload.locais
+        estrato: action.payload.estrato.map( e => {return {locais: e.locais, dataIndex: e.dataIndex} })
       }
 
       equipes = [...equipes, equipe];
 
-      let locais = state.locais;
-      action.payload.locais
+      let estratos = state.estratos;
+
+      //action.payload.estrato é uma lista com um unico elemento
+      //este elemento é o estrato selecionado para a equipe
+      action.payload.estrato
         .forEach(
-          l => locais[ l.dataIndex ] = { ...locais[ l.dataIndex ], flEquipe: true }
+          e => estratos[ e.dataIndex ] = { ...estratos[ e.dataIndex ], flEquipe: true }
         );
 
       return {
         ...state,
         equipes,
-        locais,
+        estratos,
         reload: !state.reload
       }
     }
@@ -262,19 +266,20 @@ export default function Atividade(state = INITIAL_STATE, action) {
         locais[ loc.dataIndex ] = { ...locais[ loc.dataIndex ], flEstrato: false, flEquipe: false }
       });
 
-      // Removendo localidades das equipes
-      equipes = equipes
-        .map( e => {
-          l.forEach( loc => {
-            e.locais = e.locais.filter( eLoc => loc.id !== eLoc.id );
-          });
-
-          return e;
-        })
-        .filter( e => e.locais.length > 0 );
-
+      //Remove a equipe que possui o estrato que será deletado
+      //O atributo e.estrato[0].dataIndex indica a posição do estrato da equipe em relação a lista de estratos existentes
+      equipes = equipes.filter( e =>  e.estrato[0].dataIndex != action.payload.index )
+      
       // Deletando estrato
       estratos.splice( action.payload.index, 1 );
+      
+      //Na linha anterior foi removido um estrato na lista, por isso é necessario atualizar o dataIndex
+      //dos estratos das equipes. Lembrando que o dataIndex indica a posição do estrato da equipe em relação
+      //a lista dos extratos existentes
+      equipes.forEach( (e,index) => {
+        if(e.estrato[0].dataIndex > action.payload.index)
+          equipes[index].estrato[0].dataIndex -= 1
+      })
 
       return {
         ...state,
@@ -289,17 +294,24 @@ export default function Atividade(state = INITIAL_STATE, action) {
     case ActionTypes.REMOVE_EQUIPE: {
       const index = action.payload.index;
       let equipes = state.equipes;
-      const lEquipe = equipes[ index ].locais;
+      let estratos = state.estratos
+      const lEquipe = equipes[ index ].estrato[0].locais;
+      const estrato_equipe = equipes[ index ].estrato[0]
 
       let locais = state.locais;
       lEquipe.forEach( l => {
         locais[ l.dataIndex ] = { ...locais[ l.dataIndex ], flEquipe: false }
       });
 
+      //libera o estrato da equipe que será deletada para que possa
+      //se escolhida por outra equipe
+      estratos[estrato_equipe.dataIndex].flEquipe = false
+
       equipes.splice( index, 1 );
 
       return {
         ...state,
+        estratos,
         equipes,
         locais,
         reload: !state.reload

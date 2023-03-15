@@ -3,6 +3,7 @@ const TrabalhoDiario      = require('../models/TrabalhoDiario');
 const Vistoria            = require('../models/Vistoria');
 const Estrato             = require('../models/Estrato');
 const SituacaoQuarteirao  = require('../models/SituacaoQuarteirao');
+const EquipeQuarteirao    = require('../models/EquipeQuarteirao')
 
 const { Op } = require('sequelize');
 
@@ -23,36 +24,62 @@ module.exports = async trabalho_diario_id => {
   if( !trabalho )
     return;
 
-  const { atividade_id } = trabalho.equipe;
+  const { atividade_id, id: equipe_id } = trabalho.equipe;
+
+  const quarteiroes_da_equipe = await EquipeQuarteirao.findAll({
+    where: {
+      equipe_id
+    }
+  })
+
+  //Irá contem os ids de todos os quarteiroes que a equipe é responsavel
+  var lista_quarteiroes_id = []
+  quarteiroes_da_equipe.forEach( q => lista_quarteiroes_id.push(q.quarteirao_id))
+
+  //Query que irá encontra o estrato sob resposabilidade da equipe que fez o trabalho diario, que é justamente o estrato que contem 
+  //todos os quarteirões que estão na lista_quarteiroes_id.
+  //Como em uma atividade, cada equipe é responsavel por um estrato, está query só irá retorna o id de um estrato.
+  const sql_estrato_equipe = 
+    'SELECT '+ 
+      's.estrato_id '+ 
+    'FROM '+ 
+      'situacao_quarteiroes as s '+
+      'JOIN estratos as e ON(s.estrato_id = e.id) '+
+    'WHERE '+ 
+      'e.atividade_id = '+atividade_id+" "+ 
+      'AND s.quarteirao_id IN '+'(' +lista_quarteiroes_id+ ') '+
+    'GROUP BY s.estrato_id '+
+    'HAVING COUNT(*) = '+lista_quarteiroes_id.length;
+
+  const estrato_equipe = await SituacaoQuarteirao.sequelize.query( sql_estrato_equipe );
+  const estrato_id = await estrato_equipe[ 1 ].rows[0].estrato_id
 
   // Selecion a quantidade de imóveis nos 
   // quarteirões trabalhados
   let sql_quarteiroes = 
     'SELECT ' +
-      'l.quarteirao_id, ' +
-      'count( l.* ) ' +
-    'FROM ' +
-      'trabalhos_diarios as td ' +
-      'JOIN equipes as e ON (td.equipe_id = e.id) ' +
-      'JOIN rotas as r ON (r.trabalho_diario_id = td.id) ' +
-      'JOIN lados as l ON (l.id = r.lado_id) ' +
-      'JOIN imoveis as i ON (i.lado_id = l.id) ' +
-    'WHERE ' +
-      'td.id = ' + trabalho_diario_id +
-    ' GROUP BY ' +
-      'l.quarteirao_id';
+      'qt.quarteirao_id, '+
+      'count( i.* ) '+
+    'FROM ( ' +
+      'SELECT DISTINCT q.id as quarteirao_id '+
+      'FROM trabalhos_diarios as td '+
+      'JOIN equipes as e ON (td.equipe_id = e.id) '+
+      'JOIN rotas as r ON (r.trabalho_diario_id = td.id) '+
+      'JOIN lados as l ON (l.id = r.lado_id) '+
+      'JOIN quarteiroes as q ON (q.id = l.quarteirao_id) '+
+      ' WHERE td.id = '+ trabalho_diario_id+' '+
+    ') AS qt '+
+    'JOIN lados as l ON (l.quarteirao_id = qt.quarteirao_id) '+
+    'JOIN imoveis as i ON (i.lado_id = l.id) '+
+    'WHERE i.tipo_imovel != 4 '+
+    'GROUP BY qt.quarteirao_id';
 
   const quarteiroes = await Quarteirao.sequelize.query( sql_quarteiroes );
 
   const quarteiroes_trabalhados = quarteiroes[ 1 ].rows.map( ({ quarteirao_id }) => quarteirao_id );
 
   // Seleciona o estrato
-  const estrato = await Estrato.findOne({
-    where: {
-      atividade_id,
-    },
-    attributes: [ 'id' ]
-  });
+  const estrato = await Estrato.findByPk(estrato_id)
 
   // Seleciona a situação dos quarteirões
   let sql_situacao = 

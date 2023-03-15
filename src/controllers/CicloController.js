@@ -186,7 +186,7 @@ getCiclosAbertosEFinalizados = async ( req, res ) => {
       where: {
         regional_saude_id: regionalSaude_id,
         dataInicio: {
-          [Sequelize.Op.lt]: current_date
+          [Sequelize.Op.lte]: current_date
         }
       },
       order:[['id','desc']]

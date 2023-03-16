@@ -110,7 +110,7 @@ const ModalLado = ( { lado, acao, show, handleClose, ruas, addLado, localidade_i
 
     //quando se cai nessa condicional, a rua será adicionada no useEffect abaixo desse metodo
     if(rua.label == 'Outra'){
-      const nomeInvalido = isBlank(nomeNovoLogradouro)
+      /* const nomeInvalido = isBlank(nomeNovoLogradouro)
       const cepInvalido = !isCepValid(cep)
 
       nomeInvalido  ? setIsValidNomeNovoLogradouro(false) : setIsValidNomeNovoLogradouro(true)
@@ -122,7 +122,33 @@ const ModalLado = ( { lado, acao, show, handleClose, ruas, addLado, localidade_i
 
         //irá checkar se o cep informado já está sendo utilizado por outro logradouro cadastrado
         props.streetExistRequest(null , cepSemMascara,)
-      }
+      } */
+
+      //o codigo comentado acima é para o caso de não permitir cep repetidos
+      
+      //o codigo abaixo permite que exista cep repetidos, pois existem municipios onde
+      //todas as sua ruas são representadas por um unico cep
+      const nomeInvalido = isBlank(nomeNovoLogradouro)
+      const cepInvalido = !isCepValid(cep)
+
+      nomeInvalido  ? setIsValidNomeNovoLogradouro(false) : setIsValidNomeNovoLogradouro(true)
+      cepInvalido   ? setIsValidCep(false)   : setIsValidCep(true)
+
+      if(!nomeInvalido && !cepInvalido){
+        const cepSemMascara = cep.replace(/[^0-9]/g, '')
+        const lado = new Lado( {
+          rua_id        : rua.value,
+          logradouro    : nomeNovoLogradouro,
+          cep           : cepSemMascara,
+        } );
+  
+        addLado( lado );
+  
+        // Limpando variáveis
+        setRua( {} );
+        setCep( "" );
+        setNomeNovoLogradouro( "" );
+      } 
     }
     else{
       const lado = new Lado( {

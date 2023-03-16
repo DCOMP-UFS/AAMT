@@ -59,14 +59,18 @@ store = async ( req, res ) => {
     if( !municipio ) {
       return res.status(400).json({ error: "Municipio com id="+municipio_id+" não existe" });
     }
-    const {sameCEP} = await ruaExistente(null,cep)
+
+   /*  const {sameCEP} = await ruaExistente(null,cep)
     if(sameCEP){
       return res.status(400).json({
         error:"Não foi possivel criar a rua, a regra de cep único não foi respeitada",
         sameCEP,
       });
-    }
-  
+    } */
+    
+    //As linhas comentadas acima serviam para verificar ser está sendo criado uma rua com um cep ja utilizado
+    //Ela foi comentada pq existem municipios em que todas as ruas possuem o mesmo cep
+
     const rua = await Rua.create({
       nome,
       cep,
@@ -118,14 +122,16 @@ update = async ( req, res ) => {
       return res.status(400).json({ error: "Rua não encontrada" });
     }
   
-    const {sameCEP} = await ruaExistente(id,cep)
-
+    /* const {sameCEP} = await ruaExistente(id,cep)
     if(sameCEP){
       return res.status(400).json({
         error:"Não foi possivel atualizar a rua, a regra de cep único não foi respeitada",
         sameCEP,
       });
-    }
+    } */
+
+    //As linhas comentadas acima serviam para verificar ser está sendo criado uma rua com um cep ja utilizado
+    //Ela foi comentada pq existem municipios em que todas as ruas possuem o mesmo cep
 
     const { isRejected } = await Rua.update(
       req.body,

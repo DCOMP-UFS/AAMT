@@ -594,11 +594,13 @@ getActivityWeeklyReport = async (req, res) => {
       let situacao_quarteirao = await SituacaoQuarteirao.sequelize.query( sql_situacao_quarteirao )
       .then(data => {
         const [ rows ] = data;
-        let quarteiroes = { trabalhados: [], concluidos: [] };
+        let quarteiroes = { trabalhados: [], concluidos: [], concluidosPendencia: [] };
         rows.map(quarteirao => {
           if (quarteirao.situacao_quarteirao_id === 3) {
             quarteiroes.concluidos.push( quarteirao );
-          } else {
+          } else if (quarteirao.situacao_quarteirao_id === 4) {
+            quarteiroes.concluidosPendencia.push( quarteirao );
+          }  else {
             quarteiroes.trabalhados.push( quarteirao );
           }
         })
@@ -1231,10 +1233,12 @@ getCurrentActivityReport = async ( req, res ) => {
       let situacao_quarteirao = await SituacaoQuarteirao.sequelize.query( sql_situacao_quarteirao )
       .then(data => {
         const [ rows ] = data;
-        let quarteiroes = { trabalhados: [], concluidos: [] };
+        let quarteiroes = { trabalhados: [], concluidos: [], concluidosPendencia:[] };
         rows.map(quarteirao => {
           if (quarteirao.situacao_quarteirao_id === 3) {
             quarteiroes.concluidos.push( quarteirao.numero );
+          } else if (quarteirao.situacao_quarteirao_id === 4) {
+            quarteiroes.concluidosPendencia.push( quarteirao.numero );
           } else {
             quarteiroes.trabalhados.push( quarteirao.numero );
           }

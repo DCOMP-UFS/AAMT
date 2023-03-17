@@ -114,6 +114,7 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
   const [ amostrasPorImoveis, setAmostrasPorImoveis ]     = useState( [] );
   const [ amostrasPorExemplar, setAmostrasPorExemplar ]     = useState( [] );
   const [ quarteiroesConcluidos, setQuarteiroesConcluidos ] = useState( [] );
+  const [ quarteiroesConcluidosPendencia, setQuarteiroesConcluidosPendencia] = useState( [] );
   const [ quarteiroesTrabalhados, setQuarteiroesTrabalhados ] = useState( [] );
   const [ quarteiroesAedesAegypti, setQuarteiroesAedesAegypti ] = useState( [] );
   const [ quarteiroesAedesAlbopictus, setQuarteiroesAedesAlbopictus ] = useState( [] );
@@ -147,12 +148,14 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
       setAmostrasPorExemplar( boletimAtividade.sampleExemplary );
 
       const qrt_concluidos = boletimAtividade.situacao_quarteirao.concluidos;
+      const qrt_concluidosPendencia = boletimAtividade.situacao_quarteirao.concluidosPendencia;
       const qrt_trabalhados = boletimAtividade.situacao_quarteirao.trabalhados;
       const qrt_pstv_aegypti = boletimAtividade.quarteiroesPositivos.aedesAegypti;
       const qrt_pstv_albopictus = boletimAtividade.quarteiroesPositivos.aedesAlbopictus;
 
       setQuarteiroesTrabalhados( sliceIntoSubArrays(qrt_trabalhados, 10) );
       setQuarteiroesConcluidos( sliceIntoSubArrays(qrt_concluidos, 10) );
+      setQuarteiroesConcluidosPendencia( sliceIntoSubArrays(qrt_concluidosPendencia, 10) );
       setQuarteiroesAedesAegypti( sliceIntoSubArrays(qrt_pstv_aegypti, 10) );
       setQuarteiroesAedesAlbopictus( sliceIntoSubArrays(qrt_pstv_albopictus, 10) );
 
@@ -439,7 +442,43 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
           <Col md="12">
             <article className="p-0">
               <div className="card">
-                <h2 className="title">Nº depósitos por tipo com espécimes</h2>
+                <h2 className="title">Nº dos quarteirões concluídos com pendência</h2>
+                <table className="table table-striped table-hover">
+                  <thead className="thead-dark">
+                    <tr>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                      <th>Nº/Seq.</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {
+                      quarteiroesConcluidosPendencia.map( ( row, index ) => (
+                        <tr key={ 'qrt-conc-' + index }>
+                          {
+                            row.map( ( quarteirao, index ) => (
+                              <td>{quarteirao}</td>
+                            ) )
+                          }
+                        </tr>
+                      ) )
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          </Col>
+          <Col md="12">
+            <article className="p-0">
+              <div className="card">
+                <h2 className="title">Nº de espécimes por tipo de depósitos</h2>
                 <table className="table table-striped table-hover">
                   <thead className="thead-dark">
                     <tr>
@@ -490,7 +529,7 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
           <Col md="12">
             <article className="p-0">
               <div className="card">
-                <h2 className="title">Nº de imóveis por tipo com espécimes</h2>
+                <h2 className="title">Nº de espécimes por tipo de imóvel</h2>
                 <table className="table table-striped table-hover">
                   <thead className="thead-dark">
                     <tr>
@@ -538,7 +577,7 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
           <Col md="12">
             <article className="p-0">
               <div className="card">
-                <h2 className="title">Nº de exemplares</h2>
+                <h2 className="title">Nº de espécimes por estágio</h2>
                 <table className="table table-striped table-hover">
                   <thead className="thead-dark">
                     <tr>

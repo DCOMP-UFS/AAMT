@@ -22,7 +22,7 @@ import $ from 'jquery';
 
 // ACTIONS
 import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
-import { getUsersByCityRequest } from '../../../store/Usuario/usuarioActions';
+import { getUsersByCityRequest, liberarMembros } from '../../../store/Usuario/usuarioActions';
 import {
   getActivitieByIdRequest,
   getLocationsRequest,
@@ -113,6 +113,22 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
   const confirmarRemoveEstrato = (index) => {
      setIndexEstratoRemovido(index)
     $('#modal-exclusao-estrato').modal('show');
+  }
+
+  const removerEquipeELiberarMembros = (index) => {
+    const membrosEquipe = equipes[index].membros
+
+    //Libera os membros da equipe que será deletada,
+    //assim eles podem ser escolhidos novamente no caso
+    //de uma nova equipe ser montada depois
+    props.liberarMembros(membrosEquipe)
+
+    //Aqui será feita a remoção da equipe selecionada e a liberação
+    //do estrato que era de responsabilidade da equipe, permitindo que
+    //este estrato seja selecionado por outra equipe
+    props.removeEquipe(index)
+
+    
   }
 
   return (
@@ -241,7 +257,7 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
                       <span className="text-danger">{ mensageEquipe }</span>
                     </h4>
 
-                    <ListEquipe equipes={ equipes } actionRemove={ props.removeEquipe } />
+                    <ListEquipe equipes={ equipes } actionRemove={ removerEquipeELiberarMembros } />
                   </Col>
                 </Row>
               </form>
@@ -251,7 +267,17 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
               <ModalConfirm
                 id="modal-exclusao-estrato"
                 title="Confirmar exclusão do estrato"
-                confirm={() => { props.removeEstrato(indexEstratoRemovido)} }
+                confirm={() => { 
+
+                  //Tenta encontra a equipe que é responsavel pelo estrato que será deletado, se houver uma
+                  const equipe_responsavel_estrato = equipes.find( e => e.estrato[0].dataIndex == indexEstratoRemovido)
+                  if(equipe_responsavel_estrato){
+                    props.liberarMembros(equipe_responsavel_estrato.membros)
+                  }
+
+                  //Remove o estrato e a equipe que é responsavel por ele, se houver
+                  props.removeEstrato(indexEstratoRemovido)
+                } }
                 
               >
                 <p>Deseja mesmo excluir o estrato? Caso uma equipe selecionou este estrato, a equipe tambem será excluida</p>
@@ -442,7 +468,8 @@ const mapDispatchToProps = dispatch =>
     removeEstrato,
     removeEquipe,
     planActivityRequest,
-    planActivityReset
+    planActivityReset,
+    liberarMembros,
   }, dispatch );
 
 export default connect(

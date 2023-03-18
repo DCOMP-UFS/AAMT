@@ -115,6 +115,39 @@ export default function Usuario(state = INITIAL_STATE, action) {
       }
     }
 
+    case ActionTypes.BLOQUEAR_MEMBROS_EQUIPE: {
+      let listaMembros = state.usuarios
+     
+      action.payload.membrosSelecionados
+        .forEach(
+          m => listaMembros[ m.dataIndex ] = {
+            ...listaMembros[ m.dataIndex ],
+            flEquipe: true,
+          }
+        );
+
+      return {
+        ...state,
+        usuarios: listaMembros,
+        reload: !state.reload
+      }
+    }
+
+    case ActionTypes.LIBERAR_MEMBROS_EQUIPE: {
+      let listaMembros = state.usuarios
+     
+      action.payload.membrosEquipe
+        .forEach(
+          m => listaMembros[ m.dataIndex ].flEquipe = false,
+        );
+
+      return {
+        ...state,
+        usuarios: listaMembros,
+        reload: !state.reload
+      }
+    }
+
     default: {
       return state;
     }

@@ -11,7 +11,7 @@ import Modal, { ModalBody, ModalFooter } from '../../../../components/Modal';
 
 // ACTIONS
 import { addEquipe } from '../../../../store/Atividade/atividadeActions';
-
+import { bloquearMembros } from '../../../../store/Usuario/usuarioActions'
 // STYLES
 import {
   UlEquipe,
@@ -48,17 +48,8 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
 
 
   useEffect( () => {
-    //retirar os usuarios que são coordenadores municipais da lista de seleção
-    const filter = props.membros.filter( membro => membro.atuacoes[0].tipoPerfil != 2  )
-
-    const m = filter.map( m => ( {
-      id: m.id,
-      nome: m.nome,
-      checked: false
-    } ) );
-
-    setMembros( m );
-  }, [ props.membros ] );
+    montarMembros()
+  }, [ props.membros, props.reload_membros ] );
 
   useEffect( () => {
     setOptionSupervisor(
@@ -73,20 +64,10 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
   }, [ props.estratos, props.reload ] );
 
   function clearInput() {
-
-    //retirar os usuarios que são coordenadores municipais da lista de seleção
-    const filter = props.membros.filter( membro => membro.atuacoes[0].tipoPerfil != 2  )
-
-    const m = filter.map( m => ( {
-      id      : m.id,
-      nome    : m.nome,
-      checked : false
-    } ) );
-
-    setMembros( m );
+    montarMembros()
     setMembrosSelecionados( [] );
     setSupervisor( {} );
-
+    
     montarEstratos()
   }
 
@@ -96,6 +77,21 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
       .filter( e => !e.flEquipe )
 
     setEstratos( e );
+  }
+
+  function montarMembros() {
+    const m = props.membros
+      .map( (m,index) => ( {
+        id: m.id,
+        nome: m.nome,
+        atuacoes: m.atuacoes,
+        checked: false,
+        dataIndex: index,
+        flEquipe: m.flEquipe ? true : false
+      } ) )
+      .filter( membro => membro.atuacoes[0].tipoPerfil != 2 && !membro.flEquipe )
+
+    setMembros( m );
   }
 
   function addMembro() {
@@ -196,6 +192,11 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
       setMessage("Escolha o supervisor da equipe");
       setTimeout(() => setMessage("") , 3000);
     } else {
+
+      //A função abaixo bloqueia os usuarios selecionados com o objetivo de nao permitir
+      //que eles sejam escolhidos para participar em outras equipes
+      props.bloquearMembros(membrosSelecionados)
+
       props.addEquipe(
         membrosSelecionados,
         {
@@ -207,7 +208,8 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
         estratos.filter( e => e.checked ) 
       );
 
-      clearInput();
+      setMembrosSelecionados( [] );
+      setSupervisor( {} );
       $('#modal-novo-equipe').modal('hide');
     }
   }
@@ -411,12 +413,14 @@ const mapStateToProps = state => ( {
   estratos: state.atividade.estratos,
   locais  : state.atividade.locais,
   equipes : state.atividade.equipes,
-  reload  : state.atividade.reload
+  reload  : state.atividade.reload,
+  reload_membros: state.usuario.reload,
 } );
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators( {
-    addEquipe
+    addEquipe,
+    bloquearMembros,
   }, dispatch );
 
 export default connect(

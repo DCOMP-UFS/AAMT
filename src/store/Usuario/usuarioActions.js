@@ -16,7 +16,9 @@ export const ActionTypes = {
   UPDATE_USUARIO_SUCCESS: "UPDATE_USUARIO_SUCCESS",
   CLEAR_UPDATE_USER: "CLEAR_UPDATE_USER",
   CHANGE_USER_EDIT_INDEX: "CHANGE_USER_EDIT_INDEX",
-  UPDATE_USUARIO_FAILURE: "UPDATE_USUARIO_FAILURE"
+  UPDATE_USUARIO_FAILURE: "UPDATE_USUARIO_FAILURE",
+  BLOQUEAR_MEMBROS_EQUIPE: "BLOQUEAR_MEMBROS_EQUIPE",
+  LIBERAR_MEMBROS_EQUIPE: "LIBERAR_MEMBROS_EQUIPE"
 }
 
 export const getUsuariosRequest = municipio_id => {
@@ -180,6 +182,24 @@ export const changeUserEditIndex = index => {
     type: ActionTypes.CHANGE_USER_EDIT_INDEX,
     payload: {
       index
+    }
+  }
+}
+
+export const bloquearMembros = membrosSelecionados => {
+  return {
+    type: ActionTypes.BLOQUEAR_MEMBROS_EQUIPE,
+    payload: {
+      membrosSelecionados
+    }
+  }
+}
+
+export const liberarMembros = membrosEquipe => {
+  return {
+    type: ActionTypes.LIBERAR_MEMBROS_EQUIPE,
+    payload: {
+      membrosEquipe
     }
   }
 }

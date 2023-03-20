@@ -20,16 +20,16 @@ import { ContainerFixed } from '../../../styles/util';
 
 import {isBlank} from '../../../config/function';
 
-const Atividades = ( { metodologias, ciclos, ...props } ) => {
+const Atividades = ( { propositos, ciclos, ...props } ) => {
   const [ objetivoAtividade, setObjetivoAtividade ] = useState( "" );
   const [ ciclo, setCiclo ]                         = useState( {} );
   const [ flTodosImoveis, setFlTodosImoveis ]       = useState( { value: false, label: "Não" } );
   const [ optionCiclo, setOptionCiclo ]             = useState( {} );
   const [ abrangencia, setAbrangencia ]             = useState( {} );
-  const [ metodologia, setMetodologia ]             = useState( {} );
-  const [ optionMetodologia, setOptionMetodologia ] = useState( [] );
-  const [ objetivo, setObjetivo ]                   = useState( {} );
-  const [ optionObjetivo, setoptionObjetivo ]       = useState( [] );
+  const [ proposito, setProposito ]                 = useState( {} );
+  const [ optionProposito, setOptionProposito ]     = useState( [] );
+  const [ operacao, setOperacao ]                   = useState( {} );
+  const [ optionOperacao, setOptionOperacao ]       = useState( [] );
   const [ optionflTodosImoveis ]                    = useState( [
     { value: true, label: "Sim" },
     { value: false, label: "Não" }
@@ -38,7 +38,7 @@ const Atividades = ( { metodologias, ciclos, ...props } ) => {
     .map( ( [ key, value ] ) => {
       return { value: value.id, label: value.label };
     } );
-  const [ isValidObjetivo, setIsValidObjetivo ] = useState( true );
+  const [ isValidObjetivoAtividade, setIsValidObjetivoAtividade ] = useState( true );
   const [ loadingSaveButton, setLoadingSaveButton ]  = useState( false )
   
   useEffect(() => {
@@ -48,24 +48,24 @@ const Atividades = ( { metodologias, ciclos, ...props } ) => {
   }, []);
 
   useEffect(() => {
-    const option = metodologias.map( (m, index) => (
+    const option = propositos.map( (m, index) => (
       { value: m.id, label: m.sigla, index }
     ));
 
-    setOptionMetodologia( option );
-  }, [ metodologias ]);
+    setOptionProposito( option );
+  }, [ propositos ]);
 
   useEffect(() => {
-    setObjetivo({});
+    setOperacao({});
 
-    if( Object.entries(metodologia).length > 0 ) {
-      const option = metodologias[ metodologia.index ].objetivos.map( atv => (
+    if( Object.entries(proposito).length > 0 ) {
+      const option = propositos[ proposito.index ].objetivos.map( atv => (
         { value: atv.id, label: atv.descricao }
       ));
 
-      setoptionObjetivo( option );
+      setOptionOperacao( option );
     }
-  }, [ metodologia ]);
+  }, [ proposito ]);
 
   useEffect(() => {
     const options = ciclos.map( (ciclo) => (
@@ -86,9 +86,9 @@ const Atividades = ( { metodologias, ciclos, ...props } ) => {
     e.preventDefault();
 
     if(isBlank(objetivoAtividade))
-      setIsValidObjetivo(false)
+      setIsValidObjetivoAtividade(false)
     else{
-      setIsValidObjetivo(true)
+      setIsValidObjetivoAtividade(true)
       setLoadingSaveButton(true)
 
       props.createActiveRequest(
@@ -97,8 +97,8 @@ const Atividades = ( { metodologias, ciclos, ...props } ) => {
           2,//responsabilidade
           ciclo.value,
           props.municipio_id,
-          metodologia.value,
-          objetivo.value,
+          proposito.value, // proposito é como e exibido para o usuario, no banco esse valor se chama metodologia
+          operacao.value,  // operação é como é exibido para o usuario, no banco esse valor se chama objetivo
           abrangencia.value
         );
     }
@@ -141,7 +141,7 @@ const Atividades = ( { metodologias, ciclos, ...props } ) => {
                         required
                       ></textarea>
                        {
-                        !isValidObjetivo ?
+                        !isValidObjetivoAtividade ?
                           <span className="form-label-invalid">Objetivo inválido</span> :
                           ''
                         }
@@ -151,26 +151,26 @@ const Atividades = ( { metodologias, ciclos, ...props } ) => {
                   <Row>
                     <Col sm='6'>
                       <FormGroup>
-                        <label>Metodologia <code>*</code></label>
+                        <label>Propósito <code>*</code></label>
                         <SelectWrap
-                          id="metodologia"
-                          value={ metodologia }
+                          id="proposito"
+                          value={ proposito }
                           styles={ selectDefault }
-                          options={ optionMetodologia }
-                          onChange={ e => setMetodologia( e ) }
+                          options={ optionProposito }
+                          onChange={ e => setProposito( e ) }
                           required
                         />
                       </FormGroup>
                     </Col>
                     <Col sm='6'>
                       <FormGroup>
-                        <label>Atividade <code>*</code></label>
+                        <label>Operação <code>*</code></label>
                         <SelectWrap
-                          id="objetivo"
-                          value={ objetivo }
+                          id="Operação"
+                          value={ operacao }
                           styles={ selectDefault }
-                          options={ optionObjetivo }
-                          onChange={ e => setObjetivo( e ) }
+                          options={ optionOperacao }
+                          onChange={ e => setOperacao( e ) }
                           required
                         />
                       </FormGroup>
@@ -232,7 +232,7 @@ const Atividades = ( { metodologias, ciclos, ...props } ) => {
 const mapStateToProps = state => ({
   municipio_id    : state.appConfig.usuario.municipio.id,
   regionalSaude_id: state.appConfig.usuario.municipio.regional.id,
-  metodologias    : state.metodologia.metodologias,
+  propositos      : state.metodologia.metodologias,
   ciclos          : state.ciclo.ciclos,
   created         : state.atividade.created
 });

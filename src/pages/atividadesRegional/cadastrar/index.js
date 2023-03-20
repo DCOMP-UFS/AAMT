@@ -28,7 +28,7 @@ import {
 
 import {isBlank} from '../../../config/function';
 
-const AtividadesRegCadastrar = ( { metodologias, ciclos, ...props } ) => {
+const AtividadesRegCadastrar = ( { propositos, ciclos, ...props } ) => {
   const [ reload, setReload ] = useState( false );
   const [ objetivoAtividade, setObjetivoAtividade ] = useState("");
   const [ ciclo, setCiclo ] = useState({});
@@ -42,13 +42,13 @@ const AtividadesRegCadastrar = ( { metodologias, ciclos, ...props } ) => {
   const optionAbrangencia = Object.entries(abrangenciaEnum).map(([key, value]) => {
     return { value: value.id, label: value.label };
   });
-  const [ metodologia, setMetodologia ] = useState({});
-  const [ optionMetodologia, setOptionMetodologia ] = useState([]);
-  const [ objetivo, setObjetivo ] = useState({});
-  const [ optionObjetivo, setoptionObjetivo ] = useState([]);
+  const [ proposito, setProposito ] = useState({});
+  const [ optionProposito, setOptionProposito ] = useState([]);
+  const [ operacao, setOperacao ] = useState({});
+  const [ optionOperacao, setoptionOperacao ] = useState([]);
   const [ listaMunicipios, setListaMunicipios ] = useState([]);
   const [ flBtnLoading, setFlBtnLoading ] = useState( false );
-  const [ isValidObjetivo, setIsValidObjetivo ] = useState( true );
+  const [ isValidObjetivoAtividade, setIsValidObjetivoAtividade ] = useState( true );
   const [ isValidListaMunicipios, setIsListaMunicipios ] = useState( true );
 
   useEffect(() => {
@@ -59,24 +59,24 @@ const AtividadesRegCadastrar = ( { metodologias, ciclos, ...props } ) => {
   }, []);
 
   useEffect(() => {
-    const option = metodologias.map( (m, index) => (
+    const option = propositos.map( (m, index) => (
       { value: m.id, label: m.sigla, index }
     ));
 
-    setOptionMetodologia( option );
-  }, [ metodologias ]);
+    setOptionProposito( option );
+  }, [ propositos ]);
 
   useEffect(() => {
-    setObjetivo({});
+    setOperacao({});
 
-    if( Object.entries(metodologia).length > 0 ) {
-      const option = metodologias[ metodologia.index ].objetivos.map( atv => (
+    if( Object.entries(proposito).length > 0 ) {
+      const option = propositos[ proposito.index ].objetivos.map( atv => (
         { value: atv.id, label: atv.descricao }
       ));
 
-      setoptionObjetivo( option );
+      setoptionOperacao( option );
     }
-  }, [ metodologia ]);
+  }, [ proposito ]);
 
   useEffect(() => {
     const options = ciclos.map( (ciclo) => (
@@ -106,7 +106,7 @@ const AtividadesRegCadastrar = ( { metodologias, ciclos, ...props } ) => {
     e.preventDefault();
     setFlBtnLoading( true );
     
-    setIsValidObjetivo(true)
+    setIsValidObjetivoAtividade(true)
     setIsListaMunicipios(true)
 
     const mun = listaMunicipios
@@ -114,7 +114,7 @@ const AtividadesRegCadastrar = ( { metodologias, ciclos, ...props } ) => {
       .map( l => ( l.municipio ));
     
     if(isBlank(objetivoAtividade))
-      setIsValidObjetivo(false)
+      setIsValidObjetivoAtividade(false)
     else if(mun.length == 0)
       setIsListaMunicipios(false)
     else{
@@ -125,8 +125,8 @@ const AtividadesRegCadastrar = ( { metodologias, ciclos, ...props } ) => {
           1,//responsabilidade
           ciclo.value,
           m.id,
-          metodologia.value,
-          objetivo.value,
+          proposito.value, // proposito é como e exibido para o usuario, no banco esse valor se chama metodologia
+          operacao.value,  // operação é como é exibido para o usuario, no banco esse valor se chama objetivo
           abrangencia.value
         );
       }
@@ -170,7 +170,7 @@ const AtividadesRegCadastrar = ( { metodologias, ciclos, ...props } ) => {
                         required
                       ></textarea>
                       {
-                        !isValidObjetivo ?
+                        !isValidObjetivoAtividade ?
                           <span className="form-label-invalid">Objetivo inválido</span> :
                           ''
                         }
@@ -180,26 +180,26 @@ const AtividadesRegCadastrar = ( { metodologias, ciclos, ...props } ) => {
                   <Row>
                     <Col sm='6'>
                       <FormGroup>
-                        <label>Metodologia <code>*</code></label>
+                        <label>Propósito <code>*</code></label>
                         <SelectWrap
-                          id="metodologia"
-                          value={ metodologia }
+                          id="proposito"
+                          value={ proposito }
                           styles={ selectDefault }
-                          options={ optionMetodologia }
-                          onChange={ e => setMetodologia( e ) }
+                          options={ optionProposito }
+                          onChange={ e => setProposito( e ) }
                           required
                         />
                       </FormGroup>
                     </Col>
                     <Col sm='6'>
                       <FormGroup>
-                        <label>Atividade <code>*</code></label>
+                        <label>Operação <code>*</code></label>
                         <SelectWrap
-                          id="objetivo"
-                          value={ objetivo }
+                          id="operacao"
+                          value={ operacao }
                           styles={ selectDefault }
-                          options={ optionObjetivo }
-                          onChange={ e => setObjetivo( e ) }
+                          options={ optionOperacao }
+                          onChange={ e => setOperacao( e ) }
                           required
                         />
                       </FormGroup>
@@ -307,7 +307,7 @@ const AtividadesRegCadastrar = ( { metodologias, ciclos, ...props } ) => {
 
 const mapStateToProps = state => ( {
   regionalSaude_id: state.appConfig.usuario.regionalSaude.id,
-  metodologias    : state.metodologia.metodologias,
+  propositos      : state.metodologia.metodologias,
   ciclos          : state.ciclo.ciclos,
   municipios      : state.municipio.municipiosList,
   created         : state.atividade.created

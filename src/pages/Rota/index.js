@@ -171,7 +171,7 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
     const trabalhosRotasFilter = props.todosTrabalhosRotas.filter( elem => elem.trabalhoDiario.horaInicio == null)
     setCodigoAtividadeOptions( trabalhosRotasFilter.map( (elem,index) => ( { 
       value: index, 
-      label: elem.trabalhoDiario.atividade.id+" ( Metodologia - "+elem.trabalhoDiario.atividade.objetivo.sigla+" )" 
+      label: elem.trabalhoDiario.atividade.id+" ( Operação - "+elem.trabalhoDiario.atividade.objetivo.sigla+" )" 
     } )) )
 
     setTrabalhosRotasFiltrados(trabalhosRotasFilter)
@@ -341,6 +341,42 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
         return <div></div>  
   }
 
+  const cardCodigoAmostra = () => {
+    const [ ano, mes, dia ] = props.data.split( "-" );
+    const dataFormatada =  `${ dia }${ mes }${ ano }`
+    const codigoParcial = `${props.codigoMunicipio}.${props.sequenciaUsuario}.${dataFormatada}.${ props.trabalhoDiario_sequencia }` 
+    if(Object.keys(codigoAtividade).length > 0){
+      return (
+        <article className="col-12">
+          <div className="card">
+            <label className="m-0">
+              <mark className="bg-warning mr-2">Código parcial das amostras no trabalho de hoje:</mark>
+              { codigoParcial }
+            </label>
+            <div style={{ marginTop: "15px" }}>
+              Você deve anotar o código acima e leva-lo para seu trabalho de campo, pois ele usado para gerar o código total de cada amostra coletada hoje.
+            </div>
+            <div style={{ marginTop: "15px" }}>
+              EX: Qual seria o código total da terceira amostra coletada neste trabalho?
+            </div>
+            <div style={{ marginTop: "15px" }}>
+              Código total da amostra = Código parcial da amostra + Ordem de coleta da amostra no dia
+            </div>
+            <div style={{ marginTop: "15px" }}>
+              Código total da amostra = {codigoParcial} + 3
+            </div>
+            <div style={{ marginTop: "15px" }}>
+              Código total da amostra = {codigoParcial}.3
+            </div>
+          </div>
+        </article>
+        
+      )
+    }
+    else
+        return <div></div>  
+  }
+
   if(isPageLoading){
     return(<LoadingPage/>)
   }
@@ -371,7 +407,10 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
         </Row>
         <Row>
           {
-          cardAtividade()
+            cardAtividade()
+          }
+          {
+            cardCodigoAmostra()
           }
           <article className="col-12">
             <ProgressBar className="bg-success" percentage={ vistoriasFiltradas.length } total={ imoveis.length } />
@@ -460,12 +499,16 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
 }
 
 const mapStateToProps = state => ( {
-  usuario:              state.appConfig.usuario,
-  trabalhoDiario:       state.rotaCache.trabalhoDiario,
-  rota:                 state.rotaCache.rota,
-  vistoriasCache:       state.vistoriaCache.vistorias,
-  todosTrabalhosRotas:  state.rotaCache.todosTrabalhosRotas,
-  fl_rotas_encontradas: state.rota.fl_rotas_encontradas
+  usuario:                  state.appConfig.usuario,
+  trabalhoDiario:           state.rotaCache.trabalhoDiario,
+  codigoMunicipio:          state.rotaCache.trabalhoDiario.codigo_municipio,
+  sequenciaUsuario:         state.rotaCache.trabalhoDiario.sequencia_usuario,
+  trabalhoDiario_sequencia: state.rotaCache.trabalhoDiario.sequencia,
+  data:                     state.rotaCache.trabalhoDiario.data,
+  rota:                     state.rotaCache.rota,
+  vistoriasCache:           state.vistoriaCache.vistorias,
+  todosTrabalhosRotas:      state.rotaCache.todosTrabalhosRotas,
+  fl_rotas_encontradas:     state.rota.fl_rotas_encontradas
 } );
 
 const mapDispatchToProps = dispatch =>

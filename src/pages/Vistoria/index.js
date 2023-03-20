@@ -217,7 +217,7 @@ const Vistoria = ( { vistoriasCache, usuario, trabalhoDiario, rota, showNotStart
 
     setCodigoAtividadeOptions( trabalhosRotasFilter.map( (elem,index) => ( { 
       value: index, 
-      label: elem.trabalhoDiario.atividade.id+" ( Metodologia - "+elem.trabalhoDiario.atividade.objetivo.sigla+" )" 
+      label: elem.trabalhoDiario.atividade.id+" ( Operação - "+elem.trabalhoDiario.atividade.objetivo.sigla+" )" 
     } )) )
 
     //Caso exista um trabalho diario armazenado no cache
@@ -228,7 +228,7 @@ const Vistoria = ( { vistoriasCache, usuario, trabalhoDiario, rota, showNotStart
       if(index != -1){
         const codigoOption = { 
           value: index, 
-          label: trabalhosRotasFilter[index].trabalhoDiario.atividade.id+" ( Metodologia - "+trabalhosRotasFilter[index].trabalhoDiario.atividade.metodologia.sigla+" )"  
+          label: trabalhosRotasFilter[index].trabalhoDiario.atividade.id+" ( Operação - "+trabalhosRotasFilter[index].trabalhoDiario.atividade.metodologia.sigla+" )"  
         }
         setCodigoAtividade(codigoOption)
       }
@@ -327,6 +327,44 @@ const Vistoria = ( { vistoriasCache, usuario, trabalhoDiario, rota, showNotStart
       $('#modal-finalizar-rota').modal( 'show' );
     }
   }
+
+  const cardCodigoAmostra = () => {
+    const [ ano, mes, dia ] = props.data.split( "-" );
+    const dataFormatada =  `${ dia }${ mes }${ ano }`
+    const codigoParcial = `${props.codigoMunicipio}.${props.sequenciaUsuario}.${dataFormatada}.${ props.trabalhoDiario_sequencia }`
+
+    if(Object.keys(codigoAtividade).length > 0 && props.codigoMunicipio){
+      return (
+        <article className="col-12">
+          <div className="card">
+            <label className="m-0">
+              <mark className="bg-warning mr-2">Código parcial das amostras no trabalho de hoje:</mark>
+              { codigoParcial }
+            </label>
+            <div style={{ marginTop: "15px" }}>
+              Você deve anotar o código acima e leva-lo para seu trabalho de campo, pois ele usado para gerar o código total de cada amostra coletada hoje.
+            </div>
+            <div style={{ marginTop: "15px" }}>
+              EX: Qual seria o código total da terceira amostra coletada neste trabalho?
+            </div>
+            <div style={{ marginTop: "15px" }}>
+              Código total da amostra = Código parcial da amostra + Ordem de coleta da amostra no dia
+            </div>
+            <div style={{ marginTop: "15px" }}>
+              Código total da amostra = {codigoParcial} + 3
+            </div>
+            <div style={{ marginTop: "15px" }}>
+              Código total da amostra = {codigoParcial}.3
+            </div>
+          </div>
+        </article>
+        
+      )
+    }
+    else
+        return <div></div>  
+  }
+
   if(isPageLoading){
     return(<LoadingPage/>)
   }
@@ -394,6 +432,10 @@ const Vistoria = ( { vistoriasCache, usuario, trabalhoDiario, rota, showNotStart
             </div>
           </article>
 
+          {
+            cardCodigoAmostra()
+          }
+
           <article className="col-12">
             <ProgressBar className="bg-success" percentage={ vistoriasFiltradas.length } total={ imoveis.length } />
           </article>
@@ -460,6 +502,10 @@ const Vistoria = ( { vistoriasCache, usuario, trabalhoDiario, rota, showNotStart
 const mapStateToProps = state => ( {
   usuario       : state.appConfig.usuario,
   trabalhoDiario: state.rotaCache.trabalhoDiario,
+  codigoMunicipio: state.rotaCache.trabalhoDiario.codigo_municipio,
+  sequenciaUsuario: state.rotaCache.trabalhoDiario.sequencia_usuario,
+  trabalhoDiario_sequencia: state.rotaCache.trabalhoDiario.sequencia,
+  data: state.rotaCache.trabalhoDiario.data,
   rota          : state.rotaCache.rota,
   quarteirao    : state.quarteirao.quarteirao,
   form_vistoria : state.supportInfo.form_vistoria,

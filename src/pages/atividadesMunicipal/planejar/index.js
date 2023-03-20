@@ -49,10 +49,10 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
   const [ abrangencia, setAbrangencia ]             = useState( undefined );
   const [ responsabilidade, setResponsabilidade ]   = useState( undefined );
   const [ flTodosImoveis, setFlTodosImoveis ]       = useState( false );
-  const [ objetivo, setObjetivo ]                   = useState( {} );
+  const [ operacao, setOperacao ]                   = useState( {} );
   const [ mensageEstrato, setMensageEstrato ]       = useState( "" );
   const [ mensageEquipe, setMensageEquipe ]         = useState( "" );
-  const [ metodologia, setMetodologia ]             = useState( {
+  const [ proposito, setProposito ]             = useState( {
     sigla: ""
   } );
   const [modalEstratoOpen, setModalEstratoOpen] = useState(false);
@@ -81,8 +81,8 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
           .filter( ( [ attr, data ] ) => data.id === atividade.responsabilidade )[ 0 ][ 1 ].label
       );
       setFlTodosImoveis( atividade.flTodosImoveis );
-      setMetodologia( atividade.metodologia );
-      setObjetivo(atividade.objetivo);
+      setProposito( atividade.metodologia ); //a metodologia da atividade é mostrada como proposito para o usuario
+      setOperacao(atividade.objetivo); //o objetivo da atividade é mostrada como operação para o usuario
 
       props.getLocationsRequest( atividade.abrangencia, props.municipio_id, 'sim' );
     }
@@ -145,7 +145,7 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
           {/* Formulário básico */}
           <article className="col-md-12 stretch-card">
             <div className="card">
-              <h4 className="title">{ metodologia.sigla }</h4>
+              <h4 className="title">{ proposito.sigla }</h4>
               <p className="text-description">
                 { objetivoAtividade }
               </p>
@@ -174,9 +174,9 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
                 <Row>
                   <Col sm='6'>
                     <FormGroup>
-                      <label>Metodologia <code>*</code></label>
+                      <label>Propósito <code>*</code></label>
                       <input
-                        value={ metodologia.nome || "" }
+                        value={ proposito.nome || "" }
                         className="form-control"
                         disabled
                       />
@@ -184,9 +184,9 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
                   </Col>
                   <Col sm='6'>
                     <FormGroup>
-                      <label>Atividade <code>*</code></label>
+                      <label>Operação <code>*</code></label>
                       <input
-                        value={ objetivo.descricao || "" }
+                        value={ operacao.descricao || "" }
                         className="form-control"
                         disabled
                       />

@@ -142,11 +142,11 @@ function PlanejarAtividade({ ciclos, atividades, ...props }) {
                     </Header>
                     <Body>
                       <div className="info-group">
-                        <label>Metodologia: </label>
+                        <label>Próposito: </label> {/* A metodologia da atividade é mostrada como proposito para o usuario */}
                         <p>{ atv.metodologia.sigla }</p>
                       </div>
                       <div className="info-group">
-                        <label>Objetivo: </label>
+                        <label>Operação: </label> {/* O objetivo da atividade é mostrada como operação para o usuario */}
                         <p>{ atv.objetivo.descricao }</p>
                       </div>
                       <div className="info-group">

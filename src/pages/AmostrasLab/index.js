@@ -44,10 +44,12 @@ const columns = [
       sortCompare: ordenadorData
     }
   },
-  "Atividade",
+  //Proposito representa a metodologia da atividade
+  "Propósito",
   {
+    //Operarão representa o objetivo da atividade
     name: "objetivo",
-    label: "Objetivo",
+    label: "Operação",
     options: {
       filter: false
     }
@@ -82,8 +84,8 @@ export const AmostrasLab = ({ laboratorios, amostras, usuario, ...props }) => {
     let r = rows;
 
     r = amostras.map( ( amostra, index ) => {
-      const metodologia            = amostra.atividade.metodologia;
-      const objetivo               = amostra.atividade.objetivo;
+      const proposito              = amostra.atividade.metodologia; //proposito representa a metodologia da atividade
+      const operacao               = amostra.atividade.objetivo; //operação representa o objetivo da atividade
       const dataEncaminhamento     = amostra.dataEncaminhamento.split( '-' );
       const dataExame              = amostra.dataExaminado ? amostra.dataExaminado.split( '-' ) : null
 
@@ -101,8 +103,8 @@ export const AmostrasLab = ({ laboratorios, amostras, usuario, ...props }) => {
         amostra.codigo,
         `${dataEncaminhamento[ 2 ] }/${ dataEncaminhamento[ 1 ] }/${ dataEncaminhamento[ 0 ] }`,
         dataExame == null ? dataExame : `${dataExame[ 2 ] }/${ dataExame[ 1 ] }/${ dataExame[ 0 ] }`,
-        metodologia.sigla,
-        objetivo.sigla,
+        proposito.sigla,
+        operacao.sigla,
         situacaoAmostra,
         <Tooltip
           className="bg-warning text-white"

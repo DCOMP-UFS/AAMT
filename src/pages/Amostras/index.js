@@ -72,10 +72,12 @@ const columns = [
       setCellProps: () => ({ style: { paddingLeft: "30px"}}),
     }
   },
-  "Atividade",
+  //Proposito representa a metodologia da atividade
+  "Propósito",
   {
+    //Operarão representa o objetivo da atividade
     name: "objetivo",
-    label: "Objetivo",
+    label: "Operação",
     options: {
       filter: false,
       setCellProps: () => ({ style: { paddingLeft: "35px"}}),
@@ -181,8 +183,8 @@ export const Amostras = ({ laboratorios, amostras, usuario, ciclos, ...props }) 
     let r = rows;
     r = amostras.map( ( amostra, index ) => {
       const trabalhoDiario  = amostra.trabalhoDiario;
-      const metodologia     = amostra.atividade.metodologia;
-      const objetivo        = amostra.atividade.objetivo;
+      const proposito       = amostra.atividade.metodologia; //proposito representa a metodologia da atividade
+      const operacao        = amostra.atividade.objetivo; //operação representa o objetivo da atividade
       const dataColeta      = trabalhoDiario.data.split( '-' );
 
       var dataEncaminhamento = null
@@ -207,8 +209,8 @@ export const Amostras = ({ laboratorios, amostras, usuario, ciclos, ...props }) 
         `${ dataColeta[ 2 ] }/${ dataColeta[ 1 ] }/${ dataColeta[ 0 ] }`,
         dataEncaminhamento,
         trabalhoDiario.id,
-        metodologia.sigla,
-        objetivo.sigla,
+        proposito.sigla,
+        operacao.sigla,
         situacaoAmostra,
         <Tooltip
           className="bg-warning text-white"

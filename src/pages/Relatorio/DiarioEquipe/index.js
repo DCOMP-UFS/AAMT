@@ -120,7 +120,7 @@ export const RelatorioDiarioEquipe = ({ atividades, ciclos, usuario, ...props })
                             <span>{ atividade.id }</span>
                           </div>
                           <div className="form-group">
-                            <label style={{ fontWeight: 'bold' }}>Objetivo</label>
+                            <label style={{ fontWeight: 'bold' }}>Operação</label>{/* O objetivo da atividade é mostrado como operação para o usuario */}
                             <span>{ atividade.objetivo.descricao }</span>
                           </div>
                           <div className="form-group">

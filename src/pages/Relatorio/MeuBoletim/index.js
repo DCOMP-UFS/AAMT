@@ -71,7 +71,7 @@ const columns = [
   },
   {
     name: "methodology",
-    label: "Metodologia",
+    label: "Propósito",
     options: {
       filter: true,
       align: "left",
@@ -80,7 +80,7 @@ const columns = [
   },
   {
     name: "objective",
-    label: "Objetivo",
+    label: "Operação",
     options: {
       filter: true,
       align: "left",
@@ -134,8 +134,8 @@ function Agent_DailyReport({ user, dailyJobs, ...props }) {
           job.horaInicio,
           job.horaFim,
           job.supervisor.nome,
-          job.equipe.atividade.metodologia.sigla,
-          job.equipe.atividade.objetivo.sigla,
+          job.equipe.atividade.metodologia.sigla, //metodologia da atividade é mostrada como propósito para usuario
+          job.equipe.atividade.objetivo.sigla,   //objetivo da atividade é mostrado como operação para usuário
           cycle,
           <Tooltip className="text-info" title="Relatórios" onClick={ () => openReport( job.id ) } >
             <IconButton aria-label="desativar">

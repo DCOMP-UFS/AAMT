@@ -22,14 +22,14 @@ import { Button, FormGroup, selectDefault } from '../../styles/global';
 // VALIDATIONS FUNCTIONS
 import { isBlank } from '../../config/function';
 
-function ModalAddActive({ addAtividade, metodologias, isOpen, handleClose, ...props }) {
+function ModalAddActive({ addAtividade, propositos, isOpen, handleClose, ...props }) {
   const [ objetivoAtividade, setObjetivoAtividade ] = useState("");
   const [ flTodosImoveis, setFlTodosImoveis ] = useState({ value: false, label: "Não" });
   const [ abrangencia, setAbrangencia ] = useState({});
-  const [ metodologia, setMetodologia ] = useState({});
-  const [ optionMetodologia, setOptionMetodologia ] = useState([]);
-  const [ objetivo, setObjetivo ] = useState({});
-  const [ optionObjetivo, setoptionObjetivo ] = useState([]);
+  const [ proposito, setProposito ] = useState({});
+  const [ optionProposito, setOptionProposito ] = useState([]);
+  const [ operacao, setOperacao ] = useState({});
+  const [ optionOperacao, setoptionOperacao ] = useState([]);
   const [ optionflTodosImoveis ] = useState([
     { value: true, label: "Sim" },
     { value: false, label: "Não" }
@@ -52,31 +52,31 @@ function ModalAddActive({ addAtividade, metodologias, isOpen, handleClose, ...pr
   }, []);
 
   useEffect(() => {
-    const option = metodologias.map( (m, index) => (
+    const option = propositos.map( (m, index) => (
       { value: m.id, label: m.sigla, index }
     ));
 
-    setOptionMetodologia( option );
-  }, [ metodologias ]);
+    setOptionProposito( option );
+  }, [ propositos ]);
 
   useEffect(() => {
-    setObjetivo({});
+    setOperacao({});
 
-    if( Object.entries(metodologia).length > 0 ) {
-      const option = metodologias[ metodologia.index ].objetivos.map( atv => (
+    if( Object.entries(proposito).length > 0 ) {
+      const option = propositos[ proposito.index ].objetivos.map( atv => (
         { value: atv.id, label: atv.descricao }
       ));
 
-      setoptionObjetivo( option );
+      setoptionOperacao( option );
     }
-  }, [ metodologia ]);
+  }, [ proposito ]);
 
   function clearInput() {
     setObjetivoAtividade("");
     setFlTodosImoveis({ value: false, label: "Não" });
     setAbrangencia({});
-    setMetodologia({});
-    setObjetivo({});
+    setProposito({});
+    setOperacao({});
     setIsValidObjetivoAtividade( true )
   }
 
@@ -98,13 +98,13 @@ function ModalAddActive({ addAtividade, metodologias, isOpen, handleClose, ...pr
         objetivoAtividade,
         flTodosImoveis: flTodosImoveis.value,
         abrangencia: abrangencia.value,
-        metodologia_id: metodologia.value,
-        objetivo_id: objetivo.value,
+        metodologia_id: proposito.value, // proposito é como o campo é exibido para o usuario, para o banco o campo se chama metodologia
+        objetivo_id: operacao.value,     // operacao é como o campo é exibido para o usuario, para o banco o campo se chama objetivo
 
         selectFlTodosImoveis: flTodosImoveis,
         selectAbrangencia: abrangencia,
-        selectMetodologia: metodologia,
-        selectObjetivo: objetivo
+        selectMetodologia: proposito,
+        selectObjetivo: operacao
       });
     }
   }
@@ -139,12 +139,12 @@ function ModalAddActive({ addAtividade, metodologias, isOpen, handleClose, ...pr
           <Row>
             <Col sm="6">
               <FormGroup>
-                <label htmlFor="metodologia">Metodologia <code>*</code></label>
+                <label htmlFor="metodologia">Propósito <code>*</code></label>
                 <SelectWrap
-                  id="metodologia"
-                  value={ metodologia }
-                  options={ optionMetodologia }
-                  onChange={ e => setMetodologia(e) }
+                  id="proposito"
+                  value={ proposito }
+                  options={ optionProposito }
+                  onChange={ e => setProposito(e) }
                   styles={ selectDefault }
                   required
                 />
@@ -152,12 +152,12 @@ function ModalAddActive({ addAtividade, metodologias, isOpen, handleClose, ...pr
             </Col>
             <Col sm="6">
             <FormGroup>
-                <label htmlFor="objetivo">Objetivo <code>*</code></label>
+                <label htmlFor="operacao">Operação <code>*</code></label>
                 <SelectWrap
                   id="objetivo"
-                  value={ objetivo }
-                  options={ optionObjetivo }
-                  onChange={ e => setObjetivo(e) }
+                  value={ operacao }
+                  options={ optionOperacao }
+                  onChange={ e => setOperacao(e) }
                   styles={ selectDefault }
                   required
                 />
@@ -226,7 +226,7 @@ function ModalAddActive({ addAtividade, metodologias, isOpen, handleClose, ...pr
 }
 
 const mapStateToProps = state => ({
-  metodologias: state.metodologia.metodologias,
+  propositos: state.metodologia.metodologias,
   flAddActive: state.ciclo.flAddActive
 });
 

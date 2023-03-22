@@ -44,9 +44,13 @@ export default function Atividade(state = INITIAL_STATE, action) {
             indexEquipe = state.indexEquipe,
             indexMembro = state.indexMembro;
 
-      rota_equipe = rota_equipe.map( quarteirao => {
+      //ordenando lista pelo numero do quarteirao
+      rota_equipe.sort((q1,q2) => q1.numero - q2.numero) 
+      
+      rota_equipe = rota_equipe.map( (quarteirao,index) => {
+        rota_equipe[index].dataIndex = index
+        
         let q = quarteirao;
-
         q.lados = q.lados.map( lado => {
           let l = lado;
 

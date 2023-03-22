@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
 import PopDescription from '../../../../../components/PopDescription';
@@ -6,14 +6,15 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Tooltip from '@material-ui/core/Tooltip';
 import { FaUser } from 'react-icons/fa';
 import Loading from '../../../../../components/Loading';
+import Select from 'react-select'
 import { situacaoLadoEnum } from '../../../../../config/enumerate.js';
 
 // ACTIONS
 import { toggleLado, getRotaEquipeRequest, setFl_loading, checarRota, resetToggleLado } from '../../../../../store/Atividade/atividadeActions';
-
+import { showNotifyToast } from '../../../../../store/AppConfig/appConfigActions';
 // STYLES
 import { Container, Block, Usuario, Avatar, StreetCard } from './styles';
-import { PersonPinSharp } from '@material-ui/icons';
+import { Button } from '../../../../../styles/global';
 
 /**
  * Componente de step da página de planejamento de rotas.
@@ -30,30 +31,137 @@ import { PersonPinSharp } from '@material-ui/icons';
  */
 export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, rota_equipe, equipes, indexAtividade, ...props } ) => {
 
+  const [ metodoFiltragem, setMetodoFiltragem ] = useState({ label: "Sem filtragem", value: null })
+  const [ optionsMetodoFiltragem, setOptionsMetodoFiltragem ] = useState([
+    { label: "Sem filtragem", value: null },
+    { label: "Número", value: 1 },
+    { label: "Bairro/localidade", value: 2 },
+    { label: "Zona", value: 3 },
+
+  ]);
+  const [ opcaoSelecionada, setOpcaoSelecionada ] = useState( '' )
+  const [ opcoesDisponiveis, setOpcoesDisponiveis ] =  useState([])
+  const [ opcoesLocalidades, setOpcoesLocalidades ] =  useState([])
+  const [ opcoesZonas, setOpcoesZonas ] =  useState([])
+  const [ fl_filtragem, setFl_Filtragem] = useState(false)
+  const [ rotaEquipeFiltrada, setRotaEquipeFiltrada] = useState([])
+
   /**
-   * Este effect é acionado assi mque o componente é montado.
-   * Sua responsabilidade é ativar o componente de loading e solicitar
-   * as rotas planejadas para equipe.
+   * Este effect é acionado assim que o componente é montado.
+   * Sua responsabilidade é ativar o componente de loading e solicitar as rotas planejadas para equipe.
+   * Ele tambem é responsavel por
    */
   useEffect( () => {
     if( indexEquipe !== -1 ) {
       props.setFl_loading( true );
+
+      //Monta a lista das localidades que a équipe é responsavel
+      let opcoes_localidades = equipes[ indexEquipe ].localidadesEquipe.map( loc => ({label:loc.nome, value:loc.id}) )
+      setOpcoesLocalidades(opcoes_localidades)
+
+      //Monta a lista de zonas que a equipe é responsavel
+      let opcoes_zonas = equipes[ indexEquipe ].zonasEquipe.map( z => ({label:z.nome, value:z.id}) )
+      setOpcoesZonas(opcoes_zonas)
+
+      //Busca as rotas ja planejadas hoje pela equipe 
       props.getRotaEquipeRequest( equipes[ indexEquipe ].id );
-      //const equipeId = equipes[ indexEquipe ].id
-      //const membroId = equipes[ indexEquipe ].membros[ indexMembro ].id
+      
     }
   }, [ indexEquipe, indexAtividade ] );
 
   /**
-   * Verificando se o indexMembro é válido, se sim, solicita
-   * as rotas que já estão planejadas.
+   * Ao selecionar um membro de uma equipe se sim, é verificado se este membro ja possui uma
+   * rota planejada para hoje atravers do metodo checarRota(). Caso o usuario possui uma rota para hoje,
+   * o metodo checarRotar() faz com que os lados dos quarteirões da rota de hoje sejam exibidos para o usuario
+   * 
    */
   useEffect( () => {
     if( indexMembro > -1 ){
       //props.resetToggleLado();
+      setMetodoFiltragem({ label: "Sem filtragem", value: null })
       props.checarRota();
     }
-  }, [ indexMembro ] );
+  }, [ indexEquipe, indexMembro] );
+
+  /*
+    UseEffect faz a filtragem da lista de quarteirões de acordo com o
+    tipo de filtro selecionado
+  */
+  useEffect( () => {
+    //Sem Filtragem
+    if(metodoFiltragem.value == null)
+      setRotaEquipeFiltrada(rota_equipe)
+    else{
+      let lista_filtrada = []
+      
+      //Numero
+      if(metodoFiltragem.value == 1)
+        lista_filtrada = rota_equipe.filter( q => q.numero == parseInt(opcaoSelecionada))
+      //Bairro/localidade
+      else if(metodoFiltragem.value == 2)
+        lista_filtrada = rota_equipe.filter( q => q.localidade_id == opcaoSelecionada.value)
+      //Zona
+      else if(metodoFiltragem.value == 3)
+        lista_filtrada = rota_equipe.filter( q => q.zona_id == opcaoSelecionada.value)
+
+      setRotaEquipeFiltrada(lista_filtrada)
+      
+    }
+  }, [ rota_equipe, fl_filtragem ] );
+
+  //Todas vez que o tipo de filtragem é mudado, este useEffect adequar as opções disponiveis para a filtragem
+  //de acordo com o tipo de filtragem escolhida
+  useEffect( () => {
+    //Numero
+    if(metodoFiltragem.value == 1)
+      setOpcaoSelecionada('')
+    //Bairro/Localidade
+    else if(metodoFiltragem.value == 2){
+      setOpcaoSelecionada(null)
+      setOpcoesDisponiveis(opcoesLocalidades)
+    }
+    //Zona
+    else if(metodoFiltragem.value == 3){
+      if(opcoesZonas.length == 0)
+        setOpcaoSelecionada({label:'Sem zonas disponíveis',value:null})
+      else
+        setOpcaoSelecionada(null)
+
+      setOpcoesDisponiveis(opcoesZonas)
+    }
+    //Sem filtragem
+    else{
+      setOpcaoSelecionada(null)
+      setOpcoesDisponiveis([])
+    }
+  }, [ metodoFiltragem ] );
+
+  const verificarFiltragem = () => {
+
+    let valido = true
+  
+    if(metodoFiltragem.value == 1){
+      if(opcaoSelecionada == ''){
+        valido = false
+        props.showNotifyToast( "Informe o número para a filtragem", "warning" );
+      }
+    }
+    else if(metodoFiltragem.value == 2){
+      if(opcaoSelecionada == null){
+        valido = false
+        props.showNotifyToast( "Informe o bairro/localidade para a filtragem", "warning" );
+      }
+    }
+    else if(metodoFiltragem.value == 3){
+      if(opcaoSelecionada == null || opcaoSelecionada.value == null){
+        valido = false
+        props.showNotifyToast( "Informe a zona para a filtragem", "warning" );
+      }
+    } 
+
+    if(valido)
+      setFl_Filtragem(!fl_filtragem)
+  }
 
   return (
     <Container>
@@ -63,7 +171,7 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
         </Avatar>
         { indexEquipe > -1 && indexMembro > -1 ? equipes[ indexEquipe ].membros[ indexMembro ].usuario.nome : '' }
       </Usuario>
-
+      
       <Row>
         <Col md="12">
           <h4 className="title">
@@ -74,12 +182,51 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
               content="Selecione os quarteirões que o agente irá trabalhar."
             />
           </h4>
+          <Row>
+            <Col md="3">
+              <label htmlFor="Filtro">Filtragem por:</label>
+              <Select
+                id="filtro"
+                value={ metodoFiltragem }
+                options={ optionsMetodoFiltragem }
+                onChange={ e => setMetodoFiltragem(e) }
+              />
+            </Col>
+            <Col className={ metodoFiltragem.value == 1 ? "" : "d-none"}  md="3">
+              <label>Informe o número</label>
+              <input
+                value={ opcaoSelecionada }
+                type="number"
+                style={{height:"37px", width:"150px", borderRadius:"4px"}}
+                onChange={ e => setOpcaoSelecionada( e.target.value.toString() ) }
+              />
+            </Col>
+            <Col className={ metodoFiltragem.value == 2  || metodoFiltragem.value == 3 ? "" : "d-none"} md="5">
+              <label htmlFor="opcoes">{ metodoFiltragem.value == 2 ? "Bairro/localidade" : "Zona"}</label>
+              <Select
+                id="opcoes"
+                placeholder=""
+                value={ opcaoSelecionada }
+                options={ opcoesDisponiveis }
+                onChange={ e => setOpcaoSelecionada(e) }
+              />
+            </Col>
+            <Col md="2">
+              <div style={{marginTop:"22px"}}>
+                <Button
+                  className="info"
+                  onClick={ verificarFiltragem }
+                >Filtrar</Button>
+              </div>
+              
+            </Col>
+          </Row>
           { 
             (() => {
               if(indexEquipe > -1 && indexMembro > -1 && equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje.id){
                 if(equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje.horaInicio == null ){
                   return (
-                    <div style={{width:"65%"}}>
+                    <div style={{width:"65%", marginTop:"15px"}}>
                       <div className="card">
                         <label className="m-0">
                 
@@ -93,7 +240,7 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
                 }
                 else {
                   return (
-                    <div style={{width:"65%"}}>
+                    <div style={{width:"65%", marginTop:"15px"}}>
                       <div className="card">
                         <label className="m-0">
                 
@@ -114,7 +261,7 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
       </Row>
       <Row id="list-quarteirao" style={ { paddingBottom: '30px', minHeight: '500px', maxHeight: '500px', overflow: 'auto' } }>
         <ExibirQuarteiroes 
-          rota_equipe={ rota_equipe } 
+          rota_equipe={ rotaEquipeFiltrada } 
           fl_loading={ fl_loading }
           equipes={ equipes }
           indexEquipe={ indexEquipe }
@@ -128,7 +275,6 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
 }
 
 const ExibirQuarteiroes = ( { rota_equipe, fl_loading, indexEquipe, indexMembro, equipes, toggleLado, atividade, ...props } ) => {
-  
   var disableAll = false
 
   //Se verdadeiro, significa que o agente selecionado ja iniciou o trabalho diario de hoje,
@@ -174,7 +320,7 @@ const ExibirQuarteiroes = ( { rota_equipe, fl_loading, indexEquipe, indexMembro,
                     }
                     onClick={ () => {
                       if( lado.situacao !== 3 )
-                        toggleLado( indexQuarteirao, indexLado )
+                        toggleLado( quarteirao.dataIndex, indexLado )
                     }}
                   >
                     <Tooltip
@@ -235,7 +381,8 @@ const mapDispatchToProps = {
   getRotaEquipeRequest,
   setFl_loading,
   checarRota,
-  resetToggleLado
+  resetToggleLado,
+  showNotifyToast
 }
 
 export default connect(

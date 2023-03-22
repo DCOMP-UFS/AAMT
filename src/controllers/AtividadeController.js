@@ -658,14 +658,27 @@ getResponsibilityActivities = async ( req, res ) => {
             },
             {
               association: 'quarteiroes',
-              include: {
-                association: 'lados',
-                attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-                include: {
-                  association: 'rua',
+              include: [
+                {
+                  association: 'lados',
                   attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+                  include: {
+                    association: 'rua',
+                    attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+                  },
+                },
+                {
+                  association: 'localidade',
+                  attributes: { exclude: [ 
+                    'createdAt', 'updatedAt','ativo', 
+                    'municipio_id', 'categoria_id'
+                  ] },
+                },
+                {
+                  association: 'zona',
+                  attributes: { exclude: [ 'createdAt', 'updatedAt', 'ativo', 'municipio_id' ] },
                 }
-              }
+              ]
             }
           ]
         }
@@ -696,12 +709,12 @@ getResponsibilityActivities = async ( req, res ) => {
    
       if( teams.length > 0 ){
 
-        //Para cada membro de cada equipe, será verificado se o membro possui uma trabalho diario
-        //agendado para hoje
         for(var i = 0; i < teams.length; i++) {
 
           const equipe_id = teams[i].dataValues.id
 
+          //Para cada membro de cada equipe, será verificado se o membro possui uma trabalho diario
+          //agendado para hoje
           for(var j = 0; j < teams[i].dataValues.membros.length; j++) {
           
             const usuario_id = teams[i].dataValues.membros[j].dataValues.usuario_id
@@ -726,6 +739,36 @@ getResponsibilityActivities = async ( req, res ) => {
 
             act.dataValues.equipes[i].dataValues.membros[j].dataValues.trabalhoDiarioHoje = trabalhoDiarioHoje
           }
+          
+          let localidadesEquipe = [] // array contem todas as localidades que a equipe está trabalhando
+          let zonasEquipe = [] // array contem todas as zonas em que a equipe está trabalhando
+
+          //Aqui será populado os arrays localidadesEquipe e zonasEquipe
+          for(var k = 0; k < teams[i].dataValues.quarteiroes.length; k++) {
+
+            const localidade = teams[i].dataValues.quarteiroes[k].dataValues.localidade
+            const zona = teams[i].dataValues.quarteiroes[k].dataValues.zona
+
+            if( localidadesEquipe.length == 0)
+              localidadesEquipe.push(localidade)
+            else{
+              const isLocalidadeRepetida = localidadesEquipe.find( loc => loc.id == localidade.id)
+              if(!isLocalidadeRepetida)
+                localidadesEquipe.push(localidade)
+            }
+
+            if( zonasEquipe.length == 0 && zona != null)
+              zonasEquipe.push(zona)
+            else if(zona != null){
+              const isZonaRepetida = zonasEquipe.find( z => ( z.id == zona.id ))
+              if(!isZonaRepetida)
+                zonasEquipe.push(zona)
+            }
+          }
+
+          act.dataValues.equipes[i].dataValues.localidadesEquipe = localidadesEquipe
+          act.dataValues.equipes[i].dataValues.zonasEquipe = zonasEquipe
+
         }
         responsabilityActivities.push( act );
       }

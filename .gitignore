@@ -1,5 +1,7 @@
 node_modules
 Dockerfile
+serverless.yml
+.serverless
 .env
 .VSCodeCounter
 .yarn

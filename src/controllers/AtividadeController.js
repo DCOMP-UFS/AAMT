@@ -530,7 +530,8 @@ plain = async ( req, res ) => {
       const estrato_equipe = equipe.estrato[0]
 
       const e = await Equipe.create({
-        atividade_id: id
+        atividade_id: id,
+        apelido: equipe.apelido
       });
     
       // Vinculando os quarteirões de responsabilidade da equipe

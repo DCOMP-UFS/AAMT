@@ -35,7 +35,7 @@ export const HomeSupervisor = ({ ...props }) => {
       const current_date = `${ Y }-${ m }-${ d }`;
       props.getRoutesRequest( props.usuario.id, current_date );
     }
-    props.setAcabouDeLogar(false)
+    props.setAcabouDeLogar(null)
   }, [props.acabouDeLogar]);
 
   return (

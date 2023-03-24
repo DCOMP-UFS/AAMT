@@ -16,10 +16,11 @@ const INITIAL_STATE = {
   navToggle: true,
   token: "",
   toast: {},
-  //Indica se o usuario logou neste instante ou não
-  //é setado true quando loga e imediatamente volta para
-  //false após as ações do useEffect
-  acabouDeLogar:false
+  //estado abaixo pode receber 3 valores
+  // - true: indica que a autentifivação foi feito com sucesso 
+  // - false: indica que houve uma falha na autentificação
+  // - null: depois do sucesso/fracasso da autetificação, deve receber null para indicar um estado neutro
+  acabouDeLogar:null
 }
 
 export default function appConfig(state = INITIAL_STATE, action){

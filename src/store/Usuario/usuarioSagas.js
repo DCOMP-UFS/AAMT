@@ -22,7 +22,7 @@ export function* authenticate(action) {
 
     }
   } catch (err) {
-
+    yield put( AppConfigActions.setAcabouDeLogar( false ) );
     if(err.response){
       const { status } = err.response.data
 

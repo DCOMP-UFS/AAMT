@@ -26,6 +26,9 @@ import {
 import { ContainerArrow } from '../../../../styles/util';
 import { Button, FormGroup, selectDefault, Separator } from '../../../../styles/global';
 
+//FUNCTIONS
+import { isBlank } from '../../../../config/function';
+
 const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
   const [ membros, setMembros ]                         = useState( [] );
   const [ membrosSelecionados, setMembrosSelecionados ] = useState( [] );
@@ -36,6 +39,8 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
   const [ messageMembro, setMessageMembro ]             = useState( "" );
   const [ estratos, setEstratos ]                       = useState( [] );
   const [ messageLocais, setMessageLocais ]             = useState( "" );
+  const [ apelido, setApelido ]                         = useState( "" );
+  const [ messageApelido, setMessageApelido ]             = useState( "" );
 
   //É acionado sempre que o modal é aberto abre
   //Limpa os dados deixados quando o modal foi fechado
@@ -67,7 +72,7 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
     montarMembros()
     setMembrosSelecionados( [] );
     setSupervisor( {} );
-    
+    setApelido("")
     montarEstratos()
   }
 
@@ -185,6 +190,9 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
     if( estratoSelecionado() == 0){
       setMessageLocais("Adicione um estrato");
       setTimeout(() => setMessageLocais("") , 3000);
+    }else if(isBlank(apelido)){
+      setMessageApelido("Informe um apelido");
+      setTimeout(() => setMessageApelido("") , 3000);
     }else if( membrosSelecionados.length === 0 ) {
       setMessageMembro("Adicione ao menos um membro a equipe");
       setTimeout(() => setMessageMembro("") , 3000);
@@ -205,7 +213,8 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
         },
         // apenas um estrato pode ser selecionado, logo o comando abaixo retorna uma
         //lista com um unico elemento
-        estratos.filter( e => e.checked ) 
+        estratos.filter( e => e.checked ),
+        apelido
       );
 
       setMembrosSelecionados( [] );
@@ -242,6 +251,14 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
           <Separator />
           <Row>
             <Col sm="5">
+              <FormGroup>
+                <label>Apelido da equipe<code>*</code><span className="text-danger">{ messageApelido }</span></label>
+                <input
+                  value={apelido}
+                  onChange={ e => setApelido(e.target.value) }
+                  className="form-control"
+                />
+              </FormGroup>
               <FormGroup>
                 <label>Membro(s) <code>*</code></label>
                 <ListMembros

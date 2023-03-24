@@ -41,6 +41,7 @@ export const SelecionarAgente = ({ equipes, ...props }) => {
                   <input
                     type="text"
                     placeholder={ equipe.apelido ? equipe.apelido : 'Equipe' }
+                    disabled
                     // onBlur={ e => props.setApelidoEquipeRequest( equipe.id, e.target.value ) }
                   />
                 </div>

@@ -357,13 +357,14 @@ export const addEstrato = ( locais, locaisSelecionados ) => {
   }
 }
 
-export const addEquipe = ( membros, supervisor, estrato ) => {
+export const addEquipe = ( membros, supervisor, estrato, apelido ) => {
   return {
     type: ActionTypes.ADD_EQUIPE,
     payload: {
       membros,
       supervisor,
-      estrato
+      estrato,
+      apelido
     }
   }
 }

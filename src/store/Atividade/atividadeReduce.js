@@ -237,7 +237,8 @@ export default function Atividade(state = INITIAL_STATE, action) {
       const equipe = {
         membros: action.payload.membros,
         supervisor: action.payload.supervisor,
-        estrato: action.payload.estrato.map( e => {return {locais: e.locais, dataIndex: e.dataIndex} })
+        estrato: action.payload.estrato.map( e => {return {locais: e.locais, dataIndex: e.dataIndex} }),
+        apelido: action.payload.apelido
       }
 
       equipes = [...equipes, equipe];

@@ -365,9 +365,11 @@ function ListEquipe( props ) {
           aria-controls={`panel-equipe-content-${ index }`}
           id={`panel-equipe-${ index }`}
         >
-          <p style={{ marginBottom: 0 }}>
-            Equipe <mark className="bg-info text-white">{ e.supervisor.nome }</mark>
+         
+          <p style={{ marginBottom: 0}}>
+            Apelido da equipe: <mark className="bg-info text-white">{ e.apelido }</mark>
           </p>
+          
         </ExpansionPanelSummary>
         <ExpansionPanelDetails className="flex-column">
           <Row>
@@ -382,9 +384,23 @@ function ListEquipe( props ) {
                           <FaUser />
                         </ContainerIcon>
                         <DivDescription>
-                          <div>
-                            <span className="mr-2">{ m.nome }</span>
-                          </div>
+                          {
+                            (() => {
+                              if( m.id == e.supervisor.id){
+                                return (
+                                  <div>
+                                    <span className="mr-2">{ m.nome }   <mark className="bg-info text-white">Supervisor</mark></span>
+                                  </div>
+                                )
+                              }else{
+                                return (
+                                  <div>
+                                    <span className="mr-2">{ m.nome }</span>
+                                  </div>
+                                )
+                              }
+                            }) ()
+                          }
                         </DivDescription>
                       </LiIcon>
                     ))

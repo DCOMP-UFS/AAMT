@@ -7,6 +7,7 @@ export const ActionTypes = {
   GET_CITY_BY_REGIONAL_HEALTH_SUCCESS: "GET_CITY_BY_REGIONAL_HEALTH_SUCCESS",
   CREATE_CITY_REQUEST: "CREATE_CITY_REQUEST",
   CREATE_CITY_SUCCESS: "CREATE_CITY_SUCCESS",
+  CREATE_CITY_FAIL: "CREATE_CITY_FAIL",
   CLEAR_CREATE_CITY: "CLEAR_CREATE_CITY",
   UPDATE_CITY_REQUEST: "UPDATE_CITY_REQUEST",
   UPDATE_CITY_SUCCESS: "UPDATE_CITY_SUCCESS",
@@ -65,15 +66,6 @@ export const getCityByRegionalHealth = municipios => {
   }
 }
 
-export const createCity = municipio => {
-  return {
-    type: ActionTypes.CREATE_CITY_SUCCESS,
-    payload: {
-      municipio
-    }
-  }
-}
-
 export const createCityRequest = ( codigo, nome, regionalSaude_id ) => {
   return {
     type: ActionTypes.CREATE_CITY_REQUEST,
@@ -82,6 +74,21 @@ export const createCityRequest = ( codigo, nome, regionalSaude_id ) => {
       nome,
       regionalSaude_id
     }
+  }
+}
+
+export const createCitySuccess = municipio => {
+  return {
+    type: ActionTypes.CREATE_CITY_SUCCESS,
+    payload: {
+      municipio
+    }
+  }
+}
+
+export const createCityFail = () => {
+  return {
+    type: ActionTypes.CREATE_CITY_FAIL,
   }
 }
 

@@ -107,9 +107,13 @@ function ModalAdd( { createCityRequest, createdCity, show, handleClose, ...props
 
   useEffect( () => {
     if( createdCity ) {
-      //$( '#modal-novo-municipio' ).modal( 'hide' );
+      $( '#modal-novo-municipio' ).modal( 'hide' );
       handleClose();
       clearInput();
+      setFlLoading( false );
+      props.clearCreateCity();
+    }
+    else{
       setFlLoading( false );
       props.clearCreateCity();
     }

@@ -48,6 +48,13 @@ export default function Municipio(state = INITIAL_STATE, action) {
       }
     }
 
+    case ActionTypes.CREATE_CITY_FAIL: {
+      return {
+        ...state,
+        createdCity: false
+      }
+    }
+
     case ActionTypes.CLEAR_CREATE_CITY: {
       return {
         ...state,

@@ -189,12 +189,21 @@ const ModalAdd = ( { createUsuarioRequest, createUser, isOpen, handleClose, ...p
     setUsuario( "" );
     setSenha( "" );
     setTipoPerfil( {} );
+    //setPais( {} );
+    //setRegiao( {} )
+    //setEstado( {} )
+    //setRegionalSaude( {} )
+    //setMunicipio( {} )
+    setLaboratorio( {} )
+  }
+
+  function clearAll() {
+    clearInput()
     setPais( {} );
     setRegiao( {} )
     setEstado( {} )
     setRegionalSaude( {} )
     setMunicipio( {} )
-    setLaboratorio( {} )
   }
 
   function handleCadastrar( e ) {
@@ -250,8 +259,10 @@ const ModalAdd = ( { createUsuarioRequest, createUser, isOpen, handleClose, ...p
                   options={ optionPerfil }
                   onChange={ e => {
                     setTipoPerfil(e)
-                    if( e.value === 1 )
+                    if( e.value === 1 ){
+                      setMunicipio({})
                       setFlMunicipio(false);
+                    }
                     else
                       setFlMunicipio(true);
 
@@ -441,7 +452,7 @@ const ModalAdd = ( { createUsuarioRequest, createUser, isOpen, handleClose, ...p
         <ModalFooter>
           <ContainerArrow>
             <div>
-              <Button type="button" className="warning" onClick={ clearInput }>Limpar</Button>
+              <Button type="button" className="warning" onClick={ clearAll }>Limpar</Button>
             </div>
             <div>
               <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>

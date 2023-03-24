@@ -74,12 +74,13 @@ export function* createCity( action ) {
     const { data, status } = yield call( servico.createCityRequest, action.payload );
 
     if( status === 201 ) {
-      yield put( MunicipioActions.createCity( data ) );
+      yield put( MunicipioActions.createCitySuccess( data ) );
       yield put( AppConfigActions.showNotifyToast( "Município criado com sucesso", "success" ) );
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao criar município: " + status, "error" ) );
     }
   } catch (err) {
+    yield put( MunicipioActions.createCityFail() );
     if(err.response){
       //Provavel erro de logica na API
       yield put( AppConfigActions.showNotifyToast( "Erro ao criar município, entre em contato com o suporte", "error" ) );

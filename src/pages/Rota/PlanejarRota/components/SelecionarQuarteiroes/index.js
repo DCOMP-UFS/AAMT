@@ -117,7 +117,7 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
       setOpcaoSelecionada('')
     //Bairro/Localidade
     else if(metodoFiltragem.value == 2){
-      setOpcaoSelecionada(null)
+      setOpcaoSelecionada(undefined)
       setOpcoesDisponiveis(opcoesLocalidades)
     }
     //Zona
@@ -125,13 +125,13 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
       if(opcoesZonas.length == 0)
         setOpcaoSelecionada({label:'Sem zonas disponíveis',value:null})
       else
-        setOpcaoSelecionada(null)
+        setOpcaoSelecionada(undefined)
 
       setOpcoesDisponiveis(opcoesZonas)
     }
     //Sem filtragem
     else{
-      setOpcaoSelecionada(null)
+      setOpcaoSelecionada(undefined)
       setOpcoesDisponiveis([])
     }
   }, [ metodoFiltragem ] );
@@ -147,13 +147,13 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
       }
     }
     else if(metodoFiltragem.value == 2){
-      if(opcaoSelecionada == null){
+      if(opcaoSelecionada == undefined){
         valido = false
         props.showNotifyToast( "Informe o bairro/localidade para a filtragem", "warning" );
       }
     }
     else if(metodoFiltragem.value == 3){
-      if(opcaoSelecionada == null || opcaoSelecionada.value == null){
+      if(opcaoSelecionada == undefined || opcaoSelecionada.value == null){
         valido = false
         props.showNotifyToast( "Informe a zona para a filtragem", "warning" );
       }
@@ -195,7 +195,7 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
             <Col className={ metodoFiltragem.value == 1 ? "" : "d-none"}  md="3">
               <label>Informe o número</label>
               <input
-                value={ opcaoSelecionada }
+                value={  metodoFiltragem.value == 1 ? opcaoSelecionada : 0 }
                 type="number"
                 style={{height:"37px", width:"150px", borderRadius:"4px"}}
                 onChange={ e => setOpcaoSelecionada( e.target.value.toString() ) }
@@ -223,14 +223,35 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
           </Row>
           { 
             (() => {
+              
+  
               if(indexEquipe > -1 && indexMembro > -1 && equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje.id){
-                if(equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje.horaInicio == null ){
+
+                let trabalhoDiarioHoje = equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje
+
+                //Significa que o usuario ja possui trabalho diario, mas é de outra equipe que ele pertence
+                if(trabalhoDiarioHoje.equipe.id != equipes[ indexEquipe ].id){
                   return (
                     <div style={{width:"65%", marginTop:"15px"}}>
                       <div className="card">
                         <label className="m-0">
                 
-                          <b style={{color:"red"}}>Atenção:</b> Agente ja possui rota para hoje, mas ainda é possivel alterá-la.
+                          <b style={{color:"red"}}>Atenção:</b> 
+                          Não é mais possivel passar uma rota para este agente, poís ele já recebeu hoje uma rota 
+                          na equipe com apelido "{trabalhoDiarioHoje.equipe.apelido}".
+                      
+                        </label>
+                      </div>
+                    </div>
+                  )
+                }
+                else if(trabalhoDiarioHoje.horaInicio == null ){
+                  return (
+                    <div style={{width:"65%", marginTop:"15px"}}>
+                      <div className="card">
+                        <label className="m-0">
+                
+                          <b style={{color:"red"}}>Atenção:</b> Agente já possui rota para hoje, mas ainda é possivel alterá-la.
                           
                       
                         </label>
@@ -244,7 +265,7 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
                       <div className="card">
                         <label className="m-0">
                 
-                          <b style={{color:"red"}}>Atenção:</b> Agente ja possui rota para hoje, não sendo possível mais alterá-la por já ter sido iniciada.
+                          <b style={{color:"red"}}>Atenção:</b> Agente já possui rota para hoje, não sendo possível mais alterá-la por ter sido iniciada.
                           
                       
                         </label>
@@ -277,10 +298,16 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
 const ExibirQuarteiroes = ( { rota_equipe, fl_loading, indexEquipe, indexMembro, equipes, toggleLado, atividade, ...props } ) => {
   var disableAll = false
 
-  //Se verdadeiro, significa que o agente selecionado ja iniciou o trabalho diario de hoje,
-  //não podendo receber outro
-  if(indexEquipe > -1 && indexMembro > -1 && equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje.horaInicio)
-    disableAll = true
+  if(indexEquipe > -1 && indexMembro > -1){
+    let trabalhoDiarioHoje = equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje
+
+    //Quarteirões serão desbilitados caso:
+    // 1- Agente possui um trabalho diario para hoje em outra equipe diferente da selecionada
+    // 2- Agente possui um trabalho diario INICIADO na equipe selecionada
+    if( trabalhoDiarioHoje.equipe && trabalhoDiarioHoje.equipe.id != equipes[indexEquipe].id  || trabalhoDiarioHoje.horaInicio)
+      disableAll = true
+  }
+    
 
   if( fl_loading ) {
     return <Loading element="#list-quarteirao" />;
@@ -319,7 +346,7 @@ const ExibirQuarteiroes = ( { rota_equipe, fl_loading, indexEquipe, indexMembro,
                       ''
                     }
                     onClick={ () => {
-                      if( lado.situacao !== 3 )
+                      if( !disableAll && !(lado.situacao == 3 || atividade.situacao == 3 ) && !(lado.situacao === 4 && !fl_usuario_selecionado) )
                         toggleLado( quarteirao.dataIndex, indexLado )
                     }}
                   >

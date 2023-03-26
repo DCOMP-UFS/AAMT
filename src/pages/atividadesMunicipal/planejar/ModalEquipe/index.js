@@ -203,7 +203,7 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
 
       //A função abaixo bloqueia os usuarios selecionados com o objetivo de nao permitir
       //que eles sejam escolhidos para participar em outras equipes
-      props.bloquearMembros(membrosSelecionados)
+      //props.bloquearMembros(membrosSelecionados)
 
       props.addEquipe(
         membrosSelecionados,

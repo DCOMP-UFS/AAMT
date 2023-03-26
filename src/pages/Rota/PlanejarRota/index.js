@@ -62,7 +62,7 @@ export const PlanejarRota = ( {
       props.showNotifyToast( "Rota salva com sucesso", "success" );
       props.setIndexEquipe( -1 );
       props.setIndexMembro( -1 );
-      setTimeout(() => { document.location.reload( true );}, 1500)
+      setTimeout(() => { document.location.reload( true );}, 1000)
       
     }
     setIsLoading(false)
@@ -112,7 +112,6 @@ export const PlanejarRota = ( {
   }
 
   const validarRota = () => {
-
     let valido = true
     let msg = ''
 
@@ -142,9 +141,15 @@ export const PlanejarRota = ( {
   }
 
   const submit = () => {
-    //Significa que o agente selecionado ja possui uma rota planejada para hoje,
-    //sendo que que ela ja foi iniciada
-    if(equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje.horaInicio)
+
+    let trabalhoDiarioHoje = equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje
+
+    //Significa que o agente selecionado ja possui uma rota planejada para hoje
+    //em outra equipe diferente
+    if(trabalhoDiarioHoje.equipe && trabalhoDiarioHoje.equipe.id != equipes[ indexEquipe ].id ){
+      props.showNotifyToast( 'Não é mais possivel passar uma rota para este agente', "warning" );
+    }
+    else if(trabalhoDiarioHoje.horaInicio)
       props.showNotifyToast( 'Não é possivel alterar um rota que ja foi iniciada', "warning" );
     else{
       const supervisor_id = usuario.id,
@@ -281,12 +286,16 @@ export const PlanejarRota = ( {
                                     </>
                                   )
                                 }
-                                //Se true, significa que o agente selecionado ja possui um trabalho diario para hoje
-                                //e o supervisor deseja altera-la
-                                else if(indexEquipe > -1 && indexMembro > -1 && equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje.id != null)
-                                  return 'Alterar'
-                                else
-                                  return 'Salvar'
+                                if(indexEquipe > -1 && indexMembro > -1 ){
+                                  let trabalhoDiarioHoje = equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje
+                                  
+                                  //Significa que o agente possui um rota não inicida na equipe selecionada, sendo permitido a alteração
+                                  //desta rota
+                                  if(trabalhoDiarioHoje.horaInicio == null && trabalhoDiarioHoje.equipe && trabalhoDiarioHoje.equipe.id == equipes[indexEquipe].id)
+                                    return 'Alterar'
+                                  else
+                                    return 'Salvar'
+                                }
                               }
                               else
                                 return 'Avançar'

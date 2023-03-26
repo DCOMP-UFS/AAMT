@@ -654,7 +654,18 @@ getResponsibilityActivities = async ( req, res ) => {
               attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
               include: {
                 association: 'usuario',
-                attributes: { exclude: [ 'createdAt', 'updatedAt' ] } 
+                attributes: { 
+                  exclude: [ 
+                    'createdAt', 
+                    'updatedAt',
+                    'cpf',
+                    'rg',
+                    'email',
+                    'senha',
+                    'usuario',
+                    'celular'
+                  ] 
+                } 
               }
             },
             {
@@ -710,10 +721,11 @@ getResponsibilityActivities = async ( req, res ) => {
    
       if( teams.length > 0 ){
 
+        //lista de id das equipes que o supervisor lidera
+        const idEquipes = teams.map( team => team.dataValues.id)
+
         for(var i = 0; i < teams.length; i++) {
-
-          const equipe_id = teams[i].dataValues.id
-
+          
           //Para cada membro de cada equipe, será verificado se o membro possui uma trabalho diario
           //agendado para hoje
           for(var j = 0; j < teams[i].dataValues.membros.length; j++) {
@@ -722,7 +734,7 @@ getResponsibilityActivities = async ( req, res ) => {
             
             var trabalhoDiarioHoje = await TrabalhoDiario.findOne( {
               where: {
-                equipe_id,
+                equipe_id:{ [Op.in]: idEquipes},
                 usuario_id,
                 data: current_date
               },
@@ -732,7 +744,11 @@ getResponsibilityActivities = async ( req, res ) => {
                 'supervisor_id',
                 'usuario_id',
                 'equipe_id',
-               ] }
+               ] },
+               include: {
+                association: 'equipe',
+                attributes: { exclude: [ 'createdAt', 'updatedAt', 'atividade_id' ] },
+              },
             } )
 
             if(!trabalhoDiarioHoje)

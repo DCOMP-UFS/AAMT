@@ -1,3 +1,9 @@
+Branchs principais
+
+#PLATAFORMA WEB
+## Desenvolvimento -> develop
+## Usada para hash do registro de software -> develop-hash
+
 Intale as package
 
 #Para fazer requisições HTTP

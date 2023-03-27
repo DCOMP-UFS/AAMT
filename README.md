@@ -1,19 +1,28 @@
 ## Branchs principais
 
-### PLATAFORMA WEB
+### Plataforma web
 #### Desenvolvimento -> develop
-#### Usada para hash do registro de software -> develop-hash
+#### Usada para gerar hash do registro de software -> develop-hash
 
-Intale as package
+### Plataforma mobile
+#### Desenvolvimento -> mobile-pretest
+#### Usada para gerar hash do registro de software ->  mobile-pretest-hash
 
-#Para fazer requisições HTTP
+### API
+#### Desenvolvimento -> back_end
+#### Usada para gerar hash do registro de software -> back_end_hash
+
+
+## Instalação de packages
+
+### Para fazer requisições HTTP
 yarn add axios
 
-#Para fazer os roteamentos das páginas
+#### Para fazer os roteamentos das páginas
 yarn add react-router-dom
 
-#Famoso bootstrap
+### Famoso bootstrap
 yarn add react-bootstrap bootstrap
 
-#icones
+### icones
 yarn add react-icons

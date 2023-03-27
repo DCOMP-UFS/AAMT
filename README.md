@@ -3,19 +3,19 @@
 ### Plataforma web
 #### Desenvolvimento
 develop
-#### Usada para gerar hash do registro de software
+#### Usada para gerar hash do registro de software (NÃO ALTERAR EM NENHUMA HÍPOTESE)
 develop-hash
 
 ### Plataforma mobile
 #### Desenvolvimento
 mobile-pretest
-#### Usada para gerar hash do registro de software
+#### Usada para gerar hash do registro de software (NÃO ALTERAR EM NENHUMA HÍPOTESE)
 mobile-pretest-hash
 
 ### API
 #### Desenvolvimento
 back_end
-#### Usada para gerar hash do registro de software
+#### Usada para gerar hash do registro de software (NÃO ALTERAR EM NENHUMA HÍPOTESE)
 back_end_hash
 
 ## Instalação de packages

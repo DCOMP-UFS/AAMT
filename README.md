@@ -1,8 +1,8 @@
-Branchs principais
+## Branchs principais
 
-#PLATAFORMA WEB
-## Desenvolvimento -> develop
-## Usada para hash do registro de software -> develop-hash
+### PLATAFORMA WEB
+#### Desenvolvimento -> develop
+#### Usada para hash do registro de software -> develop-hash
 
 Intale as package
 

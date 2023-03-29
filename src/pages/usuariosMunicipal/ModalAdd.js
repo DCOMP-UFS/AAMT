@@ -5,7 +5,7 @@ import Modal, { ModalBody, ModalFooter } from '../../components/Modal';
 import { Row, Col } from 'react-bootstrap';
 import { perfil } from '../../config/enumerate';
 import $ from 'jquery';
-import ButtonSaveModal from '../../components/ButtonSaveModal';
+import LoadginGif from '../../assets/loading.gif';
 import MaskedInput from '../../components/MaskedInput'
 import SelectWrap from '../../components/SelectWrap';
 
@@ -36,6 +36,7 @@ function ModalAdd({ createUsuarioRequest, municipio, createUser, laboratorios, i
   const [ tipoPerfil, setTipoPerfil ] = useState({});
   const [ optionsLaboratorio, setOptionsLaboratorio] = useState([]);
   const [ laboratorio, setLaboratorio ] = useState({});
+  const [ flLoading, setFlLoading ]     = useState( false );
 
   const [isValidNome , setIsValidNome] = useState(true)
   const [isValidCpf , setIsValidCpf] = useState(true)
@@ -76,6 +77,7 @@ function ModalAdd({ createUsuarioRequest, municipio, createUser, laboratorios, i
 
   useEffect(() => {
     if( createUser ) {
+      setFlLoading(false)
       $('#modal-novo-usuario').modal('hide');
       setNome("");
       setCpf("");
@@ -109,6 +111,7 @@ function ModalAdd({ createUsuarioRequest, municipio, createUser, laboratorios, i
   function handleCadastrar( e ) {
     e.preventDefault();
     if( isCamposValidos() ){
+      setFlLoading(true)
       createUsuarioRequest(
         nome,
         cpf,
@@ -281,7 +284,23 @@ function ModalAdd({ createUsuarioRequest, municipio, createUser, laboratorios, i
             </div>
             <div>
               <Button type="button" className="secondary" data-dismiss="modal">Cancelar</Button>
-              <Button type="submit">Salvar</Button>
+              <Button type="submit" loading={ flLoading } disabled={ flLoading } >
+                {
+                  flLoading ?
+                    (
+                      <>
+                        <img
+                          src={ LoadginGif }
+                          width="25"
+                          style={{ marginRight: 10 }}
+                          alt="Carregando"
+                        />
+                        Salvando...
+                      </>
+                    ) :
+                    "Salvar"
+                }
+              </Button>
             </div>
           </ContainerArrow>
         </ModalFooter>

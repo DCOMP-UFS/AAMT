@@ -6,7 +6,6 @@ import { Row, Col } from 'react-bootstrap';
 import { perfil } from '../../config/enumerate';
 import $ from 'jquery';
 import LoadginGif from '../../assets/loading.gif';
-import ButtonSaveModal from '../../components/ButtonSaveModal';
 import MaskedInput from '../../components/MaskedInput'
 import SelectWrap from '../../components/SelectWrap'
 

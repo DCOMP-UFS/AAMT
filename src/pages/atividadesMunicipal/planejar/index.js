@@ -100,7 +100,8 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
     e.preventDefault();
 
     if( estratos.length === 0 ) {
-      setMensageEstrato("Planeje ao menos um estrato");
+       //Para o usuario, o estrato é chamado de área de atuação da equipe ou só area
+      setMensageEstrato("Planeje ao menos uma área");
       setTimeout(() => setMensageEstrato(""), 3000);
     } else if( equipes.length === 0 ) {
       setMensageEquipe("Planeje ao menos uma equipe");
@@ -231,7 +232,8 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
                 <Row>
                   <Col>
                     <h4>
-                      Estrato(s)
+                      {/*Para o usuario, o estrato é chamado de área de atuação da equipe ou só area */}
+                      Área(s) de atuação(ões) da(s) equipes(s)
                       <ButtonNewObject
                         title="Planejar Estrato"
                         data-toggle="modal"
@@ -290,6 +292,7 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
   );
 }
 
+//Para o usuario, o estrato é chamado de área de atuação da equipe ou só área
 function ListEstrato( props ) {
   const confirmarRemoveEstrato = props.confirmarRemoveEstrato
   const estratos = props.estratos;
@@ -304,7 +307,7 @@ function ListEstrato( props ) {
           id={`panel-estrato-${ e.id }`}
         >
           <p style={{ marginBottom: 0 }}>
-            Estrato <mark className="bg-info text-white">{ index + 1 }</mark>
+            Área <mark className="bg-info text-white">{ index + 1 }</mark>
           </p>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
@@ -339,11 +342,12 @@ function ListEstrato( props ) {
     );
   });
 
+  //Para o usuario, o estrato é chamado de área de atuação da equipe ou só area
   if( estratos.length === 0 ) {
     expansion = [
       <UlIcon key={ 0 }>
         <LiEmpty>
-          <h4>Nenhum estrato cadastrado</h4>
+          <h4>Nenhuma área cadastrada</h4>
         </LiEmpty>
       </UlIcon>
     ];
@@ -412,7 +416,8 @@ function ListEquipe( props ) {
           <Row>
             <Col>
               <FormGroup>
-                <label>Estrato</label>
+                {/*Para o usuario, o estrato é chamado de área de atuação da equipe ou só area*/}
+                <label>Área de atuação</label>
                 <UlIcon style={{ width: '100%' }}>
                   {
                     e.estrato.map( (e,index) => (
@@ -424,7 +429,7 @@ function ListEquipe( props ) {
                           <div>
                             <span className="mr-2">
                             {
-                              `Estrato ${ e.dataIndex + 1 }`
+                              `Área ${ e.dataIndex + 1 }`
                             
                             }
                             </span>
@@ -456,7 +461,7 @@ function ListEquipe( props ) {
     expansion = [
       <UlIcon key={ 0 }>
         <LiEmpty>
-          <h4>Nenhuma equipe cadastrado</h4>
+          <h4>Nenhuma equipe cadastrada</h4>
         </LiEmpty>
       </UlIcon>
     ];

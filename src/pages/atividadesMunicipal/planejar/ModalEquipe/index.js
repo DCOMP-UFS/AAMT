@@ -188,7 +188,7 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
   function handleSubmit( e ) {
     e.preventDefault();
     if( estratoSelecionado() == 0){
-      setMessageLocais("Adicione um estrato");
+      setMessageLocais("Adicione uma área");
       setTimeout(() => setMessageLocais("") , 3000);
     }else if(isBlank(apelido)){
       setMessageApelido("Informe um apelido");
@@ -240,7 +240,8 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
           <Row>
             <Col>
               <FormGroup>
-                <label>Estrato sob responsabilidade da equipe <code>*</code><span className="text-danger">{ messageLocais }</span></label>
+                {/*Para o usuario, o estrato é chamado de área de atuação da equipe ou só area */}
+                <label>Área de atuação da equipe <code>*</code><span className="text-danger">{ messageLocais }</span></label>
                 <ListEstratosLivres
                   estratos={ estratos }
                   onClick={ handleEstrato }
@@ -376,6 +377,7 @@ function ListMembros( props ) {
   );
 }
 
+ //Para o usuario, o estrato é chamado de área de atuação da equipe ou só area
 function ListEstratosLivres( props ) {
   let estratos = props.estratos;
   const handleLocal = props.onClick;
@@ -401,7 +403,7 @@ function ListEstratosLivres( props ) {
           <div>
             <span className="mr-2">
               {
-                `Estrato ${ e.dataIndex + 1 }`
+                `Área ${ e.dataIndex + 1 }`
               }
             </span>
           </div>
@@ -413,7 +415,7 @@ function ListEstratosLivres( props ) {
   if( estratos.length === 0) {
     li = [
       <LiEmpty key={ 0 }>
-        <h4>Nenhum estrato disponivél para equipe</h4>
+        <h4>Nenhuma área disponivél para equipe</h4>
       </LiEmpty>
     ]
   }

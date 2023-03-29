@@ -129,7 +129,7 @@ const ModalEstrato = ( { atividade, estratos, isOpen, handleClose, ...props } ) 
   }
 
   return (
-    <Modal id="modal-novo-estrato" title="Planejar estrato" size="lg" >
+    <Modal id="modal-novo-estrato" title="Planejar área de atuação" size="lg" >
       <form onSubmit={ handleSubmit }>
         <ModalBody>
           <Row>

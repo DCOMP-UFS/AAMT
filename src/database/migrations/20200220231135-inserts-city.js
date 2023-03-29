@@ -46,6 +46,20 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date()
       },
+      {
+        codigo: 2805901,
+        nome: 'Riachuelo',
+        regional_saude_id: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
+        codigo: 2803609,
+        nome: 'Laranjeiras',
+        regional_saude_id: 1,
+        created_at: new Date(),
+        updated_at: new Date()
+      },
     ]);
   },
 

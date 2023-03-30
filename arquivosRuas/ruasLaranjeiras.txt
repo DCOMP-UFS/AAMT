@@ -1,0 +1,20 @@
+49170000	Laranjeiras/SE	Mussuca	Rua Sr. da Cruz
+49170000	Laranjeiras/SE	Mussuca	Rua Márcio Feitosa
+49170000	Laranjeiras/SE	Mussuca	Rua da Casa de Farinha
+49170000	Laranjeiras/SE	Mussuca	Rua Senhor da Cruz
+49170000	Laranjeiras/SE	Mussuca	Rua São Gonçalo
+49170000	Laranjeiras/SE	Mussuca	Rua Fundo do Posto
+49170000	Laranjeiras/SE	Mussuca	Rua Humberto Cardoso
+49170000	Laranjeiras/SE	Mussuca	Rua Dedé Bigodão
+49170000	Laranjeiras/SE	Mussuca	Estrada do Bumburum
+49170000	Laranjeiras/SE	Mussuca	Estrada Fazenda Pindoba
+49170000	Laranjeiras/SE	Mussuca	Estrada Fazenda ILHA
+49170000	Laranjeiras/SE	Mussuca	Estrada Fazenda Pilar
+49170000	Laranjeiras/SE	Mussuca	Rua Nossa Senhora da Conceição
+49170000	Laranjeiras/SE	Mussuca	Rua Santa Luzia
+49170000	Laranjeiras/SE	Mussuca	Rua Ricardo Nascimento
+49170000	Laranjeiras/SE	Mussuca	Travessa Santa Luzia
+49170000	Laranjeiras/SE	Mussuca	Rua Jerônimo
+49170000	Laranjeiras/SE	Mussuca	Rua São João
+49170000	Laranjeiras/SE	Mussuca	Rua Marizete
+49170000	Laranjeiras/SE	Mussuca	Rua São Luiz

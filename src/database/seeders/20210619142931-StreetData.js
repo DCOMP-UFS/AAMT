@@ -29,10 +29,10 @@ async function getRuasAracaju() {
   await new Promise((res) => rl.once('close', res));
 }
 
-//Busca as ruas de itabaiana contida no arquivo ruas.txt
-async function getRuasItabaiana() {
+//Busca as ruas de laranjeiras contida no arquivo ruas.txt
+async function getRuasLaranjeiras() {
   const rl = readline.createInterface({
-    input: fs.createReadStream("arquivosRuas/ruasItabaiana.txt"),
+    input: fs.createReadStream("arquivosRuas/ruasLaranjeiras.txt"),
     crlfDelay: Infinity,
   });
   rl.on('line', (line) => {
@@ -40,7 +40,7 @@ async function getRuasItabaiana() {
     const dadosRuas = { 
       nome: linhaInfo[3],
       cep: linhaInfo[0],
-      municipio_id: 4,
+      municipio_id: 8,
       created_at: new Date(),
       updated_at: new Date()
     }
@@ -53,7 +53,7 @@ async function getRuasItabaiana() {
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await getRuasAracaju()
-    //await getRuasItabaiana()
+    await getRuasLaranjeiras()
     return queryInterface.bulkInsert( 'ruas', ruas);
   },
 

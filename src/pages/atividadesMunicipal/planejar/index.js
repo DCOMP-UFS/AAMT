@@ -20,9 +20,11 @@ import ButtonSave from '../../../components/ButtonSave';
 import { ModalConfirm } from '../../../components/Modal';
 import $ from 'jquery';
 
-// ACTIONS
+// ACTIONS getZoneByCityRequest
 import { changeSidebar } from '../../../store/Sidebar/sidebarActions';
 import { getUsersByCityRequest, liberarMembros } from '../../../store/Usuario/usuarioActions';
+import { getLocationByCityRequest } from '../../../store/Localidade/localidadeActions';
+import { getZoneByCityRequest } from '../../../store/Zona/zonaActions';
 import {
   getActivitieByIdRequest,
   getLocationsRequest,
@@ -83,8 +85,16 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
       setFlTodosImoveis( atividade.flTodosImoveis );
       setProposito( atividade.metodologia ); //a metodologia da atividade é mostrada como proposito para o usuario
       setOperacao(atividade.objetivo); //o objetivo da atividade é mostrada como operação para o usuario
-
+    
       props.getLocationsRequest( atividade.abrangencia, props.municipio_id, 'sim' );
+      
+      //Caso a abragencia seja por quarteirão, serão buscadas
+      //as localidades e zonas do municipio para que sejam utilizadas
+      //como um filtro para a lista de quarteirões
+      if(atividade.abrangencia == 3){
+        props.getLocationByCityRequest(props.municipio_id)
+        props.getZoneByCityRequest(props.municipio_id, 'sim')
+      }
     }
   }, [ atividade ] );
 
@@ -268,7 +278,7 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
               <ModalEquipe  isOpen={modalEquipeOpen} handleClose={handleCloseModalEquipe}/>
               <ModalConfirm
                 id="modal-exclusao-estrato"
-                title="Confirmar exclusão do estrato"
+                title="Confirmar exclusão da área de atuação"
                 confirm={() => { 
 
                   //Tenta encontra a equipe que é responsavel pelo estrato que será deletado, se houver uma
@@ -282,7 +292,7 @@ const PlanejarAtividade = ( { atividade, estratos, equipes, ...props } ) => {
                 } }
                 
               >
-                <p>Deseja mesmo excluir o estrato? Caso uma equipe selecionou este estrato, a equipe tambem será excluida</p>
+                <p>Deseja mesmo excluir a área de atuação? Caso uma equipe selecionou esta área, a equipe tambem será excluida</p>
               </ModalConfirm>
             </div>
           </article>
@@ -477,7 +487,7 @@ const mapStateToProps = state => ({
   estratos    : state.atividade.estratos,
   equipes     : state.atividade.equipes,
   reload      : state.atividade.reload,
-  planned     : state.atividade.planned
+  planned     : state.atividade.planned,
 });
 
 const mapDispatchToProps = dispatch =>
@@ -491,6 +501,8 @@ const mapDispatchToProps = dispatch =>
     planActivityRequest,
     planActivityReset,
     liberarMembros,
+    getLocationByCityRequest,
+    getZoneByCityRequest
   }, dispatch );
 
 export default connect(

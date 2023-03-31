@@ -185,6 +185,34 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
     setInternalReload( !internalReload );
   }
 
+  function handleSelectAllMembros(  ){
+    let m = membros
+    m.forEach( mem => mem.checked = true )
+    setMembros(m)
+    setInternalReload( !internalReload );
+  }
+
+  function handleDeselectAllMembros(){
+    let m = membros
+    m.forEach( mem => mem.checked = false )
+    setMembros(m)
+    setInternalReload( !internalReload );
+  }
+
+  function handleSelectAllMembrosSelecionados(){
+    let ms = membrosSelecionados
+    ms.forEach( mem => mem.checked = true )
+    setMembrosSelecionados(ms)
+    setInternalReload( !internalReload );
+  }
+
+  function handleDeselectAllMembrosSelecionados(){
+    let ms = membrosSelecionados
+    ms.forEach( mem => mem.checked = false )
+    setMembrosSelecionados(ms)
+    setInternalReload( !internalReload );
+  }
+
   function handleSubmit( e ) {
     e.preventDefault();
     if( estratoSelecionado() == 0){
@@ -203,6 +231,7 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
 
       //A função abaixo bloqueia os usuarios selecionados com o objetivo de nao permitir
       //que eles sejam escolhidos para participar em outras equipes
+
       //props.bloquearMembros(membrosSelecionados)
 
       props.addEquipe(
@@ -266,6 +295,8 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
                   membros={ membros }
                   onClick={ handleMembro }
                   onDoubleClick={ () => dbClickMembro }
+                  handleSelectAll= { handleSelectAllMembros}
+                  handleDeselectAll= { handleDeselectAllMembros}
                 />
               </FormGroup>
             </Col>
@@ -311,6 +342,8 @@ const ModalEquipe = ( { equipes, isOpen, handleClose, ...props } ) => {
                   membros={ membrosSelecionados }
                   onClick={ handleMembroSelecionado }
                   onDoubleClick={ dbClickMembroSelecionado }
+                  handleSelectAll= { handleSelectAllMembrosSelecionados}
+                  handleDeselectAll= { handleDeselectAllMembrosSelecionados}
                 />
               </FormGroup>
             </Col>
@@ -336,6 +369,8 @@ function ListMembros( props ) {
   const membros = props.membros;
   const handleMembro = props.onClick;
   const dbClickMembro = props.onDoubleClick;
+  const handleSelectAll = props.handleSelectAll
+  const handleDeselectAll = props.handleDeselectAll
   let li = [];
 
   if( membros ) {
@@ -371,9 +406,29 @@ function ListMembros( props ) {
   }
 
   return (
-    <UlEquipe>
-      { li }
-    </UlEquipe>
+    <>
+      <UlLocal>
+        { li }
+      </UlLocal>
+      <div>
+        <Button 
+          type="button" 
+          style={{backgroundColor:"#4cba2b", marginBottom:"10px"}}  
+          onClick={ () => handleSelectAll() }
+        >
+          Selecionar tudo
+        </Button>
+      </div>
+      <div>
+        <Button 
+          type="button" 
+          style={{backgroundColor:"#c73a24"}} 
+          onClick={() => handleDeselectAll() }
+        >
+          Deselecionar tudo
+        </Button>
+      </div>
+    </>
   );
 }
 

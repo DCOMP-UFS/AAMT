@@ -2,12 +2,23 @@ const express = require( 'express' );
 const router  = express.Router();
 const jwt     = require( 'jsonwebtoken' );
 const bcrypt  = require( 'bcryptjs' );
+const nodemailer = require( 'nodemailer' )
 
 const authConfig                = require( '../config/auth' );
+const smtpConfig                = require( '../config/smtp' );
 const Usuario                   = require( '../models/Usuario' );
 const getLocationByOperation    = require( '../util/getLocationByOperation' );
 const getPermissionByOperation  = require( '../util/getPermissionByOperation' );
 const getPermissoesVariaveis    = require( '../util/getPermissoesVariaveis' );
+
+const transporter = nodemailer.createTransport({
+  host: smtpConfig.host,
+  port: smtpConfig.port,
+  auth:{
+    user: smtpConfig.user,
+    pass: smtpConfig.pass
+  },
+})
 
 /**
  * Esta função gera o token de autenticação definindo os valores armazenados 
@@ -100,6 +111,121 @@ authenticate = async ( req, res ) => {
   }
 }
 
+recoverUserPassword = async (req, res) => {
+  try{
+    const { email } = req.body;
+    const url_web = process.env.URL_PLATAFORMA_WEB
+
+    const user = await Usuario.findOne({
+      where:{
+        email:email
+      }
+    })
+
+    if(!user){
+      return res.status( 400 ).send({
+        userNotFound:true,
+        mensage: 'Não foi encontrado usuario com email '+email
+      })
+    }
+
+    const token = jwt.sign( { email: user.email, id:user.id }, authConfig.secret, {expiresIn: "5m"} )
+    const link = url_web+"alterarSenha/"+`${token}`
+
+    const mailSent = await transporter.sendMail({
+      text: link,
+      subject: "Recuperação de senha",
+      to: email,
+      html: `
+      <html>
+      <body>
+        Segue abaixo o link para a recuperação da senha, sendo que ele é válido por 5 minutos.
+        <br>
+        <br>
+        ${link}
+      </body>
+      </html>
+      `
+    })
+
+    return res.send({  mensage: "Link de recuperação foi enviado para email informado" })
+
+  }catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
+}
+
+validateTokenRecoverUserPassword = async (req, res) => {
+  try{
+
+    const { token } = req.params;
+
+    try {
+      const verify = jwt.verify(token, authConfig.secret)
+      return res.send({
+        tokenValido:true,
+        mensage: 'Token para alteração de senha ainda é válido'
+      })
+    } catch (error) {
+      return res.status(400).send({
+        tokenValido:false,
+        mensage: 'Token para alteração não é mais válido'
+      })
+    }
+
+  }catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
+}
+
+alterateUserPassword = async (req, res) => {
+  try{
+
+    const { senha, token } = req.body;
+
+    try {
+      const verify = jwt.verify(token, authConfig.secret)
+    } catch (error) {
+      return res.status(400).send({
+        tokenValido:false,
+        mensage: 'Token para alteração não é mais válido'
+      })
+    }
+    const salt      = bcrypt.genSaltSync( 10 );
+    const senhaHash = bcrypt.hashSync( senha, salt );
+
+    const user_id = jwt.decode( token, authConfig.secret ).id
+
+    await Usuario.update(
+      {
+        senha: senhaHash,
+      },
+      {
+        where: {
+          id:user_id
+        }
+      }
+    );
+
+    return res.send({mensage:"Senha alterada com sucesso"})
+
+  }catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
+}
+
 router.post( '/authenticate', authenticate );
+router.post( '/recoverUserPassword', recoverUserPassword );
+router.get( '/validateTokenRecoverUserPassword/:token', validateTokenRecoverUserPassword)
+router.post('/alterateUserPassword', alterateUserPassword)
 
 module.exports = app => app.use( '/auth', router );

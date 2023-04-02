@@ -10,6 +10,12 @@ import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 // Tela de Login
 import LoginScreen from './pages/LoginScreen';
 
+//Tela de recuperação de senha
+import EsqueceuSenha from './pages/EsqueceuSenha';
+
+//Tela de alteração de senha
+import AlterarSenha from './pages/AlterarSenha';
+
 // Gerir Usuários do município
 import UsuariosMunConsultar from './pages/usuariosMunicipal';
 import UsuariosMunEditar from './pages/usuariosMunicipal/EditarUsuario';
@@ -122,7 +128,8 @@ const Routes = props => {
     <BrowserRouter>
       <Switch>
         <Route exact path="/" component={ LoginScreen } />
-
+        <Route exact path="/esqueceuSenha" component={ EsqueceuSenha } />
+        <Route path="/alterarSenha/:token" component={ AlterarSenha } />
         {/* Rotas de laboratorialista */}
         
 

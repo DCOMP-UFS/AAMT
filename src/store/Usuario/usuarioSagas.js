@@ -200,6 +200,97 @@ export function* updateUsuario( action ) {
   }
 }
 
+export function* recuperarSenha( action ) {
+  try {
+    const { status } = yield call( servico.recoverPasswordRequest, action.payload );
+
+    if( status === 200 ) {
+      yield put( UsuarioActions.recuperarSenhaSuccess() );
+      yield put( AppConfigActions.showNotifyToast( "Link de recuperação foi enviado para seu email", "success" ) );
+    } else {
+      yield put( UsuarioActions.recuperarSenhaFail() )
+      yield put( AppConfigActions.showNotifyToast( "Falha na recuperação de senha: " + status, "error" ) );
+    }
+  } catch (err) {
+    yield put( UsuarioActions.recuperarSenhaFail() )
+
+    if(err.response){
+      const { userNotFound } = err.response.data
+
+      if(userNotFound){
+        yield put( AppConfigActions.showNotifyToast("Não foi encontrado usuário cadastrado com este email ", "error" ) );
+      }
+      else{
+        //Provavel erro de logica na API
+        yield put( AppConfigActions.showNotifyToast( "Erro na recuperação de senha do usuário, entre em contato com o suporte", "error" ) );
+      }
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro na recuperação de senha do usuário, favor verifique sua conexão com a internet", "error" ) );
+  }
+}
+
+export function* validarTokenAlteracaoSenha( action ) {
+  try {
+    const { status } = yield call( servico.validateTokenRecoverUserPassword, action.payload );
+
+    if( status === 200 ) {
+      yield put( UsuarioActions.validarTokenAlteracaoSenhaSuccess() );
+    } else {
+      yield put( UsuarioActions.validarTokenAlteracaoSenhaFail() )
+      yield put( AppConfigActions.showNotifyToast( "Erro ao verificar validade do link: " + status, "error" ) );
+    }
+  } catch (err) {
+    yield put( UsuarioActions.validarTokenAlteracaoSenhaFail() )
+
+    if(err.response){
+      const { tokenValido } = err.response.data
+
+      if( tokenValido == false ){
+        yield put( AppConfigActions.showNotifyToast("Este link não é mais válido, por favor informe seu email novamente na pagina 'Esqueceu Senha'", "error" ) );
+      }
+      else{
+        //Provavel erro de logica na API
+        yield put( AppConfigActions.showNotifyToast( "Erro ao verificar validade do link, entre em contato com o suporte", "error" ) );
+      }
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao verificar validade do link, favor verifique sua conexão com a internet", "error" ) );
+  }
+}
+
+export function* alterarSenha( action ) {
+  try {
+    const { status } = yield call( servico.alteratePassword, action.payload );
+
+    if( status === 200 ) {
+      yield put( UsuarioActions.alterarSenhaSuccess() );
+    } else {
+      yield put( UsuarioActions.alterarSenhaFail() )
+      yield put( AppConfigActions.showNotifyToast( "Erro ao alterar senha: " + status, "error" ) );
+    }
+  } catch (err) {
+    yield put( UsuarioActions.alterarSenhaFail() )
+
+    if(err.response){
+      const { tokenValido } = err.response.data
+
+      if( tokenValido == false ){
+        yield put( AppConfigActions.showNotifyToast("Este link não é mais válido, por favor informe seu email novamente na pagina 'Esqueceu Senha'", "error" ) );
+      }
+      else{
+        //Provavel erro de logica na API
+        yield put( AppConfigActions.showNotifyToast( "Erro na alteração de senha, entre em contato com o suporte", "error" ) );
+      }
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro na alteração de senha, favor verifique sua conexão com a internet", "error" ) );
+  }
+}
+
 function* watchAuthenticate() {
   yield takeLatest( AppConfigActions.ActionTypes.AUTHENTICATE_REQUEST, authenticate );
 }
@@ -232,6 +323,18 @@ function* watchUpdateEveryUsuario() {
   yield takeEvery( UsuarioActions.ActionTypes.UPDATE_ALL_USUARIO_REQUEST, updateUsuario );
 }
 
+function* watchRecuperarSenhaUsuario() {
+  yield takeLatest( UsuarioActions.ActionTypes.RECUPERAR_SENHA_REQUEST, recuperarSenha );
+}
+
+function* watchValidarTokenAlteracaoSenha() {
+  yield takeLatest( UsuarioActions.ActionTypes.VALIDAR_TOKEN_ALTERACAO_SENHA_REQUEST, validarTokenAlteracaoSenha );
+}
+
+function* watchAlterarSenhaUsuario() {
+  yield takeLatest( UsuarioActions.ActionTypes.ALTERAR_SENHA_REQUEST, alterarSenha );
+}
+
 export function* usuarioSaga() {
   yield all( [
     watchAuthenticate(),
@@ -242,5 +345,8 @@ export function* usuarioSaga() {
     watchCreateUsuario(),
     watchUpdateUsuario(),
     watchUpdateEveryUsuario(),
+    watchRecuperarSenhaUsuario(),
+    watchValidarTokenAlteracaoSenha(),
+    watchAlterarSenhaUsuario()
   ] );
 }

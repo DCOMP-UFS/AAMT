@@ -7,7 +7,10 @@ const INITIAL_STATE = {
   indexUser: -1,
   createUser: null,
   updateUser: null,
-  reload: false
+  reload: false,
+  recuperarSenha: null,
+  isTokenRecuperacaoSenhaValid: false,
+  senhaAlterada: null,
 }
 
 export default function Usuario(state = INITIAL_STATE, action) {
@@ -145,6 +148,62 @@ export default function Usuario(state = INITIAL_STATE, action) {
         ...state,
         usuarios: listaMembros,
         reload: !state.reload
+      }
+    }
+
+    case ActionTypes.RECUPERAR_SENHA_SUCCESS: {
+      return {
+        ...state,
+        recuperarSenha: true
+      }
+    }
+
+    case ActionTypes.RECUPERAR_SENHA_FAIL: {
+      return {
+        ...state,
+        recuperarSenha: false
+      }
+    }
+
+    case ActionTypes.RECUPERAR_SENHA_RESET: {
+      return {
+        ...state,
+        recuperarSenha: null
+      }
+    }
+
+    case ActionTypes.VALIDAR_TOKEN_ALTERACAO_SENHA_SUCCESS: {
+      return {
+        ...state,
+        isTokenRecuperacaoSenhaValid: true
+      }
+    }
+
+    case ActionTypes.VALIDAR_TOKEN_ALTERACAO_SENHA_FAIL: {
+      return {
+        ...state,
+        isTokenRecuperacaoSenhaValid: false
+      }
+    }
+
+    case ActionTypes.ALTERAR_SENHA_SUCCESS: {
+      return {
+        ...state,
+        senhaAlterada: true
+      }
+    }
+
+    case ActionTypes.ALTERAR_SENHA_FAIL: {
+      return {
+        ...state,
+        senhaAlterada: false
+      }
+    }
+
+    case ActionTypes.ALTERAR_SENHA_RESET: {
+      return {
+        ...state,
+        senhaAlterada: null
       }
     }
 

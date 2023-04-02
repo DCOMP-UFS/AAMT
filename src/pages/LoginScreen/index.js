@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { perfil } from '../../config/enumerate';
+import { Link } from 'react-router-dom'
 
 import { Container, Sidebar, Logo, ButtonLogin, Background } from './styles';
 import { FormGroup, Separator } from '../../styles/global';
@@ -116,6 +117,14 @@ const LoginScreen = ( props ) => {
               className="form-control"
               onChange={ e => setSenha( e.target.value ) }
               required />
+          </FormGroup>
+
+          <FormGroup className="form-dark">
+            {
+              flLoading
+              ? <Link to={'/esqueceuSenha'}  onClick={ (event) => event.preventDefault() } >Esqueceu senha?</Link>
+              : <Link to={'/esqueceuSenha'}>Esqueceu senha?</Link>
+            }
           </FormGroup>
 
           <FormGroup className="form-dark">

@@ -18,7 +18,18 @@ export const ActionTypes = {
   CHANGE_USER_EDIT_INDEX: "CHANGE_USER_EDIT_INDEX",
   UPDATE_USUARIO_FAILURE: "UPDATE_USUARIO_FAILURE",
   BLOQUEAR_MEMBROS_EQUIPE: "BLOQUEAR_MEMBROS_EQUIPE",
-  LIBERAR_MEMBROS_EQUIPE: "LIBERAR_MEMBROS_EQUIPE"
+  LIBERAR_MEMBROS_EQUIPE: "LIBERAR_MEMBROS_EQUIPE",
+  RECUPERAR_SENHA_REQUEST: "RECUPERAR_SENHA_REQUEST",
+  RECUPERAR_SENHA_SUCCESS: "RECUPERAR_SENHA_SUCCESS",
+  RECUPERAR_SENHA_FAIL: "RECUPERAR_SENHA_FAIL",
+  RECUPERAR_SENHA_RESET: "RECUPERAR_SENHA_RESET",
+  VALIDAR_TOKEN_ALTERACAO_SENHA_REQUEST: "VALIDAR_TOKEN_ALTERACAO_SENHA_REQUEST",
+  VALIDAR_TOKEN_ALTERACAO_SENHA_SUCCESS: "VALIDAR_TOKEN_ALTERACAO_SENHA_SUCCESS",
+  VALIDAR_TOKEN_ALTERACAO_SENHA_FAIL: "VALIDAR_TOKEN_ALTERACAO_SENHA_FAIL",
+  ALTERAR_SENHA_REQUEST: "ALTERAR_SENHA_REQUEST",
+  ALTERAR_SENHA_SUCCESS: "ALTERAR_SENHA_SUCCESS",
+  ALTERAR_SENHA_FAIL: "ALTERAR_SENHA_FAIL",
+  ALTERAR_SENHA_RESET: "ALTERAR_SENHA_RESET"
 }
 
 export const getUsuariosRequest = municipio_id => {
@@ -201,5 +212,81 @@ export const liberarMembros = membrosEquipe => {
     payload: {
       membrosEquipe
     }
+  }
+}
+
+export const recuperarSenhaRequest = email => {
+  return {
+    type: ActionTypes.RECUPERAR_SENHA_REQUEST,
+    payload: {
+      email
+    }
+  }
+}
+
+export const recuperarSenhaSuccess = () => {
+  return {
+    type: ActionTypes.RECUPERAR_SENHA_SUCCESS,
+  }
+}
+
+export const recuperarSenhaFail = () => {
+  return {
+    type: ActionTypes.RECUPERAR_SENHA_FAIL,
+  }
+}
+
+export const recuperarSenhaReset = () => {
+  return {
+    type: ActionTypes.RECUPERAR_SENHA_RESET,
+  }
+}
+
+export const validarTokenAlteracaoSenhaRequest = token =>{
+  return {
+    type: ActionTypes.VALIDAR_TOKEN_ALTERACAO_SENHA_REQUEST,
+    payload: {
+      token
+    }
+  }
+}
+
+export const validarTokenAlteracaoSenhaSuccess = () =>{
+  return {
+    type: ActionTypes.VALIDAR_TOKEN_ALTERACAO_SENHA_SUCCESS,
+  }
+}
+
+export const validarTokenAlteracaoSenhaFail = () =>{
+  return {
+    type: ActionTypes.VALIDAR_TOKEN_ALTERACAO_SENHA_FAIL,
+  }
+}
+
+export const alterarSenhaRequest = (senha, token) =>{
+  return {
+    type: ActionTypes.ALTERAR_SENHA_REQUEST,
+    payload: {
+      senha,
+      token
+    }
+  }
+}
+
+export const alterarSenhaSuccess = () =>{
+  return {
+    type: ActionTypes.ALTERAR_SENHA_SUCCESS,
+  }
+}
+
+export const alterarSenhaFail = () =>{
+  return {
+    type: ActionTypes.ALTERAR_SENHA_FAIL,
+  }
+}
+
+export const alterarSenhaReset = () =>{
+  return {
+    type: ActionTypes.ALTERAR_SENHA_RESET,
   }
 }

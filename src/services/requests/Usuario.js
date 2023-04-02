@@ -2,7 +2,7 @@ import api, { headerAuthorization } from '../../services/api';
 
 export const authenticateRequest = data => {
   const { usuario, senha } = data;
-
+  
   return api.post('/auth/authenticate', {
     usuario,
     senha
@@ -87,4 +87,19 @@ export const getUsuarioByIdRequest = id => {
   return api.get(`/usuarios/${ id }`, {
     ...headerAuthorization()
   });
+}
+
+export const recoverPasswordRequest = data => {
+  const { email } = data;
+  return api.post(`/auth/recoverUserPassword`, { email } );
+}
+
+export const validateTokenRecoverUserPassword = data => {
+  const { token } = data;
+  return api.get(`/auth/validateTokenRecoverUserPassword/${ token }`);
+}
+
+export const alteratePassword = data => {
+  const { senha, token } = data;
+  return api.post(`/auth/alterateUserPassword`, { senha, token } );
 }

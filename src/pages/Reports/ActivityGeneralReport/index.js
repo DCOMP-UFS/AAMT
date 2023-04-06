@@ -45,6 +45,7 @@ const ActivityGeneralReport = () => {
   ]);
   const [blocksWorked, setBlocksWorked] = useState([]);
   const [blocksFinished, setBlocksFinished] = useState([]);
+  const [blocksFinishedWithPendency, setBlocksFinishedWithPendency ] = useState([]);
   const [blocksWithAegypti, setBlocksWithAegypti] = useState([]);
   const [blocksWithAlbopictus, setBlocksWithAlbopictus] = useState([]);
   const [sampleNumber, setSampleNumber] = useState(0);
@@ -153,6 +154,7 @@ const ActivityGeneralReport = () => {
     if (report?.situacao_quarteirao) {
       setBlocksWorked(createChunks(report.situacao_quarteirao.trabalhados));
       setBlocksFinished(createChunks(report.situacao_quarteirao.concluidos));
+      setBlocksFinishedWithPendency(report.situacao_quarteirao.concluidosPendencia)
       setBlocksWithAegypti(
         createChunks(report.quarteiroesPositivos.aedesAegypti)
       );
@@ -325,50 +327,50 @@ const ActivityGeneralReport = () => {
               </RowContainer>
               <Card>
                 <Header>
-                  <PropertyTitle>Amostras por depósito - Tipo A1</PropertyTitle>
+                  <PropertyTitle>Nº de espécimes por depósito - Tipo A1</PropertyTitle>
                 </Header>
                 {Bar(report.sampleByDeposit[0].value)}
               </Card>
               <Card>
                 <Header>
-                  <PropertyTitle>Amostras por depósito - Tipo A2</PropertyTitle>
+                  <PropertyTitle>Nº de espécimes por depósito - Tipo A2</PropertyTitle>
                 </Header>
                 {Bar(report.sampleByDeposit[1].value)}
               </Card>
               <Card>
                 <Header>
-                  <PropertyTitle>Amostras por depósito - Tipo B</PropertyTitle>
+                  <PropertyTitle>Nº de espécimes por depósito - Tipo B</PropertyTitle>
                 </Header>
                 {Bar(report.sampleByDeposit[2].value)}
               </Card>
               <Card>
                 <Header>
-                  <PropertyTitle>Amostras por depósito - Tipo C</PropertyTitle>
+                  <PropertyTitle>Nº de espécimes por depósito - Tipo C</PropertyTitle>
                 </Header>
                 {Bar(report.sampleByDeposit[3].value)}
               </Card>
               <Card>
                 <Header>
-                  <PropertyTitle>Amostras por depósito - Tipo D1</PropertyTitle>
+                  <PropertyTitle>Nº de espécimes por depósito - Tipo D1</PropertyTitle>
                 </Header>
                 {Bar(report.sampleByDeposit[4].value)}
               </Card>
               <Card>
                 <Header>
-                  <PropertyTitle>Amostras por depósito - Tipo D2</PropertyTitle>
+                  <PropertyTitle>Nº de espécimes por depósito - Tipo D2</PropertyTitle>
                 </Header>
                 {Bar(report.sampleByDeposit[4].value)}
               </Card>
               <Card>
                 <Header>
-                  <PropertyTitle>Amostras por depósito - Tipo E</PropertyTitle>
+                  <PropertyTitle>Nº de espécimes por depósito - Tipo E</PropertyTitle>
                 </Header>
                 {Bar(report.sampleByDeposit[4].value)}
               </Card>
               <Card>
                 <Header>
                   <PropertyTitle>
-                    Amostras por tipo de imóvel - Residência
+                    Nº de espécimes por tipo de imóvel - Residência
                   </PropertyTitle>
                 </Header>
                 {Bar(report.sampleByProperty[0].value)}
@@ -376,7 +378,7 @@ const ActivityGeneralReport = () => {
               <Card>
                 <Header>
                   <PropertyTitle>
-                    Amostras por tipo de imóvel - Comércio
+                    Nº de espécimes por tipo de imóvel - Comércio
                   </PropertyTitle>
                 </Header>
                 {Bar(report.sampleByProperty[1].value)}
@@ -384,7 +386,7 @@ const ActivityGeneralReport = () => {
               <Card>
                 <Header>
                   <PropertyTitle>
-                    Amostras por tipo de imóvel - Terreno Baldio
+                    Nº de espécimes por tipo de imóvel - Terreno Baldio
                   </PropertyTitle>
                 </Header>
                 {Bar(report.sampleByProperty[2].value)}
@@ -392,45 +394,25 @@ const ActivityGeneralReport = () => {
               <Card>
                 <Header>
                   <PropertyTitle>
-                    Amostras por tipo de imóvel - Ponto Estratégico
+                    Nº de espécimes por tipo de imóvel - Ponto Estratégico
                   </PropertyTitle>
                 </Header>
                 {Bar(report.sampleByProperty[3].value)}
               </Card>
               <Card>
                 <Header>
-                  <PropertyTitle>Amostras por exemplar - Ovo</PropertyTitle>
+                  <PropertyTitle>Nº de espécimes por estágio - Pupa</PropertyTitle>
                 </Header>
                 {Bar(report.sampleExemplary[0].value)}
               </Card>
               <Card>
                 <Header>
-                  <PropertyTitle>Amostras por exemplar - Pupa</PropertyTitle>
+                  <PropertyTitle>Nº de espécimes por estágio - Larvas</PropertyTitle>
                 </Header>
                 {Bar(report.sampleExemplary[1].value)}
               </Card>
-              <Card>
-                <Header>
-                  <PropertyTitle>
-                    Amostras por exemplar - Exúvia de Pupa
-                  </PropertyTitle>
-                </Header>
-                {Bar(report.sampleExemplary[2].value)}
-              </Card>
-              <Card>
-                <Header>
-                  <PropertyTitle>Amostras por exemplar - Larva</PropertyTitle>
-                </Header>
-                {Bar(report.sampleExemplary[3].value)}
-              </Card>
-              <Card>
-                <Header>
-                  <PropertyTitle>Amostras por exemplar - Adulto</PropertyTitle>
-                </Header>
-                {Bar(report.sampleExemplary[4].value)}
-              </Card>
               <TableComponent
-                title="Nº/Seq. dos quarteirões trabalhados"
+                title="Nº/Seq. dos quarteirões para serem trabalhados"
                 headerData={blocksWorkedOptions}
                 contentData={blocksWorked}
               />
@@ -438,6 +420,11 @@ const ActivityGeneralReport = () => {
                 title="Nº/Seq. dos quarteirões concluidos"
                 headerData={blocksWorkedOptions}
                 contentData={blocksFinished}
+              />
+              <TableComponent
+                title="Nº/Seq. dos quarteirões concluidos com pendência"
+                headerData={blocksWorkedOptions}
+                contentData={blocksFinishedWithPendency}
               />
               <TableComponent
                 title="Nº/Seq. dos quarteirões com Aedes aegypti"

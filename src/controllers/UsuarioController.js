@@ -348,12 +348,22 @@ update = async (req, res) => {
         id:{[Op.ne]: parseInt(id)},
         email: req.body.email
       },})
+    
+    let sameUsuario = false
+    if(req.body.usuario){
+      sameUsuario = await Usuario.findOne(
+        {where:{
+          id:{[Op.ne]: parseInt(id)},
+          usuario: req.body.usuario
+        },})
+    }
 
-    if(sameCpf || sameEmail){
+    if(sameCpf || sameEmail || sameUsuario){
       return res.status( 400 ).json( { 
         error: "Usuário, CPF e/ou e-mail já existe na base" ,
         sameCpf:     sameCpf ? true : false,
         sameEmail:   sameEmail ? true : false,
+        sameUsuario: sameUsuario ? true : false
       } );
     }
 

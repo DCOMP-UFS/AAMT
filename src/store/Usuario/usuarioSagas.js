@@ -180,12 +180,13 @@ export function* updateUsuario( action ) {
     yield put( UsuarioActions.updateUsuarioFailure() )
 
     if(err.response){
-      const { sameCpf, sameEmail} = err.response.data
+      const { sameCpf, sameEmail, sameUsuario} = err.response.data
 
-      if(sameCpf || sameEmail){
+      if(sameCpf || sameEmail || sameUsuario){
         var repetidos = ""
         if(sameCpf) repetidos = repetidos+"CPF " 
         if(sameEmail) repetidos = repetidos+"Email "
+        if(sameUsuario) repetidos = repetidos+"Usuario "
 
         yield put( AppConfigActions.showNotifyToast("Erro ao atualizar Usuário, já existe(m) funcionário(s) com este(s): "+repetidos, "error" ) );
       }

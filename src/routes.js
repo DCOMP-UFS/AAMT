@@ -16,6 +16,9 @@ import EsqueceuSenha from './pages/EsqueceuSenha';
 //Tela de alteração de senha
 import AlterarSenha from './pages/AlterarSenha';
 
+// Mostrar e atualizar dados do usuario logado
+import MeusDados from './pages/MeusDados';
+
 // Gerir Usuários do município
 import UsuariosMunConsultar from './pages/usuariosMunicipal';
 import UsuariosMunEditar from './pages/usuariosMunicipal/EditarUsuario';
@@ -130,6 +133,7 @@ const Routes = props => {
         <Route exact path="/" component={ LoginScreen } />
         <Route exact path="/esqueceuSenha" component={ EsqueceuSenha } />
         <Route path="/alterarSenha/:token" component={ AlterarSenha } />
+        <PrivateRoute exact path="/meusDados" component={ MeusDados } tipoPerfil={ perfil } />
         {/* Rotas de laboratorialista */}
         
 

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { IoIosMenu, IoIosSearch } from 'react-icons/io';
-import { FaRegEnvelope, FaRegBell, FaSignOutAlt } from 'react-icons/fa';
+import { FaRegEnvelope, FaRegBell, FaSignOutAlt, FaUser } from 'react-icons/fa';
 import Avatar from '@material-ui/core/Avatar';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -133,6 +133,14 @@ function Header({ usuario, ...props }) {
                     <FaSignOutAlt fontSize="small" />
                   </ListItemIcon>
                   <ListItemText primary="Sair" />
+                </PerfilItem>
+                <PerfilItem
+                  onClick={ () => { window.location = `${ window.location.origin.toString() }/meusDados/`;} }
+                >
+                  <ListItemIcon>
+                    <FaUser fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText primary="Meu Dados" />
                 </PerfilItem>
               </PerfilMenu>
             </li>

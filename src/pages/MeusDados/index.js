@@ -29,8 +29,7 @@ import { ContainerFixed, PageIcon, PageHeader } from '../../styles/util';
 //FUNCTIONS
 import { isBlank, onlyLetters, onlyNumbers, isCpfValid} from '../../config/function';
 
-function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequest, ...props }) {
-  const [ id ] = useState(props.match.params.id);
+const MeuDados = ( { usuarioLogado, usuarioUpdate, ...props } ) => {
   const [ nome, setNome ] = useState("");
   const [ cpf, setCpf ] = useState("");
   const [ rg, setRg ] = useState("");
@@ -40,7 +39,7 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
   const [ ativo, setAtivo ] = useState("");
   const [ tipoPerfil, setTipoPerfil ] = useState({});
   const [ pais, setPais ] = useState({});
-  const [ optionPais ] = useState([]);
+  const [ optionPais, setOptionPais ] = useState([]);
   const [ regiao, setRegiao ] = useState({});
   const [ optionRegiao, setOptionRegiao ] = useState([]);
   const [ estado, setEstado ] = useState({});
@@ -49,35 +48,38 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
   const [ optionRegionalSaude, setOptionRegionalSaude ] = useState([]);
   const [ municipio, setMunicipio ] = useState({});
   const [ optionMunicipio, setOptionMunicipio ] = useState([]);
+  const [ optionsLaboratorio, setOptionsLaboratorio]    = useState([]);
+  const [ laboratorio, setLaboratorio ]                 = useState({});
+  const [ flMunicipio, setFlMunicipio] = useState( true );
+  const [ flLoading, setFlLoading ] = useState( false );
+
   const [ userRegiao, setUserRegiao ] = useState({});
   const [ userEstado, setUserEstado ] = useState({});
   const [ userRegionalSaude, setUserRegionalSaude ] = useState({});
   const [ userMunicipio, setUserMunicipio ] = useState({});
-  const [ flBtnLoading, setFlBtnLoading ] = useState( false );
-  const [ optionsLaboratorio, setOptionsLaboratorio] = useState([]);
-  const [ laboratorio, setLaboratorio ] = useState({});
+  const [ userLaboratorio, setUserLaboratorio ] = useState({});
 
   const [isValidNome , setIsValidNome] = useState(true)
   const [isValidCpf , setIsValidCpf] = useState(true)
   const [isValidRg , setIsValidRg] = useState(true)
+  const [isValidUsuario, setIsValidUsuario ] = useState(true)
 
-  const optionPerfil = Object.entries(perfil)
-    .filter( ([ key, value ]) => {
-      if( value.id > 1 )
-        return true;
-      else
-        return false
-    })
-    .map(([key, value]) => {
-      return { value: value.id, label: value.label };
-    });
+  const optionPerfil = Object.entries(perfil).map(([key, value]) => {
+    return { value: value.id, label: value.label };
+  });
 
   const [ optionAtivo ] = useState([ { value: 1, label: 'Sim' }, { value: 0, label: 'Não' } ]);
 
-  useEffect(() => {
-    props.changeSidebar( "usuario_municipio" );
-    getUsuarioByIdRequest( id );
-  }, []);
+  useEffect( () => {
+    props.changeSidebar( "usuario" );
+    props.getUsuarioByIdRequest( usuarioLogado.id );
+    props.getNationsRequest();
+  }, [] );
+
+  useEffect( () => {
+    const options = props.paises.map( p => ( { value: p.id, label: p.nome } ) );
+    setOptionPais( options );
+  }, [ props.paises ] );
 
   useEffect(() => {
     if( Object.entries(pais).length > 0 ) {
@@ -89,6 +91,8 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
       setOptionRegionalSaude([]);
       setMunicipio({});
       setOptionMunicipio([]);
+      setLaboratorio( {} )
+      setOptionsLaboratorio( [] )
     }
   }, [ pais ]);
 
@@ -111,6 +115,8 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
       setOptionRegionalSaude([]);
       setMunicipio({});
       setOptionMunicipio([]);
+      setLaboratorio( {} )
+      setOptionsLaboratorio( [] )
     }
   }, [ regiao ]);
 
@@ -131,6 +137,8 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
       setRegionalSaude({});
       setMunicipio({});
       setOptionMunicipio([]);
+      setLaboratorio( {} )
+      setOptionsLaboratorio( [] )
     }
   }, [ estado ]);
 
@@ -148,7 +156,9 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
   useEffect(() => {
     if( Object.entries(regionalSaude).length > 0 ) {
       props.getCityByRegionalHealthRequest( regionalSaude.value );
-      setMunicipio( userMunicipio );
+      //setMunicipio( userMunicipio );
+      setLaboratorio( {} )
+      setOptionsLaboratorio( [] )
     }
   }, [ regionalSaude ]);
 
@@ -164,7 +174,28 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
   }, [ props.municipiosList ]);
 
   useEffect(() => {
-    props.getLaboratoriosRequest(usuarioUpdate.municipio.id)
+    if( Object.entries(municipio).length > 0 ) {
+      props.getLaboratoriosRequest( municipio.value );
+      setLaboratorio({});
+    }
+  }, [ municipio ]);
+
+  useEffect(() => {
+    const options = props.laboratorios.map(( l ) => {
+      if( l.id === userLaboratorio.id )
+        setLaboratorio( { value: l.id, label: l.nome } );
+
+      return ({ value: l.id, label: l.nome })
+    });
+    setOptionsLaboratorio( options );
+  }, [props.laboratorios]);
+
+  useEffect(() => {
+    setLaboratorio({});
+  }, [ tipoPerfil ]);
+
+  useEffect(() => {
+    //props.getLaboratoriosRequest(usuarioUpdate.municipio.id)
 
     if( Object.entries( usuarioUpdate ).length > 0 ) {
       let regionalHealth = {};
@@ -188,7 +219,19 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
       setUserRegiao( region );
       setUserEstado( state );
       setUserRegionalSaude( regionalHealth );
-      setUserMunicipio( city);
+      setUserMunicipio( city );
+
+      if(usuarioUpdate.atuacoes[0].tipoPerfil == 1)
+        setFlMunicipio(false)
+      else
+        setFlMunicipio(true)
+    
+      if(usuarioUpdate.atuacoes[0].tipoPerfil == 5){
+        setUserLaboratorio({
+          id: usuarioUpdate.laboratorio.laboratorio_id,
+          nome: usuarioUpdate.nome,
+        })
+      }
 
       props.getNationsRequest();
 
@@ -202,28 +245,18 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
       setCelular( usuarioUpdate.celular === undefined ? "" : usuarioUpdate.celular );
       setUsuario( usuarioUpdate.usuario );
       setPais({ value: nation.id, label: nation.nome });
-      setAtivo( { value: usuarioUpdate.ativo, label: usuarioUpdate.ativo ? 'Sim' : 'Não' } );
       setTipoPerfil( { value: perfil[tipoPerfil].id, label: perfil[tipoPerfil].label } );
+
+      if( perfil[tipoPerfil].id === 1) {
+        setFlMunicipio( false );
+      }
     }
   }, [ usuarioUpdate ]);
 
   useEffect(() => {
-    const options = props.laboratorios.map(lab => ({value: lab.id, label: lab.nome}));
-    setOptionsLaboratorio(options)
-    if(usuarioUpdate.laboratorio){
-      const labVinculado = options.find(lab => lab.value == usuarioUpdate.laboratorio.laboratorio_id)
-      setLaboratorio(labVinculado);
-    }
-  }, [props.laboratorios]);
-
-  useEffect(() => {
-    setLaboratorio({});
-  }, [ tipoPerfil ]);
-
-  useEffect(() => {
+    setFlLoading( false );
     props.clearUpdateUser();
-    setFlBtnLoading( false );
-  }, [ props.update ]);
+  }, [ props.updateUser ]);
 
   function handleSubmit( e ) {
     e.preventDefault();
@@ -243,15 +276,16 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
       at.tipoPerfil = tipoPerfil.value;
       at.local_id = municipio.value;
     }
+
     if(isCamposValidos()){
-      setFlBtnLoading( true );
-      updateUsuarioRequest( id, {
+      setFlLoading( true );
+      props.updateUsuarioRequest( usuarioLogado.id, {
         nome,
         cpf,
         rg,
         email,
         celular,
-        ativo: ativo.value,
+        usuario,
         atuacoes: [
           at
         ]
@@ -263,12 +297,14 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
 
     const nomeValido = !isBlank(nome)
     const cpfValido =  isCpfValid(cpf)
+    const usuarioValido = !isBlank(usuario)
 
     nomeValido      ? setIsValidNome(true)     : setIsValidNome(false)
     cpfValido       ? setIsValidCpf(true)      : setIsValidCpf(false)
     rg              ? setIsValidRg(true)       : setIsValidRg(false)
+    usuarioValido   ? setIsValidUsuario(true)  : setIsValidUsuario(false)
 
-    return (nomeValido && cpfValido && rg)
+    return (nomeValido && cpfValido && rg && usuarioValido)
   }
 
   return (
@@ -276,7 +312,7 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaUsers /></PageIcon>
-          Editar Usuário
+          Meus Dados
         </h3>
       </PageHeader>
       <section className="card-list">
@@ -285,9 +321,9 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
           {/* Formulário básico */}
           <article className="col-md-12 stretch-card">
             <div className="card">
-              <h4 className="title">{ usuarioUpdate.nome }</h4>
+              <h4 className="title">Usuário: <mark className="bg-info text-white" >{ usuarioUpdate.nome }</mark></h4>
               <p className="text-description">
-                Atenção os campos com <code>*</code> são obrigatórios
+                Atenção! Os campos com <code>*</code> são obrigatórios
               </p>
               <form onSubmit={ handleSubmit }>
                 <Row>
@@ -359,54 +395,57 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
                             id="celular"
                             value={ celular }
                             className="form-control"
-                            onChange={ e => ( onlyNumbers(e.target.value) ? setCelular(e.target.value) : '' ) } />
+                            onChange={ e => ( onlyNumbers(e.target.value) ? setCelular(e.target.value) : '' ) }
+                          />
                         </FormGroup>
                       </Col>
                     </Row>
                     <Row>
                       <Col sm="6">
                         <FormGroup>
-                          <label htmlFor="usuario">Usuário</label>
-                          <input id="usuario" value={ usuario } className="form-control" onChange={ e => setUsuario(e.target.value) } disabled required />
+                          <label htmlFor="usuario">Usuário<code>*</code></label>
+                          <input id="usuario" value={ usuario } className="form-control" onChange={ e => setUsuario(e.target.value) }
+                          required />
+                          {
+                            !isValidUsuario ?
+                              <span class="form-label-invalid">Usuario inválido</span> :
+                            ''
+                          }
                         </FormGroup>
                       </Col>
                       <Col sm="6">
                         <FormGroup>
                           <label htmlFor="tipoPerfil">Perfil <code>*</code></label>
-                          <Select
+                          <SelectWrap
                             value={ tipoPerfil }
                             styles={ selectDefault }
                             options={ optionPerfil }
-                            onChange={ e => setTipoPerfil(e) }
+                            isDisabled={ usuarioUpdate && usuarioUpdate.atuacoes[0].tipoPerfil == 1 ? false : true }
+                            onChange={ e => {
+                              setTipoPerfil(e)
+                              if( e.value === 1 )
+                                setFlMunicipio(false);
+                              else
+                                setFlMunicipio(true);
+
+                            }}
                             required />
                         </FormGroup>
                       </Col>
                     </Row>
                     <Row>
-                      <Col sm="6" className={tipoPerfil.value !== 5 ? "d-none" :""}>
-                        <FormGroup>
-                          <label htmlFor="laboratorio">Laboratorio Vinculado<code>*</code></label>
-                          <SelectWrap
-                            value={ laboratorio }
-                            styles={ selectDefault }
-                            options={ optionsLaboratorio }
-                            onChange={ e => setLaboratorio(e) }
-                            required={tipoPerfil.value !== 5 ? false : true} />
-                        </FormGroup>
-                      </Col>
-                      <Col sm='6'>
-                      <FormGroup>
-                          <label htmlFor="ativo">Ativo <code>*</code></label>
-                          <Select
-                            id="ativo"
-                            value={ ativo }
-                            options={ optionAtivo }
-                            styles={ selectDefault }
-                            onChange={ e => setAtivo(e) }
-                            required
-                          />
-                        </FormGroup>
-                      </Col>
+                        <Col sm="6" className={tipoPerfil.value !== 5 ? "d-none" :""}>
+                            <FormGroup>
+                                <label htmlFor="laboratorio">Laboratorio Vinculado<code>*</code></label>
+                                <SelectWrap
+                                value={ laboratorio }
+                                styles={ selectDefault }
+                                options={ optionsLaboratorio }
+                                onChange={ e => setLaboratorio(e) }
+                                isDisabled={ flMunicipio }
+                                required={tipoPerfil.value !== 5 ? false : true} />
+                            </FormGroup>
+                        </Col>
                     </Row>
                   </Col>
 
@@ -415,26 +454,28 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
                       <Col sm="6">
                         <FormGroup>
                           <label htmlFor="pais">País <code>*</code></label>
-                          <Select
+                          <SelectWrap
                             id="pais"
                             value={ pais }
                             styles={ selectDefault }
                             options={ optionPais }
                             onChange={ e => setPais(e) }
-                            isDisabled={ true }
+                            isDisabled={ flMunicipio }
+                            required
                           />
                         </FormGroup>
                       </Col>
                       <Col sm="6">
                         <FormGroup>
                           <label htmlFor="regiao">Região <code>*</code></label>
-                          <Select
+                          <SelectWrap
                             id="regiao"
                             value={ regiao }
                             styles={ selectDefault }
                             options={ optionRegiao }
                             onChange={ e => setRegiao(e) }
-                            isDisabled={ true }
+                            isDisabled={ flMunicipio }
+                            required
                           />
                         </FormGroup>
                       </Col>
@@ -443,42 +484,44 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
                       <Col sm="6">
                         <FormGroup>
                           <label htmlFor="estado">Estado <code>*</code></label>
-                          <Select
+                          <SelectWrap
                             id="estado"
                             value={ estado }
                             styles={ selectDefault }
                             options={ optionEstado }
                             onChange={ e => setEstado(e) }
-                            isDisabled={ true }
+                            isDisabled={ flMunicipio }
+                            required
                           />
                         </FormGroup>
                       </Col>
                       <Col sm="6">
                         <FormGroup>
                           <label htmlFor="regionalSaude">Regional de saúde <code>*</code></label>
-                          <Select
+                          <SelectWrap
                             id="regionalSaude"
                             value={ regionalSaude }
                             styles={ selectDefault }
                             options={ optionRegionalSaude }
                             onChange={ e => setRegionalSaude(e) }
-                            isDisabled={ true }
+                            isDisabled={ flMunicipio }
+                            required
                           />
                         </FormGroup>
                       </Col>
                     </Row>
                     <Row>
-                      <Col>
+                      <Col className={tipoPerfil.value == 1 ? "d-none" :""}>
                         <FormGroup>
                           <label htmlFor="municipio">Município <code>*</code></label>
-                          <Select
+                          <SelectWrap
                             id="municipio"
                             value={ municipio }
                             styles={ selectDefault }
                             options={ optionMunicipio }
                             onChange={ e => setMunicipio(e) }
-                            isDisabled={ true }
-                            required
+                            isDisabled={ flMunicipio }
+                            required={ flMunicipio }
                           />
                         </FormGroup>
                       </Col>
@@ -490,9 +533,10 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
                   <ButtonSave
                     title="Salvar"
                     className="bg-info text-white"
-                    loading={ flBtnLoading }
-                    disabled={ flBtnLoading }
-                    type="submit" />
+                    loading={ flLoading }
+                    disabled={ flLoading }
+                    type="submit"
+                  />
                 </ContainerFixed>
               </form>
             </div>
@@ -503,20 +547,22 @@ function EditarUsuario({ usuarioUpdate, getUsuarioByIdRequest, updateUsuarioRequ
   );
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = state => ( {
+  usuarioLogado: state.appConfig.usuario,
   municipios: state.municipio.municipios,
   usuarioUpdate: state.usuario.usuarioUpdate,
+  updateUser: state.usuario.updateUser,
   paises: state.pais.paises,
   regioes: state.regiao.regioes,
   estados: state.estado.estados,
   regionaisSaude: state.regionalSaude.regionaisSaude,
   municipiosList: state.municipio.municipiosList,
-  update: state.usuario.updateUser,
   laboratorios: state.nw_laboratorio.laboratorios
-});
+  
+} );
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({
+  bindActionCreators( {
     changeSidebar,
     updateUsuarioRequest,
     getUsuarioByIdRequest,
@@ -527,9 +573,9 @@ const mapDispatchToProps = dispatch =>
     getCityByRegionalHealthRequest,
     clearUpdateUser,
     getLaboratoriosRequest
-  }, dispatch);
+  }, dispatch );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(EditarUsuario);
+)( MeuDados );

@@ -256,7 +256,6 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
 
   function handleSubmit( e ) {
     e.preventDefault();
-    setFlLoading( true );
 
     let at = {
         tipoPerfil: null,
@@ -275,6 +274,7 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
     }
 
     if(isCamposValidos()){
+      setFlLoading( true );
       props.updateUsuarioRequest( id, {
         nome,
         cpf,

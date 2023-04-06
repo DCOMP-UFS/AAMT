@@ -94,6 +94,20 @@ index = async ( req, res ) => {
         if(i.ativo)
           imoveis.push(i)
       })
+
+      imoveis.sort( (a,b) => {
+        if(a.numero == b.numero){
+          if( a.sequencia == null )
+            return 0 - b.sequencia
+          else if( b.sequencia == null )
+            return a.sequencia - 0
+          else
+            return a.sequencia - b.sequencia
+        }
+        else
+          return a.numero - b.numero
+      } )
+      
       lado.imoveis = imoveis;
       lados.push(lado)
     })

@@ -46,13 +46,17 @@ export function* addImovel( action ) {
     }
 
   } catch (err) {
+
+    yield put( ImovelActions.setCreatedFalse() );
+
     if(err.response){
 
-      const {numeroRepetido, error} = err.response.data
+      const {numeroRepetido, numeroSequenciaRepetidos, error} = err.response.data
 
       if(numeroRepetido)
         yield put( AppConfigActions.showNotifyToast( "O número do imovel informado já é usado por outro imovél do logradouro", "error" ) );
-      
+      else if(numeroSequenciaRepetidos)
+        yield put( AppConfigActions.showNotifyToast( "O número e a sequência do imovel informado já é usado por outro imovél do logradouro", "error" ) );
       else{
         //Provavel erro de logica na API
         yield put( AppConfigActions.showNotifyToast( "Erro ao adicionar imóvel, entre em contato com o suporte", "error" ) );
@@ -71,24 +75,28 @@ export function* addImovel( action ) {
  */
 export function* editarImovel( action ) {
   try {
-    const { status } = yield call( servico.updateHouseRequest, action.payload.imovel );
+    const { status, data } = yield call( servico.updateHouseRequest, action.payload.imovel );
 
     if( status === 200 ) {
-      yield put( ImovelActions.setUpdatedTrue() );
+      yield put( ImovelActions.updateImovelReduce(data));
       yield put( AppConfigActions.showNotifyToast( "Imóvel atualizado com sucesso!", "success" ) );
-      setTimeout(() => { document.location.reload( true );}, 1000)
+      //setTimeout(() => { document.location.reload( true );}, 1000)
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao atualizar imóvel: " + status, "error" ) );
     }
 
   } catch (err) {
+
+    yield put( ImovelActions.setUpdatedFalse() );
+
     if(err.response){
 
-      const {numeroRepetido, error} = err.response.data
+      const {numeroRepetido, numeroSequenciaRepetidos, error} = err.response.data
 
       if(numeroRepetido)
         yield put( AppConfigActions.showNotifyToast( "O número do imovel informado já é usado por outro imovél do logradouro", "error" ) );
-
+      else if(numeroSequenciaRepetidos)
+        yield put( AppConfigActions.showNotifyToast( "O número e a sequência do imovel informado já é usado por outro imovél do logradouro", "error" ) );
       else{
         //Provavel erro de logica na API
         yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar imóvel, entre em contato com o suporte", "error" ) );

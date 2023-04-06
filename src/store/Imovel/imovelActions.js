@@ -5,14 +5,18 @@ export const ActionTypes = {
   ADD_IMOVEL_REQUEST: "ADD_IMOVEL_REQUEST",
   ADD_IMOVEL_REDUCE: "ADD_IMOVEL_REDUCE",
   EDITAR_IMOVEL_REQUEST: "EDITAR_IMOVEL_REQUEST",
+  EDITAR_IMOVEL_SUCCESS: "EDITAR_IMOVEL_SUCCESS",
   CREATE_HOUSE_REQUEST: "CREATE_HOUSE_REQUEST",
   CREATE_HOUSE_SUCCESS: "CREATE_HOUSE_SUCCESS",
   SET_CREATED_TRUE: "SET_CREATED_TRUE",
+  SET_CREATED_FALSE: "SET_CREATED_FALSE",
   CLEAR_CREATE_HOUSE: "CLEAR_CREATE_HOUSE",
   SET_UPDATED_TRUE: "SET_UPDATED_TRUE",
+  SET_UPDATED_FALSE: "SET_UPDATED_FALSE",
   CLEAR_UPDATE_HOUSE: "CLEAR_UPDATE_HOUSE",
   DELETAR_IMOVEL_REQUEST: "DELETAR_IMOVEL_REQUEST",
   SET_IMOVEIS_POR_IMOVEL_ID: "SET_IMOVEIS_POR_IMOVEL_ID",
+  SET_INDEX_IMOVEL_UPDATE: "SET_INDEX_IMOVEL_UPDATE"
 }
 
 /**
@@ -166,9 +170,24 @@ export const addImovelReduce = imovel => {
   }
 }
 
+export const updateImovelReduce = imovel => {
+  return {
+    type: ActionTypes.EDITAR_IMOVEL_SUCCESS,
+    payload: {
+      imovel
+    }
+  }
+}
+
 export const setCreatedTrue = () => {
   return {
     type: ActionTypes.SET_CREATED_TRUE
+  }
+}
+
+export const setCreatedFalse = () => {
+  return {
+    type: ActionTypes.SET_CREATED_FALSE
   }
 }
 
@@ -184,8 +203,23 @@ export const setUpdatedTrue = () => {
   }
 }
 
+export const setUpdatedFalse = () => {
+  return {
+    type: ActionTypes.SET_UPDATED_FALSE
+  }
+}
+
 export const clearUpdate = () => {
   return {
     type: ActionTypes.CLEAR_UPDATE_HOUSE
+  }
+}
+
+export const setImovelUpdate = index => {
+  return {
+    type: ActionTypes.SET_INDEX_IMOVEL_UPDATE,
+    payload: {
+      index
+    }
   }
 }

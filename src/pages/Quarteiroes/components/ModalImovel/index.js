@@ -8,6 +8,7 @@ import { Collapse } from 'react-bootstrap';
 import ReactMapGL, { Marker } from 'react-map-gl';
 import { removeMultipleSpaces } from '../../../../config/function';
 import SelectWrap from '../../../../components/SelectWrap'
+import ButtonSaveModal from '../../../../components/ButtonSaveModal';
 
 // Models
 import { Imovel } from '../../../../config/models';
@@ -64,6 +65,7 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
     longitude: -47.9292,
     zoom: 2
   } );
+  const [ flLoading, setFlLoading ] = useState( false );
 
   /**
    * Efeito acionado ao mudar o modelo de dados Imóvel do modal
@@ -134,6 +136,7 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
    * ao back-end foi bem sucedidade e podemos fechar o modal
    */
   useEffect( () => {
+    setFlLoading(false)
     if( props.created ) {
       handleClose();
       setNumero( null );
@@ -149,6 +152,7 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
   }, [ props.created ] );
 
   useEffect( () => {
+    setFlLoading(false)
     if( props.updated ) {
       handleClose();
       //props.setUpdated( null );
@@ -231,7 +235,7 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
       lado_id: lado.value,
       numero: numero,
       logradouro: "",
-      sequencia: sequencia,
+      sequencia: sequencia == "" ? null : sequencia,
       responsavel: removeMultipleSpaces(responsavel),
       complemento: removeMultipleSpaces(complemento),
       tipoImovel: tipoImovel.value,
@@ -241,11 +245,16 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
 
     if( acao === 'cadastrar' ) {
       var corner = lados.find( l => l.id == im.lado_id)
-      const numeroRepetido = corner.imoveis.findIndex( imovel => imovel.numero == im.numero)
+      const numeroRepetido = corner.imoveis.findIndex( imovel => (imovel.numero == im.numero && imovel.sequencia == im.sequencia))
 
-      if(numeroRepetido != -1)
-        props.showNotifyToast("O número informado já pertence a outro imóvel deste lado",'warning')
+      if(numeroRepetido != -1){
+        if(im.sequencia == null)
+          props.showNotifyToast("O número informado já pertence a outro imóvel deste lado",'warning')
+        else
+          props.showNotifyToast("O número e sequência informado já pertence a outro imóvel deste lado",'warning')
+      }
       else{
+        setFlLoading(true)
         props.addImovelRequest({
           numero,
           sequencia,
@@ -263,12 +272,19 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
       //retira o imovel que será alterado, evitando que se compare consigo mesmo
       var filtrarImoveis = corner.imoveis.filter(imovel => imovel.id != im.id)
 
-      const numeroRepetido = filtrarImoveis.findIndex( imovel => imovel.numero == im.numero)
+      const numeroRepetido = filtrarImoveis.findIndex( imovel => (imovel.numero == im.numero && imovel.sequencia == im.sequencia))
 
-      if(numeroRepetido != -1)
-        props.showNotifyToast("O número informado já pertence a outro imóvel deste lado",'warning')
-      else
+      if(numeroRepetido != -1){
+        if(im.sequencia == null)
+          props.showNotifyToast("O número informado já pertence a outro imóvel deste lado",'warning')
+        else
+          props.showNotifyToast("O número e sequência informado já pertence a outro imóvel deste lado",'warning')
+      }
+      else{
+        setFlLoading(true)
         props.editarImovelRequest( im );
+      }
+        
     }
   }
 
@@ -281,6 +297,9 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
       </Modal.Header>
       <form onSubmit={handleSubmit}>
         <Modal.Body>
+          <p className="text-description">
+            Atenção! Os campos com <code>*</code> são obrigatórios
+          </p>
           <Row>
             <Col>
               <FormGroup>
@@ -482,7 +501,7 @@ const ModalImovel = ( { acao, imovel, show, handleClose, lados, ...props } ) => 
               <Button type="button" className="secondary" onClick={handleClose}>
                 Cancelar
               </Button>
-              <Button type="submit">Salvar</Button>
+              <ButtonSaveModal title="Salvar" loading={ flLoading } disabled={ flLoading } type="submit" />
             </div>
           </ContainerArrow>
         </Modal.Footer>

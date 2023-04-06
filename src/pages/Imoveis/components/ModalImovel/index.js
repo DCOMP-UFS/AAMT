@@ -3,6 +3,7 @@ import Select from 'react-select';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
 import Modal, { ModalBody, ModalFooter } from '../../../../components/Modal';
+import ButtonSaveModal from '../../../../components/ButtonSaveModal';
 import { tipoImovelEnum } from '../../../../config/enumerate';
 import { FaChevronDown, FaChevronUp, FaMapMarkerAlt } from 'react-icons/fa';
 import { Collapse } from 'react-bootstrap';
@@ -12,7 +13,7 @@ import $ from 'jquery';
 // ACTIONS
 import { showNotifyToast } from '../../../../store/AppConfig/appConfigActions';
 import { getQuarteiroesMunicipioRequest, getLadosQuarteiraoRequest } from '../../../../store/Quarteirao/quarteiraoActions';
-import { addImovelRequest, editarImovelRequest, clearCreate } from '../../../../store/Imovel/imovelActions';
+import { addImovelRequest, editarImovelRequest, clearCreate, clearUpdate } from '../../../../store/Imovel/imovelActions';
 
 // STYLES
 import { Button, FormGroup, selectDefault } from '../../../../styles/global';
@@ -49,6 +50,7 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, isOpen, handl
   });
   const [ marcador, setMarcador ]                 = useState( {} );
   const [ flRecoverInputs, setFlRecoverInputs ]   = useState( true );
+  const [ flLoading, setFlLoading ]               = useState( false );
 
   useEffect(() => {
     if(isOpen){
@@ -99,13 +101,29 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, isOpen, handl
    * modal
    */
   useEffect( () => {
+
+    setFlLoading(false)
     if( props.created ) {
       $( '#modal-imovel' ).modal( 'hide' );
 
       limparCampos();
       props.clearCreate();
     }
+    else
+      props.clearCreate();
   }, [ props.created ] );
+
+  useEffect( () => {
+
+    setFlLoading(false)
+    if( props.updated ) {
+      $( '#modal-imovel' ).modal( 'hide' );
+      limparCampos();
+      props.clearUpdate();
+    }
+    else
+      props.clearUpdate();
+  }, [ props.updated ] );
 
   /**
    * Toda vez que a variável quarteirao for alterada é consultado os lados
@@ -129,6 +147,8 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, isOpen, handl
    */
   const limparCampos = () => {
     setNumero( null );
+    setOptionLado( [] )
+    setLado( {} )
     setSequencia( null );
     setResponsavel( '' );
     setComplemento( '' );
@@ -256,11 +276,13 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, isOpen, handl
     }
 
     if( fl_valido ) {
+      setFlLoading(true)
+
       if( Object.entries( imovel ).length > 0 ) { // Editar
         props.editarImovelRequest({
           id: imovel_id,
           numero,
-          sequencia,
+          sequencia: sequencia == "" ? null : sequencia,
           responsavel,
           complemento,
           tipoImovel: tipoImovel.value,
@@ -271,7 +293,7 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, isOpen, handl
       } else { // Adicionar
         props.addImovelRequest({
           numero,
-          sequencia,
+          sequencia: sequencia == "" ? null : sequencia,
           responsavel,
           complemento,
           tipoImovel: tipoImovel.value,
@@ -292,6 +314,9 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, isOpen, handl
     <Modal id="modal-imovel" title={ `Imóvel` }>
       <form onSubmit={ submit }>
         <ModalBody>
+          <p className="text-description">
+            Atenção! Os campos com <code>*</code> são obrigatórios
+          </p>
           <Row>
             <Col md="12">
               <FormGroup>
@@ -318,7 +343,7 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, isOpen, handl
                   styles={ selectDefault }
                   options={ optionLado }
                   onChange={ e => setLado( e ) }
-                  isDisabled={ lados.length === 0 }
+                  isDisabled={ optionLado.length === 0 }
                 />
               </FormGroup>
             </Col>
@@ -485,7 +510,7 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, isOpen, handl
         </ModalBody>
         <ModalFooter>
           <Button className="secondary" data-dismiss="modal">Cancelar</Button>
-          <Button className="info" type="submit">Salvar</Button>
+          <ButtonSaveModal title="Salvar" loading={ flLoading } disabled={ flLoading } type="submit" />
         </ModalFooter>
       </form>
     </Modal>
@@ -498,7 +523,8 @@ const mapStateToProps = state => ({
   reload      : state.imovel.reload,
   quarteiroes : state.quarteirao.quarteiroes,
   lados       : state.quarteirao.lados,
-  created     : state.imovel.created
+  created     : state.imovel.created,
+  updated     : state.imovel.updated
 })
 
 const mapDispatchToProps = {
@@ -507,6 +533,7 @@ const mapDispatchToProps = {
   addImovelRequest,
   editarImovelRequest,
   clearCreate,
+  clearUpdate,
   showNotifyToast,
 }
 

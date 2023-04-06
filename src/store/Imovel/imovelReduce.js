@@ -5,7 +5,8 @@ const INITIAL_STATE = {
   imoveis: [],
   reload: false,
   created: null,
-  updated: false
+  updated: null,
+  indexImovelUpdate: -1
 }
 
 export default function Imovel( state = INITIAL_STATE, action ) {
@@ -39,6 +40,12 @@ export default function Imovel( state = INITIAL_STATE, action ) {
         reload: !state.reload
       };
 
+    case ActionTypes.SET_INDEX_IMOVEL_UPDATE:
+      return {
+        ...state,
+        indexImovelUpdate: action.payload.index,
+      };
+
     case ActionTypes.ADD_IMOVEL_REDUCE: {
       let imoveis   = state.imoveis;
       const imovel  = action.payload.imovel;
@@ -66,6 +73,22 @@ export default function Imovel( state = INITIAL_STATE, action ) {
       }
     }
 
+    case ActionTypes.EDITAR_IMOVEL_SUCCESS: {
+      let imoveis = state.imoveis;
+      const index = state.indexImovelUpdate
+      const imovel = action.payload.imovel;
+
+      imoveis[index] = imovel
+
+      return {
+        ...state,
+        imoveis,
+        indexImovelUpdate: -1,
+        reload: !state.reload,
+        updated: true
+      }
+    }
+
     case ActionTypes.SET_CREATED_TRUE: {
       return {
         ...state,
@@ -77,6 +100,20 @@ export default function Imovel( state = INITIAL_STATE, action ) {
       return {
         ...state,
         updated: true
+      }
+    }
+
+    case ActionTypes.SET_CREATED_FALSE: {
+      return {
+        ...state,
+        created: false
+      }
+    }
+
+    case ActionTypes.SET_UPDATED_FALSE: {
+      return {
+        ...state,
+        updated: false
       }
     }
 

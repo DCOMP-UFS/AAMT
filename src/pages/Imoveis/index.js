@@ -12,7 +12,7 @@ import { ModalConfirm } from '../../components/Modal';
 
 // ACTIONS
 import { changeSidebar } from '../../store/Sidebar/sidebarActions';
-import { getImoveisMunicipioRequest, setImovel, deletarImovelRequest } from '../../store/Imovel/imovelActions';
+import { getImoveisMunicipioRequest, setImovel, deletarImovelRequest, setImovelUpdate } from '../../store/Imovel/imovelActions';
 
 // Styles
 import { Container } from './styles';
@@ -154,6 +154,7 @@ export const Imoveis = ({ imoveis, usuario, ...props }) => {
   }, [ imoveis, props.reload ]);
 
   const handlerImovel = index => {
+    props.setImovelUpdate( index )
     props.setImovel( imoveis[ index ] );
 
     $( '#modal-imovel' ).modal( 'show' );
@@ -211,7 +212,8 @@ const mapDispatchToProps = {
   changeSidebar,
   getImoveisMunicipioRequest,
   setImovel,
-  deletarImovelRequest
+  deletarImovelRequest,
+  setImovelUpdate
 }
 
 export default connect(

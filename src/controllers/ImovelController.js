@@ -89,19 +89,29 @@ store = async ( req, res ) => {
     if( !lado )
       return res.status( 400 ).json( { error: "Lado do quarteirão não encontrado" } );
 
-    const numeroRepetido = await Imovel.findOne({
+    let numeroRepetido = await Imovel.findOne({
       where: {
         lado_id,
         numero,
+        sequencia,
         ativo:true
       }
     })
 
-    if(numeroRepetido)
-      return res.status( 400 ).json( { 
-        error: "Já existe um imovel com este numero no logradouro informado",
-        numeroRepetido:true
-      } );
+    if(numeroRepetido){
+      if(sequencia == null){
+        return res.status( 400 ).json( { 
+          error: "Já existe um imovel com este numero no logradouro informado",
+          numeroRepetido:true
+        } );
+      }
+      else{
+        return res.status( 400 ).json( { 
+          error: "Já existe um imovel com este numero e sequência no logradouro informado",
+          numeroSequenciaRepetidos:true
+        } );
+      }
+    }
     
     const imovel = await Imovel.create({
       numero,
@@ -138,7 +148,7 @@ store = async ( req, res ) => {
 
 update = async ( req, res ) => {
   try{
-    const { lado_id, numero } = req.body;
+    const { lado_id, numero, sequencia} = req.body;
     const { id } = req.params;
 
     let imovel = await Imovel.findByPk( id );
@@ -146,27 +156,39 @@ update = async ( req, res ) => {
       return res.status(400).json({ error: "Imóvel não encontrado" });
     }
 
+    let lado = null
+
     if( lado_id ) {
-      const lado = await Lado.findByPk( lado_id );
+      lado = await Lado.findByPk( lado_id );
       if( !lado ) {
         return res.status(400).json({ error: "Lado do quarteirão não encontrado" });
       }
     }
 
-    const numeroRepetido = await Imovel.findOne({
+    let numeroRepetido = await Imovel.findOne({
       where: {
         id:{[Op.ne]: id},
         lado_id,
         numero,
+        sequencia,
         ativo:true
       }
     })
 
-    if(numeroRepetido)
-      return res.status( 400 ).json( { 
-        error: "Já existe um imovel com este numero no logradouro informado",
-        numeroRepetido:true
-      } );
+    if(numeroRepetido){
+      if(sequencia == null){
+        return res.status( 400 ).json( { 
+          error: "Já existe um imovel com este numero no logradouro informado",
+          numeroRepetido:true
+        } );
+      }
+      else{
+        return res.status( 400 ).json( { 
+          error: "Já existe um imovel com este numero e sequência no logradouro informado",
+          numeroSequenciaRepetidos:true
+        } );
+      }
+    }
     
     const { isRejected } = await Imovel.update(
       req.body,
@@ -182,8 +204,20 @@ update = async ( req, res ) => {
     }
 
     imovel = await Imovel.findByPk( id );
+    const quarteirao  = await Quarteirao.findByPk( lado.quarteirao_id );
+    const rua         = await Rua.findByPk( lado.rua_id );
 
-    return res.json( imovel );
+    const result = {
+      ...imovel.dataValues,
+      lado_id: lado.id,
+      logradouro: rua.nome,
+      quarteirao: {
+        id: quarteirao.id,
+        numero: quarteirao.numero
+      }
+    }
+
+    return res.json( result )
   } catch (error) {
     return res.status( 400 ).send( { 
       status: 'unexpected error',

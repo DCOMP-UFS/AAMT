@@ -6,7 +6,7 @@
 
 ## Como iniciar a aplicação no seu celular andoird
 
-#### 1 - Conecte ative o modo de desenvolvimento do seu celuar
+#### 1 - Ative o modo de desenvolvimento do seu celuar
 #### 2 - Conecte seu celular no seu computador
 #### 3 - Para verificar seu o celuar está devidamente conectado, execute o comando adb devices
 #### 4- Abra um terminal no diretorio do projeto e execute o comando npx react-native start

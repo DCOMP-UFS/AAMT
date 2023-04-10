@@ -67,7 +67,7 @@ yarn sequelize db:seed:all
 npm run dev 
 ```
 
-## Gera APK
+## Gerando APK
 - **https://reactnative.dev/docs/signed-apk-android**
 
 ## Comandos Sequilize

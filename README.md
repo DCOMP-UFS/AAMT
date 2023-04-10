@@ -4,6 +4,7 @@
 - [Tutorial](#tutorial)
   - [Prerequisitos para iniciar](#prerequsitos-para-iniciar)
   - [Como iniciar](#como-iniciar)
+  - [Gerando APK](#gerando-apk)
   - [Comandos Sequilize](#comandos-sequilize)
 - [Iniciando o banco](#iniciando-o-banco)
 - [Documentação da API](#documentação-da-api)
@@ -63,8 +64,11 @@ yarn sequelize db:seed:all
 ## Como iniciar
 - **Após ter feito os prerequisitos, execute:**
 ```
-npm run dev
+npm run dev 
 ```
+
+## Gera APK
+- **https://reactnative.dev/docs/signed-apk-android**
 
 ## Comandos Sequilize
 

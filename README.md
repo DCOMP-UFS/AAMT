@@ -2,6 +2,7 @@
 
 - [Sumário](#sumário)
 - [Tutorial](#tutorial)
+  - [Prerequisitos para iniciar API](#prerequsitos-para-iniciar-api)
   - [Comandos Sequilize](#comandos-sequilize)
 - [Iniciando o banco](#iniciando-o-banco)
 - [Documentação da API](#documentação-da-api)
@@ -37,6 +38,26 @@
 # Tutorial
 
 Segue informações básicas da API AaMT.
+
+## Prerequisitos para iniciar API
+
+- **1-Instale o node.js e yarn**
+- **2-Instale as denpendencias atraves do comando:**
+```
+yarn install
+```
+- **3-Crie um banco de dados Postgress localmente ou na nuvem**
+- **4-Abra o arquivo .env.exemple e copie todo seu conteudo**
+- **5-Crie na raiz do projeto o arquivo .env e cole todo o conteudo do passo anterior nele**
+- **6-Ajuste as os valores da variaveis do passo anterior com o valores do banco que foi criado no passo 3**
+- **7-Para criar as tabelas no banco, execute**:
+```
+yarn sequelize db:migrate
+```
+- **8-Para popular as tabelas do banco, execute**:
+```
+yarn sequelize db:seed:all
+```
 
 ## Comandos Sequilize
 

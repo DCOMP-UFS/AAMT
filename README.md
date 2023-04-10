@@ -2,7 +2,8 @@
 
 - [Sumário](#sumário)
 - [Tutorial](#tutorial)
-  - [Prerequisitos para iniciar API](#prerequsitos-para-iniciar-api)
+  - [Prerequisitos para iniciar](#prerequsitos-para-iniciar)
+  - [Como iniciar](#como-iniciar)
   - [Comandos Sequilize](#comandos-sequilize)
 - [Iniciando o banco](#iniciando-o-banco)
 - [Documentação da API](#documentação-da-api)
@@ -39,7 +40,7 @@
 
 Segue informações básicas da API AaMT.
 
-## Prerequisitos para iniciar API
+## Prerequisitos para iniciar
 
 - **1-Instale o node.js e yarn**
 - **2-Instale as denpendencias atraves do comando:**
@@ -57,6 +58,12 @@ yarn sequelize db:migrate
 - **8-Para popular as tabelas do banco, execute**:
 ```
 yarn sequelize db:seed:all
+```
+
+## Como iniciar
+- **Após ter feito os prerequisitos, execute:**
+```
+npm run dev
 ```
 
 ## Comandos Sequilize

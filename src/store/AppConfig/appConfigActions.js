@@ -7,7 +7,8 @@ export const ActionTypes = {
   AUTHENTICATE_REQUEST: "AUTHENTICATE_REQUEST",
   AUTHENTICATE_SUCCESS: "AUTHENTICATE_SUCCESS",
   SIGN_OUT: "SIGN_OUT",
-  SET_ACABOU_DE_LOGAR: "SET_ACABOU_DE_LOGAR"
+  SET_ACABOU_DE_LOGAR: "SET_ACABOU_DE_LOGAR",
+  UPDATE_APPCONFIG_USER: "UPDATE_APPCONFIG_USER"
 };
 
 export const authenticateRequest = (usuario, senha, redirectUser) => {
@@ -77,6 +78,19 @@ export const setAcabouDeLogar = acabouDeLogar => {
     type: ActionTypes.SET_ACABOU_DE_LOGAR,
     payload: {
       acabouDeLogar,
+    }
+  }
+} 
+
+export const updateAppConfigUser = (nome, cpf, rg, email, usuario) => {
+  return {
+    type: ActionTypes.UPDATE_APPCONFIG_USER,
+    payload: {
+      nome, 
+      cpf, 
+      rg, 
+      email, 
+      usuario,
     }
   }
 }

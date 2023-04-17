@@ -21,6 +21,7 @@ import { GetStatesByRegionRequest } from '../../store/Estado/estadoActions';
 import { getRegionalHealthByStateRequest } from '../../store/RegionalSaude/regionalSaudeActions';
 import { getCityByRegionalHealthRequest } from '../../store/Municipio/municipioActions';
 import { getLaboratoriosRequest } from '../../store/Laboratorio/laboratorioActions';
+import { updateAppConfigUser } from '../../store/AppConfig/appConfigActions';
 
 // STYLES
 import { FormGroup, selectDefault } from '../../styles/global';
@@ -254,8 +255,17 @@ const MeuDados = ( { usuarioLogado, usuarioUpdate, ...props } ) => {
   }, [ usuarioUpdate ]);
 
   useEffect(() => {
-    setFlLoading( false );
-    props.clearUpdateUser();
+    if(props.updateUser){
+      props.updateAppConfigUser(nome, cpf, rg, email, usuario)
+      setFlLoading( false );
+      props.clearUpdateUser();
+      setTimeout(() => { document.location.reload( true );}, 1500)
+    }
+    else{
+      setFlLoading( false );
+      props.clearUpdateUser();
+    }
+    
   }, [ props.updateUser ]);
 
   function handleSubmit( e ) {
@@ -572,7 +582,8 @@ const mapDispatchToProps = dispatch =>
     getRegionalHealthByStateRequest,
     getCityByRegionalHealthRequest,
     clearUpdateUser,
-    getLaboratoriosRequest
+    getLaboratoriosRequest,
+    updateAppConfigUser
   }, dispatch );
 
 export default connect(

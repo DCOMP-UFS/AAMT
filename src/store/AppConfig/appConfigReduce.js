@@ -83,6 +83,27 @@ export default function appConfig(state = INITIAL_STATE, action){
       }
     }
 
+    case ActionTypes.UPDATE_APPCONFIG_USER: {
+      let usuario = state.usuario
+
+      const nome = action.payload.nome;
+      const cpf = action.payload.cpf;
+      const rg = action.payload.rg;
+      const email = action.payload.email;
+      const userLogin = action.payload.usuario
+
+      usuario.nome = nome
+      usuario.cpf = cpf
+      usuario.rg = rg
+      usuario.email = email
+      usuario.usuario = userLogin
+
+      return {
+        ...state,
+        usuario
+      }
+    }
+
     default:
       return state;
   }

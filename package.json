@@ -40,7 +40,7 @@
     "build": "react-scripts build",
     "test": "jest",
     "eject": "react-scripts eject",
-    "deploy:s3": "npm run build && aws s3 sync build/ s3://aamtufs.com &&  aws cloudfront create-invalidation --distribution-id E2L1CKSD3NGMJ8 --paths /* "
+    "deploy:s3": "npm run build && aws s3 sync build/ s3://aamtufs.com && aws cloudfront create-invalidation --distribution-id E2L1CKSD3NGMJ8 --paths /* "
   },
   "eslintConfig": {
     "extends": "react-app"

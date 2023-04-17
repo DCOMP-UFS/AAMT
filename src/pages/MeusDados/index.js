@@ -430,7 +430,7 @@ const MeuDados = ( { usuarioLogado, usuarioUpdate, ...props } ) => {
                             value={ tipoPerfil }
                             styles={ selectDefault }
                             options={ optionPerfil }
-                            isDisabled={ usuarioUpdate && usuarioUpdate.atuacoes[0].tipoPerfil == 1 ? false : true }
+                            isDisabled={ true }
                             onChange={ e => {
                               setTipoPerfil(e)
                               if( e.value === 1 )

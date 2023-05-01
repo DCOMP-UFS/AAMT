@@ -370,7 +370,10 @@ const ExibirQuarteiroes = ( { rota_equipe, fl_loading, indexEquipe, indexMembro,
                             inputProps={{ 'aria-label': 'primary checkbox' }}
                             checked={ lado.selected ? lado.selected : false }
                           />
-                          { lado.rua.nome }
+                          { "Lado "+lado.numero }
+                        </div>
+                        <div className="description">
+                          <span>{ `${ lado.rua.nome}` }</span>
                         </div>
                         <div className="footer">
                           <span>{

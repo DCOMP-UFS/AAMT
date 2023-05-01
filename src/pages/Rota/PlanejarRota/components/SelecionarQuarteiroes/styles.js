@@ -26,12 +26,22 @@ export const StreetCard = styled.div`
     text-align: left;
   }
 
+  div.description {
+    padding: 4px 8px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: left;
+    color: white;
+    background-color: #198ae3;
+  }
+
   div.footer {
     padding: 4px 8px 4px 12px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: rgba( 0, 0, 0, .03 );
+    background-color: rgba( 0, 0, 0, .05 );
   }
 
   &.success .footer {

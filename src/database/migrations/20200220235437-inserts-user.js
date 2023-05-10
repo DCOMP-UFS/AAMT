@@ -59,8 +59,8 @@ module.exports = {
         nome:       'Kevin Salgueiro Fartaria',
         cpf:        '600.244.660-50',
         rg:         '308092399',
-        email:      'coodAju@aamt.com',
-        usuario:    'coodAju',
+        email:      'coordAju@aamt.com',
+        usuario:    'coordAju',
         senha:      bcrypt.hashSync('123456', bcrypt.genSaltSync(10)),
         created_at: new Date(),
         updated_at: new Date()

@@ -15,6 +15,9 @@ export function* planejarRota(action) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao planejar rota: " + status, "error" ) );
     }
   } catch (err) {
+
+    yield put( RotaActions.setRotaPlanejada( false ) );
+
     if(err.response){
       //Provavel erro de logica na API
       yield put( AppConfigActions.showNotifyToast( "Erro ao planejar rota, entre em contato com o suporte", "error" ) );
@@ -36,9 +39,21 @@ export function* alterarRota(action) {
       yield put( AppConfigActions.showNotifyToast( "Falha ao alterar rota: " + status, "error" ) );
     }
   } catch (err) {
+
+    yield put( RotaActions.setRotaPlanejada( false ) );
+
     if(err.response){
+
+      const routeStarted = err.response.data.routeStarted
+
+      //Rota ja foi iniciada, não sendo possivel fazer alteração nela
+      if( routeStarted ) {
+        yield put( AppConfigActions.showNotifyToast( "O agente iniciou a rota antes dela poder ter sido alterada. Por favor recarregue a página.", "error" ) );
+      }
+
       //Provavel erro de logica na API
-      yield put( AppConfigActions.showNotifyToast( "Erro ao alterar rota, entre em contato com o suporte", "error" ) );
+      else
+        yield put( AppConfigActions.showNotifyToast( "Erro ao alterar rota, entre em contato com o suporte", "error" ) );
       
     }
     //Se chegou aqui, significa que não houve resposta da API

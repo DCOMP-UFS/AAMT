@@ -51,6 +51,14 @@ export const StreetCard = styled.div`
   &.warning .footer {
     background-color: ${ Color.warning };
   }
+
+  &.alternative1 .footer {
+    background-color: #eb7d34;
+  }
+
+  &.alternative2 .footer {
+    background-color: #ac57d4;
+  }
 `;
 
 export const Usuario = styled.div`

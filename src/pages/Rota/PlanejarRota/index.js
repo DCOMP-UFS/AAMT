@@ -144,19 +144,21 @@ export const PlanejarRota = ( {
 
     let trabalhoDiarioHoje = equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje
 
-    //Significa que o agente selecionado ja possui uma rota planejada para hoje
+    //Significa que o agente selecionado ja possui uma rota planejada não finalizada para hoje
     //em outra equipe diferente
-    if(trabalhoDiarioHoje.equipe && trabalhoDiarioHoje.equipe.id != equipes[ indexEquipe ].id ){
-      props.showNotifyToast( 'Não é mais possivel passar uma rota para este agente', "warning" );
+    if(trabalhoDiarioHoje.equipe && trabalhoDiarioHoje.equipe.id != equipes[ indexEquipe ].id && !trabalhoDiarioHoje.horaFim ){
+      props.showNotifyToast( 'Não é possivel passar uma rota para este agente, ele deve finalizar a rota que foi lhe foi passada', "warning" );
     }
-    else if(trabalhoDiarioHoje.horaInicio)
+    else if(trabalhoDiarioHoje.horaInicio && !trabalhoDiarioHoje.horaFim)
       props.showNotifyToast( 'Não é possivel alterar um rota que ja foi iniciada', "warning" );
     else{
       const supervisor_id = usuario.id,
             equipe = equipes[ indexEquipe ],
             usuario_id = equipe.membros[ indexMembro ].usuario_id,
             equipe_id = equipe.id,
-            trabalhoDiario_id = equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje.id;
+            trabalhoDiario_id = equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje.id,
+            trabalhoDiario_horaInicio = equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje.horaInicio,
+            trabalhoDiario_horaFim = equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje.horaFim;
 
       let lados = [];
       rota_equipe.forEach( quarteirao => {
@@ -168,9 +170,9 @@ export const PlanejarRota = ( {
       //Faz com que o botão "Salvar/Alterar" fique com visual de carregamento
       setIsLoading(true)
 
-      //Significa que o agente selecionado tem uma rota para hoje,
-      //mas ela ainda não foi iniciada e portanto pode ser alterada
-      if( trabalhoDiario_id){
+      //Significa que o agente selecionado tem uma rota hoje que não foi iniciada e nem finalizada,
+      //o que permite que ela possa ser alterada
+      if( trabalhoDiario_id && !trabalhoDiario_horaInicio && !trabalhoDiario_horaFim){
         props.alterarRotaRequest( trabalhoDiario_id, lados )
       }
       else{

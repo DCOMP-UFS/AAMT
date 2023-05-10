@@ -229,15 +229,15 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
 
                 let trabalhoDiarioHoje = equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje
 
-                //Significa que o usuario ja possui trabalho diario, mas é de outra equipe que ele pertence
-                if(trabalhoDiarioHoje.equipe.id != equipes[ indexEquipe ].id){
+                //Significa que o usuario ja possui trabalho diario não finalizado, mas é de outra equipe que ele pertence
+                if(trabalhoDiarioHoje.equipe.id != equipes[ indexEquipe ].id && trabalhoDiarioHoje.horaFim == null ){
                   return (
                     <div style={{width:"65%", marginTop:"15px"}}>
                       <div className="card">
                         <label className="m-0">
                 
-                          <b style={{color:"red"}}>Atenção:</b> 
-                          Não é mais possivel passar uma rota para este agente, poís ele já recebeu hoje uma rota 
+                          <b style={{color:"red"}}>Atenção: </b> 
+                          Não é possivel passar uma rota para este agente, poís ele já recebeu hoje outra rota, que ainda não foi finalizada,
                           na equipe com apelido "{trabalhoDiarioHoje.equipe.apelido}".
                       
                         </label>
@@ -245,7 +245,7 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
                     </div>
                   )
                 }
-                else if(trabalhoDiarioHoje.horaInicio == null ){
+                else if(trabalhoDiarioHoje.horaInicio == null && trabalhoDiarioHoje.horaFim == null){
                   return (
                     <div style={{width:"65%", marginTop:"15px"}}>
                       <div className="card">
@@ -259,7 +259,7 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
                     </div>
                   )
                 }
-                else {
+                else if(trabalhoDiarioHoje.horaInicio != null && trabalhoDiarioHoje.horaFim == null){
                   return (
                     <div style={{width:"65%", marginTop:"15px"}}>
                       <div className="card">
@@ -302,9 +302,10 @@ const ExibirQuarteiroes = ( { rota_equipe, fl_loading, indexEquipe, indexMembro,
     let trabalhoDiarioHoje = equipes[ indexEquipe ].membros[ indexMembro ].trabalhoDiarioHoje
 
     //Quarteirões serão desbilitados caso:
-    // 1- Agente possui um trabalho diario para hoje em outra equipe diferente da selecionada
-    // 2- Agente possui um trabalho diario INICIADO na equipe selecionada
-    if( trabalhoDiarioHoje.equipe && trabalhoDiarioHoje.equipe.id != equipes[indexEquipe].id  || trabalhoDiarioHoje.horaInicio)
+    // 1- Agente possui um trabalho diario não finalizado para hoje em outra equipe diferente da selecionada
+    // 2- Agente possui um trabalho diario INICIADO, mas não finalizado, na equipe selecionada
+    if( trabalhoDiarioHoje.equipe && trabalhoDiarioHoje.equipe.id != equipes[indexEquipe].id && !trabalhoDiarioHoje.horaFim  
+        || trabalhoDiarioHoje.horaInicio && !trabalhoDiarioHoje.horaFim)
       disableAll = true
   }
     
@@ -357,10 +358,14 @@ const ExibirQuarteiroes = ( { rota_equipe, fl_loading, indexEquipe, indexMembro,
                       1 - Em aberto
                       2 - Fazendo
                       3 - Concluído
-                      4 - Planejado */}
+                      4 - Planejado 
+                      5 - Concluído com pendência
+                      */}
                       <StreetCard className={
+                        lado.situacao === 2 ? 'alternative2' :
                         lado.situacao === 3 ? 'success' :
                         lado.situacao === 4 ? 'warning' :
+                        lado.situacao === 5 ? 'alternative1' :
                         ''
                       }>
                         <div className="body">

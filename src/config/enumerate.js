@@ -116,5 +116,6 @@ export const situacaoLadoEnum = [
   { id: 1, label: "Em aberto" },
   { id: 2, label: "Fazendo" },
   { id: 3, label: "Concluído" },
-  { id: 4, label: "Planejado" }
+  { id: 4, label: "Planejado" },
+  { id: 5, label: "Concluído com pendência" }
 ];

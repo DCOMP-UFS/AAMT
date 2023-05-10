@@ -448,7 +448,10 @@ alterarRota = async ( req, res ) => {
       return res.status( 400 ).json( { error: 'A rota do trabalho diario informado não pode ser alterado. Ou ele não existe ou a data do trabalho não é a mesma que a data de hoje' } );
     
     if(trabalho_diario.horaInicio != null){
-      return res.status( 400 ).json( { error: 'Não é possível alterar uma rota de um trabalho que já foi iniciado' } );
+      return res.status( 400 ).json( { 
+        routeStarted: true,
+        error: 'Não é possível alterar uma rota de um trabalho que já foi iniciada' 
+      } );
     }
 
     const deleteRostasAntigas = await Rota.destroy({
@@ -994,7 +997,7 @@ const getOpenRouteByTeam = async ( req, res ) => {
           bind: q,
           logging: console.log,
         }
-      ).then( data => {
+      ).then( async data => {
         const [ rows ] = data;
     
         if( rows.length > 0 ) {
@@ -1009,7 +1012,7 @@ const getOpenRouteByTeam = async ( req, res ) => {
             lados: []
           };
           
-          rows.forEach( row => {
+          for( const row of rows ) {
             if( !quarteirao_id || row.id !== quarteirao_id ) {
               quarteirao_id = row.id;
               quarteirao    = {
@@ -1024,6 +1027,26 @@ const getOpenRouteByTeam = async ( req, res ) => {
               rota.push( quarteirao );
             }
             if(row.lado_ativo){
+
+              //contem os ids dos imoveis de uma lado que tiveram uma vistoria com pendencia ao menos uma vez
+              const sql_pendencia = 
+                'SELECT DISTINCT ' +
+                  'i.id ' +
+                'FROM ' +
+                  'imoveis as i ' +
+                  'JOIN vistorias as v ON (v.imovel_id = i.id) ' +
+                  'JOIN trabalhos_diarios AS td ON( v.trabalho_diario_id = td.id ) ' +
+                'WHERE ' +
+                  'td.equipe_id = ' + equipe_id +
+                  ' AND i.lado_id = '+ row.lado_id +
+                  ' AND v.pendencia IS NOT NULL';
+              
+              const pendencia = await Imovel.sequelize.query(sql_pendencia)
+              
+              //Quantidades de vistorias com pendencia em imoveis não repetidos
+              const pendenciaTotal = pendencia[ 1 ].rows.length
+              
+
               quarteirao.lados.push( {
                 id: row.lado_id,
                 ativo: row.lado_ativo,
@@ -1037,10 +1060,18 @@ const getOpenRouteByTeam = async ( req, res ) => {
                 },
                 imoveis: row.imoveis,
                 vistorias: row.vistorias,
-                situacao: row.imoveis === row.vistorias ? 3 : ( row.vistorias > 0 ? 2 : 1 )
+                /*
+                  Situacao do lado
+                    1 - Em Aberto
+                    2 - Fazendo
+                    3 - Concluído
+                    4 - Planejado
+                    5 - Concluído com pendência
+                */
+                situacao: row.imoveis === row.vistorias ? 3 : row.imoveis <= row.vistorias + pendenciaTotal ? 5 : ( row.vistorias + pendenciaTotal > 0 ? 2 : 1 )
               } );
             }
-          } );
+          }
       
           return rota;
         } else {
@@ -1058,7 +1089,8 @@ const getOpenRouteByTeam = async ( req, res ) => {
         association: "trabalhoDiario",
         where: {
           data: current_date,
-          equipe_id
+          equipe_id,
+          horaFim: null,
         }
       }
     } );

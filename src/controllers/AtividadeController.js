@@ -736,17 +736,16 @@ getResponsibilityActivities = async ( req, res ) => {
 
         for(var i = 0; i < teams.length; i++) {
           
-          //Para cada membro de cada equipe, será verificado se o membro possui uma trabalho diario
-          //agendado para hoje
+          //Para cada membro de cada equipe, será buscado o ultimo trabalho diário agendado para o membro hoje
           for(var j = 0; j < teams[i].dataValues.membros.length; j++) {
           
             const usuario_id = teams[i].dataValues.membros[j].dataValues.usuario_id
             
-            var trabalhoDiarioHoje = await TrabalhoDiario.findOne( {
+            var trabalhoDiarioHoje = await TrabalhoDiario.findAll( {
               where: {
                 equipe_id:{ [Op.in]: idEquipes},
                 usuario_id,
-                data: current_date
+                data: current_date,
               },
               attributes: { exclude: [ 
                 'createdAt', 
@@ -759,10 +758,14 @@ getResponsibilityActivities = async ( req, res ) => {
                 association: 'equipe',
                 attributes: { exclude: [ 'createdAt', 'updatedAt', 'atividade_id' ] },
               },
+              order: [[ "id", "desc" ]],
+              limit: 1,
             } )
 
-            if(!trabalhoDiarioHoje)
+            if(trabalhoDiarioHoje.length == 0)
               trabalhoDiarioHoje = {}
+            else
+              trabalhoDiarioHoje = trabalhoDiarioHoje[0]
 
             act.dataValues.equipes[i].dataValues.membros[j].dataValues.trabalhoDiarioHoje = trabalhoDiarioHoje
           }

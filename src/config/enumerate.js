@@ -41,16 +41,16 @@ export const tipoImovelEnum = [
 
 export const situacao_imovel_enum = [
   { id: 1, sigla: "T", label: "Trabalhado", slug: "trabalhado" },
-  { id: 2, sigla: "I", label: "Inspecionado", slug: "inspecionado" },
+  { id: 2, sigla: "P", label: "Pesquisado", slug: "pesquisado" },
   { id: 3, sigla: "CF", label: "Com Foco", slug: "foco" },
   { id: 4, sigla: "TR", label: "Tratado", slug: "tratado" },
-  { id: 5, sigla: "P", label: "Fechado/Recusado", slug: "pendencia" },
+  { id: 5, sigla: "PEND", label: "Fechado/Recusado", slug: "pendencia" },
   { id: 6, sigla: "R", label: "Recuperado", slug: "recuperado" },
 ];
 
 export const situacao_vistoria_enum = [
   { id: 1, sigla: "T", label: "Trabalhado", slug: "trabalhado" },
-  { id: 2, sigla: "I", label: "Inspecionado", slug: "inspecionado" },
+  { id: 2, sigla: "P", label: "Pesquisado", slug: "pesquisado" },
 ];
 
 export const situacao_deposito_enum = [

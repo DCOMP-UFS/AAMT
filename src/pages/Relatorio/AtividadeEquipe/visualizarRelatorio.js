@@ -595,7 +595,7 @@ export const VisualizarRelatorio = ({ membros, boletimAtividadeEquipe, ...props 
       situacao_imovel_enum.forEach( situacao => {
         let data_index = 0; // Trabalhado
 
-        if( situacao.slug === 'inspecionado' )
+        if( situacao.slug === 'pesquisado' )
           data_index = 1;
         if( situacao.slug === 'foco' )
           data_index = 2;
@@ -633,7 +633,7 @@ export const VisualizarRelatorio = ({ membros, boletimAtividadeEquipe, ...props 
         if( situacao.slug === 'trabalhado' )
           data_index = 0;
 
-        if( situacao.slug === 'inspecionado' )
+        if( situacao.slug === 'pesquisado' )
           data_index = 1;
 
         datasets[ 0 ].data[ data_index ] = imPorSituacao[ situacao.slug ].total;
@@ -762,7 +762,7 @@ export const VisualizarRelatorio = ({ membros, boletimAtividadeEquipe, ...props 
                     <small><b>Trabalhados</b> - imóveis vistoriados sem pendência </small>
                   </Col>
                   <Col md="12">
-                    <small><b>Inspecionados</b> - imóveis com ao menos 1 deposito adicionado na vistoria</small>
+                    <small><b>Pesquisados</b> - imóveis com ao menos 1 deposito adicionado na vistoria</small>
                   </Col>
                 </Row>
               </div>

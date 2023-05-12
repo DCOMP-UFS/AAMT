@@ -40,7 +40,7 @@ const initVar = {
     }]
   },
   numeroImoveisData: {
-    labels: [ 'Trabalhados', 'Inspecionados', 'Com Foco', 'Tratados', 'Fechados/Recusados', 'Recuperados' ],
+    labels: [ 'Trabalhados', 'Pesquisados', 'Com Foco', 'Tratados', 'Fechados/Recusados', 'Recuperados' ],
     reload: false,
     datasets: [{
       data: [ 0, 0, 0, 0, 0, 0 ],
@@ -146,7 +146,7 @@ function BoletimDiario({ usuario, vistorias, trabalhoDiario, ...props }) {
         depD2           = 0,
         depE            = 0,
         qtdTrabalhados  = 0,
-        qtdInspecionado = 0,
+        qtdPesquisados  = 0,
         qtdFoco         = 0,
         qtdTratado      = 0,
         qtdPendencia    = 0,
@@ -204,7 +204,7 @@ function BoletimDiario({ usuario, vistorias, trabalhoDiario, ...props }) {
             break;
         }
       });
-      if( vistoria.depositos.length > 0 )qtdInspecionado++
+      if( vistoria.depositos.length > 0 )qtdPesquisados++
 
       if( fl_tratado ) qtdTratado++;
 
@@ -236,7 +236,7 @@ function BoletimDiario({ usuario, vistorias, trabalhoDiario, ...props }) {
 
     // Gráfico de vistorias
     niData.datasets[ 0 ].data[ 0 ] = qtdTrabalhados;
-    niData.datasets[ 0 ].data[ 1 ] = qtdInspecionado;
+    niData.datasets[ 0 ].data[ 1 ] = qtdPesquisados;
     niData.datasets[ 0 ].data[ 2 ] = qtdFoco;
     niData.datasets[ 0 ].data[ 3 ] = qtdTratado;
     niData.datasets[ 0 ].data[ 4 ] = qtdPendencia;
@@ -299,7 +299,7 @@ function BoletimDiario({ usuario, vistorias, trabalhoDiario, ...props }) {
                     <small><b>Trabalhados</b> - imóveis vistoriados sem pendência </small>
                   </Col>
                   <Col md="12">
-                    <small><b>Inspecionados</b> - imóveis com ao menos 1 deposito adicionado na vistoria</small>
+                    <small><b>Pesquisados</b> - imóveis com ao menos 1 deposito adicionado na vistoria</small>
                   </Col>
                   <Col md="12">
                     <small><b>Com Foco</b> - imóveis com ao menos 1 deposito com foco adicionado na vistoria</small>

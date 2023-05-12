@@ -38,7 +38,7 @@ const initVar = {
     }]
   },
   numeroImoveisData: {
-    labels: [ 'Trabalhados', 'Inspecionados', 'Com Foco', 'Tratados', 'Fechados', 'Recusados', 'Recuperados' ],
+    labels: [ 'Trabalhados', 'Pesquisados', 'Com Foco', 'Tratados', 'Fechados', 'Recusados', 'Recuperados' ],
     reload: false,
     datasets: [
       {
@@ -131,7 +131,7 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
   useEffect(() => {
     const { atividade_id } = props.match.params;
 
-    props.changeSidebar( 6, 4 );
+    props.changeSidebar( "relatorio", "rlt_porAtividade" );
     setAtividade_id( atividade_id );
     props.getBoletimAtividadeRequest( atividade_id );
   }, []);
@@ -165,7 +165,7 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
 
       // Imóveis trabalhados
       nImoveisData.datasets[ 0 ].data[ 0 ] = boletimAtividade.propertiesByStatus[ 2 ].value;
-      // Imóveis inspecionados
+      // Imóveis pesquisados
       nImoveisData.datasets[ 0 ].data[ 1 ] = boletimAtividade.properties[ 0 ].value;
        // Imóveis com foco
        nImoveisData.datasets[ 0 ].data[ 2 ] = boletimAtividade.properties[ 2 ].value;
@@ -260,7 +260,7 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
                     <small><b>Trabalhados</b> - imóveis vistoriados sem pendência </small>
                   </Col>
                   <Col md="12">
-                    <small><b>Inspecionados</b> - imóveis com ao menos 1 deposito adicionado na vistoria</small>
+                    <small><b>Pesquisados</b> - imóveis com ao menos 1 deposito adicionado na vistoria</small>
                   </Col>
                   <Col md="12">
                     <small><b>Com Foco</b> - imóveis com ao menos 1 deposito com foco adicionado na vistoria</small>

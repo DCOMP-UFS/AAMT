@@ -41,7 +41,7 @@ const WeeklyReport = () => {
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState([
     { label: 'Trabalhados', value: 0 },
-    { label: 'Inspecionados', value: 0 },
+    { label: 'Pesquisados', value: 0 },
     { label: 'Com foco', value: 0 },
     { label: 'Tratados', value: 0 },
     { label: 'Fechados', value: 0 },

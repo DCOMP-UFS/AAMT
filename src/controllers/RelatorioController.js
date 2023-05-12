@@ -144,7 +144,7 @@ getTeamDailyActivity = async (req, res) => {
         total: 0,
         agentes: []
       },
-      inspecionado: {
+      pesquisado: {
         total: 0,
         agentes: []
       },
@@ -267,15 +267,15 @@ getTeamDailyActivity = async (req, res) => {
         }
 
         if( depositos.length > 0 ) {
-          imoveisPorSituacao.inspecionado.total += 1;
-          index = imoveisPorSituacao.inspecionado.agentes.findIndex( ag => ag.usuario.id === agente.id );
+          imoveisPorSituacao.pesquisado.total += 1;
+          index = imoveisPorSituacao.pesquisado.agentes.findIndex( ag => ag.usuario.id === agente.id );
           if( index === -1 ) {
-            imoveisPorSituacao.inspecionado.agentes.push({
+            imoveisPorSituacao.pesquisado.agentes.push({
               usuario: agente,
               valor: 1
             });
           } else {
-            imoveisPorSituacao.inspecionado.agentes[ index ].valor += 1;
+            imoveisPorSituacao.pesquisado.agentes[ index ].valor += 1;
           }
         }
 
@@ -622,7 +622,7 @@ getActivityWeeklyReport = async (req, res) => {
       ];
 
       let properties = [
-        { label: 'Inspecionada', value: 0 },
+        { label: 'Pesquisado', value: 0 },
         { label: 'Tratada', value: 0 },
         { label: 'Com Foco', value: 0 }
       ];
@@ -879,7 +879,7 @@ getActivityWeeklyReport = async (req, res) => {
           const depositos = vistoria.depositos;
           const num_quarteirao = vistoria.imovel.lado.quarteirao.numero;
 
-          // Somando imóveis inspecionados
+          // Somando imóveis pesquisados
           if( depositos.length > 0 )
             properties[ 0 ].value++;
 
@@ -1878,7 +1878,7 @@ getTeamActivityReport = async (req, res) => {
         total: 0,
         agentes: []
       },
-      inspecionado: {
+      pesquisado: {
         total: 0,
         agentes: []
       },
@@ -2235,15 +2235,15 @@ getTeamActivityReport = async (req, res) => {
         const depositos = vistoria.depositos;
     
         if( depositos.length > 0 ) {
-          imoveisPorSituacao.inspecionado.total += 1;
-          index = imoveisPorSituacao.inspecionado.agentes.findIndex( ag => ag.usuario.id === agente.id );
+          imoveisPorSituacao.pesquisado.total += 1;
+          index = imoveisPorSituacao.pesquisado.agentes.findIndex( ag => ag.usuario.id === agente.id );
           if( index === -1 ) {
-            imoveisPorSituacao.inspecionado.agentes.push({
+            imoveisPorSituacao.pesquisado.agentes.push({
               usuario: agente,
               valor: 1
             });
           } else {
-            imoveisPorSituacao.inspecionado.agentes[ index ].valor += 1;
+            imoveisPorSituacao.pesquisado.agentes[ index ].valor += 1;
           }
         }
 

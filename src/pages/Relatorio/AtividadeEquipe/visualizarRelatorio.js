@@ -202,7 +202,6 @@ export const VisualizarRelatorio = ({ membros, boletimAtividadeEquipe, ...props 
   const [ depositosTipoData, setDepositosTipoData ]               = useState( initVar.depositosTipoData );
   const [ larvicidaPorAgente, setLarvicidaPorAgente ]             = useState( initVar.larvicidaPorAgente );
   const [ amostrasPorAgente, setAmostrasPorAgente ]               = useState( initVar.amostrasPorAgente );
-  const [ equipe_id, setEquipe_id ]                               = useState( undefined );
   const [ apelidoEquipe, setApelidoEquipe ]                       = useState( '' )
   const [ qtdRecusa, setQtdRecusa ]                               = useState( 0 );
   const [ qtdFechada, setQtdFechada ]                             = useState( 0 );
@@ -212,19 +211,14 @@ export const VisualizarRelatorio = ({ membros, boletimAtividadeEquipe, ...props 
   const [ qtdDepositoEliminado, setQtdDepositoEliminado ]         = useState( 0 );
 
   useEffect(() => {
-    const eq = props.match.params.equipe_id;
-
-    setEquipe_id( eq );
-
-    props.changeSidebar( 6, 5 );
-  }, []);
-
-  useEffect(() => {
+    const equipe_id = props.match.params.equipe_id;
     if( equipe_id ) {
-      props.getBoletimAtividadeEquipeRequest( equipe_id );
       props.getMembrosRequest( equipe_id );
+      props.getBoletimAtividadeEquipeRequest( equipe_id );
     }
-  }, [ equipe_id ]);
+
+    props.changeSidebar( "relatorio", "rlt_porAtividadeEquipe" );
+  }, []);
 
   useEffect(() => {
     if( membros.length > 0 )

@@ -134,8 +134,7 @@ export const VisualizarRelatorio = ({ membros, boletimDiarioEquipe, ...props }) 
   const [ depositosTipoData, setDepositosTipoData ]       = useState( initVar.depositosTipoData );
   const [ larvicidaPorAgente, setLarvicidaPorAgente ]     = useState( initVar.larvicidaPorAgente );
   const [ amostrasPorAgente, setAmostrasPorAgente ]       = useState( initVar.amostrasPorAgente );
-  const [ equipe_id, setEquipe_id ]                       = useState( undefined );
-  const [ data, setData ]                                 = useState( '' );
+  const [ dataString, setDataString ]                     = useState( '' );
   const [ qtdRecusa, setQtdRecusa ]                       = useState( 0 );
   const [ qtdFechada, setQtdFechada ]                     = useState( 0 );
   const [ qtdAmostra, setQtdAmostra ]                     = useState( 0 );
@@ -144,20 +143,19 @@ export const VisualizarRelatorio = ({ membros, boletimDiarioEquipe, ...props }) 
   const [ qtdDepositoEliminado, setQtdDepositoEliminado ] = useState( 0 );
 
   useEffect(() => {
-    const eq = props.match.params.equipe_id;
+    const equipe_id = props.match.params.equipe_id;
+    const data = props.match.params.data
 
-    setEquipe_id( eq );
-    setData( props.match.params.data );
+    const [ Y, m, d ] = data.split( '-' );
+    setDataString( `${ d }/${ m }/${ Y }` );
+
+    if( equipe_id && data !== '' ){
+      props.getMembrosRequest( equipe_id );
+      props.getBoletimDiarioEquipeRequest( equipe_id, data );
+    }
 
     props.changeSidebar( "relatorio", "rlt_boletimDiarioEquipe" );
   }, []);
-
-  useEffect(() => {
-    if( equipe_id && data !== '' ) {
-      props.getBoletimDiarioEquipeRequest( equipe_id, data );
-      props.getMembrosRequest( equipe_id );
-    }
-  }, [ data, equipe_id ]);
 
   useEffect(() => {
     if( membros.length > 0 )
@@ -446,7 +444,7 @@ export const VisualizarRelatorio = ({ membros, boletimDiarioEquipe, ...props }) 
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaChartPie /></PageIcon>
-          Boletim diário por equipe
+          Boletim diário por equipe - {dataString}
         </h3>
       </PageHeader>
       <section className="card-list">

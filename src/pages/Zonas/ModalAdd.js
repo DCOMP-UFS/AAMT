@@ -18,6 +18,7 @@ import { connect } from 'react-redux';
 // ACTIONS
 import { createZoneRequest, clearCreate } from '../../store/Zona/zonaActions';
 import { getQuarteiroesMunicipioSemZonaRequest } from '../../store/Quarteirao/quarteiraoActions'
+import { getLocationByCityRequest } from '../../store/Localidade/localidadeActions';
 import { showNotifyToast } from '../../store/AppConfig/appConfigActions';
 
 // STYLES
@@ -37,6 +38,7 @@ function ModalAdd({ show, handleClose, createZoneRequest, created, municipio_id,
 
   useEffect(() => {
     props.clearCreate();
+    props.getLocationByCityRequest( municipio_id );
     props.getQuarteiroesMunicipioSemZonaRequest( municipio_id );
   }, []);
 
@@ -166,7 +168,7 @@ function ModalAdd({ show, handleClose, createZoneRequest, created, municipio_id,
                           <FaBorderAll />
                         </ListaIcon>
                         <span className="mr-2">
-                          Quarteirao nº {q.numero}
+                          Nº {q.numero} - LOC: {q.localidade}
                         </span>
                       </div>
 
@@ -211,6 +213,7 @@ function ModalAdd({ show, handleClose, createZoneRequest, created, municipio_id,
         show={showModalQuarteirao}
         handleClose={() => setShowModalQuarteirao(false)}
         quarteiroes={props.quarteiroes}
+        localidades={props.localidades}
         addQuarteirao={addQuarteirao}
       />
     </Modal>
@@ -220,11 +223,17 @@ function ModalAdd({ show, handleClose, createZoneRequest, created, municipio_id,
 const mapStateToProps = state => ({
   municipio_id: state.appConfig.usuario.municipio.id,
   quarteiroes: state.quarteirao.quarteiroes,
-  created: state.zona.created
+  created: state.zona.created,
+  localidades : state.localidade.localidades,
  });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ createZoneRequest, clearCreate, getQuarteiroesMunicipioSemZonaRequest,showNotifyToast }, dispatch);
+  bindActionCreators({ 
+    createZoneRequest, 
+    clearCreate, 
+    getQuarteiroesMunicipioSemZonaRequest,
+    getLocationByCityRequest,
+    showNotifyToast }, dispatch);
 
 export default connect(
   mapStateToProps,

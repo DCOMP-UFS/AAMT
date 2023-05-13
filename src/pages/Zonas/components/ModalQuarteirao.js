@@ -24,8 +24,10 @@ import { Button, FormGroup, selectDefault } from '../../../styles/global';
  * @param {Object} props demais propriedades para funcionamento do componente
  * @returns 
  */
-const ModalQuarteirao = ( { acao, show, handleClose, quarteiroes, addQuarteirao, ...props } ) => {
-  const [ quarteirao, setQuarteirao ]                             = useState( {} );
+const ModalQuarteirao = ( { acao, show, handleClose, quarteiroes, localidades, addQuarteirao, ...props } ) => {
+  const [ localidade, setLocalidade ]               = useState( {} );
+  const [ quarteirao, setQuarteirao ]               = useState( {} );
+  const [ optionLocalidade, setOptionLocalidade ]   = useState( [] );
   const [ optionQuarteirao, setOptionQuarteirao ]   = useState( [] );
   const [ flLoading, setFlLoading ]                 = useState( false );
 
@@ -36,16 +38,26 @@ const ModalQuarteirao = ( { acao, show, handleClose, quarteiroes, addQuarteirao,
     if( show ) {
       limparTudo()
     }
+
   }, [ show ]);
 
   /**
-   * Preenchendo as opções do select de quarteirao
+   * Preenchendo as opções das localidades
    */
   useEffect(() => {
-    const options = quarteiroes.map( q => ( { value: q.id, label: q.numero } ) );
+    const options = localidades.map( loc => ( { value: loc.id, label: loc.nome } ) );
+    setOptionLocalidade( options );
+  }, [ localidades ]);
 
+
+  useEffect(() => {
+    const quarteiroesLocalidade = quarteiroes.filter( q => q.localidade.id == localidade.value)
+
+    const options = quarteiroesLocalidade.map( q => ( { value: q.id, label: q.numero, localidade: q.localidade.nome } ) );
+
+    setQuarteirao( {} )
     setOptionQuarteirao( options );
-  }, [ quarteiroes ]);
+  }, [ localidade ]);
 
 
   /**
@@ -55,13 +67,14 @@ const ModalQuarteirao = ( { acao, show, handleClose, quarteiroes, addQuarteirao,
    */
   const handleSubmit = e => {
     e.preventDefault();
-    const quart = {id: quarteirao.value, numero: quarteirao.label} 
+    const quart = {id: quarteirao.value, numero: quarteirao.label, localidade: quarteirao.localidade} 
     addQuarteirao( quart );
     
   }
 
   function limparTudo(){
     setQuarteirao( {} );
+    setLocalidade( {} );
   }
 
   return(
@@ -79,9 +92,20 @@ const ModalQuarteirao = ( { acao, show, handleClose, quarteiroes, addQuarteirao,
           <Row>
             <Col md="12">
               <FormGroup>
-                <label htmlFor="l_rua">Nº do quarteirão  <code>*</code></label>
+                <label htmlFor="l_loc">Bairro/Localidade  <code>*</code></label>
+                  <SelectWrap
+                    id="l_loc"
+                    value={ localidade }
+                    styles={ selectDefault }
+                    options={ optionLocalidade }
+                    onChange={ e => setLocalidade( e ) }
+                    required
+                  />
+              </FormGroup>
+              <FormGroup>
+                <label htmlFor="l_q">Nº do quarteirão  <code>*</code></label>
                 <SelectWrap
-                  id="l_rua"
+                  id="l_q"
                   value={ quarteirao }
                   styles={ selectDefault }
                   options={ optionQuarteirao }

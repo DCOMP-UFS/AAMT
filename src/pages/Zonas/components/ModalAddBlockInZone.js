@@ -22,8 +22,10 @@ import { ContainerArrow } from '../../../styles/util';
 import { Button, FormGroup, selectDefault } from '../../../styles/global';
 
 
-const ModalAddBlockInZone = ( { zona_id, acao, show, handleClose, quarteiroes, ...props } ) => {
-  const [ quarteirao, setQuarteirao ]                             = useState( {} );
+const ModalAddBlockInZone = ( { zona_id, acao, show, handleClose, quarteiroes, localidades, ...props } ) => {
+  const [ localidade, setLocalidade ]               = useState( {} );
+  const [ quarteirao, setQuarteirao ]               = useState( {} );
+  const [ optionLocalidade, setOptionLocalidade ]   = useState( [] );
   const [ optionQuarteirao, setOptionQuarteirao ]   = useState( [] );
   const [ flLoading, setFlLoading ]                 = useState( false );
 
@@ -36,14 +38,24 @@ const ModalAddBlockInZone = ( { zona_id, acao, show, handleClose, quarteiroes, .
     }
   }, [ show ]);
 
+
   /**
-   * Preenchendo as opções do select de quarteirao
+   * Preenchendo as opções das localidades
    */
   useEffect(() => {
-    const options = quarteiroes.map( q => ( { value: q.id, label: q.numero } ) );
+    const options = localidades.map( loc => ( { value: loc.id, label: loc.nome } ) );
+    setOptionLocalidade( options );
+  }, [ localidades ]);
 
+
+  useEffect(() => {
+    const quarteiroesLocalidade = quarteiroes.filter( q => q.localidade.id == localidade.value)
+
+    const options = quarteiroesLocalidade.map( q => ( { value: q.id, label: q.numero, localidade: q.localidade.nome } ) );
+
+    setQuarteirao( {} )
     setOptionQuarteirao( options );
-  }, [ quarteiroes ]);
+  }, [ localidade ]);
 
 
 
@@ -79,6 +91,7 @@ const ModalAddBlockInZone = ( { zona_id, acao, show, handleClose, quarteiroes, .
   }
 
   function limparTudo(){
+    setLocalidade( {} )
     setQuarteirao( {} );
     setFlLoading( false );
     props.inserirQuarteiraoEmZonaReset()
@@ -99,9 +112,20 @@ const ModalAddBlockInZone = ( { zona_id, acao, show, handleClose, quarteiroes, .
           <Row>
             <Col md="12">
               <FormGroup>
-                <label htmlFor="l_rua">Nº do quarteirão  <code>*</code></label>
+                <label htmlFor="l_loc">Bairro/Localidade  <code>*</code></label>
+                  <SelectWrap
+                    id="l_loc"
+                    value={ localidade }
+                    styles={ selectDefault }
+                    options={ optionLocalidade }
+                    onChange={ e => setLocalidade( e ) }
+                    required
+                  />
+              </FormGroup>
+              <FormGroup>
+                <label htmlFor="l_q">Nº do quarteirão  <code>*</code></label>
                 <SelectWrap
-                  id="l_rua"
+                  id="l_q"
                   value={ quarteirao }
                   styles={ selectDefault }
                   options={ optionQuarteirao }

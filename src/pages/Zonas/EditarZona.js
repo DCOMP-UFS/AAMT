@@ -21,6 +21,7 @@ import { connect } from 'react-redux';
 import { changeSidebar } from '../../store/Sidebar/sidebarActions';
 import { updateZoneRequest, getZoneByIdRequest, clearUpdate, getZoneByCityRequest } from '../../store/Zona/zonaActions';
 import { getQuarteiroesMunicipioSemZonaRequest, setQuarteirao } from '../../store/Quarteirao/quarteiraoActions'
+import { getLocationByCityRequest } from '../../store/Localidade/localidadeActions';
 import { showNotifyToast } from "../../store/AppConfig/appConfigActions";
 
 // STYLES
@@ -45,6 +46,7 @@ function EditarZona({ zona, quarteiroes_zona, getZoneByIdRequest, municipio_id, 
   useEffect(() => {
     props.changeSidebar(4, 0);
     getZoneByIdRequest( id );
+    props.getLocationByCityRequest( municipio_id );
     props.getQuarteiroesMunicipioSemZonaRequest( municipio_id );
     props.getZoneByCityRequest(municipio_id, 'sim')
   }, []);
@@ -148,7 +150,7 @@ function EditarZona({ zona, quarteiroes_zona, getZoneByIdRequest, municipio_id, 
                               <FaBorderAll />
                             </ListaIcon>
                             <span className="mr-2">
-                              Nº {q.numero}
+                              Nº {q.numero} - LOC: { q.localidade.nome }
                             </span>
                           </div>
                           <div>
@@ -182,6 +184,7 @@ function EditarZona({ zona, quarteiroes_zona, getZoneByIdRequest, municipio_id, 
           show={showModalQuarteirao}
           handleClose={() => setShowModalQuarteirao(false)}
           quarteiroes={props.quarteiroes}
+          localidades={props.localidades}
         />
         <ModalRemoveBlockInZone
           quarteirao={quarteirao}
@@ -215,6 +218,7 @@ const mapDispatchToProps = dispatch =>
     getZoneByCityRequest,
     clearUpdate,
     getQuarteiroesMunicipioSemZonaRequest,
+    getLocationByCityRequest,
     showNotifyToast
   }, dispatch);
 

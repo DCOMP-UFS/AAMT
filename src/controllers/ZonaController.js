@@ -63,6 +63,10 @@ getById = async (req, res) => {
     const quarteiroes_zona = await Quarteirao.findAll(
       {
         where:{zona_id: zona.id},
+        include: {
+          association: 'localidade',
+          attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+        },
         order:[['numero','asc']]
       }
     )

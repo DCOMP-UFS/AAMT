@@ -95,6 +95,23 @@ const columns = [
       align: "left",
       disablePadding: false
     }
+  },
+  {
+    name: "sequencia",
+    label: "Seq. Quart.",
+    options: {
+      filter: false,
+      disablePadding: false
+    }
+  },
+  {
+    name: "localidade",
+    label: "Local.",
+    options: {
+      filter: true,
+      align: "left",
+      disablePadding: false
+    }
   }
 ];
 
@@ -207,7 +224,13 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
 
       rota.forEach( q => {
         q.lados.forEach( l => {
-          let i = l.imoveis.map( imovel => ( { ...imovel, rua: l.rua.nome, quarteirao: q.numero } ) );
+          let i = l.imoveis.map( imovel => ( { 
+            ...imovel, 
+            rua: l.rua.nome, 
+            quarteirao: q.numero, 
+            localidade: q.localidade ? q.localidade.nome : null,
+            quarteiraoSequencia: q.sequencia
+          } ) );
 
           imo = [ ...i, ...imo ];
         } );
@@ -254,6 +277,8 @@ const MinhaRota = ( { openModal, fl_iniciada, trabalhoDiario, rota, usuario, vis
             tipoImovel.label,
             imovel.rua,
             imovel.quarteirao,
+            imovel.quarteiraoSequencia,
+            imovel.localidade,
           ]
         )
       } );

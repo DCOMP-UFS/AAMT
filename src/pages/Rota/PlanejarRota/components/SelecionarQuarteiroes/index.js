@@ -322,7 +322,13 @@ const ExibirQuarteiroes = ( { rota_equipe, fl_loading, indexEquipe, indexMembro,
     return rota_equipe.map( ( quarteirao, indexQuarteirao ) => (
       <Col key={ "qrt_" + quarteirao.id } xs="12" sm="6">
         <Block >
-          <label>Quarteirão: Nº { quarteirao.numero }</label>
+          <label>
+            {
+              quarteirao.sequencia == null ?
+              `Nº ${ quarteirao.numero } - LOC: ${quarteirao.localidade_nome}` :
+              `Nº ${ quarteirao.numero } - SEQ: ${quarteirao.sequencia }  - LOC: ${quarteirao.localidade_nome}`
+            }
+          </label>
 
           <ul className="sides">
             {

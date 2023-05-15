@@ -91,6 +91,7 @@ function LIRAa({ handleSave, trabalhoDiario_id, recipientes, imovel, objetivo, .
     
 
     if( fl_valido ) {
+      imovel.sequencia = imovel.sequencia == "" ? null : imovel.sequencia
       setLoadingSaveButton(true)
       const vistoria = {
         situacaoVistoria: visita.value,

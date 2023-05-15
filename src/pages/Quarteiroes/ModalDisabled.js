@@ -27,6 +27,7 @@ function ModalDisabled(props ) {
       const quarteirao = new Quarteirao( {
         id            : quart.id,
         numero        : quart.numero,
+        sequencia     : quart.sequencia,
         localidade_id : quart.localidade_id,
         zona_id       : quart.zona_id,
         ativo         : 0,

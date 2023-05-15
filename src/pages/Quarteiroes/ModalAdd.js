@@ -34,6 +34,7 @@ import { Button, FormGroup, selectDefault } from '../../styles/global';
 
 function ModalAdd({ municipio_id, created, show, handleClose, ...props }) {
   const [ numero, setNumero ]                     = useState( null );
+  const [ sequencia, setSequencia ]               = useState( null );
   const [ lados, setLados ]                       = useState( [] );
   const [ localidade, setLocalidade ]             = useState( {} );
   const [ optionLocalidade, setOptionLocalidade ] = useState( [] );
@@ -48,6 +49,7 @@ function ModalAdd({ municipio_id, created, show, handleClose, ...props }) {
    */
   function limparTudo(){
     setNumero(null)
+    setSequencia(null)
     setLados([])
     setLocalidade({})
     setZona({ value: null, label: "Nenhuma" })
@@ -235,6 +237,7 @@ function ModalAdd({ municipio_id, created, show, handleClose, ...props }) {
     if (valida_adicionar_quarteirao) {
       const quarteirao = new Quarteirao({
         numero,
+        sequencia: sequencia == "" ? null : sequencia, 
         localidade_id: localidade.value,
         zona_id: zona.value,
         lados,
@@ -301,6 +304,21 @@ function ModalAdd({ municipio_id, created, show, handleClose, ...props }) {
                 />
               </FormGroup>
             </Col>
+            <Col>
+              <FormGroup>
+                  <label htmlFor="sequencia">Sequência</label>
+                  <input
+                    id        ="sequencia"
+                    value     ={ sequencia ? sequencia : "" }
+                    type      ="number"
+                    className ="form-control"
+                    pattern   ="[0-9]*"
+                    onKeyDown ={ e => [ "e", "E", "+", "-", "." ].includes( e.key ) && e.preventDefault() }
+                    onChange  ={ e => setSequencia( e.target.value ) }
+                    min       ="1"
+                  />
+                </FormGroup>
+              </Col>
           </Row>
           <Row>
             <Col>

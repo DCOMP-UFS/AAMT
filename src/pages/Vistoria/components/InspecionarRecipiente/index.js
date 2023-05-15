@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ButtonNewObject from '../../../../components/ButtonNewObject';
 import ModalCadastrarInspecao from './ModalCadastrarInspecao';
 import ModalEditarInspecao from './ModalEditarInspecao';
@@ -27,8 +27,16 @@ import { LiEmpty } from '../../../../styles/global';
 
 function InspecionarRecipiente({ sequenciaRecipiente, inspectionSequence, vistorias, trabalhoDiario_id, 
                                  recipientes, objetivo, isPaginaEdicao, vistoriaPendente, ...props }) {
+  
+  const [ isModalCadastrarInspOpen, setIsModalCadastrarInsOpen]    = useState( false );
+  const [ isModalEditarInspOpen, setIsModalEditarInsOpen]          = useState( false );
+
+  const handleCloseModalCadastrarInsp = () => {setIsModalCadastrarInsOpen(false)}
+  const handleCloseModalEditarInsp = () => {setIsModalEditarInsOpen(false)}
+
   function openModalEdit( index ) {
     props.changeUpdatedIndex( index );
+    setIsModalEditarInsOpen(true)
     $('#modalEditarInspecao').modal('show');
   }
 
@@ -50,8 +58,10 @@ function InspecionarRecipiente({ sequenciaRecipiente, inspectionSequence, vistor
                 props.showNotifyToast( "Por favor selecione o valor do campo pendência!", "warning" );
               else if(vistoriaPendente === "F" || vistoriaPendente === "R")
                 props.showNotifyToast( "Vistoria com pendência fechada ou recusada não pode ter depositos cadastrados!", "warning" );
-              else 
+              else {
+                setIsModalCadastrarInsOpen(true)
                 $( '#modalCadastrarInspecao' ).modal( 'show' )
+              }
             }} />
         </h4>
 
@@ -64,9 +74,9 @@ function InspecionarRecipiente({ sequenciaRecipiente, inspectionSequence, vistor
           openModalDuplicate={ openModalDuplicate }
         />
 
-        <ModalCadastrarInspecao objetivo={ objetivo } />
+        <ModalCadastrarInspecao objetivo={ objetivo } isOpen={isModalCadastrarInspOpen} handleClose={handleCloseModalCadastrarInsp} />
          {/*isPaginaEdicao Indica para o componente se ele está sendo usado na pagina de edição de vistoria*/}
-        <ModalEditarInspecao objetivo={ objetivo } isPaginaEdicao={isPaginaEdicao}/>
+        <ModalEditarInspecao objetivo={ objetivo } isPaginaEdicao={isPaginaEdicao} isOpen={isModalEditarInspOpen} handleClose={handleCloseModalEditarInsp} />
         <ModalDuplicateInspection />
       </div>
     </Container>

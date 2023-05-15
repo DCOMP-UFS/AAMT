@@ -330,7 +330,13 @@ function ListEstrato( props ) {
                   </ContainerIcon>
                   <DivDescription>
                     <div>
-                      <span className="mr-2">{ l.tipo === "quarteirao" ? `Quarteirão nº ${ l.nome }` : l.nome }</span>
+                      <span className="mr-2">{ 
+                      l.tipo === "quarteirao" ? 
+                        l.sequencia == null ?
+                          `Nº ${ l.nome } - LOC: ${ l.localidade.nome }` :
+                          `Nº ${ l.nome } - SEQ: ${ l.sequencia } - LOC: ${ l.localidade.nome }` 
+                      : l.nome
+                      }</span>
                     </div>
                   </DivDescription>
                 </LiIcon>

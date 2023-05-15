@@ -145,6 +145,7 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
     }
 
     if( fl_valido ) {
+      imovel.sequencia = imovel.sequencia == "" ? null : imovel.sequencia
       setLoadingSaveButton(true)
       const vistoria = {
         situacaoVistoria: visita.value,

@@ -578,7 +578,7 @@ getActivityWeeklyReport = async (req, res) => {
 
       let sql_situacao_quarteirao = 
         'SELECT ' + 
-          'qrt.numero, stq.situacao_quarteirao_id ' +
+          'qrt.numero, qrt.sequencia, stq.situacao_quarteirao_id, loc.id as localidade_id, loc.nome as localidade_nome ' +
         'FROM ' + 
           'trabalhos_diarios as td ' + 
         'JOIN equipes as eqp ON (td.equipe_id = eqp.id) ' + 
@@ -586,10 +586,11 @@ getActivityWeeklyReport = async (req, res) => {
         'JOIN estratos as est ON (est.atividade_id = atv.id) ' +
         'JOIN situacao_quarteiroes as stq ON (stq.estrato_id = est.id) ' +
         'JOIN quarteiroes as qrt ON (stq.quarteirao_id = qrt.id) ' +
+        'JOIN localidades as loc ON (loc.id = qrt.localidade_id) ' +
         'WHERE ' +
           `td.data >= '` + `${data_inicio}'` + ` AND td.data <= '` + `${data_fim}' ` + 
         `AND atv.id = ${atividade_id} ` + 
-        'GROUP BY qrt.numero, stq.situacao_quarteirao_id';
+        'GROUP BY qrt.numero, qrt.sequencia, stq.situacao_quarteirao_id, loc.id, loc.nome ';
 
       let situacao_quarteirao = await SituacaoQuarteirao.sequelize.query( sql_situacao_quarteirao )
       .then(data => {
@@ -1220,15 +1221,16 @@ getCurrentActivityReport = async ( req, res ) => {
       
       let sql_situacao_quarteirao = 
         'SELECT ' + 
-          'qrt.numero, stq.situacao_quarteirao_id ' +
+        'qrt.numero, qrt.sequencia, stq.situacao_quarteirao_id, loc.id as localidade_id, loc.nome as localidade_nome ' +
         'FROM ' + 
           'atividades as atv ' + 
         'JOIN estratos as est ON (est.atividade_id = atv.id) ' +
         'JOIN situacao_quarteiroes as stq ON (stq.estrato_id = est.id) ' +
         'JOIN quarteiroes as qrt ON (stq.quarteirao_id = qrt.id) ' +
+        'JOIN localidades as loc ON (loc.id = qrt.localidade_id) ' +
         'WHERE ' +
         `atv.id = ${atividade_id} ` + 
-        'GROUP BY qrt.numero, stq.situacao_quarteirao_id';
+        'GROUP BY qrt.numero, qrt.sequencia, stq.situacao_quarteirao_id, loc.id, loc.nome ';
 
       let situacao_quarteirao = await SituacaoQuarteirao.sequelize.query( sql_situacao_quarteirao )
       .then(data => {
@@ -1236,11 +1238,11 @@ getCurrentActivityReport = async ( req, res ) => {
         let quarteiroes = { trabalhados: [], concluidos: [], concluidosPendencia:[] };
         rows.map(quarteirao => {
           if (quarteirao.situacao_quarteirao_id === 3) {
-            quarteiroes.concluidos.push( quarteirao.numero );
+            quarteiroes.concluidos.push( quarteirao );
           } else if (quarteirao.situacao_quarteirao_id === 4) {
-            quarteiroes.concluidosPendencia.push( quarteirao.numero );
+            quarteiroes.concluidosPendencia.push( quarteirao );
           } else {
-            quarteiroes.trabalhados.push( quarteirao.numero );
+            quarteiroes.trabalhados.push( quarteirao );
           }
         })
         return quarteiroes;

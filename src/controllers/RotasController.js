@@ -212,30 +212,36 @@ getAllRoutes = async ( req, res ) => {
       var imoveisId = await imoveisVistoriados(td, td.equipe.id)
 
       let rota = await Quarteirao.findAll( {
-        include: {
-          association: 'lados',
-          include: [
-            {
-              association: 'imoveis',
-              where:{
-                ativo:true,
-                id: {
-                  [Op.notIn]: imoveisId
-                },
-                tipoImovel:{
-                  [Op.ne]: 4 //Ponto estrategico
+        include: [
+          {
+            association: 'localidade',
+            attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+          },
+          {
+            association: 'lados',
+            include: [
+              {
+                association: 'imoveis',
+                where:{
+                  ativo:true,
+                  id: {
+                    [Op.notIn]: imoveisId
+                  },
+                  tipoImovel:{
+                    [Op.ne]: 4 //Ponto estrategico
+                  }
                 }
-              }
-            },
-            {
-              association: 'rota',
-              where: {
-                id: td.id
-              }
-            },
-            { association: 'rua' }
-          ]
-        }
+              },
+              {
+                association: 'rota',
+                where: {
+                  id: td.id
+                }
+              },
+              { association: 'rua' }
+            ]
+          }
+        ]
       } );
 
       const sequencia_usuario = await Atuacao.findOne( {
@@ -946,6 +952,7 @@ const getOpenRouteByTeam = async ( req, res ) => {
     let sql = 
       'SELECT ' +
         'q.*, ' +
+        'loc.nome AS localidade_nome, ' +
         'l.id AS lado_id, ' +
         'l.ativo AS lado_ativo, ' +
         'l.numero AS lado_numero, ' +
@@ -973,6 +980,7 @@ const getOpenRouteByTeam = async ( req, res ) => {
         ' AS INTEGER ) AS vistorias ' +
       'FROM ' +
         'quarteiroes AS q ' +
+        'JOIN localidades AS loc ON(q.localidade_id = loc.id) ' +
         'JOIN lados AS l ON(q.id = l.quarteirao_id) ' +
         'JOIN ruas AS r ON(l.rua_id = r.id) ' +
       'WHERE ';
@@ -1006,8 +1014,10 @@ const getOpenRouteByTeam = async ( req, res ) => {
           let quarteirao    = {
             id: null,
             numero: null,
+            sequencia:null,
             ativo: null,
             localidade_id: null,
+            localidade_nome: null,
             zona_id: null,
             lados: []
           };
@@ -1018,8 +1028,10 @@ const getOpenRouteByTeam = async ( req, res ) => {
               quarteirao    = {
                 id: row.id,
                 numero: row.numero,
+                sequencia: row.sequencia,
                 ativo: row.ativo,
                 localidade_id: row.localidade_id,
+                localidade_nome: row.localidade_nome,
                 zona_id: row.zona_id,
                 lados: []
               };
@@ -1112,6 +1124,10 @@ const getOpenRouteByTeam = async ( req, res ) => {
 
       return q;
     } );
+
+    quarteirao_situacao.forEach( q =>{
+      q.lados.sort((a,b) => a.numero - b.numero )
+    })
 
     return res.json( quarteirao_situacao );
   } catch (error) {

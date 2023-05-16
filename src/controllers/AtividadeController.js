@@ -388,7 +388,8 @@ getLocations = async ( req, res ) => {
         }).then( quarteiroes => {
           return quarteiroes.map( quarteirao => ({ 
             id: quarteirao.id, 
-            nome: quarteirao.numero, 
+            nome: quarteirao.numero,
+            sequencia: quarteirao.sequencia, 
             tipo: "quarteirao", 
             localidade: {
               id: quarteirao.localidade.id,

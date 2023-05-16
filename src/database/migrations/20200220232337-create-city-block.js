@@ -13,7 +13,10 @@ module.exports = {
         numero: {
           type: Sequelize.INTEGER,
           allowNull: false,
-          unique: true,
+        },
+        sequencia: {
+          type: Sequelize.INTEGER,
+          defaultValue: null
         },
         ativo: {
           type: Sequelize.INTEGER,

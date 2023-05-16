@@ -58,6 +58,7 @@ index = async ( req, res ) => {
       localidade: null,
       localidade_id:-1,
       numero:-1,
+      sequencia: null,
       quarteirao_id:null,
       updatedAt:"",
       zona:null
@@ -70,6 +71,7 @@ index = async ( req, res ) => {
     result.localidade    = quarteirao.localidade
     result.localidade_id = quarteirao.localidade_id
     result.numero        = quarteirao.numero
+    result.sequencia     = quarteirao.sequencia
     result.quarteirao_id = quarteirao.quarteirao_id
     result.updatedAt     = quarteirao.updatedAt
     result.zona          = quarteirao.zona
@@ -214,7 +216,7 @@ const updateSide = async ( id, numero, quarteirao_id, rua_id ) => {
 
 store = async ( req, res ) => {
   try{
-    const { numero, localidade_id, zona_id, quarteirao_id, lados } = req.body;
+    const { numero, sequencia, localidade_id, zona_id, quarteirao_id, lados } = req.body;
     const userId = req.userId;
 
     if(!numero) return res.status(400).json({ erro: "Informe o nuemro da quarteirão" });
@@ -237,23 +239,33 @@ store = async ( req, res ) => {
     }
     
     const municipio_id = localidade.dataValues.municipio_id
-    const municipio_nome = localidade.dataValues.municipio.nome
+    const localidade_nome = localidade.dataValues.nome
 
-    //Verifica se ja existe um quarteirão no mesmo municipio
-    //com o mesmo codigo
+    //Verifica se ja existe um quarteirão na mesma localidade
+    //com o mesmo número e sequencia
     const quarteiraoExiste = await Quarteirao.findOne({
       include: {
           association: 'localidade',
           attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-          where:{municipio_id},
       },
-      where: {numero}
+      where: {
+        numero,
+        localidade_id,
+        sequencia,
+        ativo: 1
+      }
     });
    
     if( quarteiraoExiste ) {
+      let msg = ""
+      if(sequencia != null )
+        msg = `Já existe quarteirão com o número ${numero} e sequência ${sequencia} registrado na localidade ${localidade_nome}`
+      else
+        msg = `Já existe quarteirão com o número ${numero} registrado na localidade ${localidade_nome}`
+
       return res.status(400).json({
         alreadyExist:true,
-        error: `Já existe quarteirão com o número ${numero} registrado no municipio ${municipio_nome}`
+        error: msg
       });
     }
 
@@ -277,6 +289,7 @@ store = async ( req, res ) => {
 
     const quarteirao = await Quarteirao.create({
       numero,
+      sequencia,
       localidade_id,
       zona_id,
       quarteirao_id
@@ -308,6 +321,7 @@ store = async ( req, res ) => {
 
     return res.status(201).json( quarteiraoFind );
   } catch (error) {
+    console.log(error)
     return res.status( 400 ).send( { 
       status: 'unexpected error',
       mensage: 'Algum problema inesperado ocorreu nesta rota da api',
@@ -317,7 +331,7 @@ store = async ( req, res ) => {
 
 update = async ( req, res ) => {
   try{
-    const { numero, zona_id, ativo, quarteirao_id, lados, localidade_id } = req.body;
+    const { numero, sequencia, zona_id, ativo, quarteirao_id, lados, localidade_id } = req.body;
     const { id } = req.params;
 
     const userId = req.userId;
@@ -360,21 +374,28 @@ update = async ( req, res ) => {
     }
     
     const municipio_id = localidade.dataValues.municipio_id
-    const municipio_nome = localidade.dataValues.municipio.nome
+    const localidade_nome = localidade.dataValues.nome
 
-    //Verifica se ja existe um quarteirão no mesmo municipio
-    //com o mesmo codigo
-    const quarteiraoExiste = await quarteiraoExistente(id,municipio_id, numero)
+    //Verifica se ja existe um quarteirão na mesma localidade
+    //com o mesmo numero e sequencia
+    const quarteiraoExiste = await quarteiraoExistente(id,localidade_id, numero, sequencia)
     if( quarteiraoExiste ) {
+      let msg = ""
+      if(sequencia != null )
+        msg = `Já existe quarteirão com o número ${numero} e sequência ${sequencia} registrado na localidade ${localidade_nome}`
+      else
+        msg = `Já existe quarteirão com o número ${numero} registrado na localidade ${localidade_nome}`
+
       return res.status(400).json({
         alreadyExist:true,
-        error: `Já existe quarteirão com o número ${numero} registrado no municipio ${municipio_nome}`
+        error: msg
       });
     }
     
     const { isRejected } = await Quarteirao.update(
       {
         numero,
+        sequencia,
         zona_id,
         ativo,
         quarteirao_id: null
@@ -446,6 +467,7 @@ update = async ( req, res ) => {
 
     return res.json( quarteiraoFind );
   } catch (error) {
+    console.log(error)
     return res.status( 400 ).send( { 
       status: 'unexpected error',
       mensage: 'Algum problema inesperado ocorreu nesta rota da api',
@@ -633,19 +655,23 @@ getLadosQuarteirao = async ( req, res ) => {
 
 }
 
-async function quarteiraoExistente(id,municipio_id, numero){
+async function quarteiraoExistente(id,localidade_id, numero, sequencia){
 
-  var filtro = {numero: numero}
+  var filtro = {
+    numero: numero, 
+    sequencia: sequencia, 
+    localidade_id: localidade_id,
+    ativo: 1
+  }
   if(id)
     filtro.id = {[Op.ne]: id}
   
-  //Verifica se ja existe um quarteirão no mesmo municipio
-  //com o mesmo codigo
+  //Verifica se ja existe um quarteirão na mesma localidade
+  //com o mesmo numero e sequencia
   const quarteiraoExiste = await Quarteirao.findOne({
     include: {
         association: 'localidade',
         attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
-        where:{municipio_id},
     },
     where: {...filtro}
   });

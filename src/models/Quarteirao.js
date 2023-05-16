@@ -4,6 +4,7 @@ class Quarteirao extends Model {
   static init(sequelize) {
     super.init({
       numero: DataTypes.INTEGER,
+      sequencia: DataTypes.INTEGER,
       ativo: DataTypes.INTEGER
     }, {
       sequelize,

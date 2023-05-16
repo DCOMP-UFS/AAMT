@@ -50,6 +50,8 @@ const InspecionarRecipiente = ( {
   codigoMunicipio,
   sequenciaUsuario,
   isPaginaEdicao,
+  isOpen,
+  handleClose,
   ...props
 } ) => {
   const [ tipoRecipiente, setTipoRecipiente ]       = useState( { value: null, label: null } );
@@ -74,9 +76,8 @@ const InspecionarRecipiente = ( {
   const [ qtdTratamentoValid , setqtdTratamentoValid] = useState(true)
   const [ vistoriasFiltradas , setVistoriasFiltrada]  = useState([]) 
   
-  useEffect( () => {
+  function preencherCampos() {
     if( updatedIndex > -1 ) {
-
       var filtragem = vistoriasCache.filter((vistoria) => vistoria.trabalhoDiario_id == trabalhoDiario_id)
       setVistoriasFiltrada(filtragem)
 
@@ -95,6 +96,17 @@ const InspecionarRecipiente = ( {
       if( recipiente.amostras.length > 0 )
         setNumUnidade( recipiente.amostras[ recipiente.amostras.length - 1 ].sequencia );
     }
+  }
+
+  useEffect(() => {
+    if(isOpen){
+      preencherCampos()
+    }
+    handleClose()
+  }, [isOpen]);
+
+  useEffect( () => {
+    preencherCampos()
   }, [ updatedIndex, recipientes ] );
 
   useEffect( () => {
@@ -146,6 +158,7 @@ const InspecionarRecipiente = ( {
   function submit() {
     // Validação
     let fl_valido = true;// true -> válido | false -> inválido
+    let fl_semAmostra = false
 
     if( !validInputIsNull( "#tipoRecipiente", tipoRecipiente.value ) ) fl_valido = false;
     if( objetivo === 'LI+T' || objetivo === 'T' ) {
@@ -166,6 +179,11 @@ const InspecionarRecipiente = ( {
     else{
       $( '#edi_qtdTratamento' ).removeClass('invalid')
       $( '#edi_qtdTratamento' ).parent().find('span.form-label-invalid').remove();
+    }
+
+    if(unidade.length == 0 && fl_foco.value){
+      fl_valido = false;
+      fl_semAmostra = true
     }
 
     /**
@@ -271,12 +289,15 @@ const InspecionarRecipiente = ( {
 
       $( '#modalEditarInspecao' ).modal( 'hide' );
     } else {
-      props.showNotifyToast( "Existem campos obrigatórios não preenchidos", "warning" );
+      if(fl_semAmostra)
+        props.showNotifyToast( "Para depositos com foco de mosquito, é necessario cadastrar ao menos uma amostra", "warning" );
+      else
+        props.showNotifyToast( "Existem campos obrigatórios não preenchidos", "warning" );
     }
   }
 
   return (
-    <div id="modalEditarInspecao" className="modal fade show" role="dialog">
+    <div id="modalEditarInspecao" className="modal fade show" role="dialog" data-backdrop={ "static" }>
       <div className="modal-dialog" role="document">
         <div className="modal-content">
 

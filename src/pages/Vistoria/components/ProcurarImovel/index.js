@@ -19,7 +19,10 @@ import { selectDefault } from '../../../../styles/global';
 import { Container, UlImovel, LiImovel, ContainerIcon, DivDescription, LiEmpty, Span } from './styles';
 
 function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEdicao, trabalhoDiario_id, loadingStatusVistoria, ...props }) {
-  const [ optionQuarteirao, setOptionQuarteirao ] = useState([]);
+  const [ optionLocalidade, setOptionLocalidade ] = useState([]);
+  const [ optionQuarteiraoPermant, setOptionQuarteiraoPermant ] = useState([]);
+  const [ optionQuarteiraoTemp, setOptionQuarteiraoTemp ] = useState([]);
+  const [ localidade, setLocalidade ]             = useState({})
   const [ numero, setNumero ] = useState("");
   const [ sequencia, setSequencia ] = useState("");
   const [ optionTipoImovel ] = useState(Object.entries( tipoImovelEnum ).map(([key, value]) => {
@@ -29,25 +32,106 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEd
   const [ vistoriasFiltradas , setVistoriasFiltradas]  = useState([]) 
 
   useEffect(() => {
+    //Lista que cotem todas as localidades visitadas neste trabalho diario
+    let listLocalidades = []
+
     let optQuarteirao = rota.map(( quarteirao, index ) => {
-      return { value: index, label: quarteirao.numero, id: quarteirao.id };
+
+      //Este trecho do codigo encontra todas as localidades deste trabalho diario
+      let localidadeRepetida = false
+      for( const loc of listLocalidades ) {
+        if( loc.value == quarteirao.localidade.id ){
+          localidadeRepetida = true
+          break;
+        }
+      }
+      if(!localidadeRepetida)
+        listLocalidades.push({ value: quarteirao.localidade.id, label: quarteirao.localidade.nome })
+
+      //Este trecho do codigo é responsavel por achar todos os quarteiroes do trabalho diario
+      let label = ""
+      if(quarteirao.sequencia == null)
+        label = ""+quarteirao.numero
+      else
+        label = ""+quarteirao.numero+" - SEQ: "+quarteirao.sequencia
+      
+
+      return { value: index, label: label, id: quarteirao.id };
     });
-    setOptionQuarteirao([
+
+    //Contem todas as opçoes de localidade
+    setOptionLocalidade([
+      { value: -1, label: 'Todos'},
+      ...listLocalidades
+    ])
+
+    //Contem todas as opçoes de quarteirões
+    setOptionQuarteiraoPermant([
       { value: -1, label: 'Todos', id: -1 },
       ...optQuarteirao
     ]);
 
-    var filtragem = props.vistorias.filter((vistoria) => vistoria.trabalhoDiario_id == trabalhoDiario_id)
-    setVistoriasFiltradas(filtragem)
+    //Contem todas a opções de quarteirões de acordo com a localidade
+    //Quando a pagina é iniciada, ele irá ser igual ao OptionQuarteiraoPermant
+    setOptionQuarteiraoTemp([
+      { value: -1, label: 'Todos', id: -1 },
+      ...optQuarteirao
+    ]);
 
+    //procurar todas as vistorias deste trabalho diario
+    var filtragem = props.vistorias.filter((vistoria) => vistoria.trabalhoDiario_id == trabalhoDiario_id)
+
+    setVistoriasFiltradas(filtragem)
+    setLocalidade( { value: -1, label: 'Todos'})
     props.setQuarteiraoSelect({ value: -1, label: 'Todos', id: -1 });
   }, []);
+
+  useEffect(() => {
+    if( localidade.value == -1)
+      setOptionQuarteiraoTemp(optionQuarteiraoPermant)
+    else{
+      let quarteiroes_localidade = []
+
+      rota.forEach( (q, index) => {
+        if( q.localidade.id == localidade.value ){
+          q.value = index
+          quarteiroes_localidade.push(q)
+        }
+      })
+
+      const new_option_quarteirao = quarteiroes_localidade.map(( quarteirao, index ) => {
+        let label = ""
+        if(quarteirao.sequencia == null)
+          label = ""+quarteirao.numero
+        else
+          label = ""+quarteirao.numero+" - SEQ: "+quarteirao.sequencia
+        return { value: quarteirao.value, label: label, id: quarteirao.id };
+      });
+
+      setOptionQuarteiraoTemp([
+        { value: -1, label: 'Todos', id: -1 },
+        ...new_option_quarteirao
+      ]);
+    }
+      
+    props.setQuarteiraoSelect({ value: -1, label: 'Todos', id: -1 });
+  }, [localidade])
 
   useEffect(() => {
     if( selectQuarteirao ) {
       let im = [];
       if(selectQuarteirao.value === -1) {
-        rota.forEach(rota => {
+
+        let rotaAux = null
+        //caso o filtro da localidade seja 'Todos', não é necessario fazer nada
+        if(localidade.value == -1)
+          rotaAux = rota
+        //caso o filtro da localidade seja outro valor, sera feita uma filtragem,
+        //sendo mantido os quarteirões que pertecem a localidade selecionada
+        else
+          rotaAux = rota.filter( q => q.localidade.id == localidade.value  )
+
+        rotaAux.forEach(rota => {
           var aux = rota.lados.reduce(( imvs, l ) => {
             l.imoveis = l.imoveis.map( i => {
               const inspection  = vistoriasFiltradas.find( vistoria => {
@@ -57,7 +141,12 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEd
                   return vistoria.imovel.id === i.id;
               });
   
-              return ({ ...i, numeroQuarteirao: rota.numero, logradouro: l.rua.nome, fl_inspection: inspection ? true : false })
+              return ({ ...i, 
+                numeroQuarteirao: rota.numero,
+                sequenciaQuarteirao: rota.sequencia,
+                localidade: rota.localidade.nome, 
+                logradouro: l.rua.nome,
+                fl_inspection: inspection ? true : false })
             });
   
             return [ ...imvs, ...l.imoveis ];
@@ -74,7 +163,12 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEd
                 return vistoria.imovel.id === i.id;
             });
 
-            return ({ ...i, numeroQuarteirao: rota[ selectQuarteirao.value ].numero, logradouro: l.rua.nome, fl_inspection: inspection ? true : false })
+            return ({ ...i, 
+              numeroQuarteirao: rota[ selectQuarteirao.value ].numero,
+              sequenciaQuarteirao: rota[ selectQuarteirao.value ].sequencia, 
+              localidade: rota[ selectQuarteirao.value ].localidade.nome,
+              logradouro: l.rua.nome, 
+              fl_inspection: inspection ? true : false })
           });
 
           return [ ...imvs, ...l.imoveis ];
@@ -135,10 +229,21 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEd
 
             <Col md="6" className={isPaginaEdicao ? "d-none" : ''}>
               <div className="form-group">
+                <label>Localidade?</label>
+                <Select
+                  styles={ selectDefault }
+                  options={ optionLocalidade }
+                  onChange={ option => setLocalidade( option ) }
+                  value={ localidade } />
+              </div>
+            </Col>
+
+            <Col md="6" className={isPaginaEdicao ? "d-none" : ''}>
+              <div className="form-group">
                 <label>Nº do quarteirão?</label>
                 <Select
                   styles={ selectDefault }
-                  options={ optionQuarteirao }
+                  options={ optionQuarteiraoTemp }
                   onChange={ option => props.setQuarteiraoSelect( option ) }
                   value={ selectQuarteirao } />
               </div>
@@ -169,8 +274,10 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEd
                 <input
                   name="sequencia"
                   type="number"
-                  min="0"
+                  min="1"
                   className="form-control"
+                  pattern   ="[0-9]*"
+                  onKeyDown ={ e => [ "e", "E", "+", "-", ".", "," ].includes( e.key ) && e.preventDefault() }
                   value={ sequencia }
                   onChange={ e => setSequencia( e.target.value ) } />
               </div>
@@ -217,11 +324,14 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEd
                 <input
                   name="sequencia"
                   type="number"
-                  min="0"
+                  min="1"
                   className="form-control"
+                  pattern   ="[0-9]*"
+                  onKeyDown ={ e => [ "e", "E", "+", "-", ".", "," ].includes( e.key ) && e.preventDefault() }
                   disabled={ isImovelSelected() ? "" : "disabled" }
                   value={ isImovelSelected() ? ( imovel.sequencia !== null ? imovel.sequencia : "" ) : "" }
-                  onChange={ handleInputImovel } />
+                  onChange={ handleInputImovel } 
+                  />
               </div>
             </Col>
 

@@ -11,6 +11,7 @@ export default class Quarteirao extends Model {
     return {
       id            : null,
       numero        : null,
+      sequencia     : null,
       localidade_id : null,
       zona_id       : null,
       ativo         : true,

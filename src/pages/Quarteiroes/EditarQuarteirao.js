@@ -53,6 +53,7 @@ import { ContainerFixed, PageIcon, PageHeader } from '../../styles/util';
 const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...props }) => {
   const [ id ]                                                = useState( props.match.params.id );
   const [ numero, setNumero ]                                 = useState( null );
+  const [ sequencia, setSequencia ]                           = useState( null );
   const [ lados, setLados ]                                   = useState( [] );
   const [ localidade, setLocalidade ]                         = useState( {} );
   const [ optionLocalidade, setOptionLocalidade ]             = useState( [] );
@@ -194,6 +195,7 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
   const loadInfo = () => {
     if( Object.entries( quarteirao ).length > 0 ) {
       setNumero(quarteirao.numero);
+      setSequencia(quarteirao.sequencia)
       setAtivo( {
         value: quarteirao.ativo,
         label: quarteirao.ativo ? "Sim" : "Não",
@@ -330,6 +332,7 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
     const quarteirao = new Quarteirao( {
       id            : parseInt( id ),
       numero,
+      sequencia     : sequencia == "" ? null : sequencia,    
       localidade_id : localidade.value,
       zona_id       : zona.value,
       ativo         : ativo.value,
@@ -423,6 +426,23 @@ const EditarQuarteirao = ({ imovel, usuario, quarteirao, ruas, municipio_id, ...
                         </FormGroup>
                       </Col>
                       <Col sm="6">
+                        <FormGroup>
+                          <label htmlFor="sequencia">Sequência</label>
+                          <input
+                            id        ="sequencia"
+                            value     ={ sequencia ? sequencia : "" }
+                            type      ="number"
+                            className ="form-control"
+                            pattern   ="[0-9]*"
+                            onKeyDown ={ e => [ "e", "E", "+", "-", "." ].includes( e.key ) && e.preventDefault() }
+                            onChange  ={ e => setSequencia( e.target.value ) }
+                            min       ="1"
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                    <Col sm="6">
                         <FormGroup>
                           <label htmlFor="ativo">
                             Ativo<code>*</code>

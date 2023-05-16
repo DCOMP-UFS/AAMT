@@ -40,7 +40,14 @@ const columns = [
   },
   {
     name: "numero",
-    label: "Quarteirão",
+    label: "Nº",
+    options: {
+      filter: false,
+    },
+  },
+  {
+    name: "sequencia",
+    label: "Seq.",
     options: {
       filter: false,
     },
@@ -131,6 +138,7 @@ const Quarteiroes = ({ quarteiroes, tableSelection, ...props }) => {
       return([
         { index: (index + 1), id: quarteirao.id },
         quarteirao.numero,
+        quarteirao.sequencia,
         quarteirao.localidade.codigo,
         quarteirao.localidade.nome,
         quarteirao.zona ? quarteirao.zona.nome : "",

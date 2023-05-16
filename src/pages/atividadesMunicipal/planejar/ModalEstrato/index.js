@@ -396,7 +396,6 @@ function ListLocaly( props ) {
   )
 
   if( locais && locais.length > 0 ) {
-
     li = locais.map( (l, index) => (
       <LiLocal
         key={ l.id }
@@ -418,7 +417,11 @@ function ListLocaly( props ) {
         <DivDescription>
           <div>
             <span className="mr-2">
-              { l.tipo === "quarteirao" ? `Nº ${ l.nome }` : l.nome }
+              { l.tipo === "quarteirao" ? 
+                  l.sequencia == null ?
+                    `Nº ${ l.nome } - LOC: ${ l.localidade.nome }` :
+                    `Nº ${ l.nome } - SEQ: ${ l.sequencia } - LOC: ${ l.localidade.nome }` 
+                : l.nome }
             </span>
           </div>
         </DivDescription>

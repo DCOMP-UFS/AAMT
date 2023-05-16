@@ -26,10 +26,11 @@ export const getQuarteiroesPorMunicipioSemZonaRequest = data => {
  * @returns {Promisse}
  */
 export const addQuarteiraoRequest = data => {
-  const { numero, localidade_id, zona_id, lados } = data;
+  const { numero, sequencia, localidade_id, zona_id, lados } = data;
 
   return api.post( `/quarteiroes/`, {
     numero,
+    sequencia,
     localidade_id,
     zona_id,
     lados
@@ -54,7 +55,8 @@ export const getLadosQuarteiraoRequest = data => {
 export const setQuarteiraoRequest = data => {
   const { quarteirao }  = data;
   const body            = { 
-    numero        : quarteirao.numero, 
+    numero        : quarteirao.numero,
+    sequencia     : quarteirao.sequencia,
     zona_id       : quarteirao.zona_id, 
     ativo         : quarteirao.ativo ? 1 : 0, 
     quarteirao_id : quarteirao.quarteirao_id, 

@@ -72,6 +72,8 @@ function ModalCadastrarInspecao( {
   codigoMunicipio,
   sequenciaUsuario,
   STATE = INITIAL_STATE,
+  isOpen,
+  handleClose,
   ...props 
 } ) {
   const [ tipoRecipiente, setTipoRecipiente ]       = useState( STATE.tipoRecipiente );
@@ -88,6 +90,26 @@ function ModalCadastrarInspecao( {
   const [ optionsTipoRecipiente ]                   = useState( STATE.optionsTipoRecipiente );
   const [ optionsSimNao ]                           = useState( STATE.optionsSimNao );
   const [ optionsTecnicaTratamento ]                = useState( STATE.optionsTecnicaTratamento );
+
+  function limparCampos(){
+    // Reset state
+    setTipoRecipiente( { value: null, label: null, name: "tipoRecipiente" } );
+    setFl_eliminado( { value: null, label: null, name: "fl_eliminado" } );
+    setFl_tratado( { value: null, label: null, name: "fl_tratado" } );
+    setFl_foco( { value: null, label: null, name: "fl_foco" } );
+    // setNumUnidade( 0 );
+    setUnidade( [] );
+    setSeqAmostra( "" );
+    setQtdTratamento( 0 );
+    setTecnicaTratamento( { value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label } );
+  }
+
+  useEffect(() => {
+    if(isOpen){
+      limparCampos()
+    }
+    handleClose()
+  }, [isOpen]);
 
   useEffect( () => {
     const [ ano, mes, dia ] = data.split( "-" );
@@ -136,6 +158,7 @@ function ModalCadastrarInspecao( {
   function submit() {
     // Validação
     let fl_valido = true;// true -> válido | false -> inválido
+    let fl_semAmostra = false
     
     if( !validInputIsNull( "#tipoRecipiente", tipoRecipiente.value ) ) fl_valido = false;
     if( objetivo === 'LI+T' || objetivo === 'T' ) {
@@ -159,6 +182,11 @@ function ModalCadastrarInspecao( {
       $( '#qtdTratamento' ).parent().find('span.form-label-invalid').remove();
     }
 
+    if(unidade.length == 0 && fl_foco.value){
+      fl_valido = false;
+      fl_semAmostra = true
+    }
+
     /**
      * Verifica a ocorrencia de códigos de amostra
      * que são iguais em um mesmo depósito, em recipientes
@@ -168,7 +196,7 @@ function ModalCadastrarInspecao( {
     const temCodigoDuplicado  = arrayCodigosAmostra.filter( ( item, index ) => arrayCodigosAmostra.indexOf( item ) !== index );
 
     var input_seq_amostra = $( '#row-sequence' ),
-    form_group_amostra    = input_seq_amostra.parent();
+        form_group_amostra    = input_seq_amostra.parent();
 
     let valida_entre_recipiente = true;
 
@@ -236,25 +264,17 @@ function ModalCadastrarInspecao( {
 
       props.addRecipiente( recipiente );
 
-      // Reset state
-      setTipoRecipiente( { value: null, label: null, name: "tipoRecipiente" } );
-      setFl_eliminado( { value: null, label: null, name: "fl_eliminado" } );
-      setFl_tratado( { value: null, label: null, name: "fl_tratado" } );
-      setFl_foco( { value: null, label: null, name: "fl_foco" } );
-      // setNumUnidade( 0 );
-      setUnidade( [] );
-      setSeqAmostra( "" );
-      setQtdTratamento( 0 );
-      setTecnicaTratamento( { value: tecnicaTratamentoEnum.focal.id, label: tecnicaTratamentoEnum.focal.label } );
-
       $( '#modalCadastrarInspecao' ).modal( 'hide' );
     } else {
-      props.showNotifyToast( "Existem campos obrigatórios não preenchidos", "warning" );
+      if(fl_semAmostra)
+        props.showNotifyToast( "Para depositos com foco de mosquito, é necessario cadastrar ao menos uma amostra", "warning" );
+      else
+        props.showNotifyToast( "Existem campos obrigatórios não preenchidos", "warning" );
     }
   }
 
   return (
-    <div id="modalCadastrarInspecao" className="modal fade show" role="dialog">
+    <div id="modalCadastrarInspecao" className="modal fade show" role="dialog" data-backdrop={ "static" }>
       <div className="modal-dialog" role="document">
         <div className="modal-content">
 

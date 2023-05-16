@@ -56,6 +56,24 @@ const columns = [
     }
   },
   {
+    name: "seqQuarteirao",
+    label: "Seq do Quart.",
+    options: {
+      filter: true,
+      align: "left",
+      disablePadding: false
+    }
+  },
+  {
+    name: "Localidade",
+    label: "Localidade",
+    options: {
+      filter: true,
+      align: "left",
+      disablePadding: false
+    }
+  },
+  {
     name: "logradouro",
     label: "Logradouro",
     options: {
@@ -66,7 +84,7 @@ const columns = [
   },
   {
     name: "numero",
-    label: "Nº",
+    label: "Nº do Imóvel",
     options: {
       filter: false,
       align: "left",
@@ -75,7 +93,7 @@ const columns = [
   },
   {
     name: "sequencia",
-    label: "Sequência",
+    label: "Seq do Imóvel",
     options: {
       filter: false,
       align: "left",
@@ -266,6 +284,8 @@ const Vistoria = ( { vistoriasCache, usuario, trabalhoDiario, rota, showNotStart
           vists.push([
             index,
             vistoria.imovel.numeroQuarteirao,
+            vistoria.imovel.sequenciaQuarteirao,
+            vistoria.imovel.localidade,
             vistoria.imovel.logradouro,
             vistoria.imovel.numero,
             vistoria.imovel.sequencia,
@@ -316,8 +336,8 @@ const Vistoria = ( { vistoriasCache, usuario, trabalhoDiario, rota, showNotStart
       let ultimoHorario = ""
       //Procura o horario da ultima vistoria
       rows.forEach( l => {
-        if(l[8] > ultimoHorario)
-          ultimoHorario = l[8]
+        if(l[10] > ultimoHorario)
+          ultimoHorario = l[10]
       } )
       if(ultimoHorario != "")
         setUltimoHorarioVistoria(ultimoHorario)

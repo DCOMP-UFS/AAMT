@@ -456,7 +456,7 @@ export const VisualizarRelatorio = ({ membros, boletimDiarioEquipe, ...props }) 
                 <Bar data={ imoveisTipoData } options={ options } />
                 <Row>
                   <Col md="5">
-                    <small><b>R</b> - Rural </small>
+                    <small><b>R</b> - Residencial </small>
                   </Col>
                   <Col md="5">
                     <small><b>C</b> - Comercial</small>

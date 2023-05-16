@@ -279,7 +279,7 @@ function VisualizarRelatorioDiario({ usuario, vistorias, trabalhoDiario, ...prop
                 <Bar data={ imoveisTipoData } />
                 <Row>
                   <Col md="5">
-                    <small><b>R</b> - Rural </small>
+                    <small><b>R</b> - Residencial </small>
                   </Col>
                   <Col md="5">
                     <small><b>C</b> - Comercial</small>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Select from 'react-select';
 import { connect } from 'react-redux';
 import { FaChartPie } from 'react-icons/fa';
 import Bar from '../../../components/Charts/Bar';
@@ -12,7 +13,7 @@ import { getBoletimAtividadeRequest } from '../../../store/Relatorio/relatorioAc
 // STYLES
 import { Container } from './styles';
 import { PageIcon, PageHeader, InfoBox } from '../../../styles/util';
-import { Color } from '../../../styles/global';
+import { Color, selectDefault } from '../../../styles/global';
 
 const initVar = {
   imoveisTipoData: {
@@ -118,6 +119,14 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
   const [ quarteiroesTrabalhados, setQuarteiroesTrabalhados ] = useState( [] );
   const [ quarteiroesAedesAegypti, setQuarteiroesAedesAegypti ] = useState( [] );
   const [ quarteiroesAedesAlbopictus, setQuarteiroesAedesAlbopictus ] = useState( [] );
+  const [ optionsLocalidade, setOptionsLocalidade ] = useState( [{ value: -1, label: 'Todas' }] )
+  const [ localidade, setLocalidade ] = useState( { value: -1, label: 'Todas' } )
+
+  const [qrtConcluidoTotal, setQrtConcluidoTotal]  = useState( [] );
+  const [qrtConcluidosPendenciaTotal, setQrtConcluidosPendenciaTotal] = useState( [] );
+  const [qrtTrabalhadosTotal, setQrtTrabalhadosTotal] = useState( [] );
+  const [qrtAegyptiTotal, setQrtAegyptiTotal] = useState( [] );
+  const [qrtAlbopictustTotal, setQrtAlbopictustTotal] = useState( [] );
 
   function sliceIntoSubArrays (array, size) {
     const res = [];
@@ -153,6 +162,19 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
       const qrt_pstv_aegypti = boletimAtividade.quarteiroesPositivos.aedesAegypti;
       const qrt_pstv_albopictus = boletimAtividade.quarteiroesPositivos.aedesAlbopictus;
 
+      setQrtConcluidoTotal(qrt_concluidos)
+      setQrtConcluidosPendenciaTotal(qrt_concluidosPendencia)
+      setQrtTrabalhadosTotal(qrt_trabalhados)
+      setQrtAegyptiTotal(qrt_pstv_aegypti)
+      setQrtAlbopictustTotal(qrt_pstv_albopictus)
+
+      let listaLocalidades = [{ value: -1, label: 'Todas' }]
+      listaLocalidades = addLocalidadesUnicas(listaLocalidades, qrt_trabalhados)
+      listaLocalidades = addLocalidadesUnicas(listaLocalidades, qrt_concluidos)
+      listaLocalidades = addLocalidadesUnicas(listaLocalidades, qrt_concluidosPendencia)
+
+      setOptionsLocalidade(listaLocalidades)
+      
       setQuarteiroesTrabalhados( sliceIntoSubArrays(qrt_trabalhados, 10) );
       setQuarteiroesConcluidos( sliceIntoSubArrays(qrt_concluidos, 10) );
       setQuarteiroesConcluidosPendencia( sliceIntoSubArrays(qrt_concluidosPendencia, 10) );
@@ -216,6 +238,49 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
       setDepositosTipoData( dTipoData );
     }
   }, [ boletimAtividade ]);
+
+  useEffect(() => {
+    if(localidade.value != -1){
+      const newQuarteiroesTrabalhados = qrtTrabalhadosTotal.filter( q => q.localidade_id == localidade.value)
+      const newQuarteiroesConcluidos = qrtConcluidoTotal.filter( q => q.localidade_id == localidade.value)
+      const newQuarteiroesConcluidosPendencia = qrtConcluidosPendenciaTotal.filter( q => q.localidade_id == localidade.value)
+      const newQuarteiroesAedesAegypti = qrtAegyptiTotal.filter( q => q.localidade_id == localidade.value)
+      const newQuarteiroesAedesAlbopictus = qrtAlbopictustTotal.filter( q => q.localidade_id == localidade.value)
+      
+
+      setQuarteiroesTrabalhados( sliceIntoSubArrays(newQuarteiroesTrabalhados, 10) );
+      setQuarteiroesConcluidos( sliceIntoSubArrays(newQuarteiroesConcluidos, 10) );
+      setQuarteiroesConcluidosPendencia( sliceIntoSubArrays(newQuarteiroesConcluidosPendencia, 10) );
+      setQuarteiroesAedesAegypti( sliceIntoSubArrays(newQuarteiroesAedesAegypti, 10) );
+      setQuarteiroesAedesAlbopictus( sliceIntoSubArrays(newQuarteiroesAedesAlbopictus, 10) );
+    }
+    else{
+      setQuarteiroesTrabalhados( sliceIntoSubArrays(qrtTrabalhadosTotal, 10) );
+      setQuarteiroesConcluidos( sliceIntoSubArrays(qrtConcluidoTotal, 10) );
+      setQuarteiroesConcluidosPendencia( sliceIntoSubArrays(qrtConcluidosPendenciaTotal, 10) );
+      setQuarteiroesAedesAegypti( sliceIntoSubArrays(qrtAegyptiTotal, 10) );
+      setQuarteiroesAedesAlbopictus( sliceIntoSubArrays(qrtAlbopictustTotal, 10) );
+    }
+  }, [localidade]);
+
+  //Adiconar localidades não repetidas na lista localidades
+  function addLocalidadesUnicas( listaLocalidades, listaQuarteiroes ){
+
+    listaQuarteiroes.forEach( q => {
+      let localidadeRepetida = false
+
+      for( const loc of listaLocalidades ) {
+        if( loc.value == q.localidade_id ){
+          localidadeRepetida = true
+          break;
+        }
+      }
+      if(!localidadeRepetida)
+        listaLocalidades.push({ value: q.localidade_id, label: q.localidade_nome })
+    });
+
+    return listaLocalidades
+  }
 
   return (
     <Container>
@@ -371,6 +436,14 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
             <article className="p-0">
               <div className="card">
                 <h2 className="title">Nº dos quarteirões para serem trabalhados</h2>
+                <div className="form-group" style={{ marginTop: "15px", width:"200px"}}>
+                  <label>Localidade:</label>
+                  <Select
+                    styles={ selectDefault }
+                    options={ optionsLocalidade }
+                    onChange={ option => setLocalidade( option ) }
+                    value={ localidade } />
+                </div>
                 <table className="table table-striped table-hover">
                   <thead className="thead-dark">
                     <tr>
@@ -392,7 +465,10 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
                         <tr key={ 'qrt-trab-' + index }>
                           {
                             row.map( ( quarteirao, index ) => (
-                              <td>{quarteirao}</td>
+                              quarteirao.sequencia == null ?
+                                <td>{quarteirao.numero}</td>
+                              :
+                                <td>{quarteirao.numero} / {quarteirao.sequencia}</td>
                             ) )
                           }
                         </tr>
@@ -407,6 +483,14 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
             <article className="p-0">
               <div className="card">
                 <h2 className="title">Nº dos quarteirões concluídos</h2>
+                <div className="form-group" style={{ marginTop: "15px", width:"200px"}}>
+                  <label>Localidade:</label>
+                  <Select
+                    styles={ selectDefault }
+                    options={ optionsLocalidade }
+                    onChange={ option => setLocalidade( option ) }
+                    value={ localidade } />
+                </div>
                 <table className="table table-striped table-hover">
                   <thead className="thead-dark">
                     <tr>
@@ -428,7 +512,10 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
                         <tr key={ 'qrt-conc-' + index }>
                           {
                             row.map( ( quarteirao, index ) => (
-                              <td>{quarteirao}</td>
+                              quarteirao.sequencia == null ?
+                                <td>{quarteirao.numero}</td>
+                              :
+                                <td>{quarteirao.numero} / {quarteirao.sequencia}</td>
                             ) )
                           }
                         </tr>
@@ -443,6 +530,14 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
             <article className="p-0">
               <div className="card">
                 <h2 className="title">Nº dos quarteirões concluídos com pendência</h2>
+                <div className="form-group" style={{ marginTop: "15px", width:"200px"}}>
+                  <label>Localidade:</label>
+                  <Select
+                    styles={ selectDefault }
+                    options={ optionsLocalidade }
+                    onChange={ option => setLocalidade( option ) }
+                    value={ localidade } />
+                </div>
                 <table className="table table-striped table-hover">
                   <thead className="thead-dark">
                     <tr>
@@ -464,7 +559,10 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
                         <tr key={ 'qrt-conc-' + index }>
                           {
                             row.map( ( quarteirao, index ) => (
-                              <td>{quarteirao}</td>
+                              quarteirao.sequencia == null ?
+                                <td>{quarteirao.numero}</td>
+                              :
+                                <td>{quarteirao.numero} / {quarteirao.sequencia}</td>
                             ) )
                           }
                         </tr>
@@ -620,6 +718,14 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
             <article className="p-0">
               <div className="card">
                 <h2 className="title">Nº dos quarteirões com Aedes aegypti</h2>
+                <div className="form-group" style={{ marginTop: "15px", width:"200px"}}>
+                  <label>Localidade:</label>
+                  <Select
+                    styles={ selectDefault }
+                    options={ optionsLocalidade }
+                    onChange={ option => setLocalidade( option ) }
+                    value={ localidade } />
+                </div>
                 <table className="table table-striped table-hover">
                   <thead className="thead-dark">
                     <tr>
@@ -641,7 +747,10 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
                         <tr key={ 'qrt-pos-aedes-' + index }>
                           {
                             row.map( ( quarteirao, index ) => (
-                              <td>{quarteirao}</td>
+                              quarteirao.sequencia == null ?
+                                <td>{quarteirao.numero}</td>
+                              :
+                                <td>{quarteirao.numero} / {quarteirao.sequencia}</td>
                             ) )
                           }
                         </tr>
@@ -656,6 +765,14 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
             <article className="p-0">
               <div className="card">
                 <h2 className="title">Nº dos quarteirões com Aedes albopictus</h2>
+                <div className="form-group" style={{ marginTop: "15px", width:"200px"}}>
+                  <label>Localidade:</label>
+                  <Select
+                    styles={ selectDefault }
+                    options={ optionsLocalidade }
+                    onChange={ option => setLocalidade( option ) }
+                    value={ localidade } />
+                </div>
                 <table className="table table-striped table-hover">
                   <thead className="thead-dark">
                     <tr>
@@ -677,7 +794,10 @@ export const VisualizarRelatorio = ({ boletimAtividade, ...props }) => {
                         <tr key={ 'qrt-pos-aedes-' + index }>
                           {
                             row.map( ( quarteirao, index ) => (
-                              <td>{quarteirao}</td>
+                              quarteirao.sequencia == null ?
+                                <td>{quarteirao.numero}</td>
+                              :
+                                <td>{quarteirao.numero} / {quarteirao.sequencia}</td>
                             ) )
                           }
                         </tr>

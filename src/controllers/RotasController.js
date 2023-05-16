@@ -18,7 +18,8 @@ const Municipio       = require('../models/Municipio');
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
-const checkBlockSituation = require('../util/checkBlockSituation');
+const checkBlockSituationPNCD = require('../util/checkBlockSituationPNCD');
+const checkBlockSituationLIRAa = require('../util/checkBlockSituationLIRAa');
 
 /**
  * Consulta a rota de trabalho de um agente em 
@@ -869,9 +870,28 @@ endRoute = async ( req, res ) => {
         status: 'error',
         mensage: 'Falha ao tentar finalizara rota, por favor, aguarde e tente novamente.'
       });
+    
+    const metodologiaAtividade = await Equipe.findByPk(td.dataValues.equipe_id, {
+      include: [
+        {
+          association: 'atividade',
+          include:{
+            association: 'metodologia'
+          }
+        }
+      ]
+    }).then( equipe => {
+      return equipe.atividade.metodologia;
+    })
 
-    // Atualizando a situação dos quarteirões
-    await checkBlockSituation( trabalhoDiario_id );
+    if(metodologiaAtividade.dataValues.sigla == "PNCD"){
+      // Atualizando a situação dos quarteirões de acordo com o PNCD
+      await checkBlockSituationPNCD( trabalhoDiario_id );
+    }
+    else if(metodologiaAtividade.dataValues.sigla == "LIRAa"){
+      // Atualizando a situação dos quarteirões de acordo com o LIRAa
+      await checkBlockSituationLIRAa( trabalhoDiario_id );
+    }
     
     return res.json( { 
       status: 'success',
@@ -939,6 +959,19 @@ isStarted = async ( req, res ) => {
 const getOpenRouteByTeam = async ( req, res ) => {
   try{
     const { equipe_id } = req.params;
+
+    const metodologiaAtividade = await Equipe.findByPk(equipe_id, {
+      include: [
+        {
+          association: 'atividade',
+          include:{
+            association: 'metodologia'
+          }
+        }
+      ]
+    }).then( equipe => {
+      return equipe.atividade.metodologia;
+    })
 
     // Consultando quarteirões de responsabilidade da equipe.
     const quarteirao_equipe = await Equipe.findByPk(equipe_id, {
@@ -1058,6 +1091,36 @@ const getOpenRouteByTeam = async ( req, res ) => {
               //Quantidades de vistorias com pendencia em imoveis não repetidos
               const pendenciaTotal = pendencia[ 1 ].rows.length
               
+             
+              /*
+                  variavel que armazena situação de uma lado do quarteirão
+
+                  Situacao do lado
+                    1 - Em Aberto
+                    2 - Fazendo
+                    3 - Concluído
+                    4 - Planejado
+                    5 - Concluído com pendência
+                */
+              let sitLado = 1
+
+              if(metodologiaAtividade.dataValues.sigla == "PNCD"){
+                sitLado = row.imoveis === row.vistorias ? 3 : row.imoveis <= row.vistorias + pendenciaTotal ? 5 : ( row.vistorias + pendenciaTotal > 0 ? 2 : 1 )
+              }
+              else if(metodologiaAtividade.dataValues.sigla == "LIRAa"){
+                //No LIRAa não são vistoriados todos os imoveis do lado, ao terminar de vistoriar um imovel, o agente pula os 4 imoveis seguintes
+                //e vistoria o 5º. Esse processo continua até ele chegar no final do lado
+
+                //No caso do numero de imoveis do lado dividido por 5 gerar resto, significa que
+                //existe um imovel a mais que deve ser vistoriado
+                const imovelExcedente = row.imoveis % 5 > 0 ? 1 : 0
+
+                //Variavel que armazena a quantidade de imoveis que devem ser vistorados, para que o lado
+                //seja considerado com situação concluida
+                const numeroImoveisNecessarios = Math.floor(row.imoveis / 5) + imovelExcedente
+
+                sitLado = numeroImoveisNecessarios <= row.vistorias ? 3 :( row.vistorias > 0 ? 2 : 1 )
+              }
 
               quarteirao.lados.push( {
                 id: row.lado_id,
@@ -1072,15 +1135,7 @@ const getOpenRouteByTeam = async ( req, res ) => {
                 },
                 imoveis: row.imoveis,
                 vistorias: row.vistorias,
-                /*
-                  Situacao do lado
-                    1 - Em Aberto
-                    2 - Fazendo
-                    3 - Concluído
-                    4 - Planejado
-                    5 - Concluído com pendência
-                */
-                situacao: row.imoveis === row.vistorias ? 3 : row.imoveis <= row.vistorias + pendenciaTotal ? 5 : ( row.vistorias + pendenciaTotal > 0 ? 2 : 1 )
+                situacao: sitLado
               } );
             }
           }

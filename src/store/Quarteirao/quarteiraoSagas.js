@@ -30,6 +30,28 @@ export function* getQuarteiroes( action ) {
   }
 }
 
+export function* getQuarteiroesByLocality( action ) {
+  try {
+    const { data, status } = yield call( service.getQuarteiroesPorLocalidadeRequest, action.payload );
+
+    if( status === 200 ) {
+      yield put( QuarteiraoActions.setQuarteiroes( data ) );
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Falha ao consultar quarteirões da localidade: " + status, "error" ) );
+    }
+
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar quarteirões da localidade, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar quarteirões da localidade, favor verifique a conexão", "error" ) );
+  }
+}
+
 /**
  * Solicita ao service os quarteirões de um município que não estão em nenhuma zona
  * @param {Object} action 
@@ -276,6 +298,10 @@ function* watchGetQuarteiroes() {
   yield takeLatest( QuarteiraoActions.ActionTypes.GET_QUARTEIROES_MUNICIPIO_REQUEST, getQuarteiroes );
 }
 
+function* watchGetQuarteiroesByLocality() {
+  yield takeLatest( QuarteiraoActions.ActionTypes.GET_QUARTEIROES_LOCALIDADE_REQUEST, getQuarteiroesByLocality );
+}
+
 function* watchGetQuarteiroesSemZona() {
   yield takeLatest( QuarteiraoActions.ActionTypes.GET_QUARTEIROES_MUNICIPIO_SEM_ZONA_REQUEST, getQuarteiroesSemZona );
 }
@@ -314,6 +340,7 @@ function* watchRemoverQuarteiraoEmZona() {
 export function* quarteiraoSaga() {
   yield all( [
     watchGetQuarteiroes(),
+    watchGetQuarteiroesByLocality(),
     watchGetQuarteiroesSemZona(),
     watchGetLadosQuarteirao(),
     watchSetQuarteirao(),

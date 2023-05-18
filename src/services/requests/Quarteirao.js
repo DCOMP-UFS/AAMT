@@ -13,6 +13,14 @@ export const getQuarteiroesPorMunicipioRequest = data => {
   } );
 }
 
+export const getQuarteiroesPorLocalidadeRequest = data => {
+  const { localidade_id, ativo } = data;
+  const where = ativo === true ? '?ativo=1' : ativo === false ? '?ativo=0' : '';
+  return api.get( `/quarteiroes/${ localidade_id }/localidades${ where }`, {
+    ...headerAuthorization()
+  } );
+}
+
 export const getQuarteiroesPorMunicipioSemZonaRequest = data => {
   const { municipio_id } = data;
   return api.get( `/quarteiroes/semZona/${ municipio_id }/municipios`, {

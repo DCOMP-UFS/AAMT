@@ -1,5 +1,6 @@
 export const ActionTypes = {
   GET_QUARTEIROES_MUNICIPIO_REQUEST           : "GET_QUARTEIROES_MUNICIPIO_REQUEST",
+  GET_QUARTEIROES_LOCALIDADE_REQUEST          : "GET_QUARTEIROES_LOCALIDADE_REQUEST",
   GET_QUARTEIROES_MUNICIPIO_SEM_ZONA_REQUEST  : "GET_QUARTEIROES_MUNICIPIO_SEM_ZONA_REQUEST",
   SET_QUARTEIROES                             : "SET_QUARTEIROES",
   GET_LADOS_QUARTEIRAO                        : "GET_LADOS_QUARTEIRAO",
@@ -94,6 +95,16 @@ export const getQuarteiroesMunicipioRequest = ( municipio_id, ativo = undefined 
     type: ActionTypes.GET_QUARTEIROES_MUNICIPIO_REQUEST,
     payload: {
       municipio_id,
+      ativo
+    }
+  }
+}
+
+export const getQuarteiroesLocalidadeRequest = ( localidade_id, ativo = undefined ) => {
+  return {
+    type: ActionTypes.GET_QUARTEIROES_LOCALIDADE_REQUEST,
+    payload: {
+      localidade_id,
       ativo
     }
   }

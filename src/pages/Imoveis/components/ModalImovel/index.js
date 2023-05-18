@@ -12,8 +12,9 @@ import $ from 'jquery';
 
 // ACTIONS
 import { showNotifyToast } from '../../../../store/AppConfig/appConfigActions';
-import { getQuarteiroesMunicipioRequest, getLadosQuarteiraoRequest } from '../../../../store/Quarteirao/quarteiraoActions';
+import { getQuarteiroesLocalidadeRequest, getLadosQuarteiraoRequest } from '../../../../store/Quarteirao/quarteiraoActions';
 import { addImovelRequest, editarImovelRequest, clearCreate, clearUpdate } from '../../../../store/Imovel/imovelActions';
+import { getLocationByCityRequest } from '../../../../store/Localidade/localidadeActions';
 
 // STYLES
 import { Button, FormGroup, selectDefault } from '../../../../styles/global';
@@ -21,7 +22,7 @@ import { Button, FormGroup, selectDefault } from '../../../../styles/global';
 // VALIDATIONS FUNCTIONS
 import {onlyLetters} from '../../../../config/function';
 
-export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, isOpen, handleClose, ...props }) => {
+export const ModalImovel = ({ lados, localidades, quarteiroes, usuario, imovel, isOpen, handleClose, ...props }) => {
   const [ imovel_id, setImovelId ]                = useState( null );
   const [ numero, setNumero ]                     = useState( null );
   const [ sequencia, setSequencia ]               = useState( null );
@@ -33,6 +34,8 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, isOpen, handl
   const [ optionLado, setOptionLado ]             = useState( [] );
   const [ quarteirao, setQuarteirao ]             = useState( {} );
   const [ optionQuarteirao, setOptionQuarteirao ] = useState( [] );
+  const [ localidade, setLocalidade ]             = useState( {} );
+  const [ optionLocalidade, setOptionLocalidade ] = useState( [] );
   const [ loading, setLoading ]                   = useState( false );
   const [ clss, setClss ]                         = useState( [] );
   const [ reload, setReload ]                     = useState( false );
@@ -51,6 +54,7 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, isOpen, handl
   const [ marcador, setMarcador ]                 = useState( {} );
   const [ flRecoverInputs, setFlRecoverInputs ]   = useState( true );
   const [ flLoading, setFlLoading ]               = useState( false );
+  const [ editJustOpened, setEditJustOpened ]       = useState( false );
 
   useEffect(() => {
     if(isOpen){
@@ -65,19 +69,48 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, isOpen, handl
   }, [isOpen]);
 
   useEffect(() => {
-    props.getQuarteiroesMunicipioRequest( usuario.municipio.id, true );
+    props.getLocationByCityRequest( usuario.municipio.id );
   }, []);
 
   useEffect(() => {
-    setOptionQuarteirao( quarteiroes.map( q => ( { value: q.id, label: q.numero } ) ) );
+    setOptionLocalidade( localidades.map( loc => ( { value: loc.id, label: loc.nome } ) ) );
+  }, [ localidades ]);
+
+  useEffect(() => {
+    if( localidade.value ){
+      
+      //
+      if(Object.entries( imovel ).length == 0 || editJustOpened == false){
+        setOptionLado([])
+        setLado({})
+        setQuarteirao({})
+      }
+      setEditJustOpened(false)
+      props.getQuarteiroesLocalidadeRequest( localidade.value, true );
+    }
+  }, [ localidade ]);
+
+  useEffect(() => {
+    setOptionQuarteirao( quarteiroes.map( q => 
+      {
+        if(q.sequencia == null){
+          return  ( { value: q.id, label: q.numero } ) 
+        }
+        else
+          return  ( { value: q.id, label: q.numero+" - SEQ: "+q.sequencia } ) 
+      }
+      
+      ) );
   }, [ quarteiroes ]);
 
+  //UseEffect acionado quando o modal é usado como edição de um imovel ja cadastrado
+  //É aqui que são setados os dados do imovel nos campos.
   useEffect(() => {
     if( Object.entries( imovel ).length > 0 ) {
       const tipo = tipoImovelEnum.find( tipo => tipo.id === imovel.tipoImovel );
 
-      props.getLadosQuarteiraoRequest( imovel.quarteirao.numero );
-      setLoading( true );
+      //Evita que
+      setEditJustOpened(true)
 
       setImovelId( imovel.id );
       setNumero( imovel.numero );
@@ -85,8 +118,13 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, isOpen, handl
       setResponsavel( imovel.responsavel );
       setComplemento( imovel.complemento );
       setTipoImovel( { value: tipo.id, label: tipo.label } );
-      setQuarteirao( { value: imovel.quarteirao.id, label: imovel.quarteirao.numero } );
-      setLado( { value: imovel.lado_id, label: imovel.logradouro } );
+      setLocalidade ( { value: imovel.localidade.id, label: imovel.localidade.nome } )
+      setQuarteirao( 
+        imovel.quarteirao.sequencia == null ? 
+        { value: imovel.quarteirao.id, label: imovel.quarteirao.numero } :
+        { value: imovel.quarteirao.id, label: imovel.quarteirao.numero+" - SEQ: "+imovel.quarteirao.sequencia }
+      );
+      setLado( { value: imovel.lado_id, label: "Nº "+imovel.lado_numero+" - "+imovel.logradouro  } );
       setLng( imovel.lng ? imovel.lng : "" );
       setLat( imovel.lat ? imovel.lat : "" );
       setLocalizacao( imovel.lng && imovel.lat ? `{ ${ imovel.lng }, ${ imovel.lat } }` : "" );
@@ -135,10 +173,7 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, isOpen, handl
   }, [ quarteirao ]);
 
   useEffect(() => {
-    const options = lados.map( l => ( { value: l.id, label: l.rua.nome } ) );
-
-    loading ? setLoading( false ) : setLado( {} );
-
+    const options = lados.map( l => ( { value: l.id, label: "Nº "+l.numero+" - "+l.rua.nome } ) );
     setOptionLado( options );
   }, [ lados ]);
 
@@ -154,6 +189,7 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, isOpen, handl
     setComplemento( '' );
     setTipoImovel( {} );
     setQuarteirao( {} );
+    setOptionQuarteirao( [] )
     setLado( {} );
     setLng( "" );
     setLat( "" );
@@ -161,6 +197,7 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, isOpen, handl
     setMarcador( {} );
     setClss([]);
     setFlLocValido(true)
+    setLocalidade({})
   }
 
   const limparClss = index => {
@@ -320,6 +357,20 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, isOpen, handl
           <Row>
             <Col md="12">
               <FormGroup>
+                <label htmlFor="localidade">Localidade<code>*</code></label>
+                <Select
+                  id="localidade"
+                  className={ clss[ 'localidade' ] }
+                  onBlur={ () => limparClss( 'localidade' ) }
+                  value={ localidade }
+                  styles={ selectDefault }
+                  options={ optionLocalidade }
+                  onChange={ e => setLocalidade( e ) }
+                />
+              </FormGroup>
+            </Col>
+            <Col md="12">
+              <FormGroup>
                 <label htmlFor="quarteirao">Quarteirão<code>*</code></label>
                 <Select
                   id="quarteirao"
@@ -329,12 +380,13 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, isOpen, handl
                   styles={ selectDefault }
                   options={ optionQuarteirao }
                   onChange={ e => setQuarteirao( e ) }
+                  isDisabled={ optionQuarteirao.length === 0 }
                 />
               </FormGroup>
             </Col>
             <Col md="12">
               <FormGroup>
-                <label htmlFor="lado">Logradouro<code>*</code></label>
+                <label htmlFor="lado">Lado<code>*</code></label>
                 <Select
                   id="lado"
                   className={ clss[ 'lado' ] }
@@ -519,6 +571,7 @@ export const ModalImovel = ({ lados, quarteiroes, usuario, imovel, isOpen, handl
 
 const mapStateToProps = state => ({
   usuario     : state.appConfig.usuario,
+  localidades : state.localidade.localidades,
   imovel      : state.imovel.imovel,
   reload      : state.imovel.reload,
   quarteiroes : state.quarteirao.quarteiroes,
@@ -528,7 +581,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = {
-  getQuarteiroesMunicipioRequest,
+  getLocationByCityRequest,
+  getQuarteiroesLocalidadeRequest,
   getLadosQuarteiraoRequest,
   addImovelRequest,
   editarImovelRequest,

@@ -20,8 +20,22 @@ import { PageIcon, PageHeader } from '../../styles/util';
 
 const columns = [
   {
-    name: "quarteirao",
-    label: "Quarteirão",
+    name: "quarteiraoNumero",
+    label: "Nº quart.",
+    options: {
+      filter: true
+    }
+  },
+  {
+    name: "quarteiraoSequencia",
+    label: "Sequencia quart.",
+    options: {
+      filter: true
+    }
+  },
+  {
+    name: "localidade",
+    label: "Localidade",
     options: {
       filter: true
     }
@@ -35,21 +49,14 @@ const columns = [
   },
   {
     name: "numero",
-    label: "Nº",
+    label: "Nº imóvel",
     options: {
       filter: false
     }
   },
   {
     name: "sequencia",
-    label: "Sequência",
-    options: {
-      filter: false
-    }
-  },
-  {
-    name: "responsavel",
-    label: "Responsável",
+    label: "Sequência imóvel",
     options: {
       filter: false
     }
@@ -128,10 +135,11 @@ export const Imoveis = ({ imoveis, usuario, ...props }) => {
 
       r = imoveis.map( ( imovel, index ) => ([
         imovel.quarteirao.numero,
+        imovel.quarteirao.sequencia,
+        imovel.localidade.nome,
         imovel.logradouro,
         imovel.numero,
         imovel.sequencia,
-        imovel.responsavel,
         tipoImovelEnum.find( tipo => tipo.id === imovel.tipoImovel ).label,
         imovel.ativo ? 'Ativo' : 'Inativo',
         imovel.complemento,

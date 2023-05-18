@@ -5,6 +5,7 @@ const Lado            = require(  '../models/Lado' );
 const Quarteirao      = require(  '../models/Quarteirao' );
 const Rua             = require(  '../models/Rua' );
 const Vistoria = require('../models/Vistoria');
+const Localidade = require('../models/Localidade')
 const { Op } = require("sequelize");
 
 getImoveisMunicipio = async ( req, res ) => {
@@ -15,9 +16,13 @@ getImoveisMunicipio = async ( req, res ) => {
       'SELECT ' +
         'i.*, ' +
         'l.id as "lado_id", ' +
+        'l.numero as "lado_numero", ' +
         'r.nome as "logradouro", ' +
         'q.id as "quarteirao_id", ' +
-        'q.numero as "quarteirao_numero" ' +
+        'q.numero as "quarteirao_numero", ' +
+        'q.sequencia as "quarteirao_sequencia", '+
+        'loc.id as "localidade_id", '+
+        'loc.nome as "localidade_nome" '+
       'FROM ' +
         'imoveis as i ' +
         'JOIN lados as l ON( i.lado_id = l.id ) ' +
@@ -44,6 +49,7 @@ getImoveisMunicipio = async ( req, res ) => {
       complemento: i.complemento,
       tipoImovel: i.tipo_imovel,
       lado_id: i.lado_id,
+      lado_numero: i.lado_numero,
       createdAt: i.created_at,
       updatedAt: i.updated_at,
       lat: i.lat,
@@ -52,7 +58,12 @@ getImoveisMunicipio = async ( req, res ) => {
       logradouro: i.logradouro,
       quarteirao: {
         id: i.quarteirao_id,
-        numero: i.quarteirao_numero
+        numero: i.quarteirao_numero,
+        sequencia: i.quarteirao_sequencia
+      },
+      localidade: {
+        id: i.localidade_id,
+        nome: i.localidade_nome
       }
     }));
 
@@ -124,15 +135,22 @@ store = async ( req, res ) => {
       lat
     }).then( async imovel => {
       const quarteirao  = await Quarteirao.findByPk( lado.quarteirao_id );
+      const localidade  = await Localidade.findByPk ( quarteirao.localidade_id ) 
       const rua         = await Rua.findByPk( lado.rua_id );
 
       return ({
         ...imovel.dataValues,
         lado_id: lado.id,
+        lado_numero: lado.numero,
         logradouro: rua.nome,
         quarteirao: {
           id: quarteirao.id,
-          numero: quarteirao.numero
+          numero: quarteirao.numero,
+          sequencia: quarteirao.sequencia,
+        },
+        localidade:{
+          id: localidade.id,
+          nome: localidade.nome
         }
       });
     });
@@ -205,15 +223,22 @@ update = async ( req, res ) => {
 
     imovel = await Imovel.findByPk( id );
     const quarteirao  = await Quarteirao.findByPk( lado.quarteirao_id );
+    const localidade  = await Localidade.findByPk ( quarteirao.localidade_id ) 
     const rua         = await Rua.findByPk( lado.rua_id );
 
     const result = {
       ...imovel.dataValues,
       lado_id: lado.id,
+      lado_numero: lado.numero,
       logradouro: rua.nome,
       quarteirao: {
         id: quarteirao.id,
-        numero: quarteirao.numero
+        numero: quarteirao.numero,
+        sequencia: quarteirao.sequencia,
+      },
+      localidade:{
+        id: localidade.id,
+        nome: localidade.nome
       }
     }
 

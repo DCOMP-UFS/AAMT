@@ -164,6 +164,8 @@ getBlockByCity = async (req, res) => {
       quarteirao = [ ...localidade.quarteiroes, ...quarteirao ];
     });
 
+    quarteirao.sort( (a,b) => a.numero - b.numero)
+
     return res.json( quarteirao );
   } catch (error) {
     return res.status( 400 ).send( { 
@@ -172,6 +174,61 @@ getBlockByCity = async (req, res) => {
     } );
   }
 }
+
+getBlockByLocality = async (req, res) => {
+  try{
+    const { localidade_id }  = req.params;
+    const onde        = req.query.ativo == '1' || req.query.ativo == '0' ? 
+      { ativo: parseInt( req.query.ativo ), localidade_id: localidade_id } : 
+      { localidade_id: localidade_id };
+
+    const quarteiroes = await Quarteirao.findAll({
+      where: onde,
+      include: [
+        {
+          association: 'localidade',
+          attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+        },
+        {
+          association: 'zona',
+          attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+        }
+      ]
+      
+    });
+
+
+    if( !quarteiroes ) {
+      return res.status(400).json({ error: "Localidade informada não existe" });
+    }
+
+    let result = []
+    if(quarteiroes.length > 0)
+      result = [ ...quarteiroes];
+    
+    result.sort( (a,b) => {
+      if( a.numero != b.numero || a.sequencia == null && b.sequencia == null)
+        return a.numero - b.numero
+      else{
+        if( a.sequencia != null && b.sequencia != null)
+          return  a.sequencia - b.sequencia
+        else if( a.sequencia == null)
+          return -1
+        else {
+          return 1
+        }
+      }
+    })
+
+    return res.json( result );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
+}
+
 
 const createSide = async (numero, quarteirao_id, rua_id) => {
   const lado = await Lado.create({ numero, quarteirao_id, rua_id });
@@ -798,6 +855,7 @@ router.use( authMiddleware );
 router.get( '/:id', index );
 router.get(  '/lados/:id', getLadosQuarteirao  );
 router.get( '/:municipio_id/municipios', getBlockByCity );
+router.get( '/:localidade_id/localidades', getBlockByLocality );
 router.get( '/semZona/:municipio_id/municipios', getBlockByCityWithouZone );
 router.post( '/', store );
 router.put( '/:id/desativar', disabled );

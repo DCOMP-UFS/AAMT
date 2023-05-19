@@ -190,6 +190,7 @@ export const SelecionarQuarteiroes = ( { fl_loading, indexEquipe, indexMembro, r
                 value={ metodoFiltragem }
                 options={ optionsMetodoFiltragem }
                 onChange={ e => setMetodoFiltragem(e) }
+                isDisabled={ fl_loading }
               />
             </Col>
             <Col className={ metodoFiltragem.value == 1 ? "" : "d-none"}  md="3">

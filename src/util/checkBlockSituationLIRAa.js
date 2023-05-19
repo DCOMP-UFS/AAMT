@@ -58,137 +58,7 @@ module.exports = async trabalho_diario_id => {
   // Seleciona o estrato
   const estrato = await Estrato.findByPk(estrato_id)
 
-
-  for( let quarteirao_id of lista_quarteiroes_id){
-
-    //Acha todos os lados do quarteirao e diz quantos imoveis cada um tem
-    let sql_lados_quarteirao = 
-    'SELECT ' +
-      ' l.id, '+
-      ' count( i.*) as qtd_imoveis '+
-    'FROM lados as l '+
-    'JOIN quarteiroes as q ON (q.id = l.quarteirao_id) '+
-    'JOIN imoveis as i ON (i.lado_id = l.id) '+
-    'WHERE i.tipo_imovel != 4 '+
-    'AND q.id = '+quarteirao_id+' '+
-    'GROUP BY l.id';
-
-    const lados_imoveis = await Lado.sequelize.query( sql_lados_quarteirao )
-    const lados_imoveis_map = lados_imoveis[ 1 ].rows.map( l => ({id:l.id, qtdImoveis: l.qtd_imoveis}) );
-
-    //Acha todos os lados do quarteirao e diz quantos quantas vistorias foram feitas cada um
-    let sql_lados_vistorias = 
-    'SELECT ' +
-      ' l.id, '+
-      ' count( v.*) as qtd_vistorias '+
-    'FROM lados as l '+
-    'JOIN quarteiroes as q ON (q.id = l.quarteirao_id) '+
-    'JOIN imoveis as i ON (i.lado_id = l.id) '+
-    'JOIN vistorias as v ON (v.imovel_id = i.id) '+
-    'JOIN trabalhos_diarios as td ON (v.trabalho_diario_id = td.id) ' +
-    'JOIN equipes as eq ON (td.equipe_id = eq.id) ' +
-    'JOIN atividades as atv ON (eq.atividade_id = atv.id) ' +
-    'WHERE i.tipo_imovel != 4 '+
-    'AND q.id = '+quarteirao_id+ ' '+
-    'AND atv.id = '+atividade_id+' '+
-    'AND v.pendencia IS NULL '+
-    'GROUP BY l.id';
-
-    const lados_vistorias = await Lado.sequelize.query( sql_lados_vistorias )
-    const lados_vistorias_map = lados_vistorias[ 1 ].rows.map( l => ({id:l.id, qtdVistorias: l.qtd_vistorias}) );
-
-    //Encontra o id da situação do quarteirao
-    let sql_situacao = 
-   'SELECT sq.id FROM '  + 
-     'situacao_quarteiroes as sq ' +
-   'WHERE ' +
-     'sq.quarteirao_id = '+ quarteirao_id+' '+
-     `AND sq.estrato_id = ${estrato.id}`
-
-    let situacao_quarteirao = await SituacaoQuarteirao.sequelize.query( sql_situacao )
-    let situacao_quarteirao_id = situacao_quarteirao[ 1 ].rows[0].id
-
-    //Significa que não houve uma unica vistoria neste quarteirão
-    //Logo a situação deste quartirão é aberta (1)
-    if(lados_vistorias_map.length == 0){
-      await SituacaoQuarteirao.update(
-        {
-          situacaoQuarteiraoId: 1,
-        },
-        {
-          where: {
-            id: situacao_quarteirao_id
-          }
-        }
-      );
-    }
-
-    else{
-      //indica se o quarteirão está concluido ou não
-      let quarteiraoConcluido = true
-      for( let ladoImovel of lados_imoveis_map){
-        
-        const ladoVistoria = lados_vistorias_map.find( lv => lv.id == ladoImovel.id)
-
-        //Significa que este lado do quarteirão não possui vistoria.
-        //Logo não tem como o quarteirão ter sido concluido
-        if(!ladoVistoria){
-          quarteiraoConcluido = false
-          break;
-        }
-        else{
-          const qtdImoveisLado = ladoImovel.qtdImoveis
-          const qtdVistoriasLado = ladoVistoria.qtdVistorias
-
-          const imovelExcedente = qtdImoveisLado % 5 > 0 ? 1 : 0
-
-          //Variavel que armazena a quantidade de imoveis que devem ser vistorados, para que o lado
-          //seja considerado com situação concluida
-          const numeroImoveisNecessarios = Math.floor(qtdImoveisLado / 5) + imovelExcedente
-
-          //Siginifica que este lado do quarteirão ainda não foi concluido.
-          //Logo este quarteirão tambem não foi concluido
-          if(qtdVistoriasLado < numeroImoveisNecessarios){
-            quarteiraoConcluido = false
-            break;
-          }
-        }
-      }
-
-      if(quarteiraoConcluido){
-        await SituacaoQuarteirao.update(
-          {
-            situacaoQuarteiraoId: 3, //CONCLUINDO
-          },
-          {
-            where: {
-              id: situacao_quarteirao_id
-            }
-          }
-        );
-      }
-      else{
-        console.log("----------------------")
-        console.log("fazendo")
-        console.log("----------------------")
-        await SituacaoQuarteirao.update(
-          {
-            situacaoQuarteiraoId: 2, //FAZENDO
-          },
-          {
-            where: {
-              id: situacao_quarteirao_id
-            }
-          }
-        );
-      }
-    }
-
-  }
-
-  
-
-  /* // Selecion a quantidade de imóveis nos 
+  // Selecion a quantidade de imóveis nos 
   // quarteirões trabalhados
   let sql_quarteiroes = 
     'SELECT ' +
@@ -251,65 +121,29 @@ module.exports = async trabalho_diario_id => {
 
 
   const totalImoveisQuarteirao    = quarteiroes[ 1 ].rows;
-  const totalImoveisSemPendenciaQuarteirao  = imoveis_sem_pendencia[ 1 ].rows; */
+  const totalImoveisSemPendenciaQuarteirao  = imoveis_sem_pendencia[ 1 ].rows; 
 
   /*
       Compara a quantidade de imóveis do quarteirão com a
       quantidade de vistorias realizadas neles durante a atividade.
       Para cada caso, atualiza a situação do quarteirão.
   */
-  /* const promises = totalImoveisQuarteirao.map(async q => {
+    const promises = totalImoveisQuarteirao.map(async q => {
     const v = totalImoveisSemPendenciaQuarteirao.find(p => p.quarteirao_id === q.quarteirao_id);
     const s = situacao_quarteirao.find(p => p.quarteirao_id === q.quarteirao_id);
 
-    //Significa que no quarteirao existem tanto imoveis com vistorias pendentes quando imoveis com vistoria sem pendencia
-    if( v && s ) {
-      // Quarteirão em "aberto" -> "fazendo"
-      if( parseInt( v.count ) + parseInt( vp.count ) < parseInt( q.count ) && parseInt( s.situacao_quarteirao_id ) === 1 ) {
-        await SituacaoQuarteirao.update(
-          {
-            situacaoQuarteiraoId: 2,
-          },
-          {
-            where: {
-              id: s.id
-            }
-          }
-        );
-      }
-      // Quarteirão concluido com pendencia
-      if( parseInt( v.count ) + parseInt( vp.count ) === parseInt( q.count ) && parseInt( s.situacao_quarteirao_id ) !== 4 ) {
-        await SituacaoQuarteirao.update(
-          {
-            situacaoQuarteiraoId: 4,
-            dataConclusao: new Date()
-          },
-          {
-            where: {
-              id: s.id
-            }
-          }
-        );
-      }
-    }
-    //Significa que no quarteirao existe apenas imoveis com vistorias sem pendencia
-    else if(v && !vp && s ){
-      // Quarteirão em "aberto" -> "fazendo"
-      if( parseInt( v.count ) < parseInt( q.count ) && parseInt( s.situacao_quarteirao_id ) === 1 ) {
-        await SituacaoQuarteirao.update(
-          {
-            situacaoQuarteiraoId: 2,
-          },
-          {
-            where: {
-              id: s.id
-            }
-          }
-        );
-      }
+    const situacaoQuarteirao = parseInt( s.situacao_quarteirao_id )
+    const vistoriasQuarteirao = v ? parseInt( v.count ) : 0
+    const imoveisQuarteirao = parseInt( q.count )
 
-      // Quarteirão concluido
-      if( parseInt( v.count ) === parseInt( q.count ) && parseInt( s.situacao_quarteirao_id ) !== 3 ) {
+    const imovelExcedente = imoveisQuarteirao % 5 > 0 ? 1 : 0   
+    const numeroImoveisNecessarios = Math.floor(imoveisQuarteirao / 5) + imovelExcedente
+
+    //Significa que houve vistoria suficiente no imovel para o quarteirão ser considerado
+    //como concluido. "situacaoQuarteirao != 3" evita que seja feita o update em um quarteirao 
+    //ja concluido
+    if(vistoriasQuarteirao >= numeroImoveisNecessarios){
+      if(situacaoQuarteirao != 3){
         await SituacaoQuarteirao.update(
           {
             situacaoQuarteiraoId: 3,
@@ -320,44 +154,27 @@ module.exports = async trabalho_diario_id => {
               id: s.id
             }
           }
-        );
+        )
       }
     }
-    //Significa que no quarteirao existe apenas imoveis com vistorias com pendencia
-    else if(!v && vp && s ){
-      // Quarteirão em "aberto" -> "fazendo"
-      if( parseInt( vp.count ) < parseInt( q.count ) && parseInt( s.situacao_quarteirao_id ) === 1 ) {
-        await SituacaoQuarteirao.update(
-          {
-            situacaoQuarteiraoId: 2,
-          },
-          {
-            where: {
-              id: s.id
-            }
+    //Caso Contrario, se o quarteirao tiver ao menos uma vistoria e a sua situação não estiver como "fazendo",
+    //será feita o update da sua situação para "fazendo"
+    else if(vistoriasQuarteirao > 0 && situacaoQuarteirao != 2){
+      await SituacaoQuarteirao.update(
+        {
+          situacaoQuarteiraoId: 2,
+          dataConclusao: null
+        },
+        {
+          where: {
+            id: s.id
           }
-        );
-      }
-
-      // Quarteirão concluido com pendencia
-      if( parseInt( vp.count ) === parseInt( q.count ) && parseInt( s.situacao_quarteirao_id ) !== 4 ) {
-        await SituacaoQuarteirao.update(
-          {
-            situacaoQuarteiraoId: 4,
-            dataConclusao: new Date()
-          },
-          {
-            where: {
-              id: s.id
-            }
-          }
-        );
-      }
+        }
+      )
     }
-    
-  }); */
+  });
 
-  /* return (async () => {
+  return (async () => {
     await Promise.all( promises );
-  })(); */
+  })();
 }

@@ -1147,6 +1147,33 @@ const getOpenRouteByTeam = async ( req, res ) => {
       } );
     }
 
+    if(metodologiaAtividade.dataValues.sigla == "LIRAa"){
+      quarteirao_situacao = quarteirao_situacao.map( quarteirao => {
+        let q = quarteirao;
+
+        let imoveisQuarteirao = 0
+        let vistoriasQuarteirao = 0
+
+        q.lados.forEach( l => {
+          imoveisQuarteirao += l.imoveis
+          vistoriasQuarteirao += l.vistorias
+        })
+
+        const imovelExcedente = imoveisQuarteirao % 5 > 0 ? 1 : 0   
+        const numeroImoveisNecessarios = Math.floor(imoveisQuarteirao / 5) + imovelExcedente
+
+        //Significa que houve um numero suficiente de vistorias para que o quarteirão
+        //seja considerado como concluido, logo todos os seus lados devem ficar como concluidos
+        if(vistoriasQuarteirao >= numeroImoveisNecessarios){
+          q.lados = quarteirao.lados.map( lado => {
+            lado.situacao = 3;
+            return lado;
+          } );
+        }
+        return q
+      })
+    }
+
     // Consultando lados já planejando do dia de uma equipe.
     const [ m, d, Y ]  = new Date().toLocaleDateString( 'en-US' ).split( '/' );
     const current_date = `${ Y }-${ m }-${ d }`;

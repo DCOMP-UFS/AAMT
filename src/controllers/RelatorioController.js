@@ -540,7 +540,6 @@ getActivityWeeklyReport = async (req, res) => {
                     include: [
                       {
                         association: 'quarteirao',
-                        attributes: ['numero'],
                       }
                     ],
                   },
@@ -878,7 +877,7 @@ getActivityWeeklyReport = async (req, res) => {
 
         vistorias.map(vistoria => {
           const depositos = vistoria.depositos;
-          const num_quarteirao = vistoria.imovel.lado.quarteirao.numero;
+          const quart = vistoria.imovel.lado.quarteirao;
 
           // Somando imóveis pesquisados
           if( depositos.length > 0 )
@@ -942,13 +941,13 @@ getActivityWeeklyReport = async (req, res) => {
               // Checando se o imóvel deu posítivo para aegypti
               if( aegypti.length > 0 ){
                 property_contain_aegypti = true;
-                quarteiroesAedesAegypti.push(num_quarteirao);
+                quarteiroesAedesAegypti.push(quart);
               }
 
               // Checando se o imóvel deu posítivo para albopictus
               if( albopictus.length > 0 ){
                 property_contain_albopictus = true;
-                quarteiroesAedesAlbopictus.push(num_quarteirao);
+                quarteiroesAedesAlbopictus.push(quart);
               }
 
               // Checando se o imóvel deu posítivo para outros
@@ -1205,7 +1204,6 @@ getCurrentActivityReport = async ( req, res ) => {
                     include: [
                       {
                         association: 'quarteirao',
-                        attributes: ['numero'],
                       }
                     ],
                   },
@@ -1518,7 +1516,7 @@ getCurrentActivityReport = async ( req, res ) => {
 
         vistorias.map(vistoria => {
           const depositos = vistoria.depositos;
-          const num_quarteirao = vistoria.imovel.lado.quarteirao.numero;
+          const quart = vistoria.imovel.lado.quarteirao;
 
           // Somando imóveis inspecionados
           if( depositos.length > 0 )
@@ -1582,13 +1580,13 @@ getCurrentActivityReport = async ( req, res ) => {
               // Checando se o imóvel deu posítivo para aegypti
               if( aegypti.length > 0 ){
                 property_contain_aegypti = true;
-                quarteiroesAedesAegypti.push(num_quarteirao);
+                quarteiroesAedesAegypti.push(quart);
               }
 
               // Checando se o imóvel deu posítivo para albopictus
               if( albopictus.length > 0 ){
                 property_contain_albopictus = true;
-                quarteiroesAedesAlbopictus.push(num_quarteirao);
+                quarteiroesAedesAlbopictus.push(quart);
               }
 
               // Checando se o imóvel deu posítivo para outros

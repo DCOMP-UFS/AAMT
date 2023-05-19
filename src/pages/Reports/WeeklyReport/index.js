@@ -7,6 +7,7 @@ import { Text } from 'react-native-svg';
 import { Table, Row, Rows } from 'react-native-table-component';
 
 import LoadingPage from '../../../components/LoadingPage';
+import Dropdown from '../../../components/Dropdown';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -22,6 +23,7 @@ import {
   TitleContainer,
   Label,
   Small,
+  SectionContainer,
   CardRow,
   DetailsColumn,
   EmptyContainer,
@@ -48,15 +50,28 @@ const WeeklyReport = () => {
     { label: 'Recusados', value: 0 },
     { label: 'Recuperados', value: 0 },
   ]);
+
+  const [totalBlocksWorked, setTotalBlocksWorked] = useState([]);
+  const [totalBlocksFinished, setTotalBlocksFinished] = useState([]);
+  const [totalBlocksFinishedWithPendency, setTotalBlocksFinishedWithPendency ] = useState([]);
+  const [totalBlocksWithAegypti, setTotalBlocksWithAegypti] = useState([]);
+  const [totalBlocksWithAlbopictus, setTotalBlocksWithAlbopictus] = useState([]);
+
   const [blocksWorked, setBlocksWorked] = useState([]);
   const [blocksFinished, setBlocksFinished] = useState([]);
   const [blocksFinishedWithPendency, setBlocksFinishedWithPendency ] = useState([]);
   const [blocksWithAegypti, setBlocksWithAegypti] = useState([]);
   const [blocksWithAlbopictus, setBlocksWithAlbopictus] = useState([]);
+
+
   const [sampleNumber, setSampleNumber] = useState(0);
   const [larvicide, setLarvicide] = useState(0);
   const [agentNumber, setAgentNumber] = useState(0);
   const [totalRecipients, setTotalRecipients] = useState(0);
+
+  const [ optionsLocalidade, setOptionsLocalidade ] = useState( [] )
+  const [ localidade, setLocalidade ] = useState( undefined )
+  const [ isFilterQuarteiroes, setIsFilterQuarteiroes ] = useState(false)
 
   const blocksWorkedOptions = Array(chunksLength).fill('Nº/Seq.');
 
@@ -121,23 +136,70 @@ const WeeklyReport = () => {
     return result;
   }
 
+  function mapQuarteiraoList ( quarteiroes ){
+    const quarteiroesMapped = quarteiroes.map( q => {
+      if(q.sequencia == null)
+        return q.numero
+      else
+        return q.numero+" / "+q.sequencia
+    })
+    
+    return quarteiroesMapped
+  }
+
+  //Adiconar localidades não repetidas na lista localidades
+  function addLocalidadesUnicas( listaLocalidades, listaQuarteiroes ){
+
+    listaQuarteiroes.forEach( q => {
+      let localidadeRepetida = false
+
+      for( const loc of listaLocalidades ) {
+        if( loc.id == q.localidade_id ){
+          localidadeRepetida = true
+          break;
+        }
+      }
+      if(!localidadeRepetida)
+        listaLocalidades.push({ id: q.localidade_id, name: q.localidade_nome })
+    });
+
+    return listaLocalidades
+  }
+
   useEffect(() => {
     if (report?.epiWeek) {
-      const trabalhados = report.situacao_quarteirao.trabalhados.map(
-        array => array.numero
-      );
-      const concluidos = report.situacao_quarteirao.concluidos.map(
-        array => array.numero
-      );
+
+      const qrt_trabalhados = report.situacao_quarteirao.trabalhados;
+      const qrt_concluidos = report.situacao_quarteirao.concluidos;
+      const qrt_concluidosPendencia = report.situacao_quarteirao.concluidosPendencia;
+      const qrt_pstv_aegypti = report.quarteiroesPositivos.aedesAegypti;
+      const qrt_pstv_albopictus = report.quarteiroesPositivos.aedesAlbopictus;
+
+      setTotalBlocksWorked(qrt_trabalhados);
+      setTotalBlocksFinished(qrt_concluidos);
+      setTotalBlocksFinishedWithPendency(qrt_concluidosPendencia)
+      setTotalBlocksWithAegypti(qrt_pstv_aegypti);
+      setTotalBlocksWithAlbopictus(qrt_pstv_albopictus);
+
+      let listaLocalidades = []
+      listaLocalidades = addLocalidadesUnicas(listaLocalidades, qrt_trabalhados)
+      listaLocalidades = addLocalidadesUnicas(listaLocalidades, qrt_concluidos)
+      listaLocalidades = addLocalidadesUnicas(listaLocalidades, qrt_concluidosPendencia)
+
+      setOptionsLocalidade(listaLocalidades)
+
+      const trabalhados = mapQuarteiraoList(qrt_trabalhados)
+      const concluidos = mapQuarteiraoList(qrt_concluidos)
+      const concluidosComPendencia = mapQuarteiraoList(qrt_concluidosPendencia)
+      const comAegypti = mapQuarteiraoList(qrt_pstv_aegypti)
+      const comAlbopictus = mapQuarteiraoList(qrt_pstv_aegypti)
+
       setBlocksWorked(createChunks(trabalhados));
       setBlocksFinished(createChunks(concluidos));
-      setBlocksFinishedWithPendency(report.situacao_quarteirao.concluidosPendencia)
-      setBlocksWithAegypti(
-        createChunks(report.quarteiroesPositivos.aedesAegypti)
-      );
-      setBlocksWithAlbopictus(
-        createChunks(report.quarteiroesPositivos.aedesAlbopictus)
-      );
+      setBlocksFinishedWithPendency(concluidosComPendencia)
+      setBlocksWithAegypti(createChunks(comAegypti));
+      setBlocksWithAlbopictus(createChunks(comAlbopictus));
+      
       setLarvicide(report.depositTreated[1].value);
       setSampleNumber(report.totalSample);
       setAgentNumber(report.epiWeek.totalAgentes);
@@ -157,6 +219,44 @@ const WeeklyReport = () => {
       );
     }
   }, [report]);
+
+  useEffect(() => {
+    if(localidade != undefined){
+      
+      const newQuarteiroesTrabalhados = totalBlocksWorked.filter( q => q.localidade_id == localidade)
+      const newQuarteiroesConcluidos = totalBlocksFinished.filter( q => q.localidade_id == localidade)
+      const newQuarteiroesConcluidosPendencia = totalBlocksFinishedWithPendency.filter( q => q.localidade_id == localidade)
+      const newQuarteiroesAedesAegypti = totalBlocksWithAegypti.filter( q => q.localidade_id == localidade)
+      const newQuarteiroesAedesAlbopictus = totalBlocksWithAlbopictus.filter( q => q.localidade_id == localidade)
+
+      const trabalhados = mapQuarteiraoList(newQuarteiroesTrabalhados)
+      const concluidos = mapQuarteiraoList(newQuarteiroesConcluidos)
+      const concluidosComPendencia = mapQuarteiraoList(newQuarteiroesConcluidosPendencia)
+      const comAegypti = mapQuarteiraoList(newQuarteiroesAedesAegypti)
+      const comAlbopictus = mapQuarteiraoList(newQuarteiroesAedesAlbopictus)
+      
+      setBlocksWorked(createChunks(trabalhados));
+      setBlocksFinished(createChunks(concluidos));
+      setBlocksFinishedWithPendency(concluidosComPendencia)
+      setBlocksWithAegypti(createChunks(comAegypti));
+      setBlocksWithAlbopictus(createChunks(comAlbopictus));
+    }
+    else{
+      const trabalhados = mapQuarteiraoList(totalBlocksWorked)
+      const concluidos = mapQuarteiraoList(totalBlocksFinished)
+      const concluidosComPendencia = mapQuarteiraoList(totalBlocksFinishedWithPendency)
+      const comAegypti = mapQuarteiraoList(totalBlocksWithAegypti)
+      const comAlbopictus = mapQuarteiraoList(totalBlocksWithAlbopictus)
+
+      setBlocksWorked(createChunks(trabalhados));
+      setBlocksFinished(createChunks(concluidos));
+      setBlocksFinishedWithPendency(concluidosComPendencia)
+      setBlocksWithAegypti(createChunks(comAegypti));
+      setBlocksWithAlbopictus(createChunks(comAlbopictus));
+    }
+
+    setIsFilterQuarteiroes(false)
+  }, [localidade]);
 
   function Bar(data) {
     const CUT_OFF = 0;
@@ -237,21 +337,41 @@ const WeeklyReport = () => {
         <Header>
           <PropertyTitle>{title}</PropertyTitle>
         </Header>
+        <SectionContainer>
+          <Small>Localidade</Small>
+          <Dropdown
+            itens={optionsLocalidade}
+            placeholder="Todas"
+            selectedValue={localidade}
+            onValueChange={value => {
+              if(localidade != value){
+                setIsFilterQuarteiroes(true)
+                setLocalidade(value)
+              }
+            }}
+          />
+        </SectionContainer>
         <View>
-          <View style={styles.container}>
-            <Table>
-              <Row
-                data={headerData}
-                style={styles.HeadStyle}
-                textStyle={styles.HeadText}
-              />
-              <Rows
-                data={contentData}
-                textStyle={styles.TableText}
-                style={styles.RowsData}
-              />
-            </Table>
-          </View>
+          {
+            isFilterQuarteiroes ? (
+              <LoadingPage />
+            ) : (
+              <View style={styles.container}>
+                <Table>
+                  <Row
+                    data={headerData}
+                    style={styles.HeadStyle}
+                    textStyle={styles.HeadText}
+                  />
+                  <Rows
+                    data={contentData}
+                    textStyle={styles.TableText}
+                    style={styles.RowsData}
+                  />
+                </Table>
+              </View>
+            )
+          }
         </View>
       </Card>
     );

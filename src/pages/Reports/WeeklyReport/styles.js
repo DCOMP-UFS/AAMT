@@ -56,6 +56,11 @@ export const Small = styled.Text`
   margin-bottom: 10px;
 `;
 
+export const SectionContainer = styled.View`
+  flex-direction: column;
+  margin-bottom: 10px;
+`;
+
 export const EmptyContainer = styled.View`
   align-items: center;
   justify-content: center;

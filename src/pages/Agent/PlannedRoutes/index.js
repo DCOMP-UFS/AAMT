@@ -503,7 +503,7 @@ const PlannedRoutes = ({
             />
             <EmptyTitle>Ohh... que pena!</EmptyTitle>
             <EmptyDescription>
-              Não foi encotrada um rota planejada para hoje. Caso deseje fazer outra busca, aperte o botão abaixo.
+              Não foi encontrada uma rota planejada para hoje. Caso deseje fazer outra busca, aperte o botão abaixo.
             </EmptyDescription>
             <StartRouteButton
                 style={{marginTop:10}}

@@ -378,7 +378,6 @@ store = async ( req, res ) => {
 
     return res.status(201).json( quarteiraoFind );
   } catch (error) {
-    console.log(error)
     return res.status( 400 ).send( { 
       status: 'unexpected error',
       mensage: 'Algum problema inesperado ocorreu nesta rota da api',
@@ -524,7 +523,6 @@ update = async ( req, res ) => {
 
     return res.json( quarteiraoFind );
   } catch (error) {
-    console.log(error)
     return res.status( 400 ).send( { 
       status: 'unexpected error',
       mensage: 'Algum problema inesperado ocorreu nesta rota da api',

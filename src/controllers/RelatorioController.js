@@ -462,12 +462,15 @@ getActivityWeeklyReport = async (req, res) => {
     try{
       const { atividade_id, ano, semana } = req.query;
       const userId = req.userId;
-
+      
       // Validação da rota
+      const user_request = await Usuario.findByPk( userId, {
+        include: {
+          association: "atuacoes"
+        }
+      } );
 
-      const user_request = await Usuario.findByPk( userId );
-
-      const allow = await allowFunction( user_request.id, 'definir_trabalho_diario' );
+      const allow = await allowFunction( user_request.id, 'relatorio_boletim_semanal' );
       if( !allow )
         return res.status(403).json({ error: 'Acesso negado' });
 
@@ -484,10 +487,45 @@ getActivityWeeklyReport = async (req, res) => {
         where: {
           atividade_id
         },
-        attributes: [ 'id' ]
+        include: [
+          {
+            association: 'membros',
+            attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+            include: {
+              association: 'usuario',
+              attributes: { 
+                exclude: [ 
+                  'createdAt', 
+                  'updatedAt',
+                  'cpf',
+                  'rg',
+                  'email',
+                  'senha',
+                  'usuario',
+                  'celular'
+                ] 
+              } 
+            }
+          }
+        ]
       });
 
-      equipes = equipes.map(({ id }) => id);
+      //No caso do usuario que fez a requisição for um supervisor ou um agente com autorização de supervisor, 
+      //serão filtradas as equipes que não são lideradas por ele
+      if(user_request.atuacoes[ 0 ].tipoPerfil == 3 || user_request.atuacoes[ 0 ].tipoPerfil == 4){
+        equipes = equipes.filter( team => {
+          let fl_team = false;
+
+          team.membros.forEach( member => {
+            if( member.usuario_id === userId && member.tipoPerfil === 3 )
+              fl_team = true;
+          } );
+
+          return fl_team;
+        } );
+      }
+
+      equipes = equipes.map( (team) => team.id );
 
       // Selecionando todas as vistorias realizadas pelas equipes
       let trabalhos = await TrabalhoDiario.findAll({
@@ -1140,21 +1178,61 @@ getCurrentActivityReport = async ( req, res ) => {
       const userId            = req.userId; 
 
       // Validação da rota
-      const user_request = await Usuario.findByPk( userId );
+      const user_request = await Usuario.findByPk( userId, {
+        include: {
+          association: "atuacoes"
+        }
+      } );
 
-      const allow = await allowFunction( user_request.id, 'definir_trabalho_diario' );
-          if( !allow )
-              return res.status(403).json({ error: 'Acesso negado' });
+      const allow1 = await allowFunction( user_request.id, 'relatorio_por_atividade' );
+      const allow2 = await allowFunction( user_request.id, 'relatorio_por_atividade_regional' );
+      if( !allow1 && !allow2 )
+          return res.status(403).json({ error: 'Acesso negado' });
 
       // Selecionando todas as equipes da atividade
       let equipes = await Equipe.findAll({
         where: {
           atividade_id
         },
-        attributes: [ 'id' ]
+        include: [
+          {
+            association: 'membros',
+            attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
+            include: {
+              association: 'usuario',
+              attributes: { 
+                exclude: [ 
+                  'createdAt', 
+                  'updatedAt',
+                  'cpf',
+                  'rg',
+                  'email',
+                  'senha',
+                  'usuario',
+                  'celular'
+                ] 
+              } 
+            }
+          }
+        ]
       });
 
-      equipes = equipes.map(({ id }) => id);
+      //No caso do usuario que fez a requisição for um supervisor ou um agente com autorização de supervisor, 
+      //serão filtradas as equipes que não são lideradas por ele
+      if(user_request.atuacoes[ 0 ].tipoPerfil == 3 || user_request.atuacoes[ 0 ].tipoPerfil == 4){
+        equipes = equipes.filter( team => {
+          let fl_team = false;
+
+          team.membros.forEach( member => {
+            if( member.usuario_id === userId && member.tipoPerfil === 3 )
+              fl_team = true;
+          } );
+
+          return fl_team;
+        } );
+      }
+
+      equipes = equipes.map( (team) => team.id );
 
       // Selecionando todas as vistorias realizadas pelas equipes
       let trabalhos = await TrabalhoDiario.findAll({

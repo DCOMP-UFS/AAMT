@@ -623,31 +623,50 @@ getResponsibilityActivities = async ( req, res ) => {
   try{
     const { user_id, cycle_id } = req.params;
 
-    const allow = await allowFunction( req.userId, 'definir_trabalho_diario' );
-    if( !allow )
+    const allow1 = await allowFunction( req.userId, 'relatorio_boletim_diario' );
+    const allow2 = await allowFunction( req.userId, 'relatorio_por_atividade_regional' );
+    if( !allow1 && !allow2 )
       return res.status( 403 ).json( { error: 'Acesso negado' } );
 
     if( parseInt( user_id ) !== req.userId )
       return res.status( 403 ).json( { error: 'Acesso negado' } );
 
-    const supervisor = await Usuario.findByPk( user_id, {
+    const use_req = await Usuario.findByPk( user_id, {
       include: {
         association: "atuacoes"
       }
     } );
-    if( !supervisor )
+    if( !use_req )
       return res.status( 400 ).json( { error: "Usuário não existe" } );
 
-    if( supervisor.atuacoes[ 0 ].escopo !== 2 )
-      return res.json( [] );
+    let where = {
+      ciclo_id: cycle_id,
+    }
+
+    //significa que o usuario que fez a requisição é um coordenador geral
+    if(use_req.atuacoes[ 0 ].tipoPerfil == 1){
+
+      const municipios_regional = await Municipio.findAll({
+        where:{
+          regional_saude_id: use_req.atuacoes[ 0 ].local_id
+        }
+      })
+      const municipios_id = municipios_regional.map( m => m.id )
+      where.municipio_id = { [Op.in]: municipios_id }
+
+    }
+    else
+      where.municipio_id = use_req.atuacoes[ 0 ].local_id
+    
 
     const activities = await Atividade.findAll( {
-      where: {
-        ciclo_id: cycle_id,
-        municipio_id: supervisor.atuacoes[ 0 ].local_id
-      },
+      where: where,
       attributes: { exclude: [ 'createdAt', 'updatedAt' ] },
       include: [
+        {
+          association: 'municipio',
+          attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+        },
         {
           association: 'metodologia',
           attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
@@ -713,20 +732,24 @@ getResponsibilityActivities = async ( req, res ) => {
 
     const responsabilityActivities = [];
 
-    //Filtrando as equipes não lideradas pelo supervisor com o id informado na requisição
     for ( var activity of activities) {
       let act = activity;
+      let teams = activity.equipes
 
-      let teams = activity.equipes.filter( team => {
-        let fl_team = false;
+      //No caso do usuario que fez a requisição for um supervisor ou um agente com autorização de supervisor, 
+      //serão filtradas as equipes que não são lideradas por ele
+      if(use_req.atuacoes[ 0 ].tipoPerfil == 3 || use_req.atuacoes[ 0 ].tipoPerfil == 4){
+          teams = activity.equipes.filter( team => {
+          let fl_team = false;
 
-        team.membros.forEach( member => {
-          if( member.usuario_id === supervisor.id && member.tipoPerfil === 3 )
-            fl_team = true;
+          team.membros.forEach( member => {
+            if( member.usuario_id === use_req.id && member.tipoPerfil === 3 )
+              fl_team = true;
+          } );
+
+          return fl_team;
         } );
-
-        return fl_team;
-      } );
+      }
 
       act.dataValues.equipes = teams;
    

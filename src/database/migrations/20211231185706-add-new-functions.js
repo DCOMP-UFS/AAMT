@@ -54,6 +54,11 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date()
       },
+      {
+        nome: 'relatorio_por_atividade_regional',
+        created_at: new Date(),
+        updated_at: new Date()
+      },
     ]);
   },
 
@@ -69,6 +74,7 @@ module.exports = {
         { nome: "relatorio_boletim_semanal" },
         { nome: "relatorio_por_atividade" },
         { nome: "relatorio_por_atividade_da_equipe" },
+        { nome: "relatorio_por_atividade_regional" },
       ]
     } );
   }

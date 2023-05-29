@@ -47,9 +47,11 @@ import VisualizarDiarioEquipe from './pages/Relatorio/DiarioEquipe/visualizarRel
 import RelatorioSemanal from './pages/Relatorio/Semanal';
 import VisualizarSemanal from './pages/Relatorio/Semanal/visualizarRelatorio';
 import RelatorioAtividade from './pages/Relatorio/Atividade';
+import RelatorioAtividadeRegional from './pages/Relatorio/AtividadeRegional';
 import RelatorioAtividadeEquipe from './pages/Relatorio/AtividadeEquipe';
 import VisualizarAtividadeEquipe from './pages/Relatorio/AtividadeEquipe/visualizarRelatorio';
 import VisualizarRelatorioAtividade from './pages/Relatorio/Atividade/visualizarRelatorio';
+import VisualizarAtividadeRegional from './pages/Relatorio/AtividadeRegional/visualizarRelatorio';
 
 // Laboratórios
 import Laboratorios from './pages/laboratorios';
@@ -198,6 +200,8 @@ const Routes = props => {
         <PrivateRoute exact path="/relatorio/atividade/:atividade_id" component={ VisualizarRelatorioAtividade } tipoPerfil={ perfil } />
         <PrivateRoute exact path="/relatorio/atividadeEquipe" component={ RelatorioAtividadeEquipe } tipoPerfil={ perfil } />
         <PrivateRoute exact path="/relatorio/atividadeEquipe/:equipe_id" component={ VisualizarAtividadeEquipe } tipoPerfil={ perfil } />
+        <PrivateRoute exact path="/relatorio/atividadeRegional" component={ RelatorioAtividadeRegional } tipoPerfil={ perfil } />
+        <PrivateRoute exact path="/relatorio/atividadeRegional/:atividade_id" component={ VisualizarAtividadeRegional } tipoPerfil={ perfil } />
 
         {/* Rota */}
         <PrivateRoute exact path="/rota" component={ Rota } tipoPerfil={ perfil } />

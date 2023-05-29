@@ -93,6 +93,7 @@ export const itens = {
   boletimSemanal: criarSubmenu( "rlt_boletimSemanal", false, "Boletim semanal", "/relatorio/semanal" ),
   porAtividade: criarSubmenu( "rlt_porAtividade", false, "Boletim por atividade", "/relatorio/atividade" ),
   porAtividadeEquipe: criarSubmenu( "rlt_porAtividadeEquipe", false, "Boletim da equipe por atividade", "/relatorio/atividadeEquipe" ),
+  porAtividadeRegional:  criarSubmenu( "rlt_porAtividadeRegional", false, "Boletim por atividade da regional", "/relatorio/atividadeRegional" ),
 };
 
 /**
@@ -180,5 +181,8 @@ export const menus = {
   ],
   relatorio_por_atividade_da_equipe: [
     itens.porAtividadeEquipe
+  ],
+  relatorio_por_atividade_regional: [
+    itens.porAtividadeRegional
   ],
 };

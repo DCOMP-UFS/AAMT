@@ -6,11 +6,11 @@ import { FormGroup, selectDefault } from '../../styles/global';
 import { PagePopUp } from '../../styles/util';
 import { CardBodyInfo } from './styles';
 
-export const CycleSelector = ({ optionCiclos, cicloSelecionado, setCicloSelecionado, ...props }) => {
+export const CycleSelector = ({ optionCiclos, cicloSelecionado, setCicloSelecionado, paddingBottom, ...props }) => {
     return(
         <section className="card-list">
             <Row>
-                <PagePopUp className="w-100" style={{ paddingTop: 15, paddingBottom: 40, paddingRight: 15, paddingLeft: 15 }}>
+                <PagePopUp className="w-100" style={{ paddingTop: 15, paddingBottom: paddingBottom ? paddingBottom : 40, paddingRight: 15, paddingLeft: 15 }}>
                     <div className="card">
                         <CardBodyInfo>
                             <div className="d-flex flex-grow-1 align-items-center">

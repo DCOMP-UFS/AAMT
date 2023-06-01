@@ -60,11 +60,25 @@ export const Box = styled.View`
   padding: 10px;
 `;
 
+export const BoxTeam = styled.View`
+  background-color: ${({ theme }) => theme.colors.blue}
+  margin-bottom: 10px;
+`;
+
 export const AccordionItemText = styled.Text`
   font-family: ${({ theme }) => theme.fonts.regular};
   color: ${({ theme }) => theme.colors.black};
   font-size: 16px;
   margin-bottom: 20px;
+`;
+
+export const AccordionTeamItemText = styled.Text`
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 15px;
+  font-family: ${({ theme }) => theme.fonts.bold};
+  color: ${({ theme }) => theme.colors.white};
+  font-size: 16px;
 `;
 
 export const Label = styled.Text`

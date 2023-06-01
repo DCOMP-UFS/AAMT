@@ -28,13 +28,19 @@ import {
 const BlocksList = ({ currentIndex, routes, ...props }) => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { isRouteStarted, rota } = route.params;
+  const { isRouteStarted, rota, local_id } = route.params;
   
   function defineRoute(){
+    let blockList = []
     if(!isRouteStarted)
-      return rota
+      blockList = rota
+    else
+      blockList = routes[currentIndex].rota
     
-    return routes[currentIndex].rota
+    blockList.forEach( ( block, index ) => { blockList[index].dataIndex = index} )
+    blockList = blockList.filter( block => block.localidade.id == local_id )
+
+    return blockList
   }
 
   const currentRoute = defineRoute();
@@ -47,7 +53,7 @@ const BlocksList = ({ currentIndex, routes, ...props }) => {
             <Collapse key={block.id} style={{ margin: 5 }}>
               <CollapseHeader>
                 <Header>
-                  <Title>{`Quarteirão ${block.numero}`}</Title>
+                  <Title>{block.sequencia != null ? `Quarteirão ${block.numero} - Seq: ${block.sequencia}` : `Quarteirão ${block.numero}`}</Title>
                 </Header>
               </CollapseHeader>
               <CollapseBody>
@@ -57,7 +63,7 @@ const BlocksList = ({ currentIndex, routes, ...props }) => {
                       key={street.id}
                       onPress={() => {
                         if (isRouteStarted) {
-                          props.changeBlockIndex(blockIndex);
+                          props.changeBlockIndex(block.dataIndex);
                           props.changeStreetIndex(streetIndex);
                           navigation.navigate('Lista de imóveis', {
                             street: street.rua.nome,

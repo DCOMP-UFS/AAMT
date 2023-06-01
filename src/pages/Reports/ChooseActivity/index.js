@@ -27,7 +27,9 @@ import {
   AccordionHeader,
   AccordionTitle,
   AccordionItemText,
+  AccordionTeamItemText,
   Box,
+  BoxTeam,
   Label,
   Smaller,
   SelectActivityButton,
@@ -179,36 +181,36 @@ const ChooseActivity = ({ regionalSaude }) => {
         {observation === 'diary-report-team' &&
          (
           activity.equipes.map((team, index) => (
-            <Box key={index}>
+            <BoxTeam key={index}>
               <TouchableOpacity
                 key={team.id}
                 onPress={() =>
                   navigationTo(null, team.id)
                 }
               >
-                <AccordionItemText>
+                <AccordionTeamItemText>
                   {"Equipe "+team.apelido}
-                </AccordionItemText>
+                </AccordionTeamItemText>
               </TouchableOpacity>
-            </Box>
+            </BoxTeam>
           ))
         )}
 
         {observation === 'team-activity-report' &&
          (
           activity.equipes.map((team, index) => (
-            <Box key={index}>
+            <BoxTeam key={index}>
               <TouchableOpacity
                 key={team.id}
                 onPress={() =>
                   navigationTo(null, team.id)
                 }
               >
-                <AccordionItemText>
+                <AccordionTeamItemText>
                   {"Equipe "+team.apelido}
-                </AccordionItemText>
+                </AccordionTeamItemText>
               </TouchableOpacity>
-            </Box>
+            </BoxTeam>
           ))
         )}
 

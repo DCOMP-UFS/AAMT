@@ -6,6 +6,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 //Quarteirões e imoveis
 import BlocksList from '../pages/Agent/BlocksList';
+import LocalList from '../pages/Agent/LocalList';
 import PropertiesList from '../pages/Agent/Inspections/PropertiesList';
 import PropertieDetails from '../pages/Agent/Inspections/PropertieDetails';
 import PropertieEdit from '../pages/Agent/Inspections/PropertieEdit';
@@ -44,7 +45,8 @@ const SupStack = () => {
         component={SupDrawer}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="Rota" component={BlocksList} options={{ headerShown: true }}/>
+      <Stack.Screen name="Rota - Quarteirões" component={BlocksList} options={{ headerShown: true }}/>
+      <Stack.Screen name="Rota - Localidades" component={LocalList} options={{ headerShown: true }}/>
 
       {/* Imóveis */}
 

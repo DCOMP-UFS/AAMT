@@ -432,7 +432,7 @@ const PlannedRoutes = ({
               <RouteButton
                 isDisabled={loadingEndRoute}
                 onPress={() =>
-                  navigation.navigate('Rota', {
+                  navigation.navigate('Rota - Localidades', {
                     isRouteStarted: activity.trabalhoDiario.horaInicio,
                   })
                 }
@@ -443,7 +443,7 @@ const PlannedRoutes = ({
               <RouteButton
                 isDisabled={loadingStartRoute}
                 onPress={() =>
-                  navigation.navigate('Rota', {
+                  navigation.navigate('Rota - Localidades', {
                     rota: activity.rota,
                     isRouteStarted: activity.trabalhoDiario.horaInicio,
                   })

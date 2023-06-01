@@ -79,11 +79,16 @@ const StatusInspectionForm = ({
       ]);  
     }
 
-    if (
-      !form.situacaoVistoria &&
-      methodology === 'LIRAa'
-    ) {
+    if ( !form.situacaoVistoria && methodology === 'LIRAa') {
       formRef.current.setFieldValue('status', 'N');
+      formRef.current.setFieldValue('pendency', 'N');
+    }
+    else if (!form.situacaoVistoria && methodology === 'PNCD') {
+      if(statusVisita === 'N')
+        formRef.current.setFieldValue('status', 'N');
+      else
+        formRef.current.setFieldValue('status', 'R');
+      
     }
     if (form.pendencia === null) {
       formRef.current.setFieldValue('pendency', 'N');

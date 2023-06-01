@@ -14,6 +14,27 @@ export function* startRoute({ payload }) {
   try {
     const { route, daily_work_id, start_hour } = payload;
 
+    const metodologia = route.trabalhoDiario.atividade.metodologia.sigla
+
+    //Caso o trabalho diario seja de uma atividade PNCD, é necessario verifica qual será o status de vistoria 
+    //de cada imovel (Normal ou Recuperado)
+    if(metodologia == "PNCD"){
+      for(var indexQuart= 0; indexQuart < route.rota.length; indexQuart++){
+        let lados = route.rota[indexQuart].lados
+
+        for(var indexLado= 0; indexLado < lados.length; indexLado++){
+          const imoveis = route.rota[indexQuart].lados[indexLado].imoveis
+
+          for(var indexImovel= 0; indexImovel < imoveis.length; indexImovel++){
+            const imovel = route.rota[indexQuart].lados[indexLado].imoveis[indexImovel]
+            const { data } = yield call( api.get, `/vistorias/status/${ daily_work_id }/trabalhos_diarios/${ imovel.id }/imoveis` );
+
+            route.rota[indexQuart].lados[indexLado].imoveis[indexImovel].statusVisita = data.statusNovaVistoria
+          }
+        }
+      }
+    }
+
     yield call(api.post, '/rotas/iniciar', {
       trabalhoDiario_id: daily_work_id,
       horaInicio: start_hour,

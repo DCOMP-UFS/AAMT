@@ -28,16 +28,21 @@ import {
 const BlocksList = ({ currentIndex, routes, ...props }) => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { isRouteStarted, rota, local_id } = route.params;
+  let { isRouteStarted, rota, local_id } = route.params;
   
   function defineRoute(){
     let blockList = []
     if(!isRouteStarted)
       blockList = rota
-    else
-      blockList = routes[currentIndex].rota
+    else{
+      const rota = routes[currentIndex].rota
+      blockList = rota.map( m => {return {...m}})
+    }
     
-    blockList.forEach( ( block, index ) => { blockList[index].dataIndex = index} )
+    blockList = blockList.map( ( block, index ) => {
+      block.dataIndex = index
+      return block
+    })
     blockList = blockList.filter( block => block.localidade.id == local_id )
 
     return blockList

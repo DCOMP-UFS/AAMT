@@ -126,24 +126,23 @@ const ChooseActivity = ({ regionalSaude }) => {
         equipe_id
       });
     }
-    if (observation === 'diary-report-team') {
-      return navigation.navigate('Escolher a data', {
-        id,
+    else if (observation === 'diary-report-team') {
+      return navigation.navigate('Escolha o dia', {
+        equipe_id,
       });
     }
-    if (observation === 'weekly-report') {
+    else if (observation === 'weekly-report') {
       return navigation.navigate('Escolha a semana', {
         id,
       });
     }
-    if (observation === 'current-activity-report') {
+    else if (observation === 'current-activity-report') {
       return navigation.navigate('Boletim geral da atividade', {
         id,
       });
     }
-    if (observation === 'team-activity-report') {
-      return navigation.navigate('Relatorio da equipe na atividade', {
-        id,
+    else if (observation === 'team-activity-report') {
+      return navigation.navigate('Boletim da equipe na atividade', {
         equipe_id,
       });
     }
@@ -177,8 +176,46 @@ const ChooseActivity = ({ regionalSaude }) => {
           </SelectActivityButton>
         )}
 
+        {observation === 'diary-report-team' &&
+         (
+          activity.equipes.map((team, index) => (
+            <Box key={index}>
+              <TouchableOpacity
+                key={team.id}
+                onPress={() =>
+                  navigationTo(null, team.id)
+                }
+              >
+                <AccordionItemText>
+                  {"Equipe "+team.apelido}
+                </AccordionItemText>
+              </TouchableOpacity>
+            </Box>
+          ))
+        )}
+
+        {observation === 'team-activity-report' &&
+         (
+          activity.equipes.map((team, index) => (
+            <Box key={index}>
+              <TouchableOpacity
+                key={team.id}
+                onPress={() =>
+                  navigationTo(null, team.id)
+                }
+              >
+                <AccordionItemText>
+                  {"Equipe "+team.apelido}
+                </AccordionItemText>
+              </TouchableOpacity>
+            </Box>
+          ))
+        )}
+
         {observation !== 'weekly-report' &&
           observation !== 'current-activity-report' &&
+          observation !== 'diary-report-team' &&
+          observation !== 'team-activity-report' &&
           activity.equipes.map((team, index) => (
             <Collapse key={index} style={{ margin: 5 }}>
               <CollapseHeader>

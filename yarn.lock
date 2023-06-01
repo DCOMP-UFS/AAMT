@@ -2328,6 +2328,7 @@ __metadata:
     react: 17.0.2
     react-native: 0.66.3
     react-native-collapsible: ^1.6.0
+    react-native-date-picker: ^4.2.13
     react-native-gesture-handler: ^1.10.3
     react-native-reanimated: ^2.2.4
     react-native-safe-area-context: ^3.3.2
@@ -8604,6 +8605,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"prop-types@npm:^15.8.1":
+  version: 15.8.1
+  resolution: "prop-types@npm:15.8.1"
+  dependencies:
+    loose-envify: ^1.4.0
+    object-assign: ^4.1.1
+    react-is: ^16.13.1
+  checksum: c056d3f1c057cb7ff8344c645450e14f088a915d078dcda795041765047fa080d38e5d626560ccaac94a4e16e3aa15f3557c1a9a8d1174530955e992c675e459
+  languageName: node
+  linkType: hard
+
 "property-expr@npm:^2.0.4":
   version: 2.0.4
   resolution: "property-expr@npm:2.0.4"
@@ -8705,7 +8717,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-is@npm:^16.13.0, react-is@npm:^16.7.0, react-is@npm:^16.8.1":
+"react-is@npm:^16.13.0, react-is@npm:^16.13.1, react-is@npm:^16.7.0, react-is@npm:^16.8.1":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
   checksum: f7a19ac3496de32ca9ae12aa030f00f14a3d45374f1ceca0af707c831b2a6098ef0d6bdae51bd437b0a306d7f01d4677fcc8de7c0d331eb47ad0f46130e53c5f
@@ -8730,6 +8742,18 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: a804072e05b2e4e41d54cb44bec4b63d27a88075e4e54359208c2f0e53cdbd8c5d6090e150ff88faa24b76b022b1ba51952cb60432e44d8114f9c73feb175db3
+  languageName: node
+  linkType: hard
+
+"react-native-date-picker@npm:^4.2.13":
+  version: 4.2.13
+  resolution: "react-native-date-picker@npm:4.2.13"
+  dependencies:
+    prop-types: ^15.8.1
+  peerDependencies:
+    react: ">= 17.0.1"
+    react-native: ">= 0.64.3"
+  checksum: 0e18931524c2a9a19efac3d367a0c746201245c29a52ffa665eb4144d96226f68657f14f71918786ea47ae64d4ad06b9ede9ac0dc6f5539499fd05d3aca3f466
   languageName: node
   linkType: hard
 

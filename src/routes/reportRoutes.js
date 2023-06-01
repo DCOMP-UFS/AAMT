@@ -8,8 +8,11 @@ import DailyWorkList from '../pages/Reports/DailyWorkList';
 import AgentDailyReport from '../pages/Reports/AgentDailyReport';
 import ChooseActivity from '../pages/Reports/ChooseActivity';
 import ChooseWeek from '../pages/Reports/ChooseWeek';
+import ChooseDay from '../pages/Reports/ChooseDay';
 import WeeklyReport from '../pages/Reports/WeeklyReport';
 import ActivityGeneralReport from '../pages/Reports/ActivityGeneralReport';
+import TeamDailyReport from '../pages/Reports/TeamDailyReport'
+import TeamActivityReport from '../pages/Reports/TeamActivityReport'
 
 const Stack = createNativeStackNavigator();
 
@@ -45,12 +48,18 @@ const reportRoutes = () => {
       />
       <Stack.Screen name="Trabalhos diários" component={DailyWorkList} />
       <Stack.Screen name="Boletim Diário" component={AgentDailyReport} />
+      <Stack.Screen name="Boletim Diário por Equipe" component={TeamDailyReport} />
       <Stack.Screen name="Selecione a atividade" component={ChooseActivity} />
       <Stack.Screen name="Boletim Semanal" component={WeeklyReport} />
       <Stack.Screen name="Escolha a semana" component={ChooseWeek} />
+      <Stack.Screen name="Escolha o dia" component={ChooseDay} />
       <Stack.Screen
         name="Boletim geral da atividade"
         component={ActivityGeneralReport}
+      />
+      <Stack.Screen
+        name="Boletim da equipe na atividade"
+        component={TeamActivityReport}
       />
     </Stack.Navigator>
   );

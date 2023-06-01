@@ -23,13 +23,13 @@ const Reports = ({ profile }) => {
       goTo: 'Selecione a atividade',
       observation: 'diary-report-agent',
     },
-    // {
-    //   title: 'Boletim Diário por Equipe',
-    //   description: 'Progresso da equipe nas atividades',
-    //   iconColor: '#35c32a',
-    //   goTo: 'Selecione a atividade',
-    //   observation: 'diary-report-team',
-    // },
+    {
+      title: 'Boletim Diário por Equipe',
+      description: 'Progresso da equipe nas atividades',
+      iconColor: '#4287f5',
+      goTo: 'Selecione a atividade',
+      observation: 'diary-report-team',
+    },
     {
       title: 'Boletim Semanal',
       description: 'Resumo da semana epidemiológica',
@@ -44,13 +44,13 @@ const Reports = ({ profile }) => {
       goTo: 'Selecione a atividade',
       observation: 'current-activity-report',
     },
-    // {
-    //   title: 'Boletim da Equipe por Atividade',
-    //   description: 'Desempenho da equipe na atividade',
-    //   iconColor: '#0292B7',
-    //   goTo: 'Selecione a atividade',
-    //   observation: 'team-activity-report',
-    // },
+    {
+      title: 'Boletim da Equipe por Atividade',
+      description: 'Desempenho da equipe na atividade',
+      iconColor: '#0292B7',
+      goTo: 'Selecione a atividade',
+      observation: 'team-activity-report',
+    },
   ];
 
   const agentReports = [

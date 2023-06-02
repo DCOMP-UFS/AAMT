@@ -124,9 +124,6 @@ function PNCD({ rota, handleSave, trabalhoDiario_id, recipientes, imovel, objeti
     }else if(imovel.numero == ''){
       fl_valido = false;
       props.showNotifyToast( "O Nº imóvel é obrigatório!", "warning" );
-    }else if(imovel.responsavel == null || isBlank(imovel.responsavel)){
-      fl_valido = false;
-      props.showNotifyToast( "O responsavel do imóvel é obrigatório!", "warning" );
     }else if( entrada === "" ) {
       fl_valido = false;
       props.showNotifyToast( "O campo hora de entrada é obrigatório!", "warning" );

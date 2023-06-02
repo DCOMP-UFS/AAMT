@@ -337,7 +337,7 @@ function ProcurarImovel({ imovel, selectQuarteirao, rota, quarteirao, isPaginaEd
 
             <Col md="6">
               <div className="form-group">
-                <label>Responsável do imóvel<code>*</code></label>
+                <label>Responsável do imóvel</label>
                 <input
                   name="responsavel"
                   type="text"

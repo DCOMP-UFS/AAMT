@@ -23,13 +23,6 @@ module.exports = {
           allowNull: false,
           defaultValue: 1
         },
-        regional_saude_id: {
-          type: Sequelize.INTEGER,
-          allowNull: false,
-          references: { model: 'regionais_saude', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'RESTRICT'
-        },
         created_at: {
           type: Sequelize.DATE,
           allowNull: false,

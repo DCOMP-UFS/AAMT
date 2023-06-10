@@ -52,6 +52,8 @@ getById = async ( req, res ) => {
 getRegionalHealthByState = async ( req, res ) => {
   try{
     const { estado_id } = req.params;
+    const { ativo } = req.query
+
 
     const estado = Estado.findByPk( estado_id );
 
@@ -59,15 +61,24 @@ getRegionalHealthByState = async ( req, res ) => {
       return res.status(400).json({ error: "Estado não existe" });
     }
 
+    let where = {estado_id}
+    if(ativo != null){
+      if(ativo == "true")
+        where.ativo = 1
+      else if( ativo == "false" )
+        where.ativo = 0
+      else
+        return res.status(400).json({ error: "Atributo ativo deve receber true, false ou null como valores" });
+    }
+
     const regionais = await RegionalSaude.findAll({
-      where: {
-        estado_id
-      },
+      where: where,
       order: [[ 'nome', 'asc' ]]
     });
 
     return res.json( regionais );
   } catch (error) {
+    console.log(error)
     return res.status( 400 ).send( { 
       status: 'unexpected error',
       mensage: 'Algum problema inesperado ocorreu nesta rota da api',
@@ -98,6 +109,7 @@ getRegionalHealthByState = async ( req, res ) => {
 store = async (req, res) => {
   try{
     const { nome, endereco, estado_id } = req.body;
+
     const userId = req.userId;
 
     const allow = await allowFunction( req.userId, 'manter_regional_saude' );
@@ -120,6 +132,43 @@ store = async (req, res) => {
   }
 }
 
+update = async (req, res) => {
+  try{
+    const { id } = req.params;
+    let { nome, endereco, ativo } = req.body;
+
+    ativo = parseInt(ativo)
+
+    const userId = req.userId;
+
+    const allow = await allowFunction( req.userId, 'manter_regional_saude' );
+    if( !allow ) {
+      return res.status(403).json({ error: 'Acesso negado' });
+    }
+    
+    const { isRejected } = await RegionalSaude.update(
+      {
+        nome,
+        endereco,
+        ativo
+      },
+      { where: { id } }
+    )
+
+    if( isRejected )
+      return res.status(400).json({ error: 'Não foi possível atualizar a regional' });
+    
+    const regional = await RegionalSaude.findByPk(id)  
+
+    return res.status(200).json( regional );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
+}
+
 const router = express.Router();
 router.use(authMiddleware);
 
@@ -127,6 +176,7 @@ router.get('/', index);
 router.get('/:id', getById);
 router.get('/:estado_id/estados', getRegionalHealthByState);
 router.post('/', store);
+router.put('/:id',update)
 // router.delete('/:id', destroy);
 
 module.exports = app => app.use('/regionaisSaude', router);

@@ -111,7 +111,7 @@ const UsuariosRegConsultar = ( { regionalSaude_id, usuarios, ...props } ) => {
       );
     },
     setRowProps: (row) => {
-      const className = row[7] === "Não" ? "row-desabled" : "";
+      const className = row[8] === "Não" ? "row-desabled" : "";
 
       return {
         className

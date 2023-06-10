@@ -1,10 +1,15 @@
 export const ActionTypes = {
   GET_MUNICIPIOS_REQUEST: "GET_MUNICIPIOS_REQUEST",
+  GET_MUNICIPIOS_BY_STATE_REQUEST: "GET_MUNICIPIOS_BY_STATE_REQUEST",
   GET_MUNICIPIOS_SUCCESS: "GET_MUNICIPIOS_SUCCESS",
   GET_CITY_BY_ID_REQUEST: "GET_CITY_BY_ID_REQUEST",
   GET_CITY_BY_ID_SUCCESS: "GET_CITY_BY_ID_SUCCESS",
   GET_CITY_BY_REGIONAL_HEALTH_REQUEST: "GET_CITY_BY_REGIONAL_HEALTH_REQUEST",
   GET_CITY_BY_REGIONAL_HEALTH_SUCCESS: "GET_CITY_BY_REGIONAL_HEALTH_SUCCESS",
+  GET_ACTUAL_CITY_FROM_REGIONAL_HEALTH_REQUEST: "GET_ACTUAL_CITY_FROM_REGIONAL_HEALTH_REQUEST",
+  GET_ACTUAL_CITY_FROM_REGIONAL_HEALTH_SUCCESS: "GET_ACTUAL_CITY_FROM_REGIONAL_HEALTH_SUCCESS",
+  GET_OLD_CITY_FROM_REGIONAL_HEALTH_REQUEST: "GET_OLD_CITY_FROM_REGIONAL_HEALTH_REQUEST",
+  GET_OLD_CITY_FROM_REGIONAL_HEALTH_SUCCESS: "GET_OLD_CITY_FROM_REGIONAL_HEALTH_SUCCESS",
   CREATE_CITY_REQUEST: "CREATE_CITY_REQUEST",
   CREATE_CITY_SUCCESS: "CREATE_CITY_SUCCESS",
   CREATE_CITY_FAIL: "CREATE_CITY_FAIL",
@@ -12,12 +17,29 @@ export const ActionTypes = {
   UPDATE_CITY_REQUEST: "UPDATE_CITY_REQUEST",
   UPDATE_CITY_SUCCESS: "UPDATE_CITY_SUCCESS",
   CHANGE_CITY_EDIT_INDEX: "CHANGE_CITY_EDIT_INDEX",
-  CLEAR_UPDATE_CITY: "CLEAR_UPDATE_CITY"
+  CLEAR_UPDATE_CITY: "CLEAR_UPDATE_CITY",
+  TRANSFER_CITY_REGIONAL_REQUEST: "TRANSFER_CITY_REGIONAL_REQUEST",
+  TRANSFER_CITY_REGIONAL_SUCCESS: "TRANSFER_CITY_REGIONAL_SUCCESS",
+  TRANSFER_CITY_REGIONAL_FAIL: "TRANSFER_CITY_REGIONAL_FAIL",
+  TRANSFER_CITY_REGIONAL_RESET: "TRANSFER_CITY_REGIONAL_RESET",
+  REBIND_CITY_REGIONAL_REQUEST: "REBIND_CITY_REGIONAL_REQUEST",
+  REBIND_CITY_REGIONAL_SUCCESS: "REBIND_CITY_REGIONAL_SUCCESS",
+  REBIND_CITY_REGIONAL_FAIL: "REBIND_CITY_REGIONAL_FAIL",
+  REBIND_CITY_REGIONAL_RESET: "REBIND_CITY_REGIONAL_RESET",
 }
 
 export const getMunicipiosRequest = () => {
   return {
     type: ActionTypes.GET_MUNICIPIOS_REQUEST
+  }
+}
+
+export const getMunicipiosByStateRequest = ( estado_id ) => {
+  return {
+    type: ActionTypes.GET_MUNICIPIOS_BY_STATE_REQUEST,
+    payload: {
+      estado_id
+    }
   }
 }
 
@@ -48,11 +70,16 @@ export const getCityById = municipio => {
   }
 }
 
-export const getCityByRegionalHealthRequest = regionalSaude_id => {
+//Vinculado indica pode receber true, false ou null
+//  True  - é o valor padrão e irá retornas todos os municipios que estão atualmente vinculados à regional
+//  False - significa que será retonado todos os municipios que ja fizeram parte da regional, mas não mais
+//  Null  - significa que será retonados todos os muncipios que pertecem ou ja perteceram à trgonal
+export const getCityByRegionalHealthRequest = (regionalSaude_id, vinculado = true) => {
   return {
     type: ActionTypes.GET_CITY_BY_REGIONAL_HEALTH_REQUEST,
     payload: {
-      regionalSaude_id
+      regionalSaude_id,
+      vinculado
     }
   }
 }
@@ -60,6 +87,44 @@ export const getCityByRegionalHealthRequest = regionalSaude_id => {
 export const getCityByRegionalHealth = municipios => {
   return {
     type: ActionTypes.GET_CITY_BY_REGIONAL_HEALTH_SUCCESS,
+    payload: {
+      municipios
+    }
+  }
+}
+
+export const getActualCityFromRegionalHealthRequest = (regionalSaude_id) => {
+  return {
+    type: ActionTypes.GET_ACTUAL_CITY_FROM_REGIONAL_HEALTH_REQUEST,
+    payload: {
+      regionalSaude_id,
+      vinculado: true
+    }
+  }
+}
+
+export const getActualCityFromRegionalHealthSuccess = municipios => {
+  return {
+    type: ActionTypes.GET_ACTUAL_CITY_FROM_REGIONAL_HEALTH_SUCCESS,
+    payload: {
+      municipios
+    }
+  }
+}
+
+export const getOldCityFromRegionalHealthRequest = (regionalSaude_id) => {
+  return {
+    type: ActionTypes.GET_OLD_CITY_FROM_REGIONAL_HEALTH_REQUEST,
+    payload: {
+      regionalSaude_id,
+      vinculado: false
+    }
+  }
+}
+
+export const getOldCityFromRegionalHealthSuccess = municipios => {
+  return {
+    type: ActionTypes.GET_OLD_CITY_FROM_REGIONAL_HEALTH_SUCCESS,
     payload: {
       municipios
     }
@@ -126,5 +191,61 @@ export const changeCityEditIndex = index => {
 export const clearUpdateCity = () => {
   return {
     type: ActionTypes.CLEAR_UPDATE_CITY
+  }
+}
+
+export const transferMunicipioRegionalRequest = ( municipio_id, regional_id ) => {
+  return {
+    type: ActionTypes.TRANSFER_CITY_REGIONAL_REQUEST,
+    payload: {
+      municipio_id,
+      regional_id
+    }
+  }
+}
+
+export const transferMunicipioRegionalSuccess = () => {
+  return {
+    type: ActionTypes.TRANSFER_CITY_REGIONAL_SUCCESS
+  }
+}
+
+export const transferMunicipioRegionalFail = () => {
+  return {
+    type: ActionTypes.TRANSFER_CITY_REGIONAL_FAIL
+  }
+}
+
+export const transferMunicipioRegionalReset = () => {
+  return {
+    type: ActionTypes.TRANSFER_CITY_REGIONAL_RESET
+  }
+}
+
+export const rebindMunicipioRegionalRequest = ( municipio_id, regional_id ) => {
+  return {
+    type: ActionTypes.REBIND_CITY_REGIONAL_REQUEST,
+    payload: {
+      municipio_id,
+      regional_id
+    }
+  }
+}
+
+export const rebindMunicipioRegionalSuccess = () => {
+  return {
+    type: ActionTypes.REBIND_CITY_REGIONAL_SUCCESS
+  }
+}
+
+export const rebindMunicipioRegionalFail = () => {
+  return {
+    type: ActionTypes.REBIND_CITY_REGIONAL_FAIL
+  }
+}
+
+export const rebindMunicipioRegionalReset = () => {
+  return {
+    type: ActionTypes.REBIND_CITY_REGIONAL_RESET
   }
 }

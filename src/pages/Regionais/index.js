@@ -4,8 +4,6 @@ import { getDateBr } from '../../config/function';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ModalAdd from './ModalAdd';
-import ModalUpdate from './ModalUpdate';
-import ModalDisabled from './ModalDisabled';
 import Table, { ButtonAdd, ButtonDesabled } from '../../components/Table';
 import Typography from "@material-ui/core/Typography";
 import { FaCity } from 'react-icons/fa';
@@ -18,14 +16,12 @@ import { connect } from 'react-redux';
 import { changeSidebar } from '../../store/Sidebar/sidebarActions';
 import { changeTableSelected } from '../../store/SupportInfo/supportInfoActions';
 import { clearToast } from '../../store/AppConfig/appConfigActions';
-import { getMunicipiosByStateRequest, changeCityEditIndex } from '../../store/Municipio/municipioActions';
+import { changeCityEditIndex } from '../../store/Municipio/municipioActions';
+import { getRegionalHealthByStateRequest } from '../../store/RegionalSaude/regionalSaudeActions';
 
 // STYLES
 import { GlobalStyle } from './styles';
 import { PageIcon, PageHeader } from '../../styles/util';
-
-//UTILIES FUNCTIONS
-import { getDateIso, ordenadorDataHora } from '../../config/function';
 
 const columns = [
   {
@@ -40,59 +36,46 @@ const columns = [
       ),
     }
   },
-  "Código",
-  "Nome",
-  "Regional",
   {
-    name:  "Criado em",
-    label: "Criado em",
+    name: "nome",
+    label: "Nome",
     options: {
       filter: false,
-      sortCompare: ordenadorDataHora
     }
   },
   {
-    name:  "Atualizado em",
-    label: "Atualizado em",
+    name: "endereco",
+    label: "Endereco",
     options: {
       filter: false,
-      sortCompare: ordenadorDataHora
     }
   },
   "Ativo"
 ];
 
-const Municipios = ( { municipios, ...props } ) => {
+const Regionais = ( { regionaisSaude, coordGeral, ...props } ) => {
   const [ rows, setRows ]                    =  useState([]);
   const [ showModalAdd, setShowModalAdd ]    =  useState( false );
+
 
   const handleCloseModalAdd = () => {
     setShowModalAdd( false );
   }
   
   const options = {
+    selectableRows: 'none',
     customToolbar: () => {
       return (
         <ButtonAdd
           title="Adicionar"
           data-toggle="modal"
-          data-target="#modal-novo-municipio" 
+          data-target="#modal-nova-regional" 
           onClick={ () => { setShowModalAdd( true ); } }
         />
       );
     },
-    customToolbarSelect: ( { data } ) => {
-      props.changeTableSelected( 'tableCity', data );
-      return (
-        <ButtonDesabled
-          title="Desativar município"
-          data-toggle="modal"
-          data-target="#modal-desativar-municipio" 
-        />
-      );
-    },
     setRowProps: ( row ) => {
-      const className = row[ 6 ] === "Não" ? "row-desabled" : "";
+      const className = row[ 5 ] === "Não" ? "row-desabled" : "";
 
       return {
         className
@@ -101,33 +84,30 @@ const Municipios = ( { municipios, ...props } ) => {
     onRowClick: ( row, ...props ) => {
       const id = row[ 0 ].props[ 'data-id' ];
 
-      window.location = `${ window.location.origin.toString() }/municipios/${ id }`;
+      window.location = `${ window.location.origin.toString() }/regionais/${ id }`;
     }
   };
 
   useEffect(() => {
-    props.changeSidebar( "municipio" );
-    props.getMunicipiosByStateRequest(props.estado.id);
+    props.changeSidebar( "regional" );
+    props.getRegionalHealthByStateRequest( coordGeral.regionalSaude.estado.id );
   }, []);
 
   useEffect(() => {
     createRows();
-  }, [ municipios ]);
+  }, [ regionaisSaude ]);
 
   function createRows() {
-    const municipiosList = municipios.map( (municipio, index) => (
+    const regionaisList = regionaisSaude.map( (regional, index) => (
       [
-        { index: (index + 1), id: municipio.id },
-        municipio.codigo,
-        municipio.nome,
-        municipio.regional.nome,
-        getDateBr( municipio.createdAt ),
-        getDateBr( municipio.updatedAt ),
-        municipio.ativo ? "Sim" : "Não"
+        { index: (index + 1), id: regional.id },
+        regional.nome,
+        regional.endereco,
+        regional.ativo ? "Sim" : "Não"
       ]
     ));
 
-    setRows( municipiosList );
+    setRows( regionaisList );
   }
 
   function notify() {
@@ -142,7 +122,7 @@ const Municipios = ( { municipios, ...props } ) => {
       <PageHeader>
         <h3 className="page-title">
           <PageIcon><FaCity /></PageIcon>
-          Municípios
+          Regionais de Saúde
         </h3>
       </PageHeader>
       <section className="card-list">
@@ -152,7 +132,7 @@ const Municipios = ( { municipios, ...props } ) => {
           {/* Formulário básico */}
           <article className="col-md-12 stretch-card">
             <Table
-              title= {"Municípios de "+props.estado.nome}
+              title={ "Regionais de "+props.estado.nome}
               columns={ columns }
               data={ rows }
               options={ options }
@@ -160,8 +140,6 @@ const Municipios = ( { municipios, ...props } ) => {
           </article>
         </div>
         <ModalAdd show={ showModalAdd } handleClose={ handleCloseModalAdd }/>
-        <ModalUpdate />
-        <ModalDisabled />
 
         <ToastContainer />
         { props.toast.message && notify() }
@@ -171,15 +149,23 @@ const Municipios = ( { municipios, ...props } ) => {
 }
 
 const mapStateToProps = state => ({
-  municipios: state.municipio.municipios,
   toast: state.appConfig.toast,
+  regionaisSaude: state.regionalSaude.regionaisSaude,
+  coordGeral: state.appConfig.usuario,
   estado: state.appConfig.usuario.regionalSaude.estado
+
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ changeSidebar, getMunicipiosByStateRequest, clearToast, changeCityEditIndex, changeTableSelected }, dispatch);
+  bindActionCreators({ 
+    changeSidebar,
+     clearToast, 
+     changeCityEditIndex, 
+     changeTableSelected,
+     getRegionalHealthByStateRequest 
+  }, dispatch);
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Municipios);
+)(Regionais);

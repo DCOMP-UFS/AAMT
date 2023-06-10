@@ -69,6 +69,7 @@ export const itens = {
     criarSubmenu( "at_cadastrar", false, "Cadastrar", "/atividadesRegional/cadastrar" ),
   ], "operacional" ),
   usuario: criarLink( "usuario", "Usuários", false, FA.FaUsers, "/usuariosRegional", "cadastroBasico" ),
+  regional: criarLink( "regional", "Regionais de Saúde", false, FA.FaCity, "/regionais", "cadastroBasico" ),
   municipio: criarLink( "municipio", "Municípios", false, FA.FaCity, "/municipios", "cadastroBasico" ),
   rua: criarLink( "rua", "Logradouros", false, FA.FaCity, "/ruas", "cadastroBasico" ),
   amostra: criarLink( "amostra", "Amostras", false, FA.FaVial, "/amostras", "operacional" ),
@@ -114,6 +115,9 @@ export const menus = {
   ],
   manter_atividade: [
     itens.atividade,
+  ],
+  manter_regional_saude:[
+    itens.regional
   ],
   manter_municipio: [
     itens.municipio,

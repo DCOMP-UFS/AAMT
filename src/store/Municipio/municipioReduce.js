@@ -7,7 +7,12 @@ const INITIAL_STATE = {
   createdCity: null,
   updatedCity: null,
   reload: false,
-  municipiosList: []
+  municipiosList: [],
+  municipiosAtuaisRegional: [],
+  municipiosAntigosRegional: [],
+  transferedCity: null,
+  rebindedCity: null,
+
 }
 
 export default function Municipio(state = INITIAL_STATE, action) {
@@ -30,6 +35,20 @@ export default function Municipio(state = INITIAL_STATE, action) {
       return {
         ...state,
         municipiosList: action.payload.municipios
+      }
+    }
+
+    case ActionTypes.GET_ACTUAL_CITY_FROM_REGIONAL_HEALTH_SUCCESS: {
+      return {
+        ...state,
+        municipiosAtuaisRegional: action.payload.municipios
+      }
+    }
+
+    case ActionTypes.GET_OLD_CITY_FROM_REGIONAL_HEALTH_SUCCESS: {
+      return {
+        ...state,
+        municipiosAntigosRegional: action.payload.municipios
       }
     }
 
@@ -89,6 +108,48 @@ export default function Municipio(state = INITIAL_STATE, action) {
       return {
         ...state,
         updatedCity: null
+      }
+    }
+
+    case ActionTypes.TRANSFER_CITY_REGIONAL_SUCCESS: {
+      return {
+        ...state,
+        transferedCity: true
+      }
+    }
+
+    case ActionTypes.TRANSFER_CITY_REGIONAL_FAIL: {
+      return {
+        ...state,
+        transferedCity: false
+      }
+    }
+
+    case ActionTypes.TRANSFER_CITY_REGIONAL_RESET: {
+      return {
+        ...state,
+        transferedCity: null
+      }
+    }
+
+    case ActionTypes.REBIND_CITY_REGIONAL_SUCCESS: {
+      return {
+        ...state,
+        rebindedCity: true
+      }
+    }
+
+    case ActionTypes.REBIND_CITY_REGIONAL_FAIL: {
+      return {
+        ...state,
+        rebindedCity: false
+      }
+    }
+
+    case ActionTypes.REBIND_CITY_REGIONAL_RESET: {
+      return {
+        ...state,
+        rebindedCity: null
       }
     }
 

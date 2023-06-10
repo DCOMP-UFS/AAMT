@@ -33,7 +33,7 @@ export const RelatorioAtividadeRegional = ({ atividades, ciclos, municipios, usu
   useEffect(() => {
     props.changeSidebar( "relatorio", "rlt_porAtividadeRegional" );
     //props.getCicloAbertoRequest( usuario.municipio.regional.id );
-    props.getCityByRegionalHealthRequest(usuario.regionalSaude.id);
+    props.getCityByRegionalHealthRequest(usuario.regionalSaude.id, null);
     props.getOpenAndFinishedCyclesRequest(usuario.regionalSaude.id)
   }, []);
 

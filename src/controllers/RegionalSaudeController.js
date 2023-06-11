@@ -1,6 +1,7 @@
 const express = require('express');
 const authMiddleware = require('../middlewares/auth');
 const RegionalSaude = require('../models/RegionalSaude');
+const RegionalMunicipio = require('../models/RegionalMunicipio')
 const Estado = require('../models/Estado');
 const { Op } = require("sequelize");
 
@@ -169,11 +170,56 @@ update = async (req, res) => {
   }
 }
 
+isAbleToCreateCycleOrActivity = async (req, res) => {
+  try{
+    const { id } = req.params;
+
+    let regionalSituacao = {
+      ativo: null,
+      qtdMunicipiosAtivos:[]
+    }
+
+    const regional = await RegionalSaude.findByPk(id)
+
+    if(!regional)
+      return res.status(400).json( { error:"Regional informada não existe"} );
+
+    regionalSituacao.ativo = regional.ativo
+
+    const regionalMunicipio = await RegionalMunicipio.findAll(
+      {
+        where:{
+          regional_saude_id: id,
+          vinculado: true
+        },
+        include:{
+          association:"municipio",
+          where:{
+            ativo: 1
+          }
+        }
+      }
+    )
+    let ids = []
+    regionalMunicipio.forEach( rm => ids.push(rm.municipio.id))
+
+    regionalSituacao.qtdMunicipiosAtivos = regionalMunicipio.length
+    return res.status(200).json( regionalSituacao );
+
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
+}
+
 const router = express.Router();
 router.use(authMiddleware);
 
 router.get('/', index);
 router.get('/:id', getById);
+router.get('/:id/verificarSituacao', isAbleToCreateCycleOrActivity);
 router.get('/:estado_id/estados', getRegionalHealthByState);
 router.post('/', store);
 router.put('/:id',update)

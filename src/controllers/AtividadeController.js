@@ -14,6 +14,7 @@ const EquipeQuarteirao = require('../models/EquipeQuarteirao');
 const Membro = require('../models/Membro');
 const Usuario = require('../models/Usuario');
 const TrabalhoDiario = require('../models/TrabalhoDiario')
+const RegionalMunicipio = require('../models/RegionalMunicipio')
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
@@ -87,30 +88,24 @@ getActivitiesOfCity = async ( req, res ) => {
 
     const ciclo = await Ciclo.findByPk(ciclo_id)
 
-    /* const ciclo = await Ciclo.findOne({
-      where: {
-        regional_saude_id: regionalSaude_id,
-        [Op.and]: [
-          {
-            dataInicio: {
-              [Op.lte]: current_date
-            }
-          },
-          {
-            dataFim: {
-              [Op.gte]: current_date
-            }
-          }
-        ]
-      }
-    }); */
-
     if( !ciclo )
       return res.status(200).json({ message: "Não foi encontrado o ciclo com id="+ciclo_id });
+    
+    const regionalMunicipio = await RegionalMunicipio.findAll(
+      {
+        where:{
+          regional_saude_id: regionalSaude_id,
+          vinculado: true
+        }
+      }
+    )
+
+    let municipios_ids = []
+    regionalMunicipio.forEach( rm => municipios_ids.push(rm.municipio_id))
 
     const municipios = await Municipio.findAll({
       where: {
-        regional_saude_id: regionalSaude_id
+        id: {[Op.in]: municipios_ids}
       },
       include: {
         association: 'atividades',
@@ -646,13 +641,18 @@ getResponsibilityActivities = async ( req, res ) => {
     //significa que o usuario que fez a requisição é um coordenador geral
     if(use_req.atuacoes[ 0 ].tipoPerfil == 1){
 
-      const municipios_regional = await Municipio.findAll({
-        where:{
-          regional_saude_id: use_req.atuacoes[ 0 ].local_id
+      const regionalMunicipio = await RegionalMunicipio.findAll(
+        {
+          where:{
+            regional_saude_id: use_req.atuacoes[ 0 ].local_id
+          }
         }
-      })
-      const municipios_id = municipios_regional.map( m => m.id )
-      where.municipio_id = { [Op.in]: municipios_id }
+      )
+  
+      let municipios_ids = []
+      regionalMunicipio.forEach( rm => municipios_ids.push(rm.municipio_id))
+
+      where.municipio_id = { [Op.in]: municipios_ids }
 
     }
     else

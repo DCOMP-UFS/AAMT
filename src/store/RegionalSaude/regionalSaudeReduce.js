@@ -5,6 +5,7 @@ const INITIAL_STATE = {
   regionalSaude: {},
   created: null,
   updated: null,
+  situacaoRegional: {}
 }
 
 export default function RegionalSaude(state = INITIAL_STATE, action) {
@@ -66,6 +67,13 @@ export default function RegionalSaude(state = INITIAL_STATE, action) {
       return {
         ...state,
         updated: null
+      }
+    }
+
+    case ActionTypes.GET_REGIONAL_HEALTH_SITUATION_SUCCESS: {
+      return {
+        ...state,
+        situacaoRegional: action.payload.situacaoRegional
       }
     }
 

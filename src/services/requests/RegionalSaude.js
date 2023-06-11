@@ -18,6 +18,12 @@ export const getRegionalById = id => {
   });
 }
 
+export const getRegionalSituation = id => {
+  return api.get(`/regionaisSaude/${ id }/verificarSituacao`, {
+    ...headerAuthorization()
+  });
+}
+
 export const updateRegionalRequest = data => {
   const { id, ...body } = data;
 

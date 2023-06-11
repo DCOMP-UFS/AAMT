@@ -93,6 +93,28 @@ export function* updateRegionalHealth(action) {
   }
 }
 
+export function* getRegionalHealthSituation(action) {
+  try {
+    const { data, status } = yield call( servico.getRegionalSituation, action.payload.id );
+
+    if( status === 200 ) {
+      yield put( RegionalSaudeActions.getRegionalHealthSituationSuccess( data ) );
+    }else {
+      yield put( AppConfigActions.showNotifyToast( "Falha ao consultar a  situação da regional de saúde: " + status, "error" ) );
+    }
+
+  } catch (err) {
+    if(err.response){
+      //Provavel erro de logica na API
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar situação da regional de saúde, entre em contato com o suporte", "error" ) );
+      
+    }
+    //Se chegou aqui, significa que não houve resposta da API
+    else
+      yield put( AppConfigActions.showNotifyToast( "Erro ao consultar a situação regional de saúde, favor verifique a conexão", "error" ) );
+  }
+}
+
 function* watchGetRegionalHealthById() {
   yield takeLatest( RegionalSaudeActions.ActionTypes.GET_REGIONAL_HEALTH_BY_ID_REQUEST, getRegionalHealthById );
 }
@@ -109,11 +131,17 @@ function* watchUpdateRegionalHealth() {
   yield takeLatest( RegionalSaudeActions.ActionTypes.UPDATE_REGIONAL_HEALTH_REQUEST, updateRegionalHealth );
 }
 
+function* watchGetRegionalHealthSituation() {
+  yield takeLatest( RegionalSaudeActions.ActionTypes.GET_REGIONAL_HEALTH_SITUATION_REQUEST, getRegionalHealthSituation );
+
+}
+
 export function* regionalSaudeSaga() {
   yield all( [
     watchGetRegionalHealthById(),
     watchGetRegionalHealthByState(),
     watchCreateRegionalHealth(),
     watchUpdateRegionalHealth(),
+    watchGetRegionalHealthSituation()
   ] );
 }

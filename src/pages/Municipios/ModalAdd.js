@@ -94,7 +94,7 @@ function ModalAdd( { createCityRequest, createdCity, show, handleClose, ...props
 
   useEffect( () => {
     if( Object.entries( estado ).length > 0 ) {
-      props.getRegionalHealthByStateRequest( estado.value );
+      props.getRegionalHealthByStateRequest( estado.value, true );
       setRegionalSaude( {} );
     }
   }, [ estado ] );

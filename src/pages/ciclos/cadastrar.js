@@ -17,10 +17,13 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../store/Sidebar/sidebarActions';
+import { getRegionalHealthSituationRequest } from '../../store/RegionalSaude/regionalSaudeActions'
+import { showNotifyToast } from '../../store/AppConfig/appConfigActions';
 import {
   createCycleRequest,
   changeFlAddActive,
   getCyclesRequest,
+  createCityReset
 } from "../../store/Ciclo/cicloActions";
 
 // STYLES
@@ -38,7 +41,7 @@ import {
   PageHeader
 } from '../../styles/util';
 
-function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
+function CadastrarCiclo({ regionalSaude_id, ciclos, situacaoRegional, ...props }) {
   const [ reload, setReload ] = useState(false);
   const [ indexAtv, setIndexAtv ] = useState( null );
   const [ ano, setAno ] = useState({});
@@ -61,6 +64,8 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
   const [ isModalAddActiveOpen, setIsModalAddActiveOpen ] = useState( false );
   const [ isModalUpdateActiveOpen, setIsModalUpdateOpen ] = useState( false );
   const [ isLastCycleOpen, setIsLastCycleOpen ] = useState( false );
+  const [ isRegionalInactive, setIsRegionalInactive ] = useState( false );
+  const [ isRegionalCitiesInactive, setIsRegionalCitiesInactive ] = useState( false );
 
   const handleCloseAddActive = () => {setIsModalAddActiveOpen(false)}
   const handleCloseUpdateActive = () => {setIsModalUpdateOpen(false)}
@@ -68,7 +73,19 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
   useEffect(() => {
     props.changeSidebar( "ciclo", "ci_cadastrar" );
     props.getCyclesRequest( regionalSaude_id );
+    props.getRegionalHealthSituationRequest( regionalSaude_id )
   }, []);
+
+  useEffect(() => {
+    if( Object.entries( situacaoRegional ).length > 0 ) {
+      let isRegionalInactive = situacaoRegional.ativo ? false : true
+      let isCitiesInactive = situacaoRegional.qtdMunicipiosAtivos > 0 ? false : true
+
+      setIsRegionalInactive(isRegionalInactive)
+      setIsRegionalCitiesInactive(isCitiesInactive)
+      
+    }
+  }, [situacaoRegional]);
 
   useEffect(() => {
     let today = new Date();
@@ -77,6 +94,7 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
     if (ciclos.length === 0) {
       setSequencia({ value: 1, label: "1" });
       setMinDate(today.toISOString().split("T")[0]);
+      setIsLastCycleOpen(false)
     } else {
       let lastCycle = ciclos.at(-1);
       let tomorrow = new Date(lastCycle.dataFim);
@@ -93,11 +111,6 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
 
     const current_year = new Date().getFullYear();
     let optionYear = [];
-
-    // Cria a lista de opções de anos
-    // for (let index = 0; index < 6; index++) {
-    //   optionYear.push({ value: current_year + index, label: current_year + index });
-    // }
 
     // Define o ano atual e seta o ano no input
     optionYear.push({ value: current_year, label: current_year });
@@ -117,6 +130,21 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
       setDataFim((dataFim <= dataInicio && dataFim) ? endDateStringFormat : dataFim);
     }
   }, [dataInicio])
+
+  //Assim que é retornado a resposta da API
+  useEffect(() => {
+    if (props.created) {
+      setFlBtnLoading(false)
+      props.showNotifyToast( "Ciclo criado com sucesso", "success" )
+      props.createCityReset()
+      setTimeout( () => {
+        window.location = window.location.origin.toString() + "/ciclos/consultar";
+      }, 1500)
+      
+    }
+    setFlBtnLoading(false)
+    props.createCityReset()
+  }, [props.created])
 
   function addAtividade( atividade ) {
     setAtividades( [...atividades, atividade] );
@@ -168,13 +196,19 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
           <article className="col-md-12 stretch-card">
             <div className="card">
               <h4 className="title">Ciclo</h4>
-              <p className={isLastCycleOpen ? "d-none" : "text-description"}>
+              <p className={isLastCycleOpen || isRegionalInactive || isRegionalCitiesInactive ? "d-none" : "text-description"}>
                 Atenção! Os campos com <code>*</code> são obrigatórios
               </p>
               <p className={isLastCycleOpen ? "text-description" : "d-none"}>
                 Não é permitido cadastrar um novo ciclo enquanto existir outro sendo feito. 
               </p>
-              <div className={ isLastCycleOpen ? 'd-none' : " " }>
+              <p className={isRegionalInactive ? "text-description" : "d-none"}>
+                Não é permitido cadastrar um novo ciclo em uma regional inativa. 
+              </p>
+              <p className={isRegionalCitiesInactive ? "text-description" : "d-none"}>
+                Não é permitido cadastrar um novo ciclo em uma regional sem municípios ativos.
+              </p>
+              <div className={ isLastCycleOpen || isRegionalInactive || isRegionalCitiesInactive ? 'd-none' : " " }>
                 <Row>
                   <Col sm='6'>
                     <form onSubmit={ handleSubmit }>
@@ -183,7 +217,7 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
                           title="Salvar"
                           className="bg-info text-white"
                           loading={ flBtnLoading }
-                          disabled={ flBtnLoading || isLastCycleOpen }
+                          disabled={ flBtnLoading || isLastCycleOpen || isRegionalInactive || isRegionalCitiesInactive}
                           type="submit" />
                       </ContainerFixed>
 
@@ -234,7 +268,7 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
                               max={maxDate}
                               onChange={ e => setDataInicio( e.target.value ) }
                               required
-                              disabled={isLastCycleOpen}
+                              disabled={isLastCycleOpen || isRegionalInactive || isRegionalCitiesInactive }
                             />
                           </FormGroup>
                         </Col>
@@ -250,7 +284,7 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
                               max={maxDate}
                               onChange={ e => setDataFim( e.target.value ) }
                               required
-                              disabled={isLastCycleOpen}
+                              disabled={isLastCycleOpen || isRegionalInactive || isRegionalCitiesInactive }
                             />
                           </FormGroup>
                         </Col>
@@ -266,7 +300,7 @@ function CadastrarCiclo({ regionalSaude_id, ciclos, ...props }) {
                         title="Cadastrar Atividade"
                         data-toggle="modal"
                         data-target="#modal-novo-atividade"
-                        disabled={isLastCycleOpen}
+                        disabled={ isLastCycleOpen || isRegionalInactive || isRegionalCitiesInactive }
                         onClick={() => {setIsModalAddActiveOpen(true)}}
                       />
                       <small>Quais atividades deseja executadar neste ciclo?</small>
@@ -343,7 +377,9 @@ function ListActive({ atividades, deleteAction, setIndexAtv, setIsModalUpdateOpe
 
 const mapStateToProps = (state) => ({
   regionalSaude_id: state.appConfig.usuario.regionalSaude.id,
-  ciclos: state.ciclo.ciclos
+  situacaoRegional: state.regionalSaude.situacaoRegional,
+  ciclos: state.ciclo.ciclos,
+  created: state.ciclo.created
 });
 
 const mapDispatchToProps = (dispatch) =>
@@ -353,6 +389,9 @@ const mapDispatchToProps = (dispatch) =>
       createCycleRequest,
       changeFlAddActive,
       getCyclesRequest,
+      getRegionalHealthSituationRequest,
+      createCityReset,
+      showNotifyToast
     },
     dispatch
   );

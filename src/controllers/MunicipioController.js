@@ -123,6 +123,7 @@ getCityById = async ( req, res ) => {
       'SELECT ' +
         'm.*, ' +
         'rs.id AS regional_saude_id, ' +
+        'rs.nome AS regional_saude_nome, ' +
         'e.id AS estado_id, ' +
         'r.id AS regiao_id, ' + 
         'p.id AS pais_id  ' +
@@ -170,7 +171,7 @@ getCityById = async ( req, res ) => {
 getCityByRegionalHealth = async ( req, res ) => {
   try{
     const { regionalSaude_id } = req.params;
-    const { vinculado } = req.query
+    const { vinculado, municipioAtivo } = req.query
 
     const regional = await RegionalSaude.findByPk( regionalSaude_id );
 
@@ -191,12 +192,12 @@ getCityByRegionalHealth = async ( req, res ) => {
 
     const municipios_ids = regionalMunicipio.map( rm => rm.municipio_id )
   
+    let whereMuncipio = { id: { [Op.in]: municipios_ids }}
+    if(municipioAtivo == "true" || municipioAtivo == "false")
+      whereMuncipio.ativo = municipioAtivo ? 1 : 0
+
     const municipios = await Municipio.findAll({
-      where: {
-        id: {
-          [Op.in]: municipios_ids
-        }
-      },
+      where: whereMuncipio,
       order: [[ 'nome', 'asc' ]]
     });
 
@@ -296,7 +297,7 @@ update = async (req, res) => {
 
     const userId = req.userId;
     const { id } = req.params;
-    const { regionalSaude_id } = req.body
+    const { regionalSaude_id, ativo } = req.body
 
     const allow = await allowFunction( req.userId, 'manter_municipio' );
     if( !allow ) {
@@ -327,6 +328,12 @@ update = async (req, res) => {
 
     //Siginifica que o municipio mudou para outra regional
     if( nova_regional_saude_id != antiga_regional_saude_id){
+
+      if(!ativo)
+        return res.status(400).json({ 
+          muncipioInativo: true,
+          error: 'Um município inativo não pode ser atribuido para outra regional de saúde' 
+        });
 
       //Aqui será feita a desvinculação do muncipio com a regional antiga
       await RegionalMunicipio.update(

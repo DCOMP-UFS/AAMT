@@ -4,6 +4,7 @@ const RegionalSaude = require('../models/RegionalSaude');
 const RegionalMunicipio = require('../models/RegionalMunicipio')
 const Estado = require('../models/Estado');
 const { Op } = require("sequelize");
+const connection = require('../database/index')
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
@@ -214,6 +215,39 @@ isAbleToCreateCycleOrActivity = async (req, res) => {
   }
 }
 
+disableRegionals = async (req, res) => {
+  let transaction
+  try{
+
+    let { regionais_ids } = req.body;
+    transaction = await connection.transaction()
+
+    for( let id of regionais_ids){
+      const regional = await RegionalSaude.findByPk(id)
+      if(!regional)
+        return res.status(400).json( { error:"Regional com id="+id+" não foi encontrado"} );
+    }
+    
+    for( let id of regionais_ids){
+      await RegionalSaude.update(
+        {ativo: 0 },
+        {where: {id}, transaction}
+      )
+    }
+
+    await transaction.commit();
+
+    return res.status(200).json( {msg: "Regionais foram inativadas com sucesso" } );
+
+  } catch (error) {
+    await transaction.rollback();
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
+}
+
 const router = express.Router();
 router.use(authMiddleware);
 
@@ -222,6 +256,7 @@ router.get('/:id', getById);
 router.get('/:id/verificarSituacao', isAbleToCreateCycleOrActivity);
 router.get('/:estado_id/estados', getRegionalHealthByState);
 router.post('/', store);
+router.put('/inativarRegionais',disableRegionals)
 router.put('/:id',update)
 // router.delete('/:id', destroy);
 

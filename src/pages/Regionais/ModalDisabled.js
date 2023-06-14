@@ -9,7 +9,13 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { updateCityRequest, clearUpdateCity, getMunicipiosByStateRequest } from '../../store/Municipio/municipioActions';
+import { 
+  getRegionalHealthByStateRequest, 
+  disabledRegionalsHealthRequest,
+  disabledRegionalsHealthRequestReset,
+
+} from '../../store/RegionalSaude/regionalSaudeActions';
+import { showNotifyToast } from '../../store/AppConfig/appConfigActions';
 
 // STYLES
 import { Button } from '../../styles/global';
@@ -18,28 +24,34 @@ function ModalDisabled( props ) {
   const [ flLoading, setFlLoading ] = useState( false );
 
   useEffect(() => {
-    if( props.updatedCity ) {
-      props.getMunicipiosByStateRequest(props.estado.id);
-      $('#modal-desativar-municipio').modal('hide');
+    if( props.updated ) {
+      props.getRegionalHealthByStateRequest( props.estado_id );
+      $('#modal-desativar-regional').modal('hide');
+      props.showNotifyToast( "Regionais de saúde foram desativadas com sucesso", "success" )
       setFlLoading( false );
-      props.clearUpdateCity();
+      props.disabledRegionalsHealthRequestReset();
     }
-  }, [ props.updatedCity ]);
+    setFlLoading( false );
+    props.disabledRegionalsHealthRequestReset();
+  }, [ props.updated ]);
 
   function handleClick() {
     setFlLoading( true );
+    let regionais_ids = []
     props.tableSelected.forEach( row => {
-      const { id, regional } = props.municipios[ row.dataIndex ];
-
-      props.updateCityRequest( id, { ativo: 0, regionalSaude_id: regional.id } );
+      console.log(row)
+      const { id } = props.regionaisSaude[ row.dataIndex ];
+      regionais_ids.push(id)
+      
     });
-    props.clearUpdateCity();
+    
+    props.disabledRegionalsHealthRequest( regionais_ids );
   }
 
   return(
-    <Modal id="modal-desativar-municipio" title="Desativar Município(s)" centered={ true }>
+    <Modal id="modal-desativar-regional" title="Desativar Regionais" centered={ true }>
       <ModalBody>
-        <p>Deseja desativar o(s) município(s)?</p>
+        <p>Deseja desativar a(s) regional(ais) de saúde?</p>
       </ModalBody>
       <ModalFooter>
         <Button className="secondary" data-dismiss="modal">Cancelar</Button>
@@ -71,14 +83,19 @@ function ModalDisabled( props ) {
 }
 
 const mapStateToProps = state => ({
-  tableSelected: state.supportInfo.tableSelection.tableCity,
-  municipios: state.municipio.municipios,
-  updatedCity: state.municipio.updatedCity,
-  estado: state.appConfig.usuario.regionalSaude.estado
+  tableSelected: state.supportInfo.tableSelection.tableRegionalHealth,
+  regionaisSaude: state.regionalSaude.regionaisSaude,
+  updated: state.regionalSaude.updated,
+  estado_id: state.appConfig.usuario.regionalSaude.estado.id
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ updateCityRequest, clearUpdateCity, getMunicipiosByStateRequest }, dispatch);
+  bindActionCreators({ 
+    getRegionalHealthByStateRequest,
+    disabledRegionalsHealthRequest,
+    disabledRegionalsHealthRequestReset,
+    showNotifyToast, 
+  }, dispatch);
 
 export default connect(
   mapStateToProps,

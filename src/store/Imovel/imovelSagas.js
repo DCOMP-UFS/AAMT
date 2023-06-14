@@ -110,7 +110,8 @@ export function* editarImovel( action ) {
 }
 
 /**
- * Saga para deletar imóvel
+ * Embora a função se chame deletar, ela na verdade inativa o imovel 
+ * para que não seja mais acessivel para o usuario
  * @param {*} action 
  */
 export function* deletarImovel( action ) {

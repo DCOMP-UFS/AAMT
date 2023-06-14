@@ -36,6 +36,13 @@ export const updateRegionalRequest = data => {
   });
 }
 
+export const disableRegionalsRequest = regionais_ids => {
+
+  return api.put(`/regionaisSaude/inativarRegionais`, { regionais_ids }, {
+    ...headerAuthorization()
+  });
+}
+
 export const createRegional = data => {
   const { nome, endereco, estado_id } = data;
 

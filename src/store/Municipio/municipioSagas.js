@@ -168,10 +168,18 @@ export function* updateCity( action ) {
     } else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao atualizar informações do município: " + status, "error" ) );
     }
-  } catch (err) {
+  } catch (err) { 
+    yield put( MunicipioActions.updateCityFail() );
+
     if(err.response){
-      //Provavel erro de logica na API
-      yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar município, entre em contato com o suporte", "error" ) );
+      const { muncipioInativo } = err.response.data
+
+      if( muncipioInativo )
+        yield put( AppConfigActions.showNotifyToast( "Não se pode mudar a regional de um município inativo", "error" ) );
+      else{
+        //Provavel erro de logica na API
+        yield put( AppConfigActions.showNotifyToast( "Erro ao atualizar município, entre em contato com o suporte", "error" ) );
+      }
       
     }
     //Se chegou aqui, significa que não houve resposta da API

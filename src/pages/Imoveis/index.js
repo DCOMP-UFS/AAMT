@@ -175,6 +175,8 @@ export const Imoveis = ({ imoveis, usuario, ...props }) => {
    */
   const desativarImoveis = () => {
     rowsSelected.forEach( index => {
+      //essa função na verdade irá desativar o imovel para
+      //que não seja mais acessivel para o usario
       props.deletarImovelRequest( imoveis[ index ].id );
     } );
 

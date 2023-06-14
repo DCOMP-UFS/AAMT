@@ -16,8 +16,9 @@ export const ActionTypes = {
   CLEAR_CREATE_CITY: "CLEAR_CREATE_CITY",
   UPDATE_CITY_REQUEST: "UPDATE_CITY_REQUEST",
   UPDATE_CITY_SUCCESS: "UPDATE_CITY_SUCCESS",
-  CHANGE_CITY_EDIT_INDEX: "CHANGE_CITY_EDIT_INDEX",
+  UPDATE_CITY_FAIL: "UPDATE_CITY_FAIL",
   CLEAR_UPDATE_CITY: "CLEAR_UPDATE_CITY",
+  CHANGE_CITY_EDIT_INDEX: "CHANGE_CITY_EDIT_INDEX",
   TRANSFER_CITY_REGIONAL_REQUEST: "TRANSFER_CITY_REGIONAL_REQUEST",
   TRANSFER_CITY_REGIONAL_SUCCESS: "TRANSFER_CITY_REGIONAL_SUCCESS",
   TRANSFER_CITY_REGIONAL_FAIL: "TRANSFER_CITY_REGIONAL_FAIL",
@@ -70,16 +71,21 @@ export const getCityById = municipio => {
   }
 }
 
-//Vinculado indica pode receber true, false ou null
+//Vinculado pode receber true, false ou null
 //  True  - é o valor padrão e irá retornas todos os municipios que estão atualmente vinculados à regional
 //  False - significa que será retonado todos os municipios que ja fizeram parte da regional, mas não mais
 //  Null  - significa que será retonados todos os muncipios que pertecem ou ja perteceram à trgonal
-export const getCityByRegionalHealthRequest = (regionalSaude_id, vinculado = true) => {
+//MunicipioAtivo pode receber true, false ou null
+// True - é o valor padrão e irá retornar apenas os munícipios ativos da regional
+// False - irá retornar apenas os muncipios inativos da regional
+// Null  - irá retornar tantos os municipios ativos como inativos
+export const getCityByRegionalHealthRequest = (regionalSaude_id, vinculado = true, municipioAtivo = true) => {
   return {
     type: ActionTypes.GET_CITY_BY_REGIONAL_HEALTH_REQUEST,
     payload: {
       regionalSaude_id,
-      vinculado
+      vinculado,
+      municipioAtivo,
     }
   }
 }
@@ -179,18 +185,24 @@ export const updateCity = municipio => {
   }
 }
 
-export const changeCityEditIndex = index => {
+export const updateCityFail = () => {
   return {
-    type: ActionTypes.CHANGE_CITY_EDIT_INDEX,
-    payload: {
-      index
-    }
+    type: ActionTypes.UPDATE_CITY_FAIL,
   }
 }
 
 export const clearUpdateCity = () => {
   return {
     type: ActionTypes.CLEAR_UPDATE_CITY
+  }
+}
+
+export const changeCityEditIndex = index => {
+  return {
+    type: ActionTypes.CHANGE_CITY_EDIT_INDEX,
+    payload: {
+      index
+    }
   }
 }
 

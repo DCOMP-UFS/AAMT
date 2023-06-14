@@ -224,11 +224,16 @@ const EditarRegional = ( { estado_id, regionalSaude, regionais, ...props } ) => 
 
                   <ListCities
                     municipios={ props.municipiosAntigos }
-                    howToast = { () => {
-                      props.showNotifyToast( "Esté municipio está inativo e não pode ser transferido para outra regional: ", "warning" ) 
+                    showToast = { () => {
+                      props.showNotifyToast( "Esté municipio está inativo e não pode ser transferido para outra regional ", "warning" ) 
+                    } }
+                    showAlternativeToast = { () => {
+                      props.showNotifyToast( "Regional inativa não pode receber novo municipio ", "warning" ) 
                     } }
                     showModal= { () => { $('#modal-revincular-municipio').modal('show') } }
                     setMunicipio={ (municipio) => setMunicipio(municipio) }
+                    regional_ativo={ ativo.value }
+                    revincularMunicipio={ true }
                   />
                 </Col>
                 
@@ -273,6 +278,8 @@ function ListCities( props ) {
               onClick={ () => { 
                 if(!municipio.ativo)
                   props.showToast()
+                else if(props.revincularMunicipio && !props.regional_ativo )
+                  props.showAlternativeToast()
                 else{
                   props.setMunicipio(municipio)
                   props.showModal()

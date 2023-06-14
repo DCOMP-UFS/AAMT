@@ -25,12 +25,17 @@ export const getCityByIdRequest = id => {
 }
 
 export const getCityByRegionalHealthRequest = data => {
-  const {regionalSaude_id, vinculado} = data
+  const {regionalSaude_id, vinculado, municipioAtivo} = data
   let url = `/municipios/${ regionalSaude_id }/regionaisSaude`
 
-  if(vinculado == true || vinculado == false)
+  if(vinculado == true || vinculado == false){
     url = url+`?vinculado=${ vinculado }`
-
+    if(municipioAtivo == true || municipioAtivo == false)
+      url = url+`&municipioAtivo=${ municipioAtivo }`
+  }
+  else if(municipioAtivo == true || municipioAtivo == false)
+    url = url+`?municipioAtivo=${ municipioAtivo }`
+  
   return api.get(url, {
     ...headerAuthorization()
   });

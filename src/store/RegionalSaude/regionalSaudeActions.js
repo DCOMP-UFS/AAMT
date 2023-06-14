@@ -12,8 +12,8 @@ export const ActionTypes = {
   UPDATE_REGIONAL_HEALTH_FAIL           : "UPDATE_REGIONAL_HEALTH_FAIL",
   UPDATE_REGIONAL_HEALTH_RESET          : "UPDATE_REGIONAL_HEALTH_RESET",
   GET_REGIONAL_HEALTH_SITUATION_REQUEST : "GET_REGIONAL_HEALTH_SITUATION_REQUEST",
-  GET_REGIONAL_HEALTH_SITUATION_SUCCESS : "GET_REGIONAL_HEALTH_SITUATION_SUCCESS"
-
+  GET_REGIONAL_HEALTH_SITUATION_SUCCESS : "GET_REGIONAL_HEALTH_SITUATION_SUCCESS",
+  DISABLE_REGIONALS_HEALTH_REQUEST      : "DISABLE_REGIONALS_HEALTH_REQUEST",
 }
 
 export const getRegionalHealthByIdRequest = ( id ) => {
@@ -145,5 +145,32 @@ export const getRegionalHealthSituationSuccess = ( situacaoRegional ) => {
     payload: {
       situacaoRegional
     }
+  }
+}
+
+export const disabledRegionalsHealthRequest = ( regionais_ids ) => {
+  return {
+    type: ActionTypes.DISABLE_REGIONALS_HEALTH_REQUEST,
+    payload: {
+      regionais_ids
+    }
+  }
+}
+
+export const disabledRegionalsHealthSuccess = ( ) => {
+  return {
+    type: ActionTypes.UPDATE_REGIONAL_HEALTH_SUCCESS,
+  }
+}
+
+export const disabledRegionalsHealthRequestFail = ( ) => {
+  return {
+    type: ActionTypes.UPDATE_REGIONAL_HEALTH_FAIL,
+  }
+}
+
+export const disabledRegionalsHealthRequestReset = ( ) => {
+  return {
+    type: ActionTypes.UPDATE_REGIONAL_HEALTH_RESET,
   }
 }

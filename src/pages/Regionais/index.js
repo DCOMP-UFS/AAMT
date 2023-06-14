@@ -4,6 +4,7 @@ import { getDateBr } from '../../config/function';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ModalAdd from './ModalAdd';
+import ModalDisabled from './ModalDisabled';
 import Table, { ButtonAdd, ButtonDesabled } from '../../components/Table';
 import Typography from "@material-ui/core/Typography";
 import { FaCity } from 'react-icons/fa';
@@ -63,7 +64,11 @@ const Regionais = ( { regionaisSaude, coordGeral, ...props } ) => {
   }
   
   const options = {
-    selectableRows: 'none',
+    //Não permite que regionais inativas sejam selecionadas para serem inativadas novamente
+    isRowSelectable: (dataIndex) => {
+      return (rows[dataIndex][3] == "Sim")
+    },
+
     customToolbar: () => {
       return (
         <ButtonAdd
@@ -71,6 +76,16 @@ const Regionais = ( { regionaisSaude, coordGeral, ...props } ) => {
           data-toggle="modal"
           data-target="#modal-nova-regional" 
           onClick={ () => { setShowModalAdd( true ); } }
+        />
+      );
+    },
+    customToolbarSelect: ( { data } ) => {
+      props.changeTableSelected( 'tableRegionalHealth', data );
+      return (
+        <ButtonDesabled
+          title="Desativar regional"
+          data-toggle="modal"
+          data-target="#modal-desativar-regional" 
         />
       );
     },
@@ -140,6 +155,7 @@ const Regionais = ( { regionaisSaude, coordGeral, ...props } ) => {
           </article>
         </div>
         <ModalAdd show={ showModalAdd } handleClose={ handleCloseModalAdd }/>
+        <ModalDisabled/>
 
         <ToastContainer />
         { props.toast.message && notify() }

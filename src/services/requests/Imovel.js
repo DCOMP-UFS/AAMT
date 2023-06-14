@@ -13,7 +13,8 @@ export const getImoveisRequest = data => {
 }
 
 /**
- * Deleta um imóvel
+ * A função diz deletar, mas na verdade ela desativa o imovel
+ * para não ser mais acessivel para o usuarios
  * @param {Integer} imovel_id 
  * @returns 
  */

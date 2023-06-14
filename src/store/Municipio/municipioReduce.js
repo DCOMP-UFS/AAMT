@@ -97,10 +97,10 @@ export default function Municipio(state = INITIAL_STATE, action) {
       }
     }
 
-    case ActionTypes.CHANGE_CITY_EDIT_INDEX: {
+    case ActionTypes.UPDATE_CITY_FAIL: {
       return {
         ...state,
-        indexCity: action.payload.index
+        updatedCity: false
       }
     }
 
@@ -108,6 +108,13 @@ export default function Municipio(state = INITIAL_STATE, action) {
       return {
         ...state,
         updatedCity: null
+      }
+    }
+
+    case ActionTypes.CHANGE_CITY_EDIT_INDEX: {
+      return {
+        ...state,
+        indexCity: action.payload.index
       }
     }
 

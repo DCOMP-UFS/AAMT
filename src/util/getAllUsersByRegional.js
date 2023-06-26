@@ -5,7 +5,7 @@ const { Op }                = require( 'sequelize' );
 module.exports = async ( municipios, regionalSaude, incluirLaboratoristas ) => {
   let usuarios = [];
   for (const municipio of municipios) {
-    const { id } = municipio.dataValues;
+    const { id } = municipio;
 
     var labsId = [-1]
     if(incluirLaboratoristas == '1'){

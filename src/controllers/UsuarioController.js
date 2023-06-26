@@ -8,6 +8,7 @@ const Municipio             = require( '../models/Municipio' );
 const RegionalSaude         = require( '../models/RegionalSaude' );
 const Laboratorio           = require( '../models/Laboratorio' );
 const LaboratorioMunicipio  = require( '../models/LaboratorioMunicipio' );
+const RegionalMunicipio = require('../models/RegionalMunicipio');
 
 
 
@@ -109,14 +110,23 @@ getUsersByRegional = async ( req, res ) => {
     if( !regionalSaude )
       return res.status(400).json({ error: 'Regional de saúde não existe' });
 
-    const municipios = await Municipio.findAll({
-      include: {
-        association: 'regional',
-        where: {
-          id: regionalSaude_id
-        }
-      }
-    });
+    const regionalMunicipio = await RegionalMunicipio.findAll({
+      where: {
+        regional_saude_id: regionalSaude_id,
+        vinculado:true
+      },
+      include:[
+        {association: 'municipio'},
+        {association: 'regional'},
+      ],
+    })
+
+    let municipios = []
+    regionalMunicipio.forEach( rm => {
+      let clone = {...rm.municipio.dataValues}
+      clone.regional = rm.regional
+      municipios.push(clone)
+    })
 
     const usuarios = await getAllUsersByRegional( municipios, regionalSaude, incluirLaboratoristas );
 
@@ -134,10 +144,19 @@ listByCity = async ( req, res ) => {
     const { municipio_id } = req.params;
     const { incluirLaboratoristas } = req.query;
 
-    const municipio = await Municipio.findByPk( municipio_id, {
-      include: { association: 'regional', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } },
+    const muni = await Municipio.findByPk( municipio_id, {
       attributes: { exclude: [ 'createdAt', 'updatedAt' ] } 
     });
+
+    const regionalMunicipio = await RegionalMunicipio.findOne(
+      {
+        where:{ municipio_id, vinculado:true },
+        include: { association: 'regional', attributes: { exclude: [ 'createdAt', 'updatedAt' ] } },
+      }
+    )
+
+    let municipio = {...muni.dataValues}
+    municipio.regional = regionalMunicipio.regional
 
     var labsId = [-1]
     if(incluirLaboratoristas == '1'){
@@ -313,6 +332,7 @@ store = async ( req, res ) => {
       ...locais,
     });
   } catch (error) {
+    console.log(error)
     return res.status( 400 ).send( { 
       status: 'unexpected error',
       mensage: 'Algum problema inesperado ocorreu nesta rota da api',

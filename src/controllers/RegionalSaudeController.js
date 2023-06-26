@@ -1,8 +1,10 @@
 const express = require('express');
 const authMiddleware = require('../middlewares/auth');
 const RegionalSaude = require('../models/RegionalSaude');
+const RegionalMunicipio = require('../models/RegionalMunicipio')
 const Estado = require('../models/Estado');
 const { Op } = require("sequelize");
+const connection = require('../database/index')
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
@@ -52,6 +54,8 @@ getById = async ( req, res ) => {
 getRegionalHealthByState = async ( req, res ) => {
   try{
     const { estado_id } = req.params;
+    const { ativo } = req.query
+
 
     const estado = Estado.findByPk( estado_id );
 
@@ -59,15 +63,24 @@ getRegionalHealthByState = async ( req, res ) => {
       return res.status(400).json({ error: "Estado não existe" });
     }
 
+    let where = {estado_id}
+    if(ativo != null){
+      if(ativo == "true")
+        where.ativo = 1
+      else if( ativo == "false" )
+        where.ativo = 0
+      else
+        return res.status(400).json({ error: "Atributo ativo deve receber true, false ou null como valores" });
+    }
+
     const regionais = await RegionalSaude.findAll({
-      where: {
-        estado_id
-      },
+      where: where,
       order: [[ 'nome', 'asc' ]]
     });
 
     return res.json( regionais );
   } catch (error) {
+    console.log(error)
     return res.status( 400 ).send( { 
       status: 'unexpected error',
       mensage: 'Algum problema inesperado ocorreu nesta rota da api',
@@ -98,6 +111,7 @@ getRegionalHealthByState = async ( req, res ) => {
 store = async (req, res) => {
   try{
     const { nome, endereco, estado_id } = req.body;
+
     const userId = req.userId;
 
     const allow = await allowFunction( req.userId, 'manter_regional_saude' );
@@ -120,13 +134,130 @@ store = async (req, res) => {
   }
 }
 
+update = async (req, res) => {
+  try{
+    const { id } = req.params;
+    let { nome, endereco, ativo } = req.body;
+
+    ativo = parseInt(ativo)
+
+    const userId = req.userId;
+
+    const allow = await allowFunction( req.userId, 'manter_regional_saude' );
+    if( !allow ) {
+      return res.status(403).json({ error: 'Acesso negado' });
+    }
+    
+    const { isRejected } = await RegionalSaude.update(
+      {
+        nome,
+        endereco,
+        ativo
+      },
+      { where: { id } }
+    )
+
+    if( isRejected )
+      return res.status(400).json({ error: 'Não foi possível atualizar a regional' });
+    
+    const regional = await RegionalSaude.findByPk(id)  
+
+    return res.status(200).json( regional );
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
+}
+
+isAbleToCreateCycleOrActivity = async (req, res) => {
+  try{
+    const { id } = req.params;
+
+    let regionalSituacao = {
+      ativo: null,
+      qtdMunicipiosAtivos:[]
+    }
+
+    const regional = await RegionalSaude.findByPk(id)
+
+    if(!regional)
+      return res.status(400).json( { error:"Regional informada não existe"} );
+
+    regionalSituacao.ativo = regional.ativo
+
+    const regionalMunicipio = await RegionalMunicipio.findAll(
+      {
+        where:{
+          regional_saude_id: id,
+          vinculado: true
+        },
+        include:{
+          association:"municipio",
+          where:{
+            ativo: 1
+          }
+        }
+      }
+    )
+    let ids = []
+    regionalMunicipio.forEach( rm => ids.push(rm.municipio.id))
+
+    regionalSituacao.qtdMunicipiosAtivos = regionalMunicipio.length
+    return res.status(200).json( regionalSituacao );
+
+  } catch (error) {
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
+}
+
+disableRegionals = async (req, res) => {
+  let transaction
+  try{
+
+    let { regionais_ids } = req.body;
+    transaction = await connection.transaction()
+
+    for( let id of regionais_ids){
+      const regional = await RegionalSaude.findByPk(id)
+      if(!regional)
+        return res.status(400).json( { error:"Regional com id="+id+" não foi encontrado"} );
+    }
+    
+    for( let id of regionais_ids){
+      await RegionalSaude.update(
+        {ativo: 0 },
+        {where: {id}, transaction}
+      )
+    }
+
+    await transaction.commit();
+
+    return res.status(200).json( {msg: "Regionais foram inativadas com sucesso" } );
+
+  } catch (error) {
+    await transaction.rollback();
+    return res.status( 400 ).send( { 
+      status: 'unexpected error',
+      mensage: 'Algum problema inesperado ocorreu nesta rota da api',
+    } );
+  }
+}
+
 const router = express.Router();
 router.use(authMiddleware);
 
 router.get('/', index);
 router.get('/:id', getById);
+router.get('/:id/verificarSituacao', isAbleToCreateCycleOrActivity);
 router.get('/:estado_id/estados', getRegionalHealthByState);
 router.post('/', store);
+router.put('/inativarRegionais',disableRegionals)
+router.put('/:id',update)
 // router.delete('/:id', destroy);
 
 module.exports = app => app.use('/regionaisSaude', router);

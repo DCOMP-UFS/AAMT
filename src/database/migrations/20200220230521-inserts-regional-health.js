@@ -11,6 +11,13 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date()
       },
+      {
+        nome: 'Teste Regional - SES',
+        endereco : 'Fiction 1',
+        estado_id: 25,
+        created_at: new Date(),
+        updated_at: new Date()
+      },
     ]);
   },
 

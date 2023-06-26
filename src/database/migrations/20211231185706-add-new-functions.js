@@ -59,6 +59,11 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date()
       },
+      {
+        nome: 'manter_regional_saude',
+        created_at: new Date(),
+        updated_at: new Date()
+      },
     ]);
   },
 
@@ -75,6 +80,7 @@ module.exports = {
         { nome: "relatorio_por_atividade" },
         { nome: "relatorio_por_atividade_da_equipe" },
         { nome: "relatorio_por_atividade_regional" },
+        { nome: "manter_regional_saude" },
       ]
     } );
   }

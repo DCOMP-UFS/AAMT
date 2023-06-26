@@ -3,52 +3,52 @@ const { Op } = require('sequelize');
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.bulkInsert('municipios', [
+    return queryInterface.bulkInsert('regionais_municipios', [
       {
-        codigo: 2807105,
-        nome: 'Simão Dias',
+        regional_saude_id: 1,
+        municipio_id: 1,
         created_at: new Date(),
         updated_at: new Date()
       },
       {
-        codigo: 2800308,
-        nome: 'Aracaju',
+        regional_saude_id: 1,
+        municipio_id: 2,
         created_at: new Date(),
         updated_at: new Date()
       },
       {
-        codigo: 2800506,
-        nome: 'Areia Branca',
+        regional_saude_id: 1,
+        municipio_id: 3,
         created_at: new Date(),
         updated_at: new Date()
       },
       {
-        codigo: 2802908,
-        nome: 'Itabaiana',
+        regional_saude_id: 1,
+        municipio_id: 4,
         created_at: new Date(),
         updated_at: new Date()
       },
       {
-        codigo: 2804805,
-        nome: 'Nossa Senhora do Socorro',
+        regional_saude_id: 1,
+        municipio_id: 5,
         created_at: new Date(),
         updated_at: new Date()
       },
       {
-        codigo: 2806701,
-        nome: 'São Cristóvão',
+        regional_saude_id: 2,
+        municipio_id: 6,
         created_at: new Date(),
         updated_at: new Date()
       },
       {
-        codigo: 2805901,
-        nome: 'Riachuelo',
+        regional_saude_id: 2,
+        municipio_id: 7,
         created_at: new Date(),
         updated_at: new Date()
       },
       {
-        codigo: 2803609,
-        nome: 'Laranjeiras',
+        regional_saude_id: 2,
+        municipio_id: 8,
         created_at: new Date(),
         updated_at: new Date()
       },
@@ -56,8 +56,8 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete('municipios', {
-      id: {
+    return queryInterface.bulkDelete('regionais_municipios', {
+    regional_saude_id: {
         [Op.gt]: 0
       }
     });

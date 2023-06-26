@@ -1,8 +1,10 @@
 const authMiddleware = require('../middlewares/auth');
 const express = require('express');
 const Sequelize = require('sequelize')
+const connection = require('../database/index')
 const Atividade = require('../models/Atividade');
 const Ciclo = require('../models/Ciclo');
+const RegionalMunicipio = require('../models/RegionalMunicipio')
 const Municipio = require('../models/Municipio');
 
 // UTILITY
@@ -202,8 +204,11 @@ getCiclosAbertosEFinalizados = async ( req, res ) => {
 }
 
 store = async ( req, res ) => {
+  let transaction = null
+
   try{
     const { ano, sequencia, dataInicio, dataFim, regionalSaude_id, atividades } = req.body;
+    transaction = await connection.transaction()
 
     const allow = await allowFunction( req.userId, 'definir_ciclo' );
     if( !allow )
@@ -215,20 +220,31 @@ store = async ( req, res ) => {
       dataInicio,
       dataFim,
       regional_saude_id: regionalSaude_id
-    });
+    }, {transaction});
 
     if( atividades ) {
       for (const atividade of atividades) {
         const { abrangencia, metodologia_id, objetivo_id, objetivoAtividade, flTodosImoveis } = atividade;
-        const municipios = await Municipio.findAll({
-          where: {
-            regional_saude_id: regionalSaude_id
+
+        const regionalMunicipio = await RegionalMunicipio.findAll(
+          {
+            where:{
+              regional_saude_id: regionalSaude_id,
+              vinculado: true
+            },
+            include:{
+              association:"municipio",
+              where:{
+                ativo: 1
+              }
+            }
           }
-        });
+        )
 
-        for (const municipio of municipios) {
-          const { id: municipio_id } = municipio.dataValues;
+        let municipios_ids = []
+        regionalMunicipio.forEach( rm => municipios_ids.push(rm.municipio.id))
 
+        for (const municipio_id of municipios_ids) {
           await Atividade.create({
             abrangencia, 
             objetivoAtividade, 
@@ -239,13 +255,21 @@ store = async ( req, res ) => {
             municipio_id,
             metodologia_id, 
             objetivo_id
-          });
+          }, {transaction});
         }
       }
     }
 
+    if(transaction != null)
+      await transaction.commit()
+
     return res.status(201).json( ciclo );
   } catch (error) {
+    console.log(error)
+
+    if(transaction != null)
+      await transaction.rollback()
+
     return res.status( 400 ).send( { 
       status: 'unexpected error',
       mensage: 'Algum problema inesperado ocorreu nesta rota da api',

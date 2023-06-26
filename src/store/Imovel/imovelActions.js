@@ -20,7 +20,8 @@ export const ActionTypes = {
 }
 
 /**
- * Aciona o sagas para excluir um imóvel
+ * Embora a action implique que o imovel será deletado,
+ * na verdade ele será inativado para que não seja mais acessivel para o usuario
  * @param {Integer} imovel_id 
  * @returns Object
  */

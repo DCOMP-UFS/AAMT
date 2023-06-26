@@ -1,45 +1,47 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
-import Modal, { ModalBody, ModalFooter } from '../../components/Modal';
+import Modal, { ModalBody, ModalFooter } from '../../../components/Modal';
 import $ from 'jquery';
-import LoadginGif from '../../assets/loading.gif';
+import LoadginGif from '../../../assets/loading.gif';
 
 // REDUX
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { updateCityRequest, clearUpdateCity, getMunicipiosByStateRequest } from '../../store/Municipio/municipioActions';
+import { rebindMunicipioRegionalRequest, rebindMunicipioRegionalReset } from '../../../store/Municipio/municipioActions';
+import { showNotifyToast } from "../../../store/AppConfig/appConfigActions";
 
 // STYLES
-import { Button } from '../../styles/global';
+import { Button } from '../../../styles/global';
 
-function ModalDisabled( props ) {
+function ModalRevincularMuncipio( { regional_id, municipio, ...props} ) {
   const [ flLoading, setFlLoading ] = useState( false );
 
   useEffect(() => {
-    if( props.updatedCity ) {
-      props.getMunicipiosByStateRequest(props.estado.id);
-      $('#modal-desativar-municipio').modal('hide');
+    if( props.rebindedCity ) {
+      props.showNotifyToast( "Municipios antigos atualizado com sucesso", "success" )
       setFlLoading( false );
-      props.clearUpdateCity();
+      $('#modal-revincular-municipio').modal('hide');
+      props.rebindMunicipioRegionalReset();
+      setTimeout(() => { 
+        document.location.reload( true );
+      }, 1500)
     }
-  }, [ props.updatedCity ]);
+
+    setFlLoading( false );
+    props.rebindMunicipioRegionalReset();
+  }, [ props.rebindedCity ]);
 
   function handleClick() {
     setFlLoading( true );
-    props.tableSelected.forEach( row => {
-      const { id, regional } = props.municipios[ row.dataIndex ];
-
-      props.updateCityRequest( id, { ativo: 0, regionalSaude_id: regional.id } );
-    });
-    props.clearUpdateCity();
+    props.rebindMunicipioRegionalRequest(municipio.id, regional_id)
   }
 
   return(
-    <Modal id="modal-desativar-municipio" title="Desativar Município(s)" centered={ true }>
+    <Modal id="modal-revincular-municipio" title="Revincular Município" backdrop="static" keyboard={false} centered={ true }>
       <ModalBody>
-        <p>Deseja desativar o(s) município(s)?</p>
+        <p>Deseja revincula este município à regional?</p>
       </ModalBody>
       <ModalFooter>
         <Button className="secondary" data-dismiss="modal">Cancelar</Button>
@@ -71,16 +73,17 @@ function ModalDisabled( props ) {
 }
 
 const mapStateToProps = state => ({
-  tableSelected: state.supportInfo.tableSelection.tableCity,
-  municipios: state.municipio.municipios,
-  updatedCity: state.municipio.updatedCity,
-  estado: state.appConfig.usuario.regionalSaude.estado
+  rebindedCity: state.municipio.rebindedCity,
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ updateCityRequest, clearUpdateCity, getMunicipiosByStateRequest }, dispatch);
+  bindActionCreators({ 
+    rebindMunicipioRegionalRequest, 
+    rebindMunicipioRegionalReset,
+    showNotifyToast,
+}, dispatch);
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ModalDisabled);
+)(ModalRevincularMuncipio);

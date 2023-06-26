@@ -162,14 +162,13 @@ export function* createCycle( action ) {
     const { status } = yield call( service.createCycleRequest, action.payload );
 
     if( status === 201 ) {
-      yield put( AppConfigActions.showNotifyToast( "Ciclo criado com sucesso", "success" ) );
-
-      window.location = window.location.origin.toString() + "/ciclos/consultar";
+      yield put( CicloActions.createCitySuccess() );
     }else {
       yield put( AppConfigActions.showNotifyToast( "Falha ao criar ciclo: " + status, "error" ) );
       yield put( AppConfigActions.showNotifyToast( "Atenção! Não é permitido duplicidade de ciclo", "warning" ) );
     }
   } catch (err) {
+    yield put( CicloActions.createCityFail() );
     if(err.response){
       //Provavel erro de logica na API
       yield put( AppConfigActions.showNotifyToast( "Erro ao criar o ciclo, entre em contato com o suporte", "error" ) );

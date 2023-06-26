@@ -14,7 +14,9 @@ export const ActionTypes = {
   GET_OPEN_AND_FINISHED_CYCLES_REQUEST: "GET_OPEN_AND_FINISHED_CYCLES_REQUEST",
   GET_OPEN_AND_FINISHED_CYCLES_SUCCESS: "GET_OPEN_AND_FINISHED_CYCLES_SUCCESS",
   CREATE_CYCLE_REQUEST                : "CREATE_CYCLE_REQUEST",
-  CREATE_CYCLE_SUCCESS                : "CREATE_CYCLE_REQUEST",
+  CREATE_CYCLE_SUCCESS                : "CREATE_CYCLE_SUCCESS",
+  CREATE_CYCLE_FAIL                   : "CREATE_CYCLE_FAIL",
+  CREATE_CYCLE_RESET                  : "CREATE_CYCLE_RESET",
   UPDATE_CYCLE_REQUEST                : "UPDATE_CYCLE_REQUEST",
   UPDATE_CYCLE_SUCCESS                : "UPDATE_CYCLE_SUCCESS",
   DESTROY_CYCLE_REQUEST               : "DESTROY_CYCLE_REQUEST",
@@ -182,6 +184,24 @@ export const createCycleRequest = (
       regionalSaude_id,
       atividades
     }
+  }
+}
+
+export const createCitySuccess = () => {
+  return {
+    type: ActionTypes.CREATE_CYCLE_SUCCESS,
+  }
+}
+
+export const createCityFail = () => {
+  return {
+    type: ActionTypes.CREATE_CYCLE_FAIL,
+  }
+}
+
+export const createCityReset = () => {
+  return {
+    type: ActionTypes.CREATE_CYCLE_RESET,
   }
 }
 

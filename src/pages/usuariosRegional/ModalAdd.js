@@ -124,7 +124,7 @@ const ModalAdd = ( { createUsuarioRequest, createUser, isOpen, handleClose, ...p
 
   useEffect(() => {
     if( Object.entries(estado).length > 0 ) {
-      props.getRegionalHealthByStateRequest( estado.value );
+      props.getRegionalHealthByStateRequest( estado.value, true );
       setRegionalSaude({});
       setMunicipio({});
       setOptionMunicipio([]);

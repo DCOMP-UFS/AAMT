@@ -111,7 +111,7 @@ const Quarteiroes = ({ quarteiroes, tableSelection, ...props }) => {
       setRowsSelected( allRowsSelected );
     }, */
     setRowProps: (row) => {
-      const className = row[3] === "Não" ? "row-desabled" : "";
+      const className = row[6] === "Não" ? "row-desabled" : "";
 
       return {
         className

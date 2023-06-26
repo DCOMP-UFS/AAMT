@@ -13,7 +13,11 @@ import { connect } from 'react-redux';
 
 // ACTIONS
 import { changeSidebar } from '../../store/Sidebar/sidebarActions';
-import { updateCityRequest, getCityByIdRequest, clearUpdateCity } from '../../store/Municipio/municipioActions';
+import { 
+  updateCityRequest, 
+  getCityByIdRequest, 
+  clearUpdateCity 
+} from '../../store/Municipio/municipioActions';
 import { getLocationByCityRequest } from '../../store/Localidade/localidadeActions';
 import { getNationsRequest } from '../../store/Pais/paisActions';
 import { GetRegionsByNationRequest } from '../../store/Regiao/regiaoActions';
@@ -116,18 +120,32 @@ const EditarMunicipio = ( { municipio, localidades, ...props } ) => {
 
   useEffect( () => {
     if( Object.entries( estado ).length > 0 ) {
-      props.getRegionalHealthByStateRequest( estado.value );
+      props.getRegionalHealthByStateRequest( estado.value, true );
       setRegionalSaude( {} );
     }
   }, [ estado ] );
 
   useEffect( () => {
+
+    let isRegionalMuncipioAtiva = false
+
     const options = props.regionaisSaude.map( r => {
-      if( r.id === municipio.regional_saude_id )
+      if( r.id === municipio.regional_saude_id ){
+        isRegionalMuncipioAtiva = true
         setRegionalSaude( { value: r.id, label: r.nome } );
+      }
 
       return ( { value: r.id, label: r.nome } );
     } );
+
+    if(!isRegionalMuncipioAtiva){
+      const regionalMuncipio = { 
+        value: municipio.regional_saude_id, 
+        label: municipio.regional_saude_nome+" (Inativo)"
+      }
+      options.unshift(regionalMuncipio)
+      setRegionalSaude(regionalMuncipio);
+    }
 
     setOptionRegionalSaude( options );
   }, [ props.regionaisSaude ] );
@@ -143,9 +161,13 @@ const EditarMunicipio = ( { municipio, localidades, ...props } ) => {
   }, [ municipio ] );
 
   useEffect( () => {
-    if( props.updatedCity ) {
-      setFlLoading( false );
-      props.clearUpdateCity();
+    setFlLoading( false );
+    props.clearUpdateCity();
+
+    if(props.updatedCity){
+      setTimeout(() => { 
+        document.location.reload( true );
+      }, 1500)
     }
   }, [ props.updatedCity ] );
 
@@ -198,6 +220,7 @@ const EditarMunicipio = ( { municipio, localidades, ...props } ) => {
                             styles={ selectDefault }
                             options={ optionPais }
                             onChange={ e => setPais(e) }
+                            isDisabled={!ativo.value}
                             required
                           />
                         </FormGroup>
@@ -211,6 +234,7 @@ const EditarMunicipio = ( { municipio, localidades, ...props } ) => {
                             styles={ selectDefault }
                             options={ optionRegiao }
                             onChange={ e => setRegiao(e) }
+                            isDisabled={!ativo.value}
                             required
                           />
                         </FormGroup>
@@ -226,6 +250,7 @@ const EditarMunicipio = ( { municipio, localidades, ...props } ) => {
                             styles={ selectDefault }
                             options={ optionEstado }
                             onChange={ e => setEstado(e) }
+                            isDisabled={!ativo.value}
                             required
                           />
                         </FormGroup>
@@ -239,6 +264,7 @@ const EditarMunicipio = ( { municipio, localidades, ...props } ) => {
                             styles={ selectDefault }
                             options={ optionRegionalSaude }
                             onChange={ e => setRegionalSaude(e) }
+                            isDisabled={!ativo.value}
                             required
                           />
                         </FormGroup>

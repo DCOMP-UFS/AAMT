@@ -15,6 +15,7 @@ import { getMethodologiesRequest } from '../../../store/Metodologia/metodologiaA
 import { getAllowedCyclesRequest } from '../../../store/Ciclo/cicloActions';
 import { getCityByRegionalHealthRequest } from '../../../store/Municipio/municipioActions';
 import { createActiveRequest } from '../../../store/Atividade/atividadeActions';
+import { getRegionalHealthSituationRequest } from '../../../store/RegionalSaude/regionalSaudeActions';
 
 // STYLES
 import { FormGroup, selectDefault } from '../../../styles/global';
@@ -28,7 +29,7 @@ import {
 
 import {isBlank} from '../../../config/function';
 
-const AtividadesRegCadastrar = ( { propositos, ciclos, ...props } ) => {
+const AtividadesRegCadastrar = ( { propositos, situacaoRegional, ciclos, ...props } ) => {
   const [ reload, setReload ] = useState( false );
   const [ objetivoAtividade, setObjetivoAtividade ] = useState("");
   const [ ciclo, setCiclo ] = useState({});
@@ -51,12 +52,28 @@ const AtividadesRegCadastrar = ( { propositos, ciclos, ...props } ) => {
   const [ isValidObjetivoAtividade, setIsValidObjetivoAtividade ] = useState( true );
   const [ isValidListaMunicipios, setIsListaMunicipios ] = useState( true );
 
+  const [ withoutOpenCicle, setWithoutOpenCicle ] = useState( false )
+  const [ isRegionalInactive, setIsRegionalInactive ] = useState( false );
+  const [ isRegionalCitiesInactive, setIsRegionalCitiesInactive ] = useState( false );
+
   useEffect(() => {
     props.changeSidebar( "atividade", "at_cadastrar" );
     props.getMethodologiesRequest();
     props.getAllowedCyclesRequest( props.regionalSaude_id );
     props.getCityByRegionalHealthRequest( props.regionalSaude_id );
+    props.getRegionalHealthSituationRequest( props.regionalSaude_id )
   }, []);
+
+  useEffect(() => {
+    if( Object.entries( situacaoRegional ).length > 0 ) {
+      let isRegionalInactive = situacaoRegional.ativo ? false : true
+      let isCitiesInactive = situacaoRegional.qtdMunicipiosAtivos > 0 ? false : true
+
+      setIsRegionalInactive(isRegionalInactive)
+      setIsRegionalCitiesInactive(isCitiesInactive)
+      
+    }
+  }, [situacaoRegional]);
 
   useEffect(() => {
     const option = propositos.map( (m, index) => (
@@ -82,7 +99,10 @@ const AtividadesRegCadastrar = ( { propositos, ciclos, ...props } ) => {
     const options = ciclos.map( (ciclo) => (
       { value: ciclo.id, label: `${ ciclo.ano }.${ ciclo.sequencia }` }
     ));
+    
+    const withoutOpenCicle = ciclos.length == 0 ? true : false
 
+    setWithoutOpenCicle(withoutOpenCicle)
     setOptionCiclo(options);
   }, [ ciclos ]);
 
@@ -141,163 +161,185 @@ const AtividadesRegCadastrar = ( { propositos, ciclos, ...props } ) => {
         <article className="col-md-12 stretch-card">
           <div className="card">
             <h4 className="title">Atividade</h4>
-            <p className="text-description">
+            <p className={withoutOpenCicle || isRegionalInactive || isRegionalCitiesInactive ? "d-none" : "text-description"}>
               Atenção! Os campos com <code>*</code> são obrigatórios
             </p>
-
-            <form onSubmit={ handleSubmit }>
-              <ContainerFixed>
-                <ButtonSave
-                  title="Salvar"
-                  className="bg-info text-white"
-                  loading={ flBtnLoading }
-                  disabled={ flBtnLoading }
-                  type="submit"
-                />
-              </ContainerFixed>
-              <Row>
-                <Col sm='6'>
-                  <Row>
-                    <Col>
-                    <FormGroup>
-                      <label>Objetivo da atividade <code>*</code></label>
-                      <textarea
-                        id="objetivoAtividade"
-                        value={ objetivoAtividade }
-                        className="form-control"
-                        onChange={ e => setObjetivoAtividade( e.target.value ) }
-                        rows="5"
-                        required
-                      ></textarea>
-                      {
-                        !isValidObjetivoAtividade ?
-                          <span className="form-label-invalid">Objetivo inválido</span> :
-                          ''
-                        }
-                    </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col sm='6'>
+            <p className={withoutOpenCicle ? "text-description" : "d-none"}>
+              Não é possivel cadastrada uma atividade, poís não existe um ciclo em aberto na sua regional. 
+            </p>
+            <p className={isRegionalInactive ? "text-description" : "d-none"}>
+              Não é permitido cadastrar uma atividade em uma regional inativa. 
+            </p>
+            <p className={isRegionalCitiesInactive ? "text-description" : "d-none"}>
+              Não é permitido cadastrar uma atividade em uma regional sem municípios ativos.
+            </p>
+            <div className={ withoutOpenCicle || isRegionalInactive || isRegionalCitiesInactive ? 'd-none' : " "}>
+              <form onSubmit={ handleSubmit }>
+                <ContainerFixed>
+                  <ButtonSave
+                    title="Salvar"
+                    className="bg-info text-white"
+                    loading={ flBtnLoading }
+                    disabled={ flBtnLoading }
+                    type="submit"
+                  />
+                </ContainerFixed>
+                <Row>
+                  <Col sm='6'>
+                    <Row>
+                      <Col>
                       <FormGroup>
-                        <label>Propósito <code>*</code></label>
-                        <SelectWrap
-                          id="proposito"
-                          value={ proposito }
-                          styles={ selectDefault }
-                          options={ optionProposito }
-                          onChange={ e => setProposito( e ) }
+                        <label>Objetivo da atividade <code>*</code></label>
+                        <textarea
+                          id="objetivoAtividade"
+                          value={ objetivoAtividade }
+                          className="form-control"
+                          onChange={ e => setObjetivoAtividade( e.target.value ) }
+                          rows="5"
                           required
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col sm='6'>
-                      <FormGroup>
-                        <label>Operação <code>*</code></label>
-                        <SelectWrap
-                          id="operacao"
-                          value={ operacao }
-                          styles={ selectDefault }
-                          options={ optionOperacao }
-                          onChange={ e => setOperacao( e ) }
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col sm="6">
-                      <FormGroup>
-                        <label htmlFor="flTodosImoveis">Em todos os imóveis? <code>*</code></label>
-                        <SelectWrap
-                          id="flTodosImoveis"
-                          value={ flTodosImoveis }
-                          options={ optionflTodosImoveis }
-                          onChange={ e => setFlTodosImoveis(e) }
-                          styles={ selectDefault }
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col sm="6">
-                      <FormGroup>
-                        <label>Abrangência <code>*</code></label>
-                        <SelectWrap
-                          id="abrangencia"
-                          value={ abrangencia }
-                          styles={ selectDefault }
-                          options={ optionAbrangencia }
-                          onChange={ e => setAbrangencia( e ) }
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <FormGroup>
-                        <label>Ciclo <code>*</code></label>
-                        <SelectWrap
-                          id="ciclo"
-                          value={ ciclo }
-                          styles={ selectDefault }
-                          options={ optionCiclo }
-                          onChange={ e => setCiclo( e ) }
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                </Col>
-                <Col sm='6'>
-                  <h4 className="title">Município(s)<code>*</code></h4>
-                  {
-                        !isValidListaMunicipios ?
-                          <span className="form-label-invalid">Selecione pelo menos um município</span> :
-                          ''
-                  }
-                  <p className="text-description">
-                    Qual(is) os município(s) deseja aplicar a atividade?
-                  </p>
-
-                  <UlIcon>
-                    {listaMunicipios.map( (lista, index) => {
-                      const { checked, municipio } = lista;
-                      return (
-                        <LiIcon
-                          key={ index }
-                          onClick={
-                            (e) => {
-                              let lista = listaMunicipios;
-                              lista[ index ].checked = !lista[ index ].checked;
-                              setListaMunicipios( lista );
-                              setReload( !reload );
-                            }
+                        ></textarea>
+                        {
+                          !isValidObjetivoAtividade ?
+                            <span className="form-label-invalid">Objetivo inválido</span> :
+                            ''
                           }
-                        >
-                          <ContainerUl>
-                            <Checkbox
-                              checked={ checked }
-                              onChange={
-                                (e) => {
+                      </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col sm='6'>
+                        <FormGroup>
+                          <label>Propósito <code>*</code></label>
+                          <SelectWrap
+                            id="proposito"
+                            value={ proposito }
+                            styles={ selectDefault }
+                            options={ optionProposito }
+                            onChange={ e => setProposito( e ) }
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col sm='6'>
+                        <FormGroup>
+                          <label>Operação <code>*</code></label>
+                          <SelectWrap
+                            id="operacao"
+                            value={ operacao }
+                            styles={ selectDefault }
+                            options={ optionOperacao }
+                            onChange={ e => setOperacao( e ) }
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col sm="6">
+                        <FormGroup>
+                          <label htmlFor="flTodosImoveis">Em todos os imóveis? <code>*</code></label>
+                          <SelectWrap
+                            id="flTodosImoveis"
+                            value={ flTodosImoveis }
+                            options={ optionflTodosImoveis }
+                            onChange={ e => setFlTodosImoveis(e) }
+                            styles={ selectDefault }
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col sm="6">
+                        <FormGroup>
+                          <label>Abrangência <code>*</code></label>
+                          <SelectWrap
+                            id="abrangencia"
+                            value={ abrangencia }
+                            styles={ selectDefault }
+                            options={ optionAbrangencia }
+                            onChange={ e => setAbrangencia( e ) }
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        <FormGroup>
+                          <label>Ciclo <code>*</code></label>
+                          <SelectWrap
+                            id="ciclo"
+                            value={ ciclo }
+                            styles={ selectDefault }
+                            options={ optionCiclo }
+                            onChange={ e => setCiclo( e ) }
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col sm='6'>
+                    <h4 className="title">Município(s)<code>*</code></h4>
+                    {
+                          !isValidListaMunicipios ?
+                            <span className="form-label-invalid">Selecione pelo menos um município</span> :
+                            ''
+                    }
+                    <p className="text-description">
+                      Qual(is) os município(s) deseja aplicar a atividade?
+                      
+                    </p>
+
+                    <p className="text-description">
+                      Os muncípios em vermelho estão inativos e portanto não podem ser escolhidos
+                    </p>
+
+                    <UlIcon>
+                      {listaMunicipios.map( (lista, index) => {
+                        const { checked, municipio } = lista;
+                        return (
+                          <LiIcon
+                            key={ index }
+                            style={ municipio.ativo ? {} : {backgroundColor:"#fc3503"}}
+                            onClick={
+                              (e) => {
+                                if(municipio.ativo == 1){
                                   let lista = listaMunicipios;
-                                  lista[ index ].checked = e.target.checked;
+                                  lista[ index ].checked = !lista[ index ].checked;
                                   setListaMunicipios( lista );
                                   setReload( !reload );
                                 }
                               }
-                            />
-                            <DivDescription>
-                              <div>{ municipio.nome }</div>
-                            </DivDescription>
-                          </ContainerUl>
-                        </LiIcon>
-                      );
-                    })}
-                  </UlIcon>
-                </Col>
-              </Row>
-            </form>
+                            }
+                          >
+                            <ContainerUl>
+                              <Checkbox
+                                checked={ checked }
+                                onChange={
+                                  (e) => {
+                                    if(municipio.ativo == 1){
+                                      let lista = listaMunicipios;
+                                      lista[ index ].checked = e.target.checked;
+                                      setListaMunicipios( lista );
+                                      setReload( !reload );
+                                    }
+                                  }
+                                }
+                              />
+                              <DivDescription>
+                                <div style={ municipio.ativo ? {} : {color:"white"}}>
+                                  { municipio.nome }
+                                </div>
+                              </DivDescription>
+                            </ContainerUl>
+                          </LiIcon>
+                        );
+                      })}
+                    </UlIcon>
+                  </Col>
+                </Row>
+              </form>
+            </div>
           </div>
         </article>
       </div>
@@ -310,7 +352,8 @@ const mapStateToProps = state => ( {
   propositos      : state.metodologia.metodologias,
   ciclos          : state.ciclo.ciclos,
   municipios      : state.municipio.municipiosList,
-  created         : state.atividade.created
+  created         : state.atividade.created,
+  situacaoRegional: state.regionalSaude.situacaoRegional,
 } );
 
 const mapDispatchToProps = dispatch =>
@@ -319,6 +362,7 @@ const mapDispatchToProps = dispatch =>
     getMethodologiesRequest,
     getAllowedCyclesRequest,
     getCityByRegionalHealthRequest,
+    getRegionalHealthSituationRequest,
     createActiveRequest
   }, dispatch );
 

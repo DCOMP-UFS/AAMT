@@ -14,6 +14,24 @@ const INITIAL_STATE = {
 
 export default function Atividade( state = INITIAL_STATE, action ) {
   switch(action.type) {
+    case ActionTypes.CREATE_CYCLE_SUCCESS:{
+      return {
+        ...state,
+        created: true
+      };
+    }
+    case ActionTypes.CREATE_CYCLE_FAIL:{
+      return {
+        ...state,
+        created: false
+      };
+    }
+    case ActionTypes.CREATE_CYCLE_RESET:{
+      return {
+        ...state,
+        created: null
+      };
+    }
     case ActionTypes.SET_CICLO:
       return {
         ...state,

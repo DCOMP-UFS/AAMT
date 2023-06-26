@@ -133,7 +133,7 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
 
   useEffect(() => {
     if( Object.entries(estado).length > 0 ) {
-      props.getRegionalHealthByStateRequest( estado.value );
+      props.getRegionalHealthByStateRequest( estado.value, true );
       setRegionalSaude({});
       setMunicipio({});
       setOptionMunicipio([]);
@@ -143,38 +143,66 @@ const UsuariosRegEditar = ( { usuarioUpdate, ...props } ) => {
   }, [ estado ]);
 
   useEffect(() => {
+
+    let isRegionalUsuarioAtiva = false
+
     const options = props.regionaisSaude.map(( r ) => {
-      if( r.id === userRegionalSaude.id )
+      if( r.id === userRegionalSaude.id ){
+        isRegionalUsuarioAtiva = true
         setRegionalSaude( { value: r.id, label: r.nome } );
+      }
 
       return ({ value: r.id, label: r.nome });
     });
+
+    if(!isRegionalUsuarioAtiva && userEstado.id == estado.value) {
+      const regionalUsuario = { 
+        value: userRegionalSaude.id,
+        label: userRegionalSaude.nome+" (Inativo)"
+      }
+      options.unshift(regionalUsuario)
+      setRegionalSaude(regionalUsuario);
+    }
 
     setOptionRegionalSaude( options );
   }, [ props.regionaisSaude ]);
 
   useEffect(() => {
-    if( Object.entries(regionalSaude).length > 0 ) {
-      props.getCityByRegionalHealthRequest( regionalSaude.value );
-      //setMunicipio( userMunicipio );
+    if( Object.entries(regionalSaude).length > 0 && regionalSaude.value  ) {
+      props.getCityByRegionalHealthRequest( regionalSaude.value, true );
+      setMunicipio( {} );
       setLaboratorio( {} )
       setOptionsLaboratorio( [] )
     }
   }, [ regionalSaude ]);
 
   useEffect(() => {
+
+    let isMuncipioUsuarioAtivo = false
+
     const options = props.municipiosList.map(( m ) => {
-      if( m.id === userMunicipio.id )
+      if( m.id === userMunicipio.id ){
+        isMuncipioUsuarioAtivo = true
         setMunicipio( { value: m.id, label: m.nome } );
+      }
 
       return ({ value: m.id, label: m.nome })
     });
+
+    if(!isMuncipioUsuarioAtivo &&  userRegionalSaude.id == regionalSaude.value) {
+      const muncipiolUsuario = { 
+        value: userMunicipio.id,
+        label: userMunicipio.nome+" (Inativo)"
+      }
+      options.unshift(muncipiolUsuario)
+      setMunicipio(muncipiolUsuario);
+    }
 
     setOptionMunicipio( options );
   }, [ props.municipiosList ]);
 
   useEffect(() => {
-    if( Object.entries(municipio).length > 0 ) {
+    if( Object.entries(municipio).length > 0 && municipio.value) {
       props.getLaboratoriosRequest( municipio.value );
       setLaboratorio({});
     }

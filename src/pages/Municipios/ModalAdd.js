@@ -12,7 +12,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // ACTIONS
-import { createCityRequest, clearCreateCity, getCityByRegionalHealthRequest } from '../../store/Municipio/municipioActions';
+import { createCityRequest, clearCreateCity } from '../../store/Municipio/municipioActions';
 import { getNationsRequest } from '../../store/Pais/paisActions';
 import { GetRegionsByNationRequest } from '../../store/Regiao/regiaoActions';
 import { GetStatesByRegionRequest } from '../../store/Estado/estadoActions';
@@ -94,7 +94,7 @@ function ModalAdd( { createCityRequest, createdCity, show, handleClose, ...props
 
   useEffect( () => {
     if( Object.entries( estado ).length > 0 ) {
-      props.getRegionalHealthByStateRequest( estado.value );
+      props.getRegionalHealthByStateRequest( estado.value, true );
       setRegionalSaude( {} );
     }
   }, [ estado ] );
@@ -306,7 +306,6 @@ const mapDispatchToProps = dispatch =>
     GetRegionsByNationRequest,
     GetStatesByRegionRequest,
     getRegionalHealthByStateRequest,
-    getCityByRegionalHealthRequest
   }, dispatch );
 
 export default connect(

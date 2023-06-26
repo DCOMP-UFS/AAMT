@@ -7,6 +7,7 @@ const Ciclo           = require('../models/Ciclo');
 const Atividade       = require('../models/Atividade');
 const Amostra         = require('../models/Amostra');
 const Exemplar        = require('../models/Exemplar');
+const RegionalMunicipio = require('../models/RegionalMunicipio')
 
 // UTILITY
 const allowFunction = require('../util/allowFunction');
@@ -53,12 +54,14 @@ getSampleBySurpervisionAndCycle = async ( req, res ) => {
         break;
 
       case 2: // Municipio
-        regional_id = await Municipio.findByPk( userRequest.atuacoes[ 0 ].local_id, {
-          include: {
-            association: 'regional'
+        regional_id = await RegionalMunicipio.findOne(
+        {
+          where: {
+            municipio_id: userRequest.atuacoes[ 0 ].local_id,
+            vinculado: true,
           }
-        }).then( municipio => {
-          return municipio.regional.id;
+        }).then( regionalMunicipio => {
+          return regionalMunicipio.regional_id
         });
         break;
     

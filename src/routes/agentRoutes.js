@@ -3,11 +3,13 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import PlannedRoutes from '../pages/Agent/PlannedRoutes';
+import LocalList from '../pages/Agent/LocalList';
 import BlocksList from '../pages/Agent/BlocksList';
 import PropertiesList from '../pages/Agent/Inspections/PropertiesList';
 import PropertieDetails from '../pages/Agent/Inspections/PropertieDetails';
 import PropertieEdit from '../pages/Agent/Inspections/PropertieEdit';
 import Profile from '../pages/Profile';
+
 
 // Formulários de vistorias
 
@@ -49,7 +51,8 @@ const DailyWorkStack = () => {
         component={AgentDrawer}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="Rota" component={BlocksList} />
+      <Stack.Screen name="Rota - Quarteirões" component={BlocksList} options={{ headerShown: true }}/>
+      <Stack.Screen name="Rota - Localidades" component={LocalList} options={{ headerShown: true }}/>
 
       {/* Imóveis */}
 
